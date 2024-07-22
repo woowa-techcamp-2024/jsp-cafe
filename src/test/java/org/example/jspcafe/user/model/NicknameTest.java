@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class UsernameTest {
+class NicknameTest {
 
     @DisplayName("정상적으로 Username 객체를 생성하는 테스트")
     @Test
@@ -15,7 +15,7 @@ class UsernameTest {
         String username = "test";
 
         // when
-        Username result = new Username(username);
+        Nickname result = new Nickname(username);
 
         // then
         assertThat(result).isNotNull()
@@ -30,7 +30,7 @@ class UsernameTest {
         String username = null;
 
         // when & then
-        assertThatThrownBy(() -> new Username(username))
+        assertThatThrownBy(() -> new Nickname(username))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Username은 null이거나 빈 문자열일 수 없습니다.");
     }
@@ -42,7 +42,7 @@ class UsernameTest {
         String username = "";
 
         // when & then
-        assertThatThrownBy(() -> new Username(username))
+        assertThatThrownBy(() -> new Nickname(username))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Username은 null이거나 빈 문자열일 수 없습니다.");
     }
@@ -54,7 +54,7 @@ class UsernameTest {
         String username = "aa";
 
         // when & then
-        assertThatThrownBy(() -> new Username(username))
+        assertThatThrownBy(() -> new Nickname(username))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Username은 3자 이상 15자 이하여야 합니다.");
     }
@@ -66,7 +66,7 @@ class UsernameTest {
         String username = "aaaaaaaaaaaaaaaa";
 
         // when & then
-        assertThatThrownBy(() -> new Username(username))
+        assertThatThrownBy(() -> new Nickname(username))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Username은 3자 이상 15자 이하여야 합니다.");
     }
