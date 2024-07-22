@@ -22,7 +22,7 @@ public class Nickname {
 
     private void validateLength(String value) {
         if (value.length() < 3 || value.length() > 15) {
-            throw new IllegalArgumentException("Nickname 3자 이상 15자 이하여야 합니다.");
+            throw new IllegalArgumentException("Nickname은 3자 이상 15자 이하여야 합니다.");
         }
     }
 }
