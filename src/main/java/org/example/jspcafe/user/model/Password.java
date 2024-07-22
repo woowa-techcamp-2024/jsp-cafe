@@ -25,4 +25,19 @@ public class Password {
             throw new IllegalArgumentException("Password는 8자 이상 20자 이하여야 합니다.");
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Password password = (Password) o;
+
+        return getValue() != null ? getValue().equals(password.getValue()) : password.getValue() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getValue() != null ? getValue().hashCode() : 0;
+    }
 }
