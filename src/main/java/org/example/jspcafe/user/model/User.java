@@ -22,8 +22,7 @@ public class User {
         return password;
     }
 
-    public User(Long userId, String nickname, String email, String password) {
-        this.userId = userId;
+    public User(String nickname, String email, String password) {
         this.nickname = new Nickname(nickname);
         this.email = new Email(email);
         this.password = new Password(password);
