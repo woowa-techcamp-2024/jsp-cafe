@@ -20,8 +20,8 @@ class UserTest {
 
         // then
         assertThat(user).isNotNull()
-                .extracting(u -> u.getNickname().getValue(), u -> u.getEmail().getValue(), u -> u.getPassword().getValue())
-                .containsExactly(nickname, email, password);
+                .extracting(u -> u.getUserId(), u -> u.getNickname().getValue(), u -> u.getEmail().getValue(), u -> u.getPassword().getValue())
+                .containsExactly(null, nickname, email, password);
     }
 
 }
