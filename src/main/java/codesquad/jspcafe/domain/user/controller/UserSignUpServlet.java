@@ -29,6 +29,21 @@ public class UserSignUpServlet extends HttpServlet {
     }
 
     /**
+     * GET 요청을 처리하여 list.jsp 페이지로 포워딩합니다. 클라이언트가 /users로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
+     *
+     * @param req  클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
+     * @param resp 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
+     * @throws ServletException 서블릿이 GET 요청을 처리하는 동안 입력 또는 출력 오류가 발생할 경우
+     * @throws IOException      포워드 요청을 처리할 수 없는 경우
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+        req.setAttribute("userList", userSignService.findAllUser());
+        req.getRequestDispatcher("/resources/jsp/list.jsp").forward(req, resp);
+    }
+
+    /**
      * POST 요청을 처리하여 새로운 사용자를 생성한 후 /users 페이지로 리디렉션합니다. 클라이언트가 /users로 POST 요청을 보낼 때 이 메서드가 호출됩니다.
      *
      * @param req  클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
