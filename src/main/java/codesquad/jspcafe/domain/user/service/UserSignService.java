@@ -1,7 +1,9 @@
 package codesquad.jspcafe.domain.user.service;
 
 import codesquad.jspcafe.domain.user.domain.User;
+import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
+import java.util.List;
 import java.util.Map;
 
 public class UserSignService {
@@ -19,6 +21,10 @@ public class UserSignService {
         String email = parameterMap.get("email")[0];
         User user = new User(userId, password, name, email);
         return userRepository.save(user);
+    }
+
+    public List<UserCommonResponse> findAllUser() {
+        return userRepository.findAll().stream().map(UserCommonResponse::from).toList();
     }
 
 }
