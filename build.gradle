@@ -14,18 +14,22 @@ ext {
     junitVersion = '5.10.0'
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
 dependencies {
-    compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
+    // servlet
+    implementation('jakarta.servlet:jakarta.servlet-api:6.0.0')
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    // test
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation platform('org.assertj:assertj-bom:3.25.1')
+    testImplementation('org.assertj:assertj-core')
 }
 
 test {
