@@ -1,6 +1,7 @@
 package org.example.jspcafe;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -76,9 +77,9 @@ public abstract class InMemoryRepository<T> implements Repository<T> {
      * @return 주어진 ID의 엔티티, 없으면 null
      */
     @Override
-    public T findById(Long id) {
+    public Optional<T> findById(Long id) {
         validateId(id);
-        return storage.get(id);
+        return Optional.ofNullable(storage.get(id));
     }
 
     /**
