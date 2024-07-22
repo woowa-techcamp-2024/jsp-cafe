@@ -1,11 +1,11 @@
-package services;
+package models;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserServiceTest {
 
+public class UserTest {
     @Test
     void testCreateUser() {
         // given
@@ -13,9 +13,8 @@ public class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        UserService userService = new UserService();
         // when
-        User user = userService.createUser(userId, password, name, email);
+        User user = new User(userId, password, name, email);
 
         // then
         assertEquals(user.getUserId(), userId);
