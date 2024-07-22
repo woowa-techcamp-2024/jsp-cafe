@@ -8,67 +8,67 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class NicknameTest {
 
-    @DisplayName("정상적으로 Username 객체를 생성하는 테스트")
+    @DisplayName("정상적으로 Nickname 객체를 생성하는 테스트")
     @Test
     void create() {
         // given
-        String username = "test";
+        String nickname = "test";
 
         // when
-        Nickname result = new Nickname(username);
+        Nickname result = new Nickname(nickname);
 
         // then
         assertThat(result).isNotNull()
                 .extracting("value")
-                .isEqualTo(username);
+                .isEqualTo(nickname);
     }
 
-    @DisplayName("Username 객체 생성 시, null이 들어오면 예외가 발생하는 테스트")
+    @DisplayName("Nickname 객체 생성 시, null이 들어오면 예외가 발생하는 테스트")
     @Test
     void create_Exception_NULL() {
         // given
-        String username = null;
+        String nickname = null;
 
         // when & then
-        assertThatThrownBy(() -> new Nickname(username))
+        assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Username은 null이거나 빈 문자열일 수 없습니다.");
+                .hasMessage("Nickname은 null이거나 빈 문자열일 수 없습니다.");
     }
 
-    @DisplayName("Username 객체 생성 시, 빈 문자열이 들어오면 예외가 발생하는 테스트")
+    @DisplayName("Nickname 객체 생성 시, 빈 문자열이 들어오면 예외가 발생하는 테스트")
     @Test
     void create_Exception_Empty() {
         // given
-        String username = "";
+        String nickname = "";
 
         // when & then
-        assertThatThrownBy(() -> new Nickname(username))
+        assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Username은 null이거나 빈 문자열일 수 없습니다.");
+                .hasMessage("Nickname은 null이거나 빈 문자열일 수 없습니다.");
     }
 
-    @DisplayName("Username 객체 생성 시, 3자 미만이면 예외가 발생하는 테스트")
+    @DisplayName("Nickname 객체 생성 시, 3자 미만이면 예외가 발생하는 테스트")
     @Test
     void create_Exception_Length_Min() {
         // given
-        String username = "aa";
+        String nickname = "aa";
 
         // when & then
-        assertThatThrownBy(() -> new Nickname(username))
+        assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Username은 3자 이상 15자 이하여야 합니다.");
+                .hasMessage("Nickname은 3자 이상 15자 이하여야 합니다.");
     }
 
-    @DisplayName("Username 객체 생성 시, 15자 초과이면 예외가 발생하는 테스트")
+    @DisplayName("Nickname 객체 생성 시, 15자 초과이면 예외가 발생하는 테스트")
     @Test
     void create_Exception_Length_Max() {
         // given
-        String username = "aaaaaaaaaaaaaaaa";
+        String nickname = "aaaaaaaaaaaaaaaa";
 
         // when & then
-        assertThatThrownBy(() -> new Nickname(username))
+        assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Username은 3자 이상 15자 이하여야 합니다.");
+                .hasMessage("Nickname은 3자 이상 15자 이하여야 합니다.");
     }
 
 
