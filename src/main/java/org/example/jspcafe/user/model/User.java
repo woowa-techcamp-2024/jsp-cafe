@@ -8,7 +8,7 @@ public class User {
     private Nickname nickname;
     private Email email;
     private Password password;
-    
+
     public void updatePassword(String password) {
         Password updatePassword = new Password(password);
         if (this.password.equals(updatePassword)) {
