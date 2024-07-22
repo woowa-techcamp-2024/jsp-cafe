@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -40,7 +41,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="../user/list.html"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="list.jsp"><i class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>
     </div>
@@ -68,8 +69,9 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.jsp">Posts</a></li>
-                <li><a href="../user/login.html" role="button">로그인</a></li>
-                <li><a href="../user/form.html" role="button">회원가입</a></li>
+                >
+                <li><a href="login.jsp" role="button">로그인</a></li>
+                <li><a href="form.jsp" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
@@ -78,24 +80,25 @@
 </div>
 
 <div class="container" id="main">
-    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
-        <div class="panel panel-default content-main">
-            <form name="question" method="post" action="">
-                <div class="form-group">
-                    <label for="writer">글쓴이</label>
-                    <input class="form-control" id="writer" name="writer" placeholder="글쓴이"/>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Profiles</h4></div>
+            <div class="panel-body">
+                <div class="well well-sm">
+                    <div class="media">
+                        <a class="thumbnail pull-left" href="#">
+                            <img class="media-object" src="../images/80-text.png">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">자바지기</h4>
+                            <p>
+                                <a href="#" class="btn btn-xs btn-default"><span
+                                        class="glyphicon glyphicon-envelope"></span>&nbsp;javajigi@slipp.net</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="title">제목</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
-                </div>
-                <div class="form-group">
-                    <label for="contents">내용</label>
-                    <textarea name="contents" id="contents" rows="5" class="form-control"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success clearfix pull-right">질문하기</button>
-                <div class="clearfix"/>
-            </form>
+            </div>
         </div>
     </div>
 </div>
