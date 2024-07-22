@@ -1,6 +1,9 @@
 package org.example.jspcafe.user.model;
 
+import org.example.jspcafe.PK;
+
 public class User {
+    @PK
     private Long userId;
     private Nickname nickname;
     private Email email;
