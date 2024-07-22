@@ -6,11 +6,11 @@ import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
 
-public class UserSignService {
+public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserSignService() {
+    public UserService() {
         userRepository = new UserRepository();
     }
 

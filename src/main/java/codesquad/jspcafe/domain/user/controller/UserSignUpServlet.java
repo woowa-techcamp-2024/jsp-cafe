@@ -1,6 +1,6 @@
 package codesquad.jspcafe.domain.user.controller;
 
-import codesquad.jspcafe.domain.user.service.UserSignService;
+import codesquad.jspcafe.domain.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +16,7 @@ import java.util.Map;
 @WebServlet("/users")
 public class UserSignUpServlet extends HttpServlet {
 
-    private UserSignService userSignService;
+    private UserService userService;
 
     /**
      * 서블릿을 초기화하여 서블릿 컨텍스트에서 UserSignService를 가져옵니다. 이 메서드는 서블릿이 처음 로드될 때 서블릿 컨테이너에 의해 호출됩니다.
@@ -25,7 +25,7 @@ public class UserSignUpServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        userSignService = (UserSignService) getServletContext().getAttribute("userSignService");
+        userService = (UserService) getServletContext().getAttribute("userService");
     }
 
     /**
@@ -39,7 +39,7 @@ public class UserSignUpServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        req.setAttribute("userList", userSignService.findAllUser());
+        req.setAttribute("userList", userService.findAllUser());
         req.getRequestDispatcher("/resources/jsp/list.jsp").forward(req, resp);
     }
 
@@ -55,7 +55,7 @@ public class UserSignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
         Map<String, String[]> map = req.getParameterMap();
-        userSignService.createUser(map);
+        userService.createUser(map);
         resp.sendRedirect("/users");
     }
 }
