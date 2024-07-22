@@ -1,6 +1,6 @@
 package services;
 
-import camp.woowa.jspcafe.User;
+import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.services.UserService;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package camp.woowa.jspcafe;
+package camp.woowa.jspcafe.models;
 
 public class User {
     private String userId;

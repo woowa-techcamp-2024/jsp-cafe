@@ -1,6 +1,6 @@
 package camp.woowa.jspcafe.services;
 
-import camp.woowa.jspcafe.User;
+import camp.woowa.jspcafe.models.User;
 
 public class UserService {
     public User createUser(String userId, String password, String name, String email) {
