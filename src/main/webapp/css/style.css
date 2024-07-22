@@ -1,0 +1,8 @@
+@font-face {
+  font-family: 'BM-Hanna-11yrs';
+  src: url('../fonts/BMHANNA_11yrs.otf') format('opentype');
+}
+
+body {
+  font-family: Pretendard, serif;
+}
