@@ -1,43 +1,17 @@
 plugins {
     id 'java'
-    id 'war'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group = 'org.example'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    junitVersion = '5.10.0'
-}
-
-sourceCompatibility = '17'
-targetCompatibility = '17'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
 dependencies {
-    // Servlet
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-
-    // Jakarta JSP API dependency
-    compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.0'
-
-    // Jakarta JSTL API and implementation dependencies
-    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
-    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
-
-    //
-    implementation 'org.slf4j:slf4j-api:2.0.13'
-    implementation 'ch.qos.logback:logback-classic:1.4.11'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-    testImplementation 'org.assertj:assertj-core:3.23.1'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 test {
