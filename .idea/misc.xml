@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/out/artifacts/jsp_cafe_war_exploded/WEB-INF/web.xml" />
+    <file type="web" url="file://$PROJECT_DIR$/out/artifacts/jsp_cafe_war_exploded/web/WEB-INF/web.xml" />
+  </component>
+</project>
