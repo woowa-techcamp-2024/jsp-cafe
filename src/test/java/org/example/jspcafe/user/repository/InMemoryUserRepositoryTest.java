@@ -19,6 +19,25 @@ class InMemoryUserRepositoryTest {
         userRepository = new InMemoryUserRepository();
     }
 
+    @DisplayName("기존 유저를 저장하면 기존 유저를 반환한다")
+    @Test
+    void saveAlreadyExists() {
+        // given
+        String nickname = "nickname";
+        String email = "email@example.com";
+        String password = "password";
+        User user = new User(nickname, email, password);
+        User savedUser = userRepository.save(user);
+
+        // when
+        User savedUser2 = userRepository.save(savedUser);
+
+        // then
+        assertThat(savedUser2).isNotNull()
+                .extracting(u -> u.getNickname().getValue(), u -> u.getEmail().getValue(), u -> u.getPassword().getValue())
+                .contains(nickname, email, password);
+    }
+
     @DisplayName("유저를 저장하고 조회할 수 있다")
     @Test
     void saveAndFindById() {
@@ -32,9 +51,6 @@ class InMemoryUserRepositoryTest {
         User savedUser = userRepository.save(user);
 
         // then
-        assertThat(savedUser.getUserId())
-                .isNotNull();
-
         Long savedUserId = savedUser.getUserId();
         Optional<User> foundUser = userRepository.findById(savedUserId);
 
