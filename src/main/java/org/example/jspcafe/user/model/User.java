@@ -8,7 +8,14 @@ public class User {
     private Nickname nickname;
     private Email email;
     private Password password;
-
+    
+    public void updatePassword(String password) {
+        Password updatePassword = new Password(password);
+        if (this.password.equals(updatePassword)) {
+            throw new IllegalArgumentException("기존 비밀번호와 동일합니다.");
+        }
+        this.password = updatePassword;
+    }
     public Long getUserId() {
         return userId;
     }
