@@ -10,15 +10,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-class RegisterUserServiceTest {
+class SignupServiceTest {
 
-    private RegisterUserService registerUserService;
+    private SignupService signupService;
     private Repository<User> userRepository;
 
     @BeforeEach
     void setUp() {
         userRepository = new InMemoryUserRepository();
-        registerUserService = new RegisterUserService(userRepository);
+        signupService = new SignupService(userRepository);
     }
 
     @DisplayName("사용자 등록 테스트")
@@ -32,7 +32,7 @@ class RegisterUserServiceTest {
         final RegisterUserServiceRequest request = new RegisterUserServiceRequest(nickname, email, password);
 
         // when & then
-        assertThatCode(() -> registerUserService.registerUser(request))
+        assertThatCode(() -> signupService.registerUser(request))
                 .doesNotThrowAnyException();
     }
 }

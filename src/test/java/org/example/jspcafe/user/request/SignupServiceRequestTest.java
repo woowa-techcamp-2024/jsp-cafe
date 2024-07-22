@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RegisterUserServiceRequestTest {
+class SignupServiceRequestTest {
     @DisplayName("request를 생성할 수 있다")
     @Test
     void createRequest() {

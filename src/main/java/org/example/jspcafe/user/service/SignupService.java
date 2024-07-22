@@ -4,7 +4,7 @@ import org.example.jspcafe.Repository;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 
-public class RegisterUserService {
+public class SignupService {
 
     private final Repository<User> userRepository;
 
@@ -21,7 +21,7 @@ public class RegisterUserService {
     }
 
 
-    public RegisterUserService(Repository<User> userRepository) {
+    public SignupService(Repository<User> userRepository) {
         this.userRepository = userRepository;
     }
 }
