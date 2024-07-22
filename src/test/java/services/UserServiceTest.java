@@ -1,10 +1,12 @@
 package services;
 
+import camp.woowa.jspcafe.User;
+import camp.woowa.jspcafe.services.UserService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     @Test
     void testCreateUser() {
