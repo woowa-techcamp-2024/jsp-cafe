@@ -16,6 +16,7 @@ public class InMemoryPostRepository extends InMemoryRepository<Post> implements 
     @Override
     public List<Post> findAll(int offset, int limit) {
         return storage.values().stream()
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
                 .skip(offset)
                 .limit(limit)
                 .toList();
