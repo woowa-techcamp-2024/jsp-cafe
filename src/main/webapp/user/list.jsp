@@ -26,11 +26,16 @@
                     if (users != null) {
                         for (User user : users) {
                 %>
-                <tr>
-                    <th scope="row"><%= index++ %></th>
-                    <td><%= user.getUserId() %></td>
-                    <td><%= user.getNickname() %></td>
-                    <td><%= user.getEmail() %></td>
+
+                <tr data-href="<%= "/users/" + user.getUserId() %>">
+                    <th scope="row"><%= index++ %>
+                    </th>
+                    <td><%= user.getUserId() %>
+                    </td>
+                    <td><%= user.getNickname() %>
+                    </td>
+                    <td><%= user.getEmail() %>
+                    </td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
@@ -42,5 +47,16 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll("tr[data-href]");
+        rows.forEach(function (row) {
+            row.addEventListener("click", function () {
+                window.location.href = row.getAttribute("data-href");
+            });
+        });
+    });
+</script>
 
 <%@ include file="/base/footer.jsp" %>
