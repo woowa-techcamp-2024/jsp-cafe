@@ -67,4 +67,26 @@ class UserRepositoryTest {
         // then
         assertEquals(user.getUserId(), userId);
     }
+
+    @Test
+    void testUpdate() {
+        // given
+        Long id = 1L;
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        UserRepository userRepository = new InMemUserRepository();
+
+        // when
+        userRepository.save(userId, password, name, email);
+        String updatedName = "updatedName";
+        String updatedEmail = "updatedEmail";
+        userRepository.update(id, userId, updatedName, updatedEmail);
+        User user = userRepository.findById(id);
+
+        // then
+        assertEquals(user.getName(), updatedName);
+        assertEquals(user.getEmail(), updatedEmail);
+    }
 }
