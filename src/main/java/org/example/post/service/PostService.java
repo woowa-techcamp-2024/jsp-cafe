@@ -9,7 +9,11 @@ import org.example.post.repository.PostRepository;
 
 public class PostService {
 
-    private PostRepository postRepository = new PostRepository();
+    private PostRepository postRepository;
+
+    public PostService(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
 
     public PostResponse create(Post post) throws SQLException {
         return PostResponse.toResponse(postRepository.save(post));
@@ -24,6 +28,4 @@ public class PostService {
     public PostResponse getPostById(long id) throws SQLException {
         return PostResponse.toResponse(postRepository.findById(id));
     }
-
-
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.post.model.dto.PostResponse;
+import org.example.post.repository.PostRepository;
 import org.example.post.service.PostService;
 
 @WebServlet("")
@@ -30,6 +31,6 @@ public class MainServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        postService = new PostService();
+        postService = new PostService(new PostRepository());
     }
 }

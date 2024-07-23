@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.sql.SQLException;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
+import org.example.member.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userService = new MockUserService();
+        userService = new MockUserService(new UserRepository());
     }
 
     @Test
@@ -98,6 +99,11 @@ public class UserServiceTest {
     }
 
     static class MockUserService extends UserService {
+
+        public MockUserService(UserRepository userRepository) {
+            super(userRepository);
+        }
+
         @Override
         public UserResponseDto register(User user) {
             if (existsByUserId(user.getUserId())) {

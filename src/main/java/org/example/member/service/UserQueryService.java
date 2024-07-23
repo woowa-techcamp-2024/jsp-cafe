@@ -8,7 +8,11 @@ import org.example.member.repository.UserRepository;
 
 public class UserQueryService {
 
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository;
+
+    public UserQueryService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<UserResponseDto> findAllUsers() throws SQLException {
         return userRepository.findAllUsers()

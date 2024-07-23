@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
+import org.example.member.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class UserQueryServiceTest {
     @Test
     public void test_findAllUsers_returns_list_of_UserResponseDto() throws SQLException {
         // Given
-        UserQueryService userQueryService = new UserQueryService();
+        UserQueryService userQueryService = new UserQueryService(new UserRepository());
 
         // When
         List<UserResponseDto> users = userQueryService.findAllUsers();
@@ -33,7 +34,7 @@ public class UserQueryServiceTest {
     @Test
     public void test_findUserByUserId_returns_UserResponseDto() throws SQLException {
         // Given
-        UserQueryService userQueryService = new MockUserQueryService();
+        UserQueryService userQueryService = new MockUserQueryService(new UserRepository());
         String userId = "existingUserId";
 
         // When
@@ -48,7 +49,7 @@ public class UserQueryServiceTest {
     @Test
     public void test_findUserByUserId_throws_SQLException_when_user_not_found() {
         // Given
-        UserQueryService userQueryService = new UserQueryService();
+        UserQueryService userQueryService = new UserQueryService(new UserRepository());
         String userId = "nonExistingUserId";
 
         // When & Then
@@ -61,7 +62,7 @@ public class UserQueryServiceTest {
     @Test
     public void test_findUserByUserId_handles_null_userId_gracefully() {
         // Given
-        UserQueryService userQueryService = new UserQueryService();
+        UserQueryService userQueryService = new UserQueryService(new UserRepository());
 
         // When & Then
         assertThrows(SQLException.class, () -> {
@@ -70,6 +71,10 @@ public class UserQueryServiceTest {
     }
 
     static class MockUserQueryService extends UserQueryService {
+        public MockUserQueryService(UserRepository userRepository) {
+            super(userRepository);
+        }
+
         @Override
         public UserResponseDto findUserByUserId(String userId) throws SQLException {
             return UserResponseDto.toResponse(User.createUser(userId, "password", "name", "email@email"));

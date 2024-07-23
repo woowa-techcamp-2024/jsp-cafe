@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
+import org.example.member.repository.UserRepository;
 import org.example.member.service.UserQueryService;
 import org.example.member.service.UserService;
 import org.slf4j.Logger;
@@ -119,7 +120,7 @@ public class UserServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        this.userService = new UserService();
-        this.userQueryService = new UserQueryService();
+        this.userService = new UserService(new UserRepository());
+        this.userQueryService = new UserQueryService(new UserRepository());
     }
 }
