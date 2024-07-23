@@ -18,7 +18,7 @@
                                 UserResponse user = (UserResponse) request.getAttribute("user");
                                 if (user != null) {
                             %>
-                            <h4 class="media-heading"><%= user.name() %></h4>
+                            <h4 class="media-heading"><%= user.nickname() %></h4>
                             <p>
                                 <a href="#" class="btn btn-xs btn-default">
                                     <span class="glyphicon glyphicon-envelope"></span>&nbsp;<%= user.email() %>

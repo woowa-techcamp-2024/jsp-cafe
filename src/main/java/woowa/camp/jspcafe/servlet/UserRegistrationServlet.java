@@ -45,12 +45,11 @@ public class UserRegistrationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("userRegistrationServlet doPost start");
-        String userId = req.getParameter("userId");
-        String password = req.getParameter("password");
-        String name = req.getParameter("name");
         String email = req.getParameter("email");
+        String password = req.getParameter("password");
+        String nickname = req.getParameter("nickname");
 
-        RegistrationRequest registrationRequest = new RegistrationRequest(userId, password, name, email);
+        RegistrationRequest registrationRequest = new RegistrationRequest(email, nickname, password);
         userService.registration(registrationRequest);
 
         resp.sendRedirect("/users");

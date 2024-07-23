@@ -77,11 +77,11 @@
           <form class="form col-md-12 center-block">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
-                  <input class="form-control" name="userId" placeholder="User ID">
+                  <input class="form-control" nickname="userId" placeholder="User ID">
               </div>
               <div class="form-group">
                   <label for="password">비밀번호</label>
-                  <input type="password" class="form-control" name="password" placeholder="Password">
+                  <input type="password" class="form-control" nickname="password" placeholder="Password">
               </div>
               <div class="form-group">
                   <button class="btn btn-primary btn-lg btn-block">로그인</button>
@@ -112,19 +112,19 @@
           <form class="form col-md-12 center-block">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
-                  <input class="form-control" id="userId" name="userId" placeholder="User ID">
+                  <input class="form-control" id="userId" nickname="userId" placeholder="User ID">
               </div>
               <div class="form-group">
                   <label for="password">비밀번호</label>
-                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                  <input type="password" class="form-control" id="password" nickname="password" placeholder="Password">
               </div>
               <div class="form-group">
-                  <label for="name">이름</label>
-                  <input class="form-control" id="name" name="name" placeholder="Name">
+                  <label for="nickname">이름</label>
+                  <input class="form-control" id="nickname" nickname="nickname" placeholder="Name">
               </div>
               <div class="form-group">
                   <label for="email">이메일</label>
-                  <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                  <input type="email" class="form-control" id="email" nickname="email" placeholder="Email">
               </div>
             <div class="form-group">
               <button class="btn btn-primary btn-lg btn-block">회원가입</button>

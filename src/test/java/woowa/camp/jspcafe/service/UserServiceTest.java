@@ -30,13 +30,13 @@ class UserServiceTest {
         @Test
         @DisplayName("[Success] 아이디, 비밀번호, 이름, 이메일 정보가 모두 있어야 회원가입을 성공한다")
         void registration() {
-            RegistrationRequest registrationRequest = new RegistrationRequest("아이디", "비밀번호", "이름", "email.com");
+            RegistrationRequest registrationRequest = new RegistrationRequest("email.com", "닉네임", "비밀번호");
             assertThatCode(() -> userService.registration(registrationRequest))
                     .doesNotThrowAnyException();
         }
 
         @ParameterizedTest(name = "[Exception] {0} 정보가 없으면 회원가입을 실패한다")
-        @ValueSource(strings = {"아이디", "비밀번호", "이름", "이메일"})
+        @ValueSource(strings = {"비밀번호", "닉네임", "이메일"})
         void registrationFailureWhenMissingField(String fieldName) {
             RegistrationRequest registrationRequest = createRequestWithMissingField(fieldName);
             assertThatThrownBy(() -> userService.registration(registrationRequest))
@@ -44,7 +44,7 @@ class UserServiceTest {
         }
 
         @ParameterizedTest(name = "[Exception] {0} 정보가 빈값이면 회원가입을 실패한다")
-        @ValueSource(strings = {"아이디", "비밀번호", "이름", "이메일"})
+        @ValueSource(strings = {"비밀번호", "닉네임", "이메일"})
         void registrationFailureWhenEmptyField(String fieldName) {
             RegistrationRequest registrationRequest = createRequestWithEmptyField(fieldName);
             assertThatThrownBy(() -> userService.registration(registrationRequest))
@@ -53,20 +53,18 @@ class UserServiceTest {
 
         private RegistrationRequest createRequestWithMissingField(String fieldName) {
             return switch (fieldName) {
-                case "아이디" -> new RegistrationRequest(null, "비밀번호", "이름", "email.com");
-                case "비밀번호" -> new RegistrationRequest("아이디", null, "이름", "email.com");
-                case "이름" -> new RegistrationRequest("아이디", "비밀번호", null, "email.com");
-                case "이메일" -> new RegistrationRequest("아이디", "비밀번호", "이름", null);
+                case "비밀번호" -> new RegistrationRequest("email.com", "닉네임", null);
+                case "닉네임" -> new RegistrationRequest("email.com", null, "비밀번호");
+                case "이메일" -> new RegistrationRequest(null, "닉네임", "비밀번호");
                 default -> throw new IllegalArgumentException("Unexpected field: " + fieldName);
             };
         }
 
         private RegistrationRequest createRequestWithEmptyField(String fieldName) {
             return switch (fieldName) {
-                case "아이디" -> new RegistrationRequest("", "비밀번호", "이름", "email.com");
-                case "비밀번호" -> new RegistrationRequest("아이디", "", "이름", "email.com");
-                case "이름" -> new RegistrationRequest("아이디", "비밀번호", "", "email.com");
-                case "이메일" -> new RegistrationRequest("아이디", "비밀번호", "이름", "");
+                case "비밀번호" -> new RegistrationRequest("email.com", "닉네임", "");
+                case "닉네임" -> new RegistrationRequest("email.com", "", "비밀번호");
+                case "이메일" -> new RegistrationRequest("", "닉네임", "비밀번호");
                 default -> throw new IllegalArgumentException("Unexpected field: " + fieldName);
             };
         }
@@ -106,7 +104,7 @@ class UserServiceTest {
         void test1() {
             User user1 = UserFixture.createUser1();
             User registUser = userService.registration(
-                    new RegistrationRequest(user1.getUserId(), user1.getPassword(), user1.getName(), user1.getEmail()));
+                    new RegistrationRequest(user1.getEmail(), user1.getNickname(), user1.getPassword()));
             User findUser = userService.findById(registUser.getId());
 
             assertThat(findUser).isEqualTo(registUser);

@@ -27,8 +27,7 @@ class InMemoryUserRepositoryTest {
         assertThat(findUser.getId()).isSameAs(saveUserId);
 
         assertThat(findUser.getId()).isEqualTo(user.getId());
-        assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
-        assertThat(findUser.getName()).isEqualTo(user.getName());
+        assertThat(findUser.getNickname()).isEqualTo(user.getNickname());
         assertThat(findUser.getPassword()).isEqualTo(user.getPassword());
         assertThat(findUser.getEmail()).isEqualTo(user.getEmail());
     }

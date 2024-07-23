@@ -18,10 +18,10 @@ public class UserService {
 
     public User registration(final RegistrationRequest registrationRequest) {
         // TODO: 회원 가입 검증 기능
-        User user = new User(registrationRequest.userId(),
-                registrationRequest.password(),
-                registrationRequest.name(),
-                registrationRequest.email());
+        User user = new User(
+                registrationRequest.email(),
+                registrationRequest.nickname(),
+                registrationRequest.password());
 
         userRepository.save(user);
         return user;

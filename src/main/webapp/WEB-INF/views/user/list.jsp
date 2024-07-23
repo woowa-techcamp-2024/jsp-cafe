@@ -10,9 +10,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>#</th>
-                    <th>사용자 아이디</th>
-                    <th>이름</th>
+                    <th>닉네임</th>
                     <th>이메일</th>
                     <th></th>
                 </tr>
@@ -25,9 +23,7 @@
                             UserResponse user = users.get(i);
                 %>
                 <tr>
-                    <th scope="row"><%= user.id() %></th>
-                    <td><a href="/users/<%= user.id() %>" class="btn btn-link"><%= user.userId() %></a></td>
-                    <td><%= user.name() %></td>
+                    <td><a href="/users/<%= user.id() %>" class="btn btn-link"><%= user.nickname() %></a></td>
                     <td><%= user.email() %></td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
