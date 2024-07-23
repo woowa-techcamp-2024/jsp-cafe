@@ -35,6 +35,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("isLogined", true);
             session.setAttribute("userId", response.userId());
+            session.setAttribute("nickname", response.nickname());
             resp.sendRedirect("/");
 
         } catch (Exception e) {
