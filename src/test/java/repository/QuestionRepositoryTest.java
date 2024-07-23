@@ -47,4 +47,21 @@ class QuestionRepositoryTest {
         // then
         assertEquals(expectedSize, questions.size());
     }
+
+    @Test
+    void findById() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionRepository.save(title, content, writer);
+
+        // when
+        Question question = questionRepository.findById(id);
+
+        // then
+        assertEquals(title, question.getTitle());
+        assertEquals(content, question.getContent());
+        assertEquals(writer, question.getWriter());
+    }
 }
