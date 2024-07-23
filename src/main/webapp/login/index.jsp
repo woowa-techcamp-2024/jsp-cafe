@@ -27,7 +27,7 @@
     </header>
     <main>
         <h1 class="login-title">로그인</h1>
-        <form class="login-form" action="authenticate" method="post">
+        <form class="login-form" action="/api/login" method="post">
             <div class="input-field">
                 <label for="email">이메일</label>
                 <input
