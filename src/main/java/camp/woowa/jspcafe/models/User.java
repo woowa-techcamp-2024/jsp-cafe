@@ -40,4 +40,8 @@ public class User {
         this.name = updatedName;
         this.email = updatedEmail;
     }
+
+    public boolean validatePassword(String password) {
+        return this.password.equals(password);
+    }
 }
