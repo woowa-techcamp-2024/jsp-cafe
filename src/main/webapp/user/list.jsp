@@ -28,11 +28,11 @@
             <button class="btn">회원가입</button>
         </div>
     </header>
+    <div class="info-box">
+        <h2>멤버리스트</h2>
+        <p>참여자를 확인할 수 있습니다.</p>
+    </div>
     <main>
-        <div class="info-box">
-            <h2>멤버리스트</h2>
-            <p>참여자를 확인할 수 있습니다.</p>
-        </div>
         <table>
             <thead>
             <tr>

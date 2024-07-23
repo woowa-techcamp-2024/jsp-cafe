@@ -30,7 +30,7 @@
         </header>
 
         <div class="info-box">
-            <h2>Article List</h2>
+            <h2>게시글 목록</h2>
             <p>게시글을 확인할 수 있습니다.</p>
         </div>
 
@@ -45,7 +45,7 @@
                 </thead>
                 <tbody>
                 <% for(Article article : articles) { %>
-                        <tr>
+                        <tr class="clickable-tr" onclick="goToArticleDetail('<%= article.getArticleId() %>')">
                             <td><%= article.getTitle() %></td>
                             <td><%= article.getAuthor() %></td>
                             <td><%= article.getCreatedDt().format(formatter) %></td>
@@ -55,5 +55,10 @@
             </table>
         </main>
     </div>
+<script>
+    function goToArticleDetail(articleId) {
+        window.location.href = '/articles/' + articleId;
+    }
+</script>
 </body>
 </html>
