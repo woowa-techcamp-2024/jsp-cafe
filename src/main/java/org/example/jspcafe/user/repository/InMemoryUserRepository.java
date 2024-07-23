@@ -11,6 +11,13 @@ import java.util.Optional;
 public class InMemoryUserRepository extends InMemoryRepository<User> implements UserRepository {
 
     @Override
+    public Optional<User> findByNickname(String nickname) {
+        return storage.values().stream()
+                .filter(user -> user.getNickname().getValue().equals(nickname))
+                .findFirst();
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) {
         return storage.values().stream()
                 .filter(user -> user.getEmail().getValue().equals(email))
