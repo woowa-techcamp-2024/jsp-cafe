@@ -25,7 +25,7 @@ public class WelcomeViewServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("questions", questionService.findAll());
-            req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
         } catch (ServletException | IOException e) {
             log("Error", e);
         }
