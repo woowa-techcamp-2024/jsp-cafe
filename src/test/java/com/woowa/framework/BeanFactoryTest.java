@@ -1,8 +1,6 @@
 package com.woowa.framework;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchException;
 
 import com.woowa.config.HandlerConfig;
@@ -10,8 +8,8 @@ import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
 import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
 import com.woowa.handler.UserHandler;
+import java.util.List;
 import java.util.NoSuchElementException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -87,6 +85,29 @@ class BeanFactoryTest {
 
             //then
             assertThat(bean).isInstanceOf(UserHandler.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("getBeans 호출 시")
+    class GetBeansTest {
+
+
+        @BeforeEach
+        void setUp() {
+            container.start();
+        }
+
+        @Test
+        @DisplayName("인터페이스의 구현체를 조회할 수 있다.")
+        void findImplementation() {
+            //given
+
+            //when
+            List<Initializer> beans = container.getBeans(Initializer.class);
+
+            //then
+            assertThat(beans).isNotEmpty();
         }
     }
 }

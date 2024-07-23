@@ -69,14 +69,17 @@ public class BeanFactory {
     }
 
     private <T> boolean isChild(Class<?> subClass, Class<T> targetClass) {
-        if(subClass.equals(Object.class)) {
-            return false;
-        }
-        if(subClass.equals(targetClass)) {
+        if(isImplementation(subClass, targetClass)) {
             return true;
         }
 
-        return isImplementation(subClass, targetClass) || isChild(subClass.getSuperclass(), targetClass);
+        if(subClass.equals(targetClass)) {
+            return true;
+        }
+        if(subClass.equals(Object.class)) {
+            return false;
+        }
+        return isChild(subClass.getSuperclass(), targetClass);
     }
 
     private <T> boolean isImplementation(Class<?> subClass, Class<T> targetClass) {
@@ -84,7 +87,9 @@ public class BeanFactory {
             if(anInterface.equals(targetClass)) {
                 return true;
             }
-            return isImplementation(anInterface, targetClass);
+            if(isImplementation(anInterface, targetClass)) {
+                return true;
+            }
         }
         return false;
     }
