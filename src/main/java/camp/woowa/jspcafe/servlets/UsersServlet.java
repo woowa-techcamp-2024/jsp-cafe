@@ -38,9 +38,15 @@ public class UsersServlet extends HttpServlet {
                 log(e.getMessage());
             }
         } else {
-            User user = userService.findById(pathInfo.substring(1));
-            req.setAttribute("user", user);
+            try {
+                User user = userService.findById(Long.parseLong(pathInfo.substring(1)));
+                req.setAttribute("user", user);
+            } catch (NumberFormatException e) {
+                log(e.getMessage());
+            }
+
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/profile.jsp");
+
             try {
                 dispatcher.forward(req, resp);
             } catch (ServletException | IOException e) {
