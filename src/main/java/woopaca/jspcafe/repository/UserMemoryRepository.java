@@ -2,6 +2,7 @@ package woopaca.jspcafe.repository;
 
 import woopaca.jspcafe.model.User;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,5 +21,16 @@ public class UserMemoryRepository implements UserRepository {
             throw new IllegalArgumentException("[ERROR] duplicate key!: " + uniqueId);
         }
         users.put(uniqueId, user);
+    }
+
+    /**
+     * 모든 사용자 조회
+     * @return 사용자 목록
+     */
+    @Override
+    public List<User> findAll() {
+        return users.values()
+                .stream()
+                .toList();
     }
 }
