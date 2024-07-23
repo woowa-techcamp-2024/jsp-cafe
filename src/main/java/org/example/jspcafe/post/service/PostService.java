@@ -35,7 +35,8 @@ public class PostService {
     }
 
     public PostListResponse getPosts(int page, int size) {
-        final List<Post> posts = postRepository.findAll(page, size);
+        int offset = (page - 1) * size;
+        final List<Post> posts = postRepository.findAll(offset, size);
         final Set<Long> collectUserId = posts.stream()
                 .map(post -> post.getUserId())
                 .collect(Collectors.toUnmodifiableSet());

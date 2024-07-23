@@ -16,7 +16,7 @@ import java.io.IOException;
 public class PostServlet extends HttpServlet {
 
     private PostService postService;
-    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_SIZE = 10;
 
     @Override
@@ -60,7 +60,7 @@ public class PostServlet extends HttpServlet {
 
         req.setAttribute("posts", postListResponse);
         req.setAttribute("currentPage", page);
-        req.setAttribute("pageSize", size);
+        req.setAttribute("totalPages", (int) Math.ceil((double) postListResponse.totalElements() / size));
 
         req.getRequestDispatcher("/post/posts.jsp").include(req, resp);
     }
