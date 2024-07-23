@@ -37,6 +37,23 @@ public class UsersServlet extends HttpServlet {
             } catch (ServletException | IOException e) {
                 log(e.getMessage());
             }
+        } else if (pathInfo.endsWith("/form")) { // POST /users/{id}/form 필터링
+            String[] split = pathInfo.split("/");
+            long id = 0;
+            try { // id 가 long인지 확인
+                id = Long.parseLong(split[1]);
+            } catch (NumberFormatException e) {
+                log(e.getMessage());
+            }
+            User user = userService.findById(id);
+            req.setAttribute("user", user);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/updateForm.jsp");
+
+            try {
+                dispatcher.forward(req, resp);
+            } catch (ServletException | IOException e) {
+                log(e.getMessage());
+            }
         } else {
             try {
                 User user = userService.findById(Long.parseLong(pathInfo.substring(1)));
@@ -45,7 +62,7 @@ public class UsersServlet extends HttpServlet {
                 log(e.getMessage());
             }
 
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/profile.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/updateForm.jsp");
 
             try {
                 dispatcher.forward(req, resp);
