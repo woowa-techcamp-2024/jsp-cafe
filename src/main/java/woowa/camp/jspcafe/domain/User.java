@@ -1,6 +1,7 @@
 package woowa.camp.jspcafe.domain;
 
 import java.util.Objects;
+import woowa.camp.jspcafe.domain.exception.UserException;
 
 public class User {
 
@@ -11,10 +12,22 @@ public class User {
     private String email;
 
     public User(String userId, String password, String name, String email) {
+        validate(userId, password, name, email);
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
+    }
+
+    private void validate(String userId, String password, String name, String email) {
+        if (userId == null || userId.isEmpty()
+                || password == null || password.isEmpty()
+                || name == null || name.isEmpty()
+                || email == null || email.isEmpty())
+        {
+            throw new UserException(
+                    "아이디, 비밀번호, 이름, 이메일은 값이 존재해야 합니다. {%s, %s, %s, %s}".formatted(userId, password, name, email));
+        }
     }
 
     /**
