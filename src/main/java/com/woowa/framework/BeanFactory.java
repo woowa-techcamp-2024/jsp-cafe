@@ -2,6 +2,7 @@ package com.woowa.framework;
 
 import com.woowa.config.DatabaseConfig;
 import com.woowa.config.HandlerConfig;
+import com.woowa.framework.argumentresovler.ArgumentResolverConfig;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,6 +22,7 @@ public class BeanFactory {
         log.debug("컨테이너 실행");
         try {
             context.put("galaxyContainer", this);
+            register(ArgumentResolverConfig.class);
             register(DatabaseConfig.class);
             register(HandlerConfig.class);
         } catch (Exception e) {

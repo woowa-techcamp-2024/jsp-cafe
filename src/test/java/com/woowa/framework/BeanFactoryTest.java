@@ -1,11 +1,14 @@
 package com.woowa.framework;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchException;
 
 import com.woowa.config.HandlerConfig;
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
+import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
 import com.woowa.handler.UserHandler;
 import java.util.NoSuchElementException;
 import org.assertj.core.api.Assertions;
@@ -21,12 +24,34 @@ class BeanFactoryTest {
     @BeforeEach
     void setUp() {
         container = new BeanFactory();
-        container.start();
+    }
+
+    @Nested
+    @DisplayName("start 호출 시")
+    class StartTest {
+
+        @Test
+        @DisplayName("기본 구성의 ArgumentResovler가 등록된다.")
+        void test() {
+            //given
+
+            //when
+            container.start();
+
+            //then
+            ArgumentResolverComposite argumentResolverComposite = container.getBean(ArgumentResolverComposite.class);
+            assertThat(argumentResolverComposite).isNotNull();
+        }
     }
 
     @Nested
     @DisplayName("getBean 호출 시")
     class GetBeanTest {
+
+        @BeforeEach
+        void setUp() {
+            container.start();
+        }
 
         @Test
         @DisplayName("예외(NoSuchElement): 등록되지 않은 객체를 조회하면")
