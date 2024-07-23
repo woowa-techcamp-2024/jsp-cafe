@@ -15,7 +15,7 @@
 <body>
 <div class="container">
     <header class="header">
-        <h1 class="header-title">HELLO. WEB!</h1>
+        <h1 class="header-title"><a href="/">HELLO. WEB!</a></h1>
         <nav>
             <%
                 Boolean isLogined = (Boolean) session.getAttribute("isLogined");

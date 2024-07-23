@@ -20,7 +20,7 @@
 %>
 <div class="container">
     <header class="header">
-        <h2 class="header-title">HELLO, WEB!</h2>
+        <h2 class="header-title"><a href="/">HELLO. WEB!</a></h2>
         <nav>
             <form action="../login" method="get" style="display: inline;">
                 <button type="submit" class="login-button">로그인</button>
