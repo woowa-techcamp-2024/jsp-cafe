@@ -34,16 +34,20 @@
                 <button type="submit" class="signup-button">회원가입</button>
             </form>
             <% } %>
+            <form action="users" method="get" style="display: inline;">
+                <button type="submit" class="user-list-button">사용자 목록</button>
+            </form>
         </nav>
     </header>
     <div class="wrapper">
         <h1>사용자 목록</h1>
+        <%
+            UserListResponse userList = (UserListResponse) request.getAttribute("userList");
+            if (userList != null) {
+        %>
+        <p class="user-count">총 사용자 수: <%= userList.count() %>명</p>
         <div class="user-list-container">
             <div class="user-list">
-                <%
-                    UserListResponse userList = (UserListResponse) request.getAttribute("userList");
-                    if (userList != null) {
-                %>
                 <table class="user-list">
                     <thead>
                     <tr>
@@ -56,7 +60,9 @@
                         for (UserResponse user : userList.userList()) {
                     %>
                     <tr class="user-list__item">
-                        <td class="user-list__item__name"><%= user.nickname() %></td>
+                        <td class="user-list__item__name">
+                            <a href="users/<%= user.nickname() %>" class="profile-link"><%= user.nickname() %></a>
+                        </td>
                         <td class="user-list__item__email"><%= user.email() %></td>
                     </tr>
                     <%
@@ -64,17 +70,17 @@
                     %>
                     </tbody>
                 </table>
-                <%
-                } else {
-                %>
-                <div class="user-list__error-container">
-                    <p class="user-list__error">사용자 목록을 불러올 수 없습니다.</p>
-                </div>
-                <%
-                    }
-                %>
             </div>
         </div>
+        <%
+        } else {
+        %>
+        <div class="user-list__error-container">
+            <p class="user-list__error">사용자 목록을 불러올 수 없습니다.</p>
+        </div>
+        <%
+            }
+        %>
     </div>
 </div>
 </body>
