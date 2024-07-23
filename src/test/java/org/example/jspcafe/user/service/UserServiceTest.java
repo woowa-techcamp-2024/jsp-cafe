@@ -9,8 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -67,5 +69,62 @@ class UserServiceTest {
                 .containsExactly(user.getNickname().getValue(), user.getEmail().getValue(), user.getCreatedAt());
      }
 
+     @DisplayName("없는 사용자의 프로필을 가져오려고 하면 예외가 발생한다.")
+     @Test
+     void getUserProfileWithNotExistsUser() {
+         // given
+         String nickname = "nickname";
 
+         // when & then
+         assertThatThrownBy(() -> userService.getProfile(nickname))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("사용자를 찾을 수 없습니다.");
+     }
+
+     @DisplayName("사용자의 닉네임을 수정할 수 있다.")
+     @Test
+     void editProfile() {
+         // given
+         String nickname = "nickname";
+         String email = "email@example.com";
+         String password = "password";
+
+         User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
+
+         User savedUser = userRepository.save(user);
+
+         String newNickname = "newNickname";
+
+         // when
+         userService.editProfile(savedUser.getUserId(), newNickname, password);
+
+         // then
+         Optional<User> maybeUser = userRepository.findById(savedUser.getUserId());
+         assertThat(maybeUser).isPresent()
+                 .get()
+                 .extracting(u -> u.getNickname().getValue())
+                 .isEqualTo(newNickname);
+
+     }
+
+     @DisplayName("사용자의 닉네임을 수정할 때, 비밀번호가 일치하지 않으면 예외가 발생한다.")
+     @Test
+     void editProfileWithNotMatchPassword() {
+         // given
+         String nickname = "nickname";
+         String email = "email@example.com";
+         String password = "password";
+
+         User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
+
+         User savedUser = userRepository.save(user);
+
+         String newNickname = "newNickname";
+         String invalidPassword= "invalidPassword";
+
+         // when & then
+         assertThatThrownBy(() -> userService.editProfile(savedUser.getUserId(), newNickname, invalidPassword))
+                 .isInstanceOf(IllegalArgumentException.class)
+                 .hasMessage("비밀번호가 일치하지 않습니다.");
+     }
 }
