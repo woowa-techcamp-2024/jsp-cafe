@@ -1,19 +1,28 @@
 plugins {
     id 'java'
+    id 'war'
 }
 
 group = 'lass9436'
 version = '1.0-SNAPSHOT'
+
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 test {
     useJUnitPlatform()
+}
+
+war {
+    archiveFileName = 'jsp-cafe.war'
 }
