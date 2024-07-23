@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class RegisterServlet extends HttpServlet {
 
     private UserRegisterService userRegisterService;
-    private static final String USER_LIST_PAGE = "/user/list.html";
+    private static final String USER_LIST_PAGE = "/list";
     private static final Logger logger = LoggerFactory.getLogger(RegisterServlet.class);
 
 
