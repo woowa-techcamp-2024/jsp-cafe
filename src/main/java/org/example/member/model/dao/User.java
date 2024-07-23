@@ -1,6 +1,11 @@
 package org.example.member.model.dao;
 
+import java.util.regex.Pattern;
+
 public class User {
+
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     private String userId;
     private String password;
@@ -13,7 +18,7 @@ public class User {
         user.password = password;
         user.name = name;
         user.email = email;
-
+        user.validate();
         return user;
     }
 
@@ -34,7 +39,18 @@ public class User {
     }
 
     private void validate() {
-
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be empty");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
     }
 
     @Override
