@@ -72,7 +72,7 @@ public class UserQueryServiceTest {
     static class MockUserQueryService extends UserQueryService {
         @Override
         public UserResponseDto findUserByUserId(String userId) throws SQLException {
-            return UserResponseDto.toResponse(User.createUser(userId, null, null, null));
+            return UserResponseDto.toResponse(User.createUser(userId, "password", "name", "email@email"));
         }
     }
 

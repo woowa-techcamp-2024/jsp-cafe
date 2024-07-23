@@ -14,7 +14,7 @@ public class UserRegisterService {
             throw new IllegalArgumentException("user already exists");
         }
         userValidate(user);
-        return UserResponseDto.toResponse(userRepository.register(user));
+        return UserResponseDto.toResponse(userRepository.save(user));
     }
 
     public boolean existsByUserId(String userId) throws SQLException {

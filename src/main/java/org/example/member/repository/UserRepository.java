@@ -16,7 +16,7 @@ public class UserRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
-    public User register(User user) throws SQLException {
+    public User save(User user) throws SQLException {
         String sql = "insert into users (userId, password, name, email) values (?, ?, ?, ?)";
         try (Connection conn = DataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
