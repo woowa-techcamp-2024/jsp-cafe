@@ -20,4 +20,21 @@ class UserTest {
         // then
         assertEquals(user.getUserId(), userId);
     }
+
+    @Test
+    void testGetter() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        // when
+        User user = new User(userId, password, name, email);
+
+        // then
+        assertEquals(user.getPassword(), password);
+        assertEquals(user.getName(), name);
+        assertEquals(user.getEmail(), email);
+        assertEquals(user.getUserId(), userId);
+    }
 }
