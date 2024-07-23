@@ -1,9 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html lang="kr">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -54,17 +55,17 @@
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
-            
+
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
-            	<span class="sr-only">Toggle navigation</span>
-            	<span class="icon-bar"></span>
-            	<span class="icon-bar"></span>
-            	<span class="icon-bar"></span>
-            </button>            
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../index.html">Posts</a></li>
+                <li class="active"><a href="../index.html">Posts</a></li>>
                 <li><a href="../user/login.html" role="button">로그인</a></li>
                 <li><a href="../user/form.html" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
@@ -75,26 +76,27 @@
 </div>
 
 <div class="container" id="main">
-   <div class="col-md-10 col-md-offset-1">
-      <div class="panel panel-default">
-          <table class="table table-hover">
-              <thead>
-                <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
-                </tr>
-              </thead>
-              <tbody>
-              <c:forEach var="user" items="${users}" varStatus="status">
-                  <tr>
-                      <th scope="row">${status.index + 1}</th>
-                      <td>${user.userId}</td>
-                      <td>${user.name}</td>
-                      <td>${user.email}</td>
-                      <td><a href="/users/${user.userId}" class="btn btn-success" role="button">수정</a></td>
-                  </tr>
-              </c:forEach>
-              </tbody>
-          </table>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Profiles</h4></div>
+            <div class="panel-body">
+                <div class="well well-sm">
+                    <div class="media">
+                        <a class="thumbnail pull-left" href="#">
+                            <img class="media-object" src="/images/80-text.png">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">${user.name}</h4>
+                            <p>
+                                <a href="#" class="btn btn-xs btn-default">
+                                    <span class="glyphicon glyphicon-envelope"></span>
+                                    ${user.email}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -103,5 +105,5 @@
 <script src="../js/jquery-2.2.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/scripts.js"></script>
-	</body>
+</body>
 </html>
