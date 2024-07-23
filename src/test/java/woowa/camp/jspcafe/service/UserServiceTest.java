@@ -94,4 +94,30 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Describe_사용자를 조회하는 기능은")
+    class FindByIdTest {
+
+        UserRepository userRepository = new InMemoryUserRepository();
+        UserService userService = new UserService(userRepository);
+
+        @Test
+        @DisplayName("[Success] 회원가입한 사용자는 조회에 성공한다")
+        void test1() {
+            User user1 = UserFixture.createUser1();
+            User registUser = userService.registration(
+                    new RegistrationRequest(user1.getUserId(), user1.getPassword(), user1.getName(), user1.getEmail()));
+            User findUser = userService.findById(registUser.getId());
+
+            assertThat(findUser).isEqualTo(registUser);
+        }
+
+        @Test
+        @DisplayName("[Exception] 없는 사용자를 조회하면 예외가 발생한다")
+        void test2() {
+            assertThatThrownBy(() -> userService.findById(987654321L))
+                    .isInstanceOf(UserException.class);
+        }
+    }
+
 }
