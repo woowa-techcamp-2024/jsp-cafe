@@ -7,18 +7,16 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/post-list.css">
 <%
     PostListResponse postListResponse = (PostListResponse) request.getAttribute("posts");
-    int postCount = 0;
-    List<PostResponse> posts = null;
-    if (postListResponse != null) {
-        postCount = postListResponse.totalElements();
-        posts = postListResponse.postList();
-    }
+    int postCount = postListResponse != null ? postListResponse.totalElements() : 0;
+    List<PostResponse> posts = postListResponse != null ? postListResponse.postList() : null;
+
     // 출력 형식 지정
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초");
+
     // 페이지네이션 관련 변수
-    int pageSize = 10; // 페이지당 게시글 수
-    int totalPages = (int) Math.ceil((double) postCount / pageSize); // 전체 페이지 수
-    int currentPage = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1; // 현재 페이지 번호
+    int currentPage = request.getAttribute("currentPage") != null ? (int) request.getAttribute("currentPage") : 1;
+    int totalPages = request.getAttribute("totalPages") != null ? (int) request.getAttribute("totalPages") : 1;
+    int pageSize = request.getAttribute("pageSize") != null ? (int) request.getAttribute("pageSize") : 10;
 %>
 <div class="post-list">
     <div class="post-count">전체 글 <%= postCount %>개</div>
@@ -62,7 +60,7 @@
     <%
     } else {
     %>
-    <a href="?page=<%= i %>"><%= i %></a>
+    <a href="?page=<%= i %>&size=<%= pageSize %>"><%= i %></a>
     <%
             }
         }
