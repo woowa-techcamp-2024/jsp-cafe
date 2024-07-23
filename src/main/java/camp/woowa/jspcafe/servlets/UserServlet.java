@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlets;
 
+import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.services.UserService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "userServlet", value = "/users")
 public class UserServlet extends HttpServlet {
@@ -23,6 +25,8 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<User> users = userService.findAll();
+        req.setAttribute("users", users); // user 리스트 정보를 가져옴
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/list.jsp");
 
         try {
