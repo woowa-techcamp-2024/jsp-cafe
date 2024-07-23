@@ -8,16 +8,16 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SignupFormServlet extends HttpServlet {
+public class HomeServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(SignupFormServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(HomeServlet.class);
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
-        log.debug("forward to signup form");
+        log.debug("forward to home");
 
-        req.getRequestDispatcher("/WEB-INF/views/user/form.jsp")
+        req.getRequestDispatcher("/WEB-INF/views/index.jsp")
                 .forward(req, resp);
     }
 }

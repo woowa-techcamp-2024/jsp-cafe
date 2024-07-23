@@ -6,11 +6,11 @@
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="../../css/styles.css" rel="stylesheet">
 </head>
 
 <body>
@@ -25,7 +25,7 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="qna/show.jsp">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
+                                <a href="../../qna/show.jsp">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
@@ -43,7 +43,7 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="qna/show.jsp">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
+                                <a href="../../qna/show.jsp">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
@@ -72,7 +72,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="../../qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -157,8 +157,8 @@
 -->
 
 <!-- script references -->
-<script src="js/jquery-2.2.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
+<script src="../../js/jquery-2.2.0.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/scripts.js"></script>
 </body>
 </html>

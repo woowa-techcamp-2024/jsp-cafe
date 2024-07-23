@@ -23,7 +23,7 @@ public class UserProfileServlet extends HttpServlet {
         User user = userService.read(id);
 
         req.setAttribute("user", user);
-        req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/user/profile.jsp").forward(req, resp);
     }
 
     private Long parseSuffixPathVariable(final String pathInfo) {
