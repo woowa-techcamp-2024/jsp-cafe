@@ -10,4 +10,6 @@ public interface UserRepository {
     User findById(Long userId);
 
     List<User> findAll();
+
+    void update(Long id, String userId, String updatedName, String updatedEmail);
 }
