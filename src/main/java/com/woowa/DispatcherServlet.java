@@ -6,9 +6,12 @@ import com.woowa.framework.web.ContentType;
 import com.woowa.framework.web.mapping.HandlerMapping;
 import com.woowa.framework.web.mapping.HandlerMethod;
 import com.woowa.framework.web.ResponseEntity;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,12 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp) throws Throwable {
+        if(req.getRequestURI().endsWith(".jsp")) {
+            handleJspRequest(req, resp);
+            return;
+        }
+
+
         HandlerMapping handlerMapping = null;
         for (HandlerMapping mapping : handlerMappings) {
             if(mapping.isSupports(req)) {
@@ -56,15 +65,29 @@ public class DispatcherServlet extends HttpServlet {
 
         ResponseEntity responseEntity = handlerMethod.invoke(args);
 
+        if(responseEntity == null) {
+            return;
+        }
         String contentType = getContentType(req);
         resp.setContentType(contentType);
         resp.setContentLength(responseEntity.getBody().length);
         resp.setStatus(responseEntity.getStatus());
+        if(responseEntity.getStatus() == 302) {
+            resp.sendRedirect(responseEntity.getLocation());
+            return;
+        }
         for (Entry<String, String> entry : responseEntity.getHeader().entrySet()) {
             resp.addHeader(entry.getKey(), entry.getValue());
         }
         resp.getOutputStream().write(responseEntity.getBody());
         resp.getOutputStream().flush();
+    }
+
+    private void handleJspRequest(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String jspPath = "/WEB-INF/classes/static" + req.getRequestURI();
+        RequestDispatcher dispatcher = req.getRequestDispatcher(jspPath);
+        dispatcher.forward(req, resp);
     }
 
     private String getContentType(HttpServletRequest request) {

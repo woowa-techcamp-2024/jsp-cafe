@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 public enum ContentType {
-    TEXT_HTML(Set.of("html"), "text/html"),
+    TEXT_HTML(Set.of("html", "jsp"), "text/html"),
     TEXT_CSS(Set.of("css"), "text/css"),
     TEXT_JAVASCRIPT(Set.of("js"), "text/javascript"),
     IMAGE_JPEG(Set.of("jpg", "jpeg"), "image/jpeg"),

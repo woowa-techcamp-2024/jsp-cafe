@@ -17,7 +17,11 @@ public class DynamicHandlerMethod implements HandlerMethod {
     @Override
     public ResponseEntity invoke(Object[] args) throws Throwable {
         try {
-            return (ResponseEntity) method.invoke(bean, args);
+            Object result = method.invoke(bean, args);
+            if(result == null) {
+                return null;
+            }
+            return (ResponseEntity) result;
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         } catch (IllegalAccessException e) {

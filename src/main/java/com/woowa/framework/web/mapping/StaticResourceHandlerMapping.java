@@ -10,7 +10,8 @@ public class StaticResourceHandlerMapping implements HandlerMapping {
 
     @Override
     public boolean isSupports(HttpServletRequest request) {
-        return request.getRequestURI().contains(".");
+        String uri = request.getRequestURI();
+        return uri.contains(".") && !uri.endsWith(".jsp");
     }
 
     @Override
