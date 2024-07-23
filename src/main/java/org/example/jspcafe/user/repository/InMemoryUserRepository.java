@@ -4,12 +4,18 @@ import org.example.jspcafe.Component;
 import org.example.jspcafe.InMemoryRepository;
 import org.example.jspcafe.user.model.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class InMemoryUserRepository extends InMemoryRepository<User> implements UserRepository {
-
+    @Override
+    public List<User> findAllById(Collection<Long> collectUserId) {
+        return storage.values().stream()
+                .filter(user -> collectUserId.contains(user.getUserId()))
+                .toList();
+    }
     @Override
     public Optional<User> findByNickname(String nickname) {
         return storage.values().stream()
@@ -29,6 +35,7 @@ public class InMemoryUserRepository extends InMemoryRepository<User> implements 
         return storage.values().stream()
                 .toList();
     }
+
 
     public InMemoryUserRepository() {
         super(User.class);
