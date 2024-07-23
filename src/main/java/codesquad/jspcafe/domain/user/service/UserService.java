@@ -14,13 +14,13 @@ public class UserService {
         userRepository = new UserRepository();
     }
 
-    public User createUser(Map<String, String[]> parameterMap) {
+    public UserCommonResponse createUser(Map<String, String[]> parameterMap) {
         String userId = parameterMap.get("userId")[0];
         String password = parameterMap.get("password")[0];
         String name = parameterMap.get("name")[0];
         String email = parameterMap.get("email")[0];
         User user = new User(userId, password, name, email);
-        return userRepository.save(user);
+        return UserCommonResponse.from(userRepository.save(user));
     }
 
     public UserCommonResponse getUserById(String userId) {
