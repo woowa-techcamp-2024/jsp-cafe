@@ -81,7 +81,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>id</th> <th>password</th> <th>name</th> <th>email</th><th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -90,7 +90,11 @@
                     for (User user : users) {
                 %>
                 <tr>
-                    <th scope="row"><%= user.getId() %></th>
+                    <th scope="row">
+                        <a href="users/<%= user.getId() %>">
+                        <%= user.getId() %>
+                        </a>
+                    </th>
                     <td><%= user.getPassword() %></td>
                     <td><%= user.getName() %></td>
                     <td><%= user.getEmail() %></td>

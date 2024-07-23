@@ -12,15 +12,18 @@ import java.io.IOException;
 public class UsersServlet extends HttpServlet {
     // 회원 목록 조회
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
-        response.sendRedirect("/user/list.jsp");
+        request.setAttribute("users", UserDb.getUsers());
+
+        request.getRequestDispatcher("/user/list.jsp").forward(request, response);
+
         System.out.println("do get /users");
     }
 
     // 회원가입
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = new User(
                 request.getParameter("userId"),
                 request.getParameter("password"),
@@ -29,9 +32,7 @@ public class UsersServlet extends HttpServlet {
 
         UserDb.addUser(user);
 
-        request.setAttribute("users", UserDb.getUsers());
-        System.out.println(UserDb.getUsers());
-        request.getRequestDispatcher("/user/list.jsp").forward(request, response);
+        response.sendRedirect("/users");
         System.out.println("do post /users");
     }
 }
