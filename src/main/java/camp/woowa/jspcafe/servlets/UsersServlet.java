@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "userServlet", value = "/users")
-public class UserServlet extends HttpServlet {
+@WebServlet(name = "usersServlet", urlPatterns = {"/users/*"})
+public class UsersServlet extends HttpServlet {
     private UserService userService;
 
     @Override
@@ -25,14 +25,27 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<User> users = userService.findAll();
-        req.setAttribute("users", users); // user 리스트 정보를 가져옴
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/list.jsp");
+        String pathInfo = req.getPathInfo();
 
-        try {
-            dispatcher.forward(req, resp);
-        } catch (ServletException | IOException e) {
-            log(e.getMessage());
+        if (pathInfo == null || "".equalsIgnoreCase(pathInfo)) {
+            List<User> users = userService.findAll();
+            req.setAttribute("users", users); // user 리스트 정보를 가져옴
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/list.jsp");
+
+            try {
+                dispatcher.forward(req, resp);
+            } catch (ServletException | IOException e) {
+                log(e.getMessage());
+            }
+        } else {
+            User user = userService.findById(pathInfo.substring(1));
+            req.setAttribute("user", user);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/profile.jsp");
+            try {
+                dispatcher.forward(req, resp);
+            } catch (ServletException | IOException e) {
+                log(e.getMessage());
+            }
         }
     }
 
