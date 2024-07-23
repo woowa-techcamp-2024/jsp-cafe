@@ -1,10 +1,12 @@
 package org.example.jspcafe.post.repository;
 
+import org.example.jspcafe.Component;
 import org.example.jspcafe.InMemoryRepository;
 import org.example.jspcafe.post.model.Post;
 
 import java.util.List;
 
+@Component
 public class InMemoryPostRepository extends InMemoryRepository<Post> implements PostRepository {
 
     @Override
