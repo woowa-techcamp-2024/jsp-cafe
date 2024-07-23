@@ -19,4 +19,8 @@ public class QuestionService {
     public List<Question> findAll() {
         return questionRepository.findAll();
     }
+
+    public Question findById(Long id) {
+        return questionRepository.findById(id);
+    }
 }
