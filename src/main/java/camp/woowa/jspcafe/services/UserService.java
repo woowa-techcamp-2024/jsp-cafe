@@ -12,7 +12,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public String createUser(String userId, String password, String name, String email) {
+    public Long createUser(String userId, String password, String name, String email) {
         return userRepository.save(userId, password, name, email);
     }
 
@@ -20,7 +20,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(String userId) {
-        return userRepository.findById(userId);
+    public User findById(Long id) {
+        return userRepository.findById(id);
     }
 }

@@ -10,14 +10,16 @@ class UserTest {
     @Test
     void testUser() {
         // given
+        Long id = 1L;
         String userId = "userId";
         String password = "password";
         String name = "name";
         String email = "email";
         // when
-        User user = new User(userId, password, name, email);
+        User user = new User(id, userId, password, name, email);
 
         // then
+        assertEquals(user.getId(), id);
         assertEquals(user.getPassword(), password);
         assertEquals(user.getName(), name);
         assertEquals(user.getEmail(), email);

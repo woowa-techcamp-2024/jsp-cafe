@@ -3,6 +3,7 @@ package repository;
 import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.repository.InMemUserRepository;
 import camp.woowa.jspcafe.repository.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,22 +14,25 @@ class UserRepositoryTest {
     @Test
     void testSave() {
         // given
+        Long id = 1L;
         String userId = "userId";
         String password = "password";
         String name = "name";
         String email = "email";
         UserRepository userRepository = new InMemUserRepository();
+
         // when
         userRepository.save(userId, password, name, email);
 
         // then
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(id);
         assertEquals(user.getUserId(), userId);
     }
 
     @Test
     void testFindAll() {
         // given
+        Long id = 1L;
         String userId = "userId";
         String password = "password";
         String name = "name";
@@ -49,6 +53,7 @@ class UserRepositoryTest {
     @Test
     void testFindById() {
         // given
+        Long id = 1L;
         String userId = "userId";
         String password = "password";
         String name = "name";
@@ -57,7 +62,7 @@ class UserRepositoryTest {
 
         // when
         userRepository.save(userId, password, name, email);
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(id);
 
         // then
         assertEquals(user.getUserId(), userId);

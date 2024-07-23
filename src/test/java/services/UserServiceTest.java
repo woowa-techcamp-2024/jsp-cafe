@@ -28,11 +28,13 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
+
+        Long expectedId = 1L;
         // when
-        String id = userService.createUser(userId, password, name, email);
+        Long id = userService.createUser(userId, password, name, email);
 
         // then
-        assertEquals(id, userId);
+        assertEquals(expectedId, id);
     }
 
     @Test
@@ -55,10 +57,11 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(userId, password, name, email);
+
 
         // when
-        User user = userService.findById(userId);
+        User user = userService.findById(id);
 
         // then
         assertEquals(user.getUserId(), userId);
