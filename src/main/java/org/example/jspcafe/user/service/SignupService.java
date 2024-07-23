@@ -6,6 +6,8 @@ import org.example.jspcafe.user.repository.InMemoryUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 
+import java.time.LocalDateTime;
+
 @Component
 public class SignupService {
 
@@ -16,7 +18,7 @@ public class SignupService {
         final String email = request.email();
         final String password = request.password();
 
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.now());
 
         userRepository.save(user);
     }
