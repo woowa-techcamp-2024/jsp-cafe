@@ -7,4 +7,7 @@
         <exception-type>java.lang.Exception</exception-type>
         <location>/error.jsp</location>
     </error-page>
+    <listener>
+        <listener-class>com.hyeonuk.jspcafe.global.servlet.MyServletContextListener</listener-class>
+    </listener>
 </web-app>
