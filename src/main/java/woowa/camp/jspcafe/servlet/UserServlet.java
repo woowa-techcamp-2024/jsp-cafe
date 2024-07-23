@@ -51,7 +51,8 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        Map<String, String> pathVariables = extractPathVariables("/users/{id}", req.getRequestURI());
+        String contextPath = req.getContextPath();
+        Map<String, String> pathVariables = extractPathVariables(contextPath + "/users/{id}", req.getRequestURI());
         long id = Long.parseLong(pathVariables.get("id"));
 
         handleUserProfile(req, resp, id);
