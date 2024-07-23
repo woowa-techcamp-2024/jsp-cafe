@@ -6,6 +6,11 @@ import com.woowa.framework.web.RequestMapping;
 import com.woowa.framework.web.RequestParameter;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.User;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.UUID;
 
 public class UserHandler {
@@ -29,5 +34,17 @@ public class UserHandler {
         User user = User.create(UUID.randomUUID().toString(), email, password, nickname);
         userDatabase.save(user);
         return ResponseEntity.builder().found("/users");
+    }
+
+    @RequestMapping(path = "/users", method = HttpMethod.GET)
+    public ResponseEntity listUsers(HttpServletRequest request, HttpServletResponse response) {
+        request.setAttribute("users", userDatabase.findAll());
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/classes/static/user/list.jsp");
+        try {
+            requestDispatcher.forward(request, response);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException("대상 리소스를 찾지 못하였습니다.");
+        }
+        return null;
     }
 }

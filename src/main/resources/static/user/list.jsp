@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="utf-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -80,16 +81,23 @@
           <table class="table table-hover">
               <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>#</th>
+                    <th>사용자 아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                    <th scope="row">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
+              <c:forEach var="user" items="${users}" varStatus="status">
+                  <tr>
+                      <th scope="row">${status.count}</th>
+                      <td>${user.userId}</td>
+                      <td>${user.nickname}</td>
+                      <td>${user.email}</td>
+                      <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                  </tr>
+              </c:forEach>
               </tbody>
           </table>
         </div>
