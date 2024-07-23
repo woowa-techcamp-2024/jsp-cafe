@@ -98,6 +98,11 @@ public class UsersServlet extends HttpServlet {
                     req.getParameter("password"),
                     req.getParameter("name"),
                     req.getParameter("email"));
+            try {
+                res.sendRedirect("/users/" + id + "/form");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
         }
     }
 }
