@@ -23,4 +23,11 @@ public class UserDao {
     public List<User> findAll() {
         return new ArrayList<>(usersById.values());
     }
+
+    public void update(final User updateUser) {
+        User currentUser = usersById.get(updateUser.id());
+        idByEmail.remove(currentUser.email());
+        idByEmail.put(updateUser.email(), updateUser.id());
+        usersById.put(updateUser.id(), updateUser);
+    }
 }

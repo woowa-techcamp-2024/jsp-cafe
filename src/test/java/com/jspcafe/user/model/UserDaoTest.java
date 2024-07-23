@@ -60,4 +60,22 @@ class UserDaoTest {
         // Then
         assertEquals(2, users.size());
     }
+
+    @Test
+    void 유저정보를_업데이트_할_수_이다() {
+        // Given
+        User currentUser = User.create("woowa@woowa.in", "김배달", "1234");
+        userDao.save(currentUser);
+
+        // When
+        User updateUser = currentUser.update("coupang@co.pang", "이쿠팡", "4321");
+        userDao.update(updateUser);
+
+        // Then
+        assertEquals(currentUser.id(), updateUser.id());
+        assertEquals(updateUser, userDao.findById(updateUser.id())
+                        .orElseThrow(() -> new UserNotFoundException("User id not found")));
+        assertEquals(updateUser, userDao.findByEmail(updateUser.email())
+                .orElseThrow(() -> new UserNotFoundException("User email not found")));
+    }
 }
