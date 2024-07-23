@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
 
     // logging
-    implementation ('ch.qos.logback:logback-classic:1.5.6')
+    implementation('ch.qos.logback:logback-classic:1.5.6')
 
     // servlet
     implementation('jakarta.servlet:jakarta.servlet-api:6.0.0')
