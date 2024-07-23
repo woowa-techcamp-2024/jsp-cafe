@@ -3,6 +3,8 @@ package com.jspcafe.user.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDaoTest {
@@ -39,5 +41,22 @@ class UserDaoTest {
         User storedUser = userDao.findById(user.id());
         assertNotNull(storedUser);
         assertEquals(user, storedUser);
+    }
+
+    @Test
+    void 저장되어있는_모든_유저정보를_찾을_수_있다() {
+        // Given
+        User user1 = User.create("woowa@woowa.in", "김배달", "1234");
+        User user2 = User.create("coupang@co.pang", "이쿠팡", "4321");
+        userDao.save(user1);
+        userDao.save(user2);
+
+        // When
+        List<User> users = userDao.findAll();
+
+        // Then
+        assertEquals(2, users.size());
+        assertEquals(user1, users.get(0));
+        assertEquals(user2, users.get(1));
     }
 }

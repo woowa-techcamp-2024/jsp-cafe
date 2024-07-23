@@ -1,6 +1,8 @@
 package com.jspcafe.user.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserDao {
@@ -19,5 +21,9 @@ public class UserDao {
     public User findByEmail(String email) {
         String id = idByEmail.get(email);
         return findById(id);
+    }
+
+    public List<User> findAll() {
+        return new ArrayList<>(usersById.values());
     }
 }
