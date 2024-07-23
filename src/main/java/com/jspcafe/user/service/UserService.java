@@ -25,4 +25,9 @@ public class UserService {
         return userDao.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User id not found: id = " + id));
     }
+
+    public void update(final User currentUser, final String email, final String nickname, final String password) {
+        User updateUser = currentUser.update(email, nickname, password);
+        userDao.update(updateUser);
+    }
 }

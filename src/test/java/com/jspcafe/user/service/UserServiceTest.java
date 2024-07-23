@@ -67,4 +67,20 @@ class UserServiceTest {
         // Then
         assertEquals(user, storedUser);
     }
+
+    @Test
+    void 유저의_정보를_업데이트한다() {
+        // Given
+        User currentUser = User.create("woowa@woowa.in", "김배달", "1234");
+        userDao.save(currentUser);
+
+        // When
+        userService.update(currentUser, "coupang@co.pang", "이쿠팡", "4321");
+
+        // Then
+        User updateUser = userService.findById(currentUser.id());
+        assertEquals("coupang@co.pang", updateUser.email());
+        assertEquals("이쿠팡", updateUser.nickname());
+        assertTrue(updateUser.verifyPassword("4321"));
+    }
 }
