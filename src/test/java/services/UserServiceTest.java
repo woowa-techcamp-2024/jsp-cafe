@@ -20,9 +20,9 @@ class UserServiceTest {
         String email = "email";
         UserService userService = new UserService(userRepository);
         // when
-        User user = userService.createUser(userId, password, name, email);
+        String id = userService.createUser(userId, password, name, email);
 
         // then
-        assertEquals(user.getUserId(), userId);
+        assertEquals(id, userId);
     }
 }
