@@ -1,3 +1,5 @@
+<%@ page import="com.woowa.cafe.domain.Article" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -9,16 +11,24 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
+                <%
+                    List<Article> articles = (List<Article>) request.getAttribute("articles");
+                    if (articles != null) {
+                        for (Article article : articles) {
+                %>
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="./qna/show.html">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
+                                <a href="<%= "/question/" + article.getId() %>"><%= article.getTitle() %>
+                                </a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-15 18:47</span>
-                                <a href="./user/profile.jsp" class="author">자바지기</a>
+                                <span class="time"><%= article.getCreatedAt().toString()%></span>
+                                <a href="<%= "/user/" + memberRepository.findById(article.getWriterId()).get().getMemberId()%>"
+                                   class="author"><%= memberRepository.findById(article.getWriterId()).get().getName()%>
+                                </a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -27,25 +37,9 @@
                         </div>
                     </div>
                 </li>
-                <li>
-                    <div class="wrap">
-                        <div class="main">
-                            <strong class="subject">
-                                <a href="./qna/show.html">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
-                            </strong>
-                            <div class="auth-info">
-                                <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-05 18:47</span>
-                                <a href="./user/profile.html" class="author">김문수</a>
-                            </div>
-                            <div class="reply" title="댓글">
-                                <i class="icon-reply"></i>
-                                <span class="point">12</span>
-                            </div>
-                        </div>
-                    </div>
-                </li>
             </ul>
+            <% }
+            }%>
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
@@ -60,7 +54,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="./qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/question" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
