@@ -7,13 +7,16 @@ import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.UserRepository;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 import woowa.camp.jspcafe.service.dto.UserResponse;
+import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
 public class UserService {
 
     private final UserRepository userRepository;
+    private final DateTimeProvider dateTimeProvider;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, DateTimeProvider dateTimeProvider) {
         this.userRepository = userRepository;
+        this.dateTimeProvider = dateTimeProvider;
     }
 
     public User registration(final RegistrationRequest registrationRequest) {
@@ -21,7 +24,8 @@ public class UserService {
         User user = new User(
                 registrationRequest.email(),
                 registrationRequest.nickname(),
-                registrationRequest.password());
+                registrationRequest.password(),
+                dateTimeProvider.getNow());
 
         userRepository.save(user);
         return user;
