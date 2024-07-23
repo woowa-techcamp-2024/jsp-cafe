@@ -8,14 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<header class="bg-white shadow">
-    <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-        <h1 class="text-xl font-bold"><a href="/">HELLO, WEB!</a></h1>
-        <a href="#" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
-            로그인/회원가입
-        </a>
-    </div>
-</header>
+
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <main class="container mx-auto mt-8 px-4">
     <div class="bg-teal-500 text-white rounded-lg p-6 mb-8">
@@ -32,7 +26,6 @@
                 <th class="py-3 px-6 text-left">제목</th>
                 <th class="py-3 px-6 text-left">작성자</th>
                 <th class="py-3 px-6 text-left">작성일자</th>
-                <th class="py-3 px-6 text-center">조회수</th>
             </tr>
             </thead>
             <tbody class="text-gray-600 text-sm font-light">
@@ -40,9 +33,7 @@
                 <td class="py-3 px-6 text-left whitespace-nowrap">게시글 제목</td>
                 <td class="py-3 px-6 text-left">닉네임</td>
                 <td class="py-3 px-6 text-left">YYYY. MM. DD</td>
-                <td class="py-3 px-6 text-center">0</td>
             </tr>
-            <!-- Repeat the above <tr> 9 more times for a total of 10 rows -->
             </tbody>
         </table>
     </div>
