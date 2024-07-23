@@ -76,7 +76,7 @@
         <!-- Pagination component content -->
     </div>
     <div class="write-post">
-        <form action="posts.jsp" method="get">
+        <form action="create-post.jsp" method="get">
             <button type="submit" class="write-post-button">글쓰기</button>
         </form>
     </div>
