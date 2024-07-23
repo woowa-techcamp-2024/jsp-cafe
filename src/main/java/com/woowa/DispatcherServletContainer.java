@@ -1,7 +1,9 @@
 package com.woowa;
 
+import com.woowa.database.UserDatabase;
 import com.woowa.framework.ApplicationInitializer;
 import com.woowa.framework.BeanFactory;
+import com.woowa.servlet.UserProfileServlet;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -25,6 +27,11 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         dispatcherServlet.init(beanFactory);
 
         Dynamic helloServlet = ctx.addServlet("helloServlet", dispatcherServlet);
-        helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/font/*", "/favicon.ico", "/user/*", "/qna/*");
+        helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/font/*", "/favicon.ico", "/user/*",
+                "/qna/*");
+
+        Dynamic userProfileServlet = ctx.addServlet("userProfileServlet", new UserProfileServlet(beanFactory.getBean(
+                UserDatabase.class)));
+        userProfileServlet.addMapping("/users/*");
     }
 }
