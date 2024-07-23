@@ -12,6 +12,7 @@ rm -f $TOMCAT_HOME/webapps/ROOT.war
 # 4. build/libs의 ROOT.war를 톰캣 하위로 이동
 echo "Deploying new ROOT.war to Tomcat..."
 cp build/libs/ROOT.war $TOMCAT_HOME/webapps/
+rm $TOMCAT_HOME/logs/*
 # 5. tomcat의 startup.sh를 실행
 echo "Starting Tomcat..."
 $TOMCAT_HOME/bin/startup.sh
