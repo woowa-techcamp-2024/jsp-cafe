@@ -68,4 +68,25 @@ class MemberServiceTest {
                 () -> assertThat(members.get(1).getMemberId()).isEqualTo(dto1.memberId())
         );
     }
+
+    @Test
+    @DisplayName("회원을 조회한다 - 단건")
+    void findById() {
+        SaveMemberDto dto = new SaveMemberDto("test", "test",
+                "test", "test@test.com");
+        memberService.save(dto);
+
+        memberService.findById(dto.memberId());
+
+        assertThat(memberService.findById(dto.memberId()).getMemberId()).isEqualTo(dto.memberId());
+    }
+
+    @Test
+    @DisplayName("회원을 조회할 수 없을 경우 에러를 반환한다. - 단건")
+    void findById_fail() {
+
+        assertThatThrownBy(() -> memberService.findById("invalid"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("사용자를 찾을 수 없습니다.");
+    }
 }

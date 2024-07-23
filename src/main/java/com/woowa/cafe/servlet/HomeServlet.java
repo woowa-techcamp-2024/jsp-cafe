@@ -23,7 +23,7 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/views/index.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }
 
     @Override

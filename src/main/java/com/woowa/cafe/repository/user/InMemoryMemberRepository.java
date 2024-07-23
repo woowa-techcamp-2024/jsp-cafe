@@ -24,7 +24,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findById(final String memberId) {
-        return Optional.of(members.get(memberId));
+        return Optional.ofNullable(members.get(memberId));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 
         members.put(member.getMemberId(), member);
 
-        return Optional.of(member);
+        return Optional.ofNullable(member);
     }
 
     @Override

@@ -1,4 +1,3 @@
-<%@ page import="com.woowa.cafe.domain.Member" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -31,11 +30,11 @@
                     </th>
                     <td><%= member.getMemberId() %>
                     </td>
-                    <td><%= member.getName() %>
+                    <td><a href="<%= "/user/" + member.getMemberId()%>"><%= member.getName() %></a>
                     </td>
                     <td><%= member.getEmail() %>
                     </td>
-                    <td><a href="<%= "/user/" + member.getMemberId()%>" class="btn btn-success" role="button">수정</a>
+                    <td><a href=# class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
                 <%

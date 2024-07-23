@@ -1,4 +1,6 @@
+<%@ page import="com.woowa.cafe.domain.Member" %>
 <%@ page import="com.woowa.cafe.repository.user.MemberRepository" %>
+<%@ page import="java.util.Optional" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <div class="navbar navbar-default" id="subnav">
     <div class="col-md-12">
@@ -7,9 +9,15 @@
                data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <li><a href="/WEB-INF/views/user/profile.html"><i class="glyphicon glyphicon-user"
-                                                                  style="color:#1111dd;"></i>
+                <% MemberRepository memberRepository = (MemberRepository) application.getAttribute("memberRepository"); %>
+                <% if (session.getAttribute("memberId") != null) { %>
+                <% Optional<Member> member = memberRepository.findById((String) session.getAttribute("memberId"));
+                    if (member.isPresent()) { %>
+                <li><a href="<%="/user/" + member.get().getMemberId()%>"><i class=" glyphicon glyphicon-user"
+                                                                            style="color:#1111dd;"></i>
                     Profile</a></li>
+                <% }
+                }%>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
@@ -23,7 +31,6 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
-                <% MemberRepository memberRepository = (MemberRepository) application.getAttribute("memberRepository"); %>
                 <% if (session.getAttribute("memberId") == null || memberRepository.findById((String) session.getAttribute("memberId")).isEmpty()) { %>
                 <li><a href="/user/login" role="button">로그인</a></li>
                 <li><a href="/user" role="button">회원가입</a></li>

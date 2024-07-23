@@ -31,14 +31,27 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getRequestURI().endsWith("/user")) {
+        String requestURI = req.getRequestURI();
+        log.info("requestURI: {}", requestURI);
+
+        if (requestURI.endsWith("/user")) {
             getForm(req, resp);
             return;
         }
+
+        String[] path = req.getPathInfo().split("/");
+        String memberId = path[path.length - 1];
+        getProfile(req, resp, memberId);
+
     }
 
     private void getForm(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/views/user/form.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/user/form.jsp").forward(req, resp);
+    }
+
+    private void getProfile(final HttpServletRequest req, final HttpServletResponse resp, final String userId) throws ServletException, IOException {
+        req.setAttribute("member", memberService.findById(userId));
+        req.getRequestDispatcher("/WEB-INF/views/user/profile.jsp").forward(req, resp);
     }
 
     @Override

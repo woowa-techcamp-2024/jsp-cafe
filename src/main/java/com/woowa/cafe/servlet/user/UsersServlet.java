@@ -36,6 +36,6 @@ public class UsersServlet extends HttpServlet {
         List<Member> members = memberService.findAll();
 
         req.setAttribute("members", members);
-        req.getRequestDispatcher("WEB-INF/views/user/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/user/list.jsp").forward(req, resp);
     }
 }

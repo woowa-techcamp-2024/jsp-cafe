@@ -18,6 +18,11 @@ public class MemberService {
         return memberRepository.save(saveMember.toMember());
     }
 
+    public Member findById(final String memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
+
     public List<Member> findAll() {
         return memberRepository.findAll();
     }
