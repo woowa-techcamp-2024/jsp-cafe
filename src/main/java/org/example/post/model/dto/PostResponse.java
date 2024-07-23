@@ -45,4 +45,14 @@ public class PostResponse {
     public void setContents(String contents) {
         this.contents = contents;
     }
+
+    @Override
+    public String toString() {
+        return "PostResponse{" +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
+    }
 }
