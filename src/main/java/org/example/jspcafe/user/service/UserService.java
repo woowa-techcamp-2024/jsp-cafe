@@ -8,8 +8,6 @@ import org.example.jspcafe.user.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
 
-    public static UserService userService = new UserService(MemoryUserRepository.memoryUserRepository);
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

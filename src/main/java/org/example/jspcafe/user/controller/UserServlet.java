@@ -1,21 +1,25 @@
 package org.example.jspcafe.user.controller;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.service.UserService;
 
 import java.io.IOException;
 
 @WebServlet(name = "UserServlet", value = "/users/*")
 public class UserServlet extends HttpServlet {
-
     private UserService userService;
 
-    public void init(){
-        this.userService = UserService.userService;
+    @Override
+    public void init(ServletConfig config){
+        ServletContext context = config.getServletContext();
+        this.userService = (UserService) context.getAttribute("UserService");
     }
 
 

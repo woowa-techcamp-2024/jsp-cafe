@@ -25,6 +25,7 @@ dependencies {
   // 기존 의존성
   implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.1.0'
   compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
   implementation 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0'
 
   // JSTL 추가 (주석 해제)

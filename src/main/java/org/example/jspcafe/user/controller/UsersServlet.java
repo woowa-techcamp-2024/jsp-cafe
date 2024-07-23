@@ -1,6 +1,8 @@
 package org.example.jspcafe.user.controller;
 
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,9 +22,11 @@ public class UsersServlet extends HttpServlet {
     private UserService userService;
     private UserRepository userRepository;
 
-    public void init(){
-        this.userRepository = new MemoryUserRepository();
-        this.userService = new UserService(userRepository);
+    @Override
+    public void init(ServletConfig config){
+        ServletContext context = config.getServletContext();
+        this.userRepository = (UserRepository) context.getAttribute("UserRepository");
+        this.userService = (UserService) context.getAttribute("UserService");
     }
 
     public void destroy() {

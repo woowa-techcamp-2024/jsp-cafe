@@ -12,8 +12,6 @@ public class MemoryUserRepository implements UserRepository{
     public static ConcurrentHashMap<Long, User> users = new ConcurrentHashMap<>();
     static AtomicLong counter = new AtomicLong();
 
-    public static MemoryUserRepository memoryUserRepository = new MemoryUserRepository();
-
     @Override
     public Long save(User user) {
         long id = counter.incrementAndGet();
