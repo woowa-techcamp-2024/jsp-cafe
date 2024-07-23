@@ -33,6 +33,28 @@ public class PostRepository {
         }
     }
 
+    public Post findById(Long id) throws SQLException {
+        String sql = "SELECT * FROM posts WHERE id = ?";
+
+        try (Connection conn = DataUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String writer = rs.getString("writer");
+                    String title = rs.getString("title");
+                    String contents = rs.getString("contents");
+
+                    Post post = Post.create(writer, title, contents);
+                    return post;
+                }
+            }
+        }
+        throw new SQLException("User not found");
+    }
+
     public List<Post> findAll() throws SQLException {
         String sql = "SELECT * FROM posts";
         List<Post> posts = new ArrayList<>();

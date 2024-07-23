@@ -21,5 +21,9 @@ public class PostService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    public PostResponse getPostById(long id) throws SQLException {
+        return PostResponse.toResponse(postRepository.findById(id));
+    }
+
 
 }
