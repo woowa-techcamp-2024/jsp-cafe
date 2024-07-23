@@ -5,10 +5,11 @@ import java.util.regex.Pattern;
 public class User {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
-    private final String userId;
-    private final String password;
-    private final String name;
-    private final String email;
+    private Long id;
+    private String userId;
+    private String password;
+    private String name;
+    private String email;
 
     public User(String userId, String password, String name, String email) {
         validateUserId(userId);
@@ -50,6 +51,10 @@ public class User {
         }
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -64,5 +69,9 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
