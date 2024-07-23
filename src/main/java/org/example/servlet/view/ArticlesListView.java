@@ -22,8 +22,8 @@ public class ArticlesListView extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("[ArticlesListView] called");
         List<Article> articles = new ArrayList<>();
-        articles.add(new Article("title", "a", "hong", LocalDateTime.now()));
-        articles.add(new Article("title2", "a","kim", LocalDateTime.now()));
+        articles.add(new Article(1L,"title", "a", "hong", LocalDateTime.now()));
+        articles.add(new Article(2L, "title2", "a","kim", LocalDateTime.now()));
 
         request.setAttribute("articles", articles);
         request.getRequestDispatcher("/article/list.jsp").forward(request, response);
