@@ -45,7 +45,7 @@
                     <td><%=commonResponse.getEmail()%>
                     </td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/users/<%=commonResponse.getUserId()%>"
+                        <a href="${pageContext.request.contextPath}/users/<%=commonResponse.getUserId()%>/form"
                            class="btn btn-success"
                            role="button">수정</a></td>
                 </tr>
