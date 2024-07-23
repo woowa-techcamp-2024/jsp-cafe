@@ -24,7 +24,7 @@ public class InMemUserRepository implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return users.values().stream().toList();
+        return List.copyOf(users.values());
     }
 
 
