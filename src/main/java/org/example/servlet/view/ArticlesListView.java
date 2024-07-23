@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.data.ArticleDataHandler;
-import org.example.data.ArticleDataHandlerInMemory;
+import org.example.data.ArticleDataHandlerMySql;
 import org.example.domain.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class ArticlesListView extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        articleDataHandler = (ArticleDataHandlerInMemory) getServletContext().getAttribute("articleDataHandlerInMemory");
+        articleDataHandler = (ArticleDataHandlerMySql) getServletContext().getAttribute(ArticleDataHandlerMySql.class.getName());
     }
 
     @Override

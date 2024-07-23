@@ -2,9 +2,8 @@ package org.example.config;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebListener;
-import org.example.data.ArticleDataHandlerInMemory;
-import org.example.data.UserDataHandlerInMemory;
-
+import org.example.data.ArticleDataHandlerMySql;
+import org.example.data.UserDataHandlerMySql;
 
 
 @WebListener
@@ -13,10 +12,10 @@ public class ServletConfig implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         //
-        UserDataHandlerInMemory userDataHandlerInMemory = new UserDataHandlerInMemory();
-        ArticleDataHandlerInMemory articleDataHandlerInMemory = new ArticleDataHandlerInMemory();
+        UserDataHandlerMySql userDataHandlerMySql = new UserDataHandlerMySql();
+        ArticleDataHandlerMySql articleDataHandlerMySql = new ArticleDataHandlerMySql();
 
-        context.setAttribute("userDataHandlerInMemory", userDataHandlerInMemory);
-        context.setAttribute("articleDataHandlerInMemory", articleDataHandlerInMemory);
+        context.setAttribute(UserDataHandlerMySql.class.getName(), userDataHandlerMySql);
+        context.setAttribute(ArticleDataHandlerMySql.class.getName(), articleDataHandlerMySql);
     }
 }

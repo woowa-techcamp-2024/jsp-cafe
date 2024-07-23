@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.data.UserDataHandler;
-import org.example.data.UserDataHandlerInMemory;
+import org.example.data.UserDataHandlerMySql;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class UserProfileView extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        userDataHandler = (UserDataHandlerInMemory) getServletContext().getAttribute("userDataHandlerInMemory");
+        userDataHandler = (UserDataHandlerMySql) getServletContext().getAttribute(UserDataHandlerMySql.class.getName());
     }
 
     @Override
