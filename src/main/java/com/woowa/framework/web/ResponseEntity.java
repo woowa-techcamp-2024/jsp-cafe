@@ -33,6 +33,7 @@ public class ResponseEntity {
 
         private Map<String, Object> model = new HashMap<>();
         private Map<String, String> header = new HashMap<>();
+        private byte[] body;
 
         public Builder add(String key, Object value) {
             model.put(key, value);
@@ -44,8 +45,20 @@ public class ResponseEntity {
             return this;
         }
 
+        public Builder body(byte[] body) {
+            this.body = body;
+            return this;
+        }
+
         public ResponseEntity found(String location) {
             ResponseEntity responseEntity = new ResponseEntity(302, location, new byte[0]);
+            responseEntity.model.putAll(model);
+            responseEntity.header.putAll(header);
+            return responseEntity;
+        }
+
+        public ResponseEntity ok() {
+            ResponseEntity responseEntity = new ResponseEntity(200, body);
             responseEntity.model.putAll(model);
             responseEntity.header.putAll(header);
             return responseEntity;
