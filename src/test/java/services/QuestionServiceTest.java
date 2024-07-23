@@ -49,4 +49,19 @@ class QuestionServiceTest {
         // then
         assertEquals(expectedSize, size);
     }
+
+    @Test
+    void TestFindById() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer);
+
+        // when
+        String foundTitle = questionService.findById(id).getTitle();
+
+        // then
+        assertEquals(title, foundTitle);
+    }
 }
