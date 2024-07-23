@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 @WebServlet("/api/users")
-public class UserApi extends HttpServlet {
-    private final Logger log = LoggerFactory.getLogger(UserApi.class);
+public class UserRegisterApi extends HttpServlet {
+    private final Logger log = LoggerFactory.getLogger(UserRegisterApi.class);
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -22,7 +22,7 @@ public class UserApi extends HttpServlet {
         String nickname = request.getParameter("nickname");
         String password = request.getParameter("password");
 
-        User user = new User(email, nickname, password, LocalDateTime.now());
+        User user = new User(1L, email, nickname, password, LocalDateTime.now());
         log.debug(user.toString());
         response.sendRedirect("/users");
     }

@@ -22,9 +22,9 @@ public class UserListView extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("[UserListView] called");
         List<User> users = new ArrayList<>();
-        users.add(new User("hong@example.com", "hong", "a", LocalDateTime.now()));
-        users.add(new User("kim@example.com", "kim",  "a", LocalDateTime.now()));
-        users.add(new User("lee@example.com", "lee", "a", LocalDateTime.now()));
+        users.add(new User(1L, "hong@example.com", "hong", "a", LocalDateTime.now()));
+        users.add(new User(2L, "kim@example.com", "kim",  "a", LocalDateTime.now()));
+        users.add(new User(3L, "lee@example.com", "lee", "a", LocalDateTime.now()));
 
         request.setAttribute("users", users);
         request.getRequestDispatcher("/user/list.jsp").forward(request, response);
