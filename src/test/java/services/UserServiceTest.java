@@ -47,4 +47,20 @@ class UserServiceTest {
         // then
         assertEquals(users.size(), expected_size);
     }
+
+    @Test
+    void testFindById() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        userRepository.save(userId, password, name, email);
+
+        // when
+        User user = userService.findById(userId);
+
+        // then
+        assertEquals(user.getUserId(), userId);
+    }
 }
