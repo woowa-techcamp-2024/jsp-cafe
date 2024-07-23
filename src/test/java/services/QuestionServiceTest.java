@@ -32,4 +32,21 @@ class QuestionServiceTest {
         // then
         assertEquals(expectedId, id);
     }
+
+    @Test
+    void TestFindAll() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        questionService.save(title, content, writer);
+
+        int expectedSize = 1;
+
+        // when
+        int size = questionService.findAll().size();
+
+        // then
+        assertEquals(expectedSize, size);
+    }
 }
