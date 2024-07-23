@@ -19,7 +19,7 @@
             <ul class="list">
                     <%
                     List<ArticleContentResponse> contentResponses = (List<ArticleContentResponse>) request.getAttribute(
-                            "articleList");
+                            "questionList");
                     for (ArticleContentResponse contentResponse : contentResponses) {
                 %>
                 <li>

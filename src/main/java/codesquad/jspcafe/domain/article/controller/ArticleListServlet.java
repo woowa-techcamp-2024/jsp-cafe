@@ -27,7 +27,7 @@ public class ArticleListServlet extends HttpServlet {
     }
 
     /**
-     * GET 요청을 처리하여 articleList.jsp 페이지로 포워딩합니다. 클라이언트가 /index.html로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
+     * GET 요청을 처리하여 questionList.jsp 페이지로 포워딩합니다. 클라이언트가 /index.html로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -37,7 +37,7 @@ public class ArticleListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        req.setAttribute("articleList", articleService.findAllArticle());
-        req.getRequestDispatcher("/WEB-INF/jsp/articleList.jsp").forward(req, resp);
+        req.setAttribute("questionList", articleService.findAllArticle());
+        req.getRequestDispatcher("/WEB-INF/jsp/questionList.jsp").forward(req, resp);
     }
 }

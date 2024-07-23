@@ -28,7 +28,7 @@ public class UserInfoServlet extends HttpServlet {
     }
 
     /**
-     * GET 요청을 처리하여 profile.jsp 페이지로 포워딩합니다. 클라이언트가 /users/{userId}로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
+     * GET 요청을 처리하여 userProfile.jsp 페이지로 포워딩합니다. 클라이언트가 /users/{userId}로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -46,6 +46,6 @@ public class UserInfoServlet extends HttpServlet {
         String userId = pathInfo.substring(1);
         UserCommonResponse userCommonResponse = userService.getUserById(userId);
         req.setAttribute("user", userCommonResponse);
-        req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/userProfile.jsp").forward(req, resp);
     }
 }
