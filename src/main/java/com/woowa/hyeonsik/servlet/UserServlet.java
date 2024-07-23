@@ -2,9 +2,8 @@ package com.woowa.hyeonsik.servlet;
 
 import com.woowa.hyeonsik.domain.User;
 import com.woowa.hyeonsik.service.UserService;
-import jakarta.servlet.RequestDispatcher;
+import com.woowa.hyeonsik.util.SendPageUtil;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -31,9 +30,7 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("users", users);
         logger.debug("회원 목록 조회, 유저 목록: {}", users);
 
-        ServletContext app = this.getServletContext();
-        RequestDispatcher dispatcher = app.getRequestDispatcher("/template/user/list.jsp");
-        dispatcher.forward(request, response);
+        SendPageUtil.forward("/template/user/list.jsp", this.getServletContext(), request, response);
     }
 
     @Override
@@ -47,6 +44,6 @@ public class UserServlet extends HttpServlet {
         User user = new User(userId, password, name, email);
         userService.signUp(user);
 
-        response.sendRedirect("/users");
+        SendPageUtil.redirect("/users", this.getServletContext(), response);
     }
 }

@@ -2,9 +2,8 @@ package com.woowa.hyeonsik.servlet;
 
 import com.woowa.hyeonsik.domain.User;
 import com.woowa.hyeonsik.service.UserService;
-import jakarta.servlet.RequestDispatcher;
+import com.woowa.hyeonsik.util.SendPageUtil;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -34,8 +33,6 @@ public class UserPathServlet extends HttpServlet {
         User user = userService.findByUserId(userId);
         request.setAttribute("user", user);
 
-        ServletContext app = this.getServletContext();
-        RequestDispatcher dispatcher = app.getRequestDispatcher("/template/user/profile.jsp");
-        dispatcher.forward(request, response);
+        SendPageUtil.forward("/template/user/profile.jsp", this.getServletContext(), request, response);
     }
 }
