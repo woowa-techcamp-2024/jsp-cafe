@@ -57,4 +57,8 @@ public class User {
             throw new IllegalArgumentException("생성일자는 필수입니다.");
         }
     }
+
+    public void updateNickname(String newNickname) {
+        this.nickname = new Nickname(newNickname);
+    }
 }
