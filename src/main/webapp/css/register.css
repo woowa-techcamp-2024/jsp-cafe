@@ -1,0 +1,19 @@
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.btn-register {
+    width: 100%;
+    padding: 10px;
+    background-color: #62CBC6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
