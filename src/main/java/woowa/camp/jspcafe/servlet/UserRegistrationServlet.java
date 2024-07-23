@@ -39,4 +39,24 @@ public class UserRegistrationServlet extends HttpServlet {
         log.debug("userRegistrationServlet doGet end");
     }
 
+    // 회원가입 처리
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("userRegistrationServlet doPost start");
+        String userId = req.getParameter("userId");
+        String password = req.getParameter("password");
+        String name = req.getParameter("name");
+        String email = req.getParameter("email");
+
+        log.info("userId - {}", userId);
+        log.info("password - {}", password);
+        log.info("name - {}", name);
+        log.info("email - {}", email);
+
+        User user = new User(userId, password, name, email);
+        userRepository.save(user);
+
+        resp.sendRedirect("/users");
+        log.debug("userRegistrationServlet doPost end");
+    }
 }
