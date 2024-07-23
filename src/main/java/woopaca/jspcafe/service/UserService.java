@@ -3,7 +3,10 @@ package woopaca.jspcafe.service;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserMemoryRepository;
 import woopaca.jspcafe.repository.UserRepository;
+import woopaca.jspcafe.servlet.dto.MembersResponse;
 import woopaca.jspcafe.servlet.dto.SignUpRequest;
+
+import java.util.List;
 
 public class UserService {
 
@@ -25,5 +28,12 @@ public class UserService {
         if (signUpRequest.password().length() < 4) {
             throw new IllegalArgumentException("[ERROR] 비밀번호는 비어있을 수 없습니다.");
         }
+    }
+
+    public List<MembersResponse> getAllMembers() {
+        return userRepository.findAll()
+                .stream()
+                .map(MembersResponse::from)
+                .toList();
     }
 }
