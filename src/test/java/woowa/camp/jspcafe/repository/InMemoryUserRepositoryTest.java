@@ -14,7 +14,7 @@ class InMemoryUserRepositoryTest {
     UserRepository userRepository = new InMemoryUserRepository();
 
     @Test
-    @DisplayName("회원가입을 성공하면, 사용자 ID로 조회할 수 있다")
+    @DisplayName("[Success]회원가입을 성공하면, 사용자 ID로 조회할 수 있다")
     void test() {
         User user = UserFixture.createUser1();
         Long saveUserId = userRepository.save(user);
@@ -25,10 +25,16 @@ class InMemoryUserRepositoryTest {
         assertThat(findUser).isEqualTo(user);
         assertThat(findUser.getId()).isNotNull();
         assertThat(findUser.getId()).isSameAs(saveUserId);
+
+        assertThat(findUser.getId()).isEqualTo(user.getId());
+        assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
+        assertThat(findUser.getName()).isEqualTo(user.getName());
+        assertThat(findUser.getPassword()).isEqualTo(user.getPassword());
+        assertThat(findUser.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
-    @DisplayName("회원가입을 성공할 때마다 id가 1씩 증가한다.")
+    @DisplayName("[Success] 회원가입을 성공할 때마다 id가 1씩 증가한다.")
     void test2() {
         User user1 = UserFixture.createUser1();
         User user2 = UserFixture.createUser2();
