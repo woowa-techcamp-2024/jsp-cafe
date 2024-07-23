@@ -30,7 +30,7 @@ public class DynamicHandlerMapping implements HandlerMapping {
             HttpMethod httpMethod = annotation.method();
             Map<HttpMethod, HandlerMethod> httpMethodHandlerMethodMap = handlers.computeIfAbsent(path,
                     key -> new ConcurrentHashMap<>());
-            httpMethodHandlerMethodMap.put(httpMethod, new HandlerMethod(bean, method));
+            httpMethodHandlerMethodMap.put(httpMethod, new DynamicHandlerMethod(bean, method));
         }
     }
 
