@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
 
-<%@ include file="../header/header.jsp" %>
+<%@ include file="../common/header.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -35,4 +35,4 @@
     </div>
 </div>
 
-<%@ include file="../footer/footer.jsp" %>
+<%@ include file="../common/footer.jsp" %>
