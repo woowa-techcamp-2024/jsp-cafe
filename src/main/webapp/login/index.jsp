@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
+<%
+    String errorMessage = (String) request.getAttribute("errorMessage");
+%>
 <div class="container">
     <header class="header">
         <h2 class="header-title">HELLO, WEB!</h2>
@@ -50,6 +53,23 @@
         <p class="signup-link">
             아직 회원가입을 안하셨나요? <a href="../signup">회원가입하기</a>
         </p>
+
+        <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
+        <div id="error-message" class="error-message">
+            <%= errorMessage %>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const errorMessage = document.getElementById('error-message');
+                if (errorMessage) {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000); // 3초 후에 사라짐
+                }
+            });
+        </script>
+        <% } %>
     </main>
 </div>
 </body>
