@@ -28,7 +28,7 @@
                 %>
                 <tr>
                     <th scope="row"><%= i%></th>
-                    <td><%= user.getUserId()%></td>
+                    <td><a href="/users/<%= user.getId()%>"><%= user.getUserId()%></a></td>
                     <td><%= user.getName()%></td>
                     <td><%= user.getEmail()%></td>
                     <td><a href="/<%= user.getUserId()%>" class="btn btn-success" role="button">수정</a></td>
@@ -36,13 +36,6 @@
                 <%
                     }
                 %>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>slipp</td>
-                    <td>슬립</td>
-                    <td>slipp@sample.net</td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
                 </tbody>
             </table>
         </div>
