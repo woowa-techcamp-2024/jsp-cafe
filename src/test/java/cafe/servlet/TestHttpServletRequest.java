@@ -11,7 +11,7 @@ import java.util.*;
 
 public class TestHttpServletRequest implements HttpServletRequest {
     private final String requestURI;
-    private Map<String, String> parameters = new HashMap<>();
+    private final Map<String, String> parameters = new HashMap<>();
 
     public TestHttpServletRequest(String requestURI) {
         this.requestURI = requestURI;
