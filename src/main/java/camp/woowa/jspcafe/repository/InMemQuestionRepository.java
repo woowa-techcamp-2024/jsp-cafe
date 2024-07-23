@@ -22,4 +22,9 @@ public class InMemQuestionRepository implements QuestionRepository {
     public List<Question> findAll() {
         return List.copyOf(questions.values());
     }
+
+    @Override
+    public Question findById(Long id) {
+        return questions.get(id);
+    }
 }
