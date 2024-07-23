@@ -84,7 +84,7 @@
                         <div class="wrap">
                             <div class="main">
                                 <strong class="subject">
-                                    <a href="post?id=${post.id}">${post.title}</a>
+                                    <a href="questions?id=${post.id}">${post.title}</a>
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
