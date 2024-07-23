@@ -10,7 +10,7 @@ import org.example.jspcafe.user.service.SignupService;
 
 import java.io.IOException;
 
-@WebServlet(name = "signupServlet", value = "/signup")
+@WebServlet(name = "signupServlet", value = "/api/signup")
 public class SignupServlet extends HttpServlet {
 
     private final SignupService signupService;
