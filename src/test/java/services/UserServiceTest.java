@@ -66,4 +66,26 @@ class UserServiceTest {
         // then
         assertEquals(user.getUserId(), userId);
     }
+
+    @Test
+    void testUpdate() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        Long id = userRepository.save(userId, password, name, email);
+        String updatedUserId = "updatedUserId";
+        String updatedName = "updatedName";
+        String updatedEmail = "updatedEmail";
+
+        // when
+        userService.update(id, updatedUserId, updatedName, updatedEmail);
+
+        // then
+        User user = userService.findById(id);
+        assertEquals(user.getUserId(), updatedUserId);
+        assertEquals(user.getName(), updatedName);
+        assertEquals(user.getEmail(), updatedEmail);
+    }
 }
