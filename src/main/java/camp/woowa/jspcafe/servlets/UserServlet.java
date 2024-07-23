@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.servlets;
 
+import camp.woowa.jspcafe.services.UserService;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,6 +12,13 @@ import java.io.IOException;
 
 @WebServlet(name = "userServlet", value = "/users")
 public class UserServlet extends HttpServlet {
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        ServletContext sc = getServletContext();
+        userService = (UserService) sc.getAttribute("userService");
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
