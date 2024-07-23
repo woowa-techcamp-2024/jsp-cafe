@@ -3,6 +3,7 @@ package com.hyeonuk.jspcafe.member.dao;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
 import com.hyeonuk.jspcafe.member.domain.Member;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,9 +43,7 @@ public class InMemoryMemberDao implements MemberDao{
 
     @Override
     public List<Member> findAll() {
-        return store.values()
-                .stream()
-                .toList();
+        return new ArrayList<>(store.values());
     }
 
     @Override
