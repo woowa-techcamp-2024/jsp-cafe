@@ -39,10 +39,9 @@ class UserHandlerTest {
             String email = "test@test.com";
             String nickname = "tester";
             String password = "123456";
-            CreateUserRequest request = new CreateUserRequest(email, password, nickname);
 
             //when
-            ResponseEntity response = userHandler.createUser(request);
+            ResponseEntity response = userHandler.createUser(email, nickname, password);
 
             //then
             Optional<User> optionalUser = userDatabase.findByEmail(email);
@@ -61,12 +60,11 @@ class UserHandlerTest {
             String email = "test@test.com";
             String nickname = "tester";
             String password = "123456";
-            CreateUserRequest request = new CreateUserRequest(email, password, nickname);
 
             userDatabase.save(User.create(UUID.randomUUID().toString(), email, password, nickname));
 
             //when
-            Exception exception = catchException(() -> userHandler.createUser(request));
+            Exception exception = catchException(() -> userHandler.createUser(email, nickname, password));
 
             //then
             assertThat(exception).isInstanceOf(IllegalArgumentException.class);
