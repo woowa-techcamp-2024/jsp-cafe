@@ -5,6 +5,8 @@ import com.jspcafe.user.model.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
@@ -34,5 +36,22 @@ class UserServiceTest {
         assertEquals(user.email(), email);
         assertEquals(user.nickname(), nickname);
         assertTrue(user.verifyPassword(password));
+    }
+
+    @Test
+    void 모든유저의_정보를_가져온다() {
+        // Given
+        User user1 = User.create("woowa@woowa.in", "김배달", "1234");
+        User user2 = User.create("coupang@co.pang", "이쿠팡", "4321");
+        userDao.save(user1);
+        userDao.save(user2);
+
+        // When
+        List<User> users = userService.findAll();
+
+        // Then
+        assertEquals(2, users.size());
+        assertEquals(user1, users.get(0));
+        assertEquals(user2, users.get(1));
     }
 }
