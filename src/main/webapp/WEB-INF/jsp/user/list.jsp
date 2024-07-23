@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -84,12 +85,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                    <th scope="row">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
+                <c:forEach var="user" items="${users}">
+                    <tr>
+                        <th scope="row">1</th> <td>${user.userId}</td> <td>${user.name}</td> <td>${user.email}</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    </tr>
+                </c:forEach>
               </tbody>
           </table>
         </div>
