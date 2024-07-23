@@ -107,6 +107,26 @@ class UserServiceTest {
 
      }
 
+     @DisplayName("사용자의 닉네임을 수정할 때, 잘못된 userId를 입력하면 예외가 발생한다.")
+     @Test
+     void editProfileWithNotExistsUser() {
+         // given
+         String nickname = "nickname";
+         String email = "email@example.com";
+         String password = "password";
+
+         User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
+         userRepository.save(user);
+
+         String newNickname = "newNickname";
+         Long invalidUserId = Long.MAX_VALUE;
+
+         // when & then
+         assertThatThrownBy(() -> userService.editProfile(invalidUserId, newNickname, password))
+                 .isInstanceOf(IllegalArgumentException.class)
+                 .hasMessage("사용자를 찾을 수 없습니다.");
+     }
+
      @DisplayName("사용자의 닉네임을 수정할 때, 비밀번호가 일치하지 않으면 예외가 발생한다.")
      @Test
      void editProfileWithNotMatchPassword() {
