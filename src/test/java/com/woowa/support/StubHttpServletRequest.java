@@ -133,6 +133,10 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public HttpSession getSession() {
+        if(httpSession != null) {
+            return httpSession;
+        }
+        this.httpSession = new StubHttpSession();
         return httpSession;
     }
 
