@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 class InMemoryPostRepositoryTest {
@@ -73,6 +74,34 @@ class InMemoryPostRepositoryTest {
                         tuple(3L, "title3", "content3", LocalDateTime.of(2021, 1, 3, 0, 0, 0)),
                         tuple(2L, "title2", "content2", LocalDateTime.of(2021, 1, 2, 0, 0, 0))
                 );
+    }
+
+    @DisplayName("음수인 offset으로 조회하면 예외가 발생한다.")
+    @Test
+    void findAllWithNegativeOffset() {
+        // given
+        int offset = -1;
+        int limit = 3;
+
+        // when & then
+        assertThatThrownBy(() -> postRepository.findAll(offset, limit))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("offset과 limit은 0 이상이어야 합니다.");
+
+    }
+
+    @DisplayName("음수인 limit 조회하면 예외가 발생한다.")
+    @Test
+    void findAllWithNegativeLimit() {
+        // given
+        int offset = 3;
+        int limit = -1;
+
+        // when & then
+        assertThatThrownBy(() -> postRepository.findAll(offset, limit))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("offset과 limit은 0 이상이어야 합니다.");
+
     }
 
 }
