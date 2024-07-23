@@ -2,27 +2,26 @@ package com.woowa;
 
 import com.woowa.framework.BeanFactory;
 import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
-import com.woowa.framework.web.DynamicHandlerMapping;
 import com.woowa.framework.web.ContentType;
+import com.woowa.framework.web.HandlerMapping;
 import com.woowa.framework.web.HandlerMethod;
 import com.woowa.framework.web.ResponseEntity;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final DynamicHandlerMapping dynamicHandlerMapping;
+    private final List<HandlerMapping> handlerMappings = new ArrayList<>();
     private ArgumentResolverComposite argumentResolvers = new ArgumentResolverComposite();
 
-    public DispatcherServlet(DynamicHandlerMapping dynamicHandlerMapping) {
-        this.dynamicHandlerMapping = dynamicHandlerMapping;
-    }
-
     public void init(BeanFactory beanFactory) {
+        handlerMappings.addAll(beanFactory.getBeans(HandlerMapping.class));
         argumentResolvers = beanFactory.getBean(ArgumentResolverComposite.class);
     }
 
@@ -36,7 +35,18 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp) throws Throwable {
-        HandlerMethod handlerMethod = dynamicHandlerMapping.getHandlerMethod(req);
+        HandlerMapping handlerMapping = null;
+        for (HandlerMapping mapping : handlerMappings) {
+            if(mapping.isSupports(req)) {
+                handlerMapping = mapping;
+                break;
+            }
+        }
+        if(handlerMapping == null) {
+            throw new NoSuchElementException("지원하지 않는 요청 경로입니다.");
+        }
+        HandlerMethod handlerMethod = handlerMapping.getHandlerMethod(req);
+
         Parameter[] parameters = handlerMethod.getParameters();
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {

@@ -3,6 +3,7 @@ package com.woowa.framework;
 import com.woowa.config.DatabaseConfig;
 import com.woowa.config.HandlerConfig;
 import com.woowa.framework.argumentresovler.ArgumentResolverConfig;
+import com.woowa.framework.web.HandlerMappingConfig;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ public class BeanFactory {
         log.debug("컨테이너 실행");
         try {
             context.put("galaxyContainer", this);
+            register(HandlerMappingConfig.class);
             register(ArgumentResolverConfig.class);
             register(DatabaseConfig.class);
             register(HandlerConfig.class);
@@ -90,5 +92,12 @@ public class BeanFactory {
 
     public List<Object> getBeans() {
         return context.values().stream().toList();
+    }
+
+    public <T> List<T> getBeans(Class<T> clazz) {
+        return context.values().stream()
+                .filter(bean -> isChild(bean.getClass(), clazz))
+                .map(bean -> (T) bean)
+                .toList();
     }
 }
