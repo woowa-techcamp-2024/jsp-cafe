@@ -23,4 +23,8 @@ public class UserService {
     public User findById(Long id) {
         return userRepository.findById(id);
     }
+
+    public Long update(Long id, String updatedUserId, String updatedName, String updatedEmail) {
+        return userRepository.update(id, updatedUserId, updatedName, updatedEmail);
+    }
 }
