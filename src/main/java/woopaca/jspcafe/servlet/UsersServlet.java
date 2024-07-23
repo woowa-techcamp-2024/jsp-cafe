@@ -1,5 +1,6 @@
 package woopaca.jspcafe.servlet;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.UserService;
+import woopaca.jspcafe.servlet.dto.MembersResponse;
 import woopaca.jspcafe.servlet.dto.SignUpRequest;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/users")
 public class UsersServlet extends HttpServlet {
@@ -34,5 +37,14 @@ public class UsersServlet extends HttpServlet {
             log.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서버 오류");
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<MembersResponse> members = userService.getAllMembers();
+        request.setAttribute("members", members);
+        request.setAttribute("membersCount", members.size());
+        request.getRequestDispatcher("/user/list.jsp")
+                .forward(request, response);
     }
 }
