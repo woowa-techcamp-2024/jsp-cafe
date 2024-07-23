@@ -9,13 +9,16 @@ class QuestionTest {
     @Test
     void testQuestion() {
         // given
+        Long id = 1L;
         String title = "title";
         String content = "content";
         String writer = "1234";
+
         // when
-        Question question = new Question(title, content, writer);
+        Question question = new Question(id, title, content, writer);
 
         // then
+        assertEquals(id, question.getId());
         assertEquals(title, question.getTitle());
         assertEquals(content, question.getContent());
         assertEquals(writer, question.getWriter());
