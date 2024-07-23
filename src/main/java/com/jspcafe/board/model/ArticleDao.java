@@ -1,6 +1,4 @@
-package com.jspcafe.board.service;
-
-import com.jspcafe.board.model.Article;
+package com.jspcafe.board.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,5 @@
-package com.jspcafe.board.service;
+package com.jspcafe.board.model;
 
-import com.jspcafe.board.model.Article;
 import com.jspcafe.exception.ArticleNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
