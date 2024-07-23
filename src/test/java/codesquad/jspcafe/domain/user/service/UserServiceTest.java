@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import codesquad.jspcafe.domain.user.domain.User;
+import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
@@ -66,7 +67,7 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(() -> userService.getUserById(expectedUserId))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("User Not Found");
+                .hasMessage("유저를 찾을 수 없습니다!");
         }
 
         @Test
@@ -102,6 +103,52 @@ class UserServiceTest {
 
         }
 
+    }
+
+    @Nested
+    @DisplayName("유저 정보를 수정할 때")
+    class whenUpdateUserInfo {
+
+        @Test
+        @DisplayName("비밀번호가 일치하지 않으면 예외를 던진다.")
+        void updateUserInfoFailed() {
+            // Arrange
+            userRepository.save(
+                new User(expectedUserId, expectedPassword, expectedName, expectedEmail));
+            UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
+                "userId", new String[]{expectedUserId},
+                "password", new String[]{"wrongPassword"},
+                "name", new String[]{expectedName},
+                "email", new String[]{expectedEmail}
+            ));
+            // Act & Assert
+            assertThatThrownBy(
+                () -> userService.updateUserInfo(expectedDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("비밀번호가 일치하지 않습니다!");
+        }
+
+        @Test
+        @DisplayName("유저 정보를 수정할 수 있다.")
+        void updateUserInfoSuccess() {
+            // Arrange
+            String expectedUpdatedUsername = "updatedName";
+            String expectedUpdatedEmail = "test@gmail.com";
+            userRepository.save(
+                new User(expectedUserId, expectedPassword, expectedName, expectedUpdatedEmail));
+            UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
+                "userId", new String[]{expectedUserId},
+                "password", new String[]{expectedPassword},
+                "name", new String[]{expectedUpdatedUsername},
+                "email", new String[]{expectedUpdatedEmail}
+            ));
+            // Act
+            UserCommonResponse actualResult = userService.updateUserInfo(expectedDto);
+            // Assert
+            assertThat(actualResult)
+                .extracting("userId", "username", "email")
+                .containsExactly(expectedUserId, expectedUpdatedUsername, expectedUpdatedEmail);
+        }
     }
 
 }
