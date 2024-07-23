@@ -20,7 +20,6 @@ public class UserServlet extends HttpServlet {
     private UserDao userDao;
 
     @Override
-
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         userDao = (UserDao) getServletContext().getAttribute("userDao");
