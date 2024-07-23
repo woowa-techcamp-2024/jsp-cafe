@@ -1,0 +1,107 @@
+package codesquad.jspcafe.domain.user.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import codesquad.jspcafe.domain.user.domain.User;
+import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
+import codesquad.jspcafe.domain.user.repository.UserRepository;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+@DisplayName("UserService는")
+class UserServiceTest {
+
+    private final UserService userService = new UserService();
+    private UserRepository userRepository;
+
+    private final String expectedUserId = "test";
+    private final String expectedPassword = "test";
+    private final String expectedName = "test";
+    private final String expectedEmail = "test@jspcafe.com";
+
+    @BeforeEach
+    void clear() {
+        userRepository = new UserRepository();
+        for (Field field : userService.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                field.set(userService, userRepository);
+            } catch (IllegalAccessException ignore) {
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("유저를 생성할 수 있다.")
+    void createUser() {
+        // Arrange
+        Map<String, String[]> expectedValues = Map.of(
+            "userId", new String[]{expectedUserId},
+            "password", new String[]{expectedPassword},
+            "name", new String[]{expectedName},
+            "email", new String[]{expectedEmail}
+        );
+        // Act
+        UserCommonResponse actualResult = userService.createUser(expectedValues);
+        // Assert
+        assertThat(actualResult)
+            .extracting("userId", "username", "email")
+            .containsExactly(expectedUserId, expectedName, expectedEmail);
+    }
+
+    @Nested
+    @DisplayName("유저를 조회할 때")
+    class whenGetUser {
+
+        @Test
+        @DisplayName("유저가 존재하지 않으면 예외를 던진다.")
+        void getUserByIdFailed() {
+            // Act & Assert
+            assertThatThrownBy(() -> userService.getUserById(expectedUserId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("User Not Found");
+        }
+
+        @Test
+        @DisplayName("유저가 존재하면 유저를 반환한다.")
+        void getUserByIdSuccess() {
+            // Arrange
+            userRepository.save(
+                new User(expectedUserId, expectedPassword, expectedName, expectedEmail));
+            // Act
+            UserCommonResponse actualResult = userService.getUserById(expectedUserId);
+            // Assert
+            assertThat(actualResult)
+                .extracting("userId", "username", "email")
+                .containsExactly(expectedUserId, expectedName, expectedEmail);
+        }
+
+        @Test
+        @DisplayName("모든 유저를 조회할 수 있다.")
+        void findAllUser() {
+            // Arrange
+            User expectedUser = new User(expectedUserId, expectedPassword, expectedName,
+                expectedEmail);
+            userRepository.save(expectedUser);
+            // Act
+            List<UserCommonResponse> actualResult = userService.findAllUser();
+            // Assert
+            assertAll(
+                () -> assertThat(actualResult).hasSize(1),
+                () -> assertThat(actualResult.get(0))
+                    .extracting("userId", "username", "email")
+                    .containsExactly(expectedUserId, expectedName, expectedEmail)
+            );
+
+        }
+
+    }
+
+}
