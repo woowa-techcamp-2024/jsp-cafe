@@ -78,4 +78,24 @@ class ArticleTest {
         }
     }
 
+    @Nested
+    @DisplayName("생성 이후")
+    class afterCreated {
+
+        @Test
+        @DisplayName("id를 추가할 수 있다.")
+        void setIdAfterCreated() {
+            // Arrange
+            Long expectedId = 1L;
+            Article article = new Article(expectedTitle, expectedWriter, expectedContents,
+                expectedCreatedAt);
+            // Act
+            article.setId(expectedId);
+            // Assert
+            assertThat(article.getId()).isEqualTo(expectedId);
+
+        }
+
+    }
+
 }

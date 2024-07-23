@@ -6,13 +6,15 @@ import java.time.LocalDateTime;
 
 public class ArticleCommonResponse {
 
+    private final Long id;
     private final String title;
     private final String writer;
     private final String contents;
     private final String createdAt;
 
-    private ArticleCommonResponse(String title, String writer, String contents,
+    private ArticleCommonResponse(Long id, String title, String writer, String contents,
         LocalDateTime createdAt) {
+        this.id = id;
         this.title = title;
         this.writer = writer;
         this.contents = contents;
@@ -20,8 +22,12 @@ public class ArticleCommonResponse {
     }
 
     public static ArticleCommonResponse from(Article article) {
-        return new ArticleCommonResponse(article.getTitle(), article.getWriter(),
+        return new ArticleCommonResponse(article.getId(), article.getTitle(), article.getWriter(),
             article.getContents(), article.getCreatedAt());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getTitle() {

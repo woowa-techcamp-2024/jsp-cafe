@@ -28,6 +28,8 @@ class ArticleServiceTest {
     private final String expectedWriter = "writer";
     private final String expectedContents = "contents";
     private final LocalDateTime expectedCreatedAt = LocalDateTime.now();
+    private final Long expectedId = 1L;
+    private Article expectedArticle;
 
     @BeforeEach
     void clear() {
@@ -39,6 +41,9 @@ class ArticleServiceTest {
             } catch (IllegalAccessException ignore) {
             }
         }
+        expectedArticle = new Article(expectedTitle, expectedWriter, expectedContents,
+            expectedCreatedAt);
+        expectedArticle.setId(expectedId);
     }
 
     @Test
@@ -54,6 +59,7 @@ class ArticleServiceTest {
         ArticleCommonResponse actualResult = articleService.createArticle(expectedValues);
         // Assert
         assertAll(
+            () -> assertThat(actualResult.getId()).isNotNull(),
             () -> assertThat(actualResult)
                 .extracting("title", "writer", "contents")
                 .containsExactly(expectedTitle, expectedWriter, expectedContents),
@@ -68,8 +74,9 @@ class ArticleServiceTest {
         @Test
         @DisplayName("아티클이 존재하지 않으면 에외를 던진다.")
         void getArticleByTitleFailed() {
+            String expectedIdStr = Long.toString(expectedId);
             // Act & Assert
-            assertThatThrownBy(() -> articleService.getArticleByTitle(expectedTitle))
+            assertThatThrownBy(() -> articleService.getArticleById(expectedIdStr))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("아티클이 존재하지 않습니다!");
         }
@@ -78,14 +85,14 @@ class ArticleServiceTest {
         @DisplayName("아티클이 존재하면 아티클을 반환한다.")
         void getArticleByTitleSuccess() {
             // Arrange
-            articleRepository.save(
-                new Article(expectedTitle, expectedWriter, expectedContents, expectedCreatedAt));
+            articleRepository.save(expectedArticle);
             // Act
-            ArticleCommonResponse actualResult = articleService.getArticleByTitle(expectedTitle);
+            ArticleCommonResponse actualResult = articleService.getArticleById(
+                expectedId.toString());
             // Assert
             assertThat(actualResult)
-                .extracting("title", "writer", "contents", "createdAt")
-                .containsExactly(expectedTitle, expectedWriter, expectedContents,
+                .extracting("id", "title", "writer", "contents", "createdAt")
+                .containsExactly(expectedId, expectedTitle, expectedWriter, expectedContents,
                     DateTimeFormatExecutor.execute(expectedCreatedAt));
         }
 
@@ -93,16 +100,15 @@ class ArticleServiceTest {
         @DisplayName("모든 아티클을 조회할 수 있다.")
         void findAllArticle() {
             // Arrange
-            articleRepository.save(
-                new Article(expectedTitle, expectedWriter, expectedContents, expectedCreatedAt));
+            articleRepository.save(expectedArticle);
             // Act
             List<ArticleContentResponse> actualResult = articleService.findAllArticle();
             // Assert
             assertAll(
                 () -> assertThat(actualResult).hasSize(1),
                 () -> assertThat(actualResult.get(0))
-                    .extracting("title", "writer", "createdAt")
-                    .containsExactly(expectedTitle, expectedWriter,
+                    .extracting("id", "title", "writer", "createdAt")
+                    .containsExactly(expectedId, expectedTitle, expectedWriter,
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
         }

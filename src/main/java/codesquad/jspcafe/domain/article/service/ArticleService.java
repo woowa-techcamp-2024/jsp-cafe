@@ -24,8 +24,8 @@ public class ArticleService {
         return ArticleCommonResponse.from(articleRepository.save(article));
     }
 
-    public ArticleCommonResponse getArticleByTitle(String title) {
-        Article article = articleRepository.findByTitle(title)
+    public ArticleCommonResponse getArticleById(String id) {
+        Article article = articleRepository.findById(Long.parseLong(id))
             .orElseThrow(() -> new IllegalArgumentException("아티클이 존재하지 않습니다!"));
         return ArticleCommonResponse.from(article);
     }

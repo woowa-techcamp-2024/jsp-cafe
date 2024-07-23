@@ -26,7 +26,7 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="/qna/show.html"><%=contentResponse.getTitle()%>
+                                <a href="/questions/<%=contentResponse.getId()%>"><%=contentResponse.getTitle()%>
                                 </a>
                             </strong>
                             <div class="auth-info">
