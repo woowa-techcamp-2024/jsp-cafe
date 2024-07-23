@@ -57,14 +57,30 @@ public class UsersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        userService.createUser( req.getParameter("userId"),
-                req.getParameter("password"),
-                req.getParameter("name"),
-                req.getParameter("email"));
-        try {
-            res.sendRedirect("/users");
-        } catch (IOException e) {
-            log(e.getMessage());
+        String pathInfo = req.getPathInfo();
+
+        if (pathInfo == null || "/".equalsIgnoreCase(pathInfo) || "".equalsIgnoreCase(pathInfo)) { // POST /users 필터링
+            userService.createUser(req.getParameter("userId"),
+                    req.getParameter("password"),
+                    req.getParameter("name"),
+                    req.getParameter("email"));
+            try {
+                res.sendRedirect("/users");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
+        } else if (pathInfo.endsWith("/form")) { // POST /users/{id}/form 필터링
+            String[] split = pathInfo.split("/");
+            long id = 0;
+            try { // id 가 long인지 확인
+                id = Long.parseLong(split[1]);
+            } catch (NumberFormatException e) {
+                log(e.getMessage());
+            }
+            userService.update(id, req.getParameter("userId"),
+                    req.getParameter("password"),
+                    req.getParameter("name"),
+                    req.getParameter("email"));
         }
     }
 }
