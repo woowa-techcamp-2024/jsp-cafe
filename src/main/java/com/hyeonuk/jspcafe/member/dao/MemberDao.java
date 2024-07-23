@@ -10,4 +10,5 @@ public interface MemberDao {
     Optional<Member> findById(Long id);
     List<Member> findAll();
     void deleteById(Long id);
+    Optional<Member> findByMemberId(String memberId);
 }
