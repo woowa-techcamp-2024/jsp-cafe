@@ -62,7 +62,7 @@ public class UsersServlet extends HttpServlet {
                 log(e.getMessage());
             }
 
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/updateForm.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/profile.jsp");
 
             try {
                 dispatcher.forward(req, resp);
