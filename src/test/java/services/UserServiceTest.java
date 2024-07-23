@@ -1,12 +1,15 @@
 package services;
 
 import camp.woowa.jspcafe.models.User;
+import camp.woowa.jspcafe.repository.InMemUserRepository;
+import camp.woowa.jspcafe.repository.UserRepository;
 import camp.woowa.jspcafe.services.UserService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserServiceTest {
+    UserRepository userRepository = new InMemUserRepository();
 
     @Test
     void testCreateUser() {
@@ -15,7 +18,7 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        UserService userService = new UserService();
+        UserService userService = new UserService(userRepository);
         // when
         User user = userService.createUser(userId, password, name, email);
 
