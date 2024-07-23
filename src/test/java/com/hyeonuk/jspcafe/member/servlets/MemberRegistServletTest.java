@@ -1,6 +1,5 @@
 package com.hyeonuk.jspcafe.member.servlets;
 
-import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
 import com.hyeonuk.jspcafe.global.exception.InvalidMemberRegistRequest;
 import com.hyeonuk.jspcafe.global.utils.PasswordEncoder;
 import com.hyeonuk.jspcafe.member.dao.InMemoryMemberDao;
@@ -236,19 +235,6 @@ class MemberRegistServletTest {
             assertThrows(InvalidMemberRegistRequest.class,()->{
                 servlet.doPost(req,res);
             });
-        }
-    }
-
-    private class MockServletContext extends BaseServletContext {
-        private Map<String,Object> attributes = new HashMap<>();
-
-        @Override
-        public Object getAttribute(String s) {
-            return attributes.get(s);
-        }
-        @Override
-        public void setAttribute(String s, Object o) {
-            attributes.put(s, o);
         }
     }
 
