@@ -1,8 +1,7 @@
 package com.woowa;
 
 import com.woowa.framework.BeanFactory;
-import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
-import com.woowa.framework.web.HandlerMapping;
+import com.woowa.framework.web.DynamicHandlerMapping;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -19,10 +18,10 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         BeanFactory beanFactory = new BeanFactory();
         beanFactory.start();
 
-        HandlerMapping handlerMapping = new HandlerMapping(beanFactory);
-        handlerMapping.init();
+        DynamicHandlerMapping dynamicHandlerMapping = new DynamicHandlerMapping(beanFactory);
+        dynamicHandlerMapping.init();
 
-        DispatcherServlet dispatcherServlet = new DispatcherServlet(handlerMapping);
+        DispatcherServlet dispatcherServlet = new DispatcherServlet(dynamicHandlerMapping);
         dispatcherServlet.init(beanFactory);
 
         Dynamic helloServlet = ctx.addServlet("helloServlet", dispatcherServlet);

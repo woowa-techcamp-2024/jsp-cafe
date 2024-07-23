@@ -2,10 +2,9 @@ package com.woowa;
 
 import com.woowa.framework.BeanFactory;
 import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
-import com.woowa.framework.web.HandlerMapping;
+import com.woowa.framework.web.DynamicHandlerMapping;
 import com.woowa.framework.web.HandlerMethod;
 import com.woowa.framework.web.ResponseEntity;
-import com.woowa.framework.web.StaticResourceHandler;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,11 +14,11 @@ import java.util.Map.Entry;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final HandlerMapping handlerMapping;
+    private final DynamicHandlerMapping dynamicHandlerMapping;
     private ArgumentResolverComposite argumentResolvers = new ArgumentResolverComposite();
 
-    public DispatcherServlet(HandlerMapping handlerMapping) {
-        this.handlerMapping = handlerMapping;
+    public DispatcherServlet(DynamicHandlerMapping dynamicHandlerMapping) {
+        this.dynamicHandlerMapping = dynamicHandlerMapping;
     }
 
     public void init(BeanFactory beanFactory) {
@@ -36,15 +35,7 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp) throws Throwable {
-        if(StaticResourceHandler.supports(req)) {
-            byte[] body = StaticResourceHandler.getResource(req);
-            resp.setContentLength(body.length);
-            resp.setContentType("text/html");
-            resp.getOutputStream().write(body);
-            resp.getOutputStream().flush();
-        }
-
-        HandlerMethod handlerMethod = handlerMapping.getHandlerMethod(req);
+        HandlerMethod handlerMethod = dynamicHandlerMapping.getHandlerMethod(req);
         Parameter[] parameters = handlerMethod.getParameters();
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
