@@ -11,22 +11,24 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import woowa.camp.jspcafe.domain.User;
-import woowa.camp.jspcafe.repository.UserRepository;
+import woowa.camp.jspcafe.service.UserService;
+import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 
 @WebServlet(name = "userRegistrationServlet", value = "/users/registration")
 public class UserRegistrationServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(UserRegistrationServlet.class);
-    private UserRepository userRepository;
+
+    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        super.init(config);
         ServletContext context = config.getServletContext();
-        this.userRepository = (UserRepository) context.getAttribute("userRepository");
-        if (this.userRepository == null) {
-            throw new ServletException("UserRegistrationServlet -> UserRepository not initialized");
+        this.userService = (UserService) context.getAttribute("userService");
+        if (this.userService == null) {
+            String errorMessage = "[ServletException] UserRegistrationServlet -> UserService not initialized";
+            log.error(errorMessage);
+            throw new ServletException(errorMessage);
         }
     }
 
@@ -48,13 +50,8 @@ public class UserRegistrationServlet extends HttpServlet {
         String name = req.getParameter("name");
         String email = req.getParameter("email");
 
-        log.info("userId - {}", userId);
-        log.info("password - {}", password);
-        log.info("name - {}", name);
-        log.info("email - {}", email);
-
-        User user = new User(userId, password, name, email);
-        userRepository.save(user);
+        RegistrationRequest registrationRequest = new RegistrationRequest(userId, password, name, email);
+        userService.registration(registrationRequest);
 
         resp.sendRedirect("/users");
         log.debug("userRegistrationServlet doPost end");
