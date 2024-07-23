@@ -62,4 +62,18 @@ class UserTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("기존 비밀번호와 동일합니다.");
     }
+
+    @DisplayName("생성일자 없이 사용자 생성 시 예외가 발생한다")
+    @Test
+    void createUserWithoutCreatedAt() {
+        // given
+        String nickname = "nickname";
+        String email = "eamil@example.com";
+        String password = "password";
+
+        // when & then
+        assertThatThrownBy(() -> new User(nickname, email, password, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("생성일자는 필수입니다.");
+    }
 }
