@@ -8,12 +8,26 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import org.example.post.model.dao.Post;
+import org.example.post.model.dto.PostResponse;
 import org.example.post.service.PostService;
 
 @WebServlet("/questions")
 public class PostServlet extends HttpServlet {
 
     private PostService postService;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+
+        try {
+            PostResponse post = postService.getPostById(Long.parseLong(id));
+            req.setAttribute("post", post);
+            req.getRequestDispatcher("/jsp/post/show.jsp").forward(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
