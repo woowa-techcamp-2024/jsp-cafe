@@ -1,7 +1,5 @@
 package org.example.jspcafe.user.service;
 
-import org.example.jspcafe.Repository;
-import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.repository.InMemoryUserRepository;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 class SignupServiceTest {
 
     private SignupService signupService;
-    private Repository<User> userRepository;
+    private InMemoryUserRepository userRepository;
 
     @BeforeEach
     void setUp() {
