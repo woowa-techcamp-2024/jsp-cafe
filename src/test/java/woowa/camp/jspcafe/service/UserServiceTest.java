@@ -72,4 +72,26 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Describe_사용자 목록을 조회하는 기능은")
+    class FindAllTest {
+
+        UserRepository userRepository = new InMemoryUserRepository();
+        UserService userService = new UserService(userRepository);
+
+        @Test
+        @DisplayName("[Success] 사용자 목록에 대한 UserResponse 리스트를 반환한다")
+        void test() {
+            User user1 = UserFixture.createUser1();
+            User user2 = UserFixture.createUser2();
+            userRepository.save(user1);
+            userRepository.save(user2);
+            List<UserResponse> expected = List.of(UserResponse.of(user1), UserResponse.of(user2));
+            List<UserResponse> result = userService.findAll();
+
+            assertThat(result).size().isEqualTo(2);
+            assertThat(result).containsExactlyElementsOf(expected);
+        }
+    }
+
 }
