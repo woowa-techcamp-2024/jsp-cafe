@@ -24,7 +24,7 @@ public class LoginService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new LoginServiceResponse(user.getUserId());
+        return new LoginServiceResponse(user.getUserId(), user.getNickname().getValue());
     }
 
 
