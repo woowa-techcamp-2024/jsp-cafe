@@ -26,4 +26,9 @@ public class UserMemoryDatabase implements UserDatabase{
     public List<User> findAll() {
         return users.values().stream().toList();
     }
+
+    @Override
+    public Optional<User> findById(String userId) {
+        return Optional.ofNullable(users.get(userId));
+    }
 }
