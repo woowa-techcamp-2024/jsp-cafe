@@ -21,7 +21,7 @@
                   <label for="email">이메일</label>
                   <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="${user.email}">
               </div>
-              <button type="submit" class="btn btn-success clearfix pull-right">회원가입</button>
+              <button type="submit" class="btn btn-primary clearfix pull-right">수정하기</button>
               <div class="clearfix" />
           </form>
         </div>
