@@ -81,7 +81,7 @@
 <div class="container" id="main">
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
-          <form name="question" method="get" action="/user/create">
+          <form name="question" method="post" action="/member/regist">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
                   <input class="form-control" id="userId" name="userId" placeholder="User ID">
@@ -92,7 +92,7 @@
               </div>
               <div class="form-group">
                   <label for="name">이름</label>
-                  <input class="form-control" id="name" name="name" placeholder="Name">
+                  <input class="form-control" id="name" name="nickname" placeholder="Name">
               </div>
               <div class="form-group">
                   <label for="email">이메일</label>
