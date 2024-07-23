@@ -11,7 +11,7 @@ import java.util.List;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
 import org.example.member.service.UserQueryService;
-import org.example.member.service.UserRegisterService;
+import org.example.member.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class UserServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
-    private UserRegisterService userRegisterService;
+    private UserService userService;
     private UserQueryService userQueryService;
 
     @Override
@@ -29,6 +29,8 @@ public class UserServlet extends HttpServlet {
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
                 listUsers(req, resp);
+            } else if (pathInfo.matches("/[^/]+/form")) {
+                showEditForm(req, resp);
             } else {
                 showProfile(req, resp);
             }
@@ -36,6 +38,15 @@ public class UserServlet extends HttpServlet {
             logger.error("Error occurred while processing GET request", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void showEditForm(HttpServletRequest req, HttpServletResponse resp)
+            throws SQLException, ServletException, IOException {
+
+        String userId = req.getPathInfo().split("/")[1];
+        UserResponseDto userResponseDto = userQueryService.findUserByUserId(userId);
+        req.setAttribute("user", userResponseDto);
+        req.getRequestDispatcher("/jsp/user/edit-form.jsp").forward(req, resp);
     }
 
     private void listUsers(HttpServletRequest req, HttpServletResponse resp)
@@ -56,6 +67,39 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+
+        try {
+            if (pathInfo == null || pathInfo.equals("/")) {
+                registerUser(req, resp);
+            } else {
+                editProfile(req, resp);
+            }
+        } catch (SQLException e) {
+            logger.error("Error occurred while processing GET request", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    private void editProfile(HttpServletRequest req, HttpServletResponse resp) {
+        String userId = req.getParameter("userId");
+        String password = req.getParameter("password");
+        String name = req.getParameter("name");
+        String email = req.getParameter("email");
+
+        try {
+            User user = User.createUser(userId, password, name, email);
+            userService.editUser(user);
+            resp.sendRedirect("/users");
+        } catch (SQLException | IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void registerUser(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
         try {
             String userId = req.getParameter("userId");
             String password = req.getParameter("password");
@@ -63,7 +107,7 @@ public class UserServlet extends HttpServlet {
             String email = req.getParameter("email");
 
             User user = User.createUser(userId, password, name, email);
-            userRegisterService.register(user);
+            userService.register(user);
             resp.sendRedirect("/users");
         } catch (Exception e) {
             logger.error("Error occurred while processing POST request", e);
@@ -75,7 +119,7 @@ public class UserServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        this.userRegisterService = new UserRegisterService();
+        this.userService = new UserService();
         this.userQueryService = new UserQueryService();
     }
 }
