@@ -26,6 +26,9 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+    testImplementation('org.apache.tomcat.embed:tomcat-embed-core:10.1.9')
+    testImplementation('org.apache.tomcat.embed:tomcat-embed-jasper:10.1.9')
 }
 
 test {
