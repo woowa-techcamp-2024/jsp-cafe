@@ -19,6 +19,8 @@ ext {
     servletVersion = '6.1.0'
     junitVersion = '5.10.3'
     tomcatVersion = '10.1.26'
+    assertJVersion = '3.26.3'
+    logbackVersion = '1.5.6'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -26,9 +28,11 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     compileOnly("jakarta.servlet:jakarta.servlet-api:${servletVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testImplementation("org.assertj:assertj-core:${assertJVersion}")
     testImplementation("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
