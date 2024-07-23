@@ -4,6 +4,7 @@ import camp.woowa.jspcafe.models.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class UserTest {
@@ -45,6 +46,21 @@ class UserTest {
         assertEquals(user.getUserId(), updatedUserId);
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
+    }
+
+    @Test
+    void testPasswordValidate() {
+        // given
+        Long id = 1L;
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        User user = new User(id, userId, password, name, email);
+        // when
+        boolean result = user.validatePassword(password);
+        // then
+        assertTrue(result);
     }
 
 }
