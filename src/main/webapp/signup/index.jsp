@@ -24,7 +24,7 @@
     </header>
     <main>
         <h1 class="registration-title">회원가입</h1>
-        <form class="registration-form" action="signup" method="post">
+        <form class="registration-form" action="/api/signup" method="post">
             <div class="input-field">
                 <label for="email">이메일</label>
                 <input
