@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +27,7 @@ class InMemoryUserRepositoryTest {
         String nickname = "nickname";
         String email = "email@example.com";
         String password = "password";
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
         User savedUser = userRepository.save(user);
 
         // when
@@ -45,7 +46,7 @@ class InMemoryUserRepositoryTest {
         String nickname = "nickname";
         String email = "email@example.com";
         String password = "password";
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
 
         // when
         User savedUser = userRepository.save(user);
@@ -77,7 +78,7 @@ class InMemoryUserRepositoryTest {
         String nickname = "nickname";
         String email = "email@example.com";
         String password = "password";
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
 
         User savedUser = userRepository.save(user);
         savedUser.updatePassword("newPassword");
@@ -101,7 +102,7 @@ class InMemoryUserRepositoryTest {
         String nickname = "nickname";
         String email = "email@example.com";
         String password = "password";
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
         User savedUser = userRepository.save(user);
 
         // when
@@ -126,7 +127,7 @@ class InMemoryUserRepositoryTest {
     @Test
     void deleteEntityWithNullId() {
         // given
-        User user = new User("nickname", "email@example.com", "password");
+        User user = new User("nickname", "email@example.com", "password", LocalDateTime.of(2021, 1, 1, 0, 0));
 
         // when & then
         assertThatThrownBy(() -> userRepository.delete(user))
@@ -138,7 +139,7 @@ class InMemoryUserRepositoryTest {
     @Test
     void updateEntityWithNullId() {
         // given
-        User user = new User("nickname", "email@example.com", "password");
+        User user = new User("nickname", "email@example.com", "password", LocalDateTime.of(2021, 1, 1, 0, 0));
 
         // when // then
         assertThatThrownBy(() -> userRepository.update(user))
@@ -153,7 +154,7 @@ class InMemoryUserRepositoryTest {
         String nickname = "nickname";
         String email = "email@example.com";
         String password = "password";
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
 
         // when
         User savedUser = userRepository.save(user);
