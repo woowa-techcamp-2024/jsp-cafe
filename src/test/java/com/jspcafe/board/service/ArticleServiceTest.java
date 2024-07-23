@@ -6,6 +6,9 @@ import com.jspcafe.exception.ArticleNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArticleServiceTest {
@@ -34,5 +37,27 @@ class ArticleServiceTest {
         assertEquals(title, storedArticle.title());
         assertEquals(nickname, storedArticle.nickname());
         assertEquals(content, storedArticle.content());
+    }
+
+    @Test
+    void 게시글을_최신순으로_정렬하여_가져온다() {
+        // Given
+        LocalDateTime now = LocalDateTime.now();
+        Article article1 = new Article("1", "First Article", "user1", "Content 1", now.minusDays(2));
+        Article article2 = new Article("2", "Second Article", "user2", "Content 2", now.minusDays(1));
+        Article article3 = new Article("3", "Third Article", "user3", "Content 3", now);
+
+        articleDao.save(article1);
+        articleDao.save(article2);
+        articleDao.save(article3);
+
+        // When
+        List<Article> articles = articleService.findAll();
+
+        // Then
+        assertEquals(3, articles.size());
+        assertEquals("3", articles.get(0).id());
+        assertEquals("2", articles.get(1).id());
+        assertEquals("1", articles.get(2).id());
     }
 }
