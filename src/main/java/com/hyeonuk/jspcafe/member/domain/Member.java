@@ -1,24 +1,38 @@
 package com.hyeonuk.jspcafe.member.domain;
 
 public class Member {
-    private String id;
+    private Long id;
+    private String memberId;
     private String password;
     private String nickname;
     private String email;
 
-    public Member(String id, String password, String nickname, String email) {
+    public Member(Long id, String memberId, String password, String nickname, String email) {
         setId(id);
+        setMemberId(memberId);
         setPassword(password);
         setNickname(nickname);
         setEmail(email);
     }
 
-    public String getId() {
+    public Member(String memberId, String password, String nickname, String email){
+        this(null, memberId,password,nickname,email);
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 
     public String getPassword() {

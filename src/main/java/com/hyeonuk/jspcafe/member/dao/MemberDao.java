@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface MemberDao {
     Member save(Member member);
-    Optional<Member> findById(String id);
+    Optional<Member> findById(Long id);
     List<Member> findAll();
-    void deleteById(String id);
+    void deleteById(Long id);
 }
