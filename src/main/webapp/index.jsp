@@ -22,7 +22,7 @@
                 if (isLogined != null && isLogined) {
             %>
             <span class="user-name">환영합니다, <%= nickname %>!</span>
-            <form action="logout" method="post" style="display: inline;">
+            <form action="api/logout" method="post" style="display: inline;">
                 <button type="submit" class="logout-button">로그아웃</button>
             </form>
             <% } else { %>
