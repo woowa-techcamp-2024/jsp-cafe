@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -25,34 +26,33 @@
             <tr class="bg-gray-50 text-gray-600 uppercase text-sm leading-normal">
                 <th class="py-3 px-6 text-left">닉네임</th>
                 <th class="py-3 px-6 text-left">이메일</th>
-                <th class="py-3 px-6 text-left">가입일</th>
             </tr>
             </thead>
             <tbody class="text-gray-600 text-sm font-light">
-            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                <td class="py-3 px-6 text-left whitespace-nowrap">사용자1</td>
-                <td class="py-3 px-6 text-left">user1@example.com</td>
-                <td class="py-3 px-6 text-left">2023년 7월 1일</td>
-            </tr>
-            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                <td class="py-3 px-6 text-left whitespace-nowrap">사용자2</td>
-                <td class="py-3 px-6 text-left">user2@example.com</td>
-                <td class="py-3 px-6 text-left">2023년 7월 2일</td>
-            </tr>
-            <!-- 추가 사용자 행들... -->
+            <c:forEach var="user" items="${users}">
+                <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                    onclick="window.location.href='<c:url value="/users/${user.id()}"/>';">
+                    <td class="py-3 px-6 text-left whitespace-nowrap">${user.nickname()}</td>
+                    <td class="py-3 px-6 text-left">${user.email()}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
     <div class="flex justify-center mt-6">
         <nav class="inline-flex rounded-md shadow">
-            <a href="#" class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&lt;</a>
-            <a href="#" class="px-3 py-2 border-t border-b border-gray-300 bg-white text-teal-600 hover:bg-gray-50">1</a>
-            <a href="#" class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">2</a>
-            <a href="#" class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">3</a>
-            <a href="#" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&gt;</a>
+            <a href="#"
+               class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&lt;</a>
+            <a href="#"
+               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-teal-600 hover:bg-gray-50">1</a>
+            <a href="#"
+               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">2</a>
+            <a href="#"
+               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">3</a>
+            <a href="#"
+               class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&gt;</a>
         </nav>
     </div>
 </main>
 </body>
 </html>
-

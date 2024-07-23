@@ -1,5 +1,6 @@
 package com.jspcafe.user.controller;
 
+import com.jspcafe.user.model.User;
 import com.jspcafe.user.service.UserService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(value = "/users/*")
 public class UserController extends HttpServlet {
@@ -24,7 +26,7 @@ public class UserController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         if (path == null || path.isEmpty() || path.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            userList(req, resp);
             return;
         }
         switch (path) {
@@ -48,5 +50,11 @@ public class UserController extends HttpServlet {
         String password = req.getParameter("password");
         userService.signUp(email, nickname, password);
         resp.sendRedirect("/users");
+    }
+
+    private void userList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<User> users = userService.findAll();
+        req.setAttribute("users", users);
+        forward("user_list", req, resp);
     }
 }
