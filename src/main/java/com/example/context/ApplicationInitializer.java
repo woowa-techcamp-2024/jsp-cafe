@@ -1,5 +1,6 @@
 package com.example.context;
 
+import com.example.db.ArticleDatabase;
 import com.example.db.UserDatabase;
 
 import jakarta.servlet.ServletContextEvent;
@@ -12,5 +13,6 @@ public class ApplicationInitializer implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		sce.getServletContext().setAttribute("userDatabase", new UserDatabase());
+		sce.getServletContext().setAttribute("articleDatabase", new ArticleDatabase());
 	}
 }
