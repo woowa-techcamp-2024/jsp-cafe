@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -79,6 +80,8 @@
     </div>
 </div>
 
+<c:set var="currentUser" value="${requestScope.user}"/>
+
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
@@ -90,10 +93,10 @@
                             <img class="media-object" src="../images/80-text.png">
                         </a>
                         <div class="media-body">
-                            <h4 class="media-heading">자바지기</h4>
+                            <h4 class="media-heading">${currentUser.name}</h4>
                             <p>
                                 <a href="#" class="btn btn-xs btn-default"><span
-                                        class="glyphicon glyphicon-envelope"></span>&nbsp;javajigi@slipp.net</a>
+                                        class="glyphicon glyphicon-envelope"></span>${currentUser.email}</a>
                             </p>
                         </div>
                     </div>

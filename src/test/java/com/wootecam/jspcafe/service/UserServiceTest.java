@@ -43,4 +43,19 @@ class UserServiceTest {
             }
         }
     }
+
+    @Nested
+    class read_메소드는 {
+
+        @Nested
+        class 만약_id에_해당되는_사용자를_찾을수_없다면 {
+
+            @Test
+            void 예외를_발생시킨다() {
+                assertThatThrownBy(() -> userService.read(555555L))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("사용자를 찾을 수 없습니다. input path = " + 555555L);
+            }
+        }
+    }
 }

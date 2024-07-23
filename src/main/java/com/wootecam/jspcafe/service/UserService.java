@@ -28,4 +28,9 @@ public class UserService {
     public List<User> readAll() {
         return userRepository.findAll();
     }
+
+    public User read(final Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. input path = " + id));
+    }
 }

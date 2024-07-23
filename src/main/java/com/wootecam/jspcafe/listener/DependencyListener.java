@@ -3,6 +3,7 @@ package com.wootecam.jspcafe.listener;
 import com.wootecam.jspcafe.repository.UserRepository;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.SignupFormServlet;
+import com.wootecam.jspcafe.servlet.UserProfileServlet;
 import com.wootecam.jspcafe.servlet.UserServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -23,5 +24,7 @@ public class DependencyListener implements ServletContextListener {
                 .addMapping("/users/signup");
         servletContext.addServlet("userServlet", new UserServlet(userService))
                 .addMapping("/users");
+        servletContext.addServlet("userProfileServlet", new UserProfileServlet(userService))
+                .addMapping("/users/*");
     }
 }
