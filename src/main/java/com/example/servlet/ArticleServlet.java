@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import com.example.db.ArticleDatabase;
 import com.example.entity.Article;
-import com.example.entity.User;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
