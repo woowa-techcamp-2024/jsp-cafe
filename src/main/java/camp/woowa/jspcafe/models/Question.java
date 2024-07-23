@@ -1,9 +1,9 @@
 package camp.woowa.jspcafe.models;
 
 public class Question {
-    private String title;
-    private String content;
-    private String writer;
+    private final String title;
+    private final String content;
+    private final String writer;
 
     public Question(String title, String content, String writer) {
         this.title = title;
