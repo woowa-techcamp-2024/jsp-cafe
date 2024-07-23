@@ -8,14 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 h-screen flex flex-col">
-<header class="bg-white shadow">
-    <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-        <h1 class="text-xl font-bold"><a href="/">HELLO, WEB!</a></h1>
-        <a href="#" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
-            로그인/회원가입
-        </a>
-    </div>
-</header>
+
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <main class="flex-grow flex items-center justify-center">
     <div class="w-full max-w-md">
