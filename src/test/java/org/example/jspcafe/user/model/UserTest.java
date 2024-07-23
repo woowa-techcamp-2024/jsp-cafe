@@ -76,4 +76,22 @@ class UserTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("생성일자는 필수입니다.");
     }
+
+    @DisplayName("닉네임 변경 테스트")
+    @Test
+    void updateNickname() {
+        // given
+        String nickname = "nickname";
+        String email = "email@example.com";
+        String password = "password";
+
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
+
+        // when
+        user.updateNickname("newNickname");
+
+        // then
+        assertThat(user.getNickname().getValue())
+                .isEqualTo("newNickname");
+    }
 }
