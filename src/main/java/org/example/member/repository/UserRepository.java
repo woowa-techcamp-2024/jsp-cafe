@@ -76,7 +76,7 @@ public class UserRepository {
     }
 
     public boolean existsByUserId(String userId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        String sql = "SELECT COUNT(*) FROM users WHERE userId = ?";
         boolean exists = false;
 
         try (Connection conn = DataUtil.getConnection();
