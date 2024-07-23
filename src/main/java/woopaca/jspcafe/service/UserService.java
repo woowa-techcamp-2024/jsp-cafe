@@ -40,4 +40,10 @@ public class UserService {
                 .map(MembersResponse::from)
                 .toList();
     }
+
+    public UserProfile getUserProfile(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));
+        return UserProfile.from(user);
+    }
 }
