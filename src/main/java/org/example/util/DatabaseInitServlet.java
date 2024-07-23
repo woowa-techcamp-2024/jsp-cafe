@@ -28,7 +28,8 @@ public class DatabaseInitServlet extends HttpServlet {
 
     private String createUserTable() {
         return "CREATE TABLE IF NOT EXISTS users (" +
-                "userId INT AUTO_INCREMENT PRIMARY KEY," +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                "userId VARCHAR(50) NOT NULL UNIQUE," +
                 "name VARCHAR(50) NOT NULL UNIQUE," +
                 "email VARCHAR(100) NOT NULL UNIQUE," +
                 "password VARCHAR(255) NOT NULL," +
