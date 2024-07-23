@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="../css/signup.css">
 </head>
 <body>
+<%
+    String errorMessage = (String) request.getAttribute("errorMessage");
+%>
 <div class="container">
     <header class="header">
         <h2 class="header-title">HELLO, WEB!</h2>
@@ -57,10 +60,25 @@
             </div>
             <button type="submit" class="signup-button">회원가입</button>
         </form>
-        <p class="login-link">
-            이미 회원이신가요? <a href="../login">로그인하기</a>
-        </p>
-    </main>
+
+        <!-- errorMessage 확인용 -->
+            <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
+        <div id="error-message" class="error-message">
+            <%= errorMessage %>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const errorMessage = document.getElementById('error-message');
+                if (errorMessage) {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000); // 3초 후에 사라짐
+                }
+            });
+        </script>
+            <% } %>
+</div>
 </div>
 </body>
 </html>
