@@ -1,9 +1,15 @@
 package camp.woowa.jspcafe.services;
 
-import camp.woowa.jspcafe.models.User;
+import camp.woowa.jspcafe.repository.UserRepository;
 
 public class UserService {
-    public User createUser(String userId, String password, String name, String email) {
-        return new User(userId, password, name, email);
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public String createUser(String userId, String password, String name, String email) {
+        return userRepository.save(userId, password, name, email);
     }
 }
