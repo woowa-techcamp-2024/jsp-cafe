@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="254b3c03-c512-431c-8cf3-be2b78d206a9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/codesquad/container/AppInit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/codesquad/container/ServletRegister.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/codesquad/container/WebServletContainerInitializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/codesquad/servlet/RegisterFormServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/codesquad/servlet/RegisterServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/services/jakarta.servlet.ServletContainerInitializer" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/index.html" afterDir="false" />
+    <list default="true" id="254b3c03-c512-431c-8cf3-be2b78d206a9" name="Changes" comment="[Feat] 중복된 아이디로 회원가입할 때 에러 처리&#10;&#10;에러메시지와 함께 기존 요청의 id/password/name/email를 담아서 보내준다">
+      <change afterPath="$PROJECT_DIR$/src/main/java/codesquad/servlet/UserServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/error/error.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/codesquad/user/InMemoryUserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/codesquad/user/InMemoryUserDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/codesquad/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/codesquad/user/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/codesquad/user/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/codesquad/user/UserDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/user/list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/user/list.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +59,7 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="Jsp File" />
       </list>
     </option>
   </component>
@@ -85,10 +86,10 @@
   <component name="JvmLoggingSettingsStorage">
     <option name="loggerId" value="Slf4j" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -105,27 +106,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build jsp-cafe.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.jsp-cafe [:Main.main()].executor": "Run",
-    "Gradle.jsp-cafe [build].executor": "Run",
-    "Gradle.jsp-cafe [clean].executor": "Run",
-    "Gradle.jsp-cafe [jar].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Tomcat Server.Tomcat 10.1.26.executor": "Run",
-    "git-widget-placeholder": "#1-회원-가입-및-목록-조회-기능",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build jsp-cafe.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.jsp-cafe [:Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.jsp-cafe [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.jsp-cafe [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.jsp-cafe [jar].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Tomcat Server.Tomcat 10.1.26.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#1-회원-가입-및-목록-조회-기능&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/webapp" />
@@ -336,6 +337,31 @@
       <workItem from="1721626414285" duration="2481000" />
       <workItem from="1721629608373" duration="6465000" />
     </task>
+    <task id="LOCAL-00001" summary="[Feat] static 리소스">
+      <option name="closed" value="true" />
+      <created>1721701584112</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1721701584112</updated>
+    </task>
+    <task id="LOCAL-00002" summary="[Feat] 회원 가입 / 목록 조회 기능&#10;&#10;`+` POST /user : 회원 가입. id가 이미 존재하면 errorMsg를 담아서 /users/form.jsp에서 렌더링&#10;`+` GET /users">
+      <option name="closed" value="true" />
+      <created>1721704535173</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1721704535173</updated>
+    </task>
+    <task id="LOCAL-00003" summary="[Feat] 중복된 아이디로 회원가입할 때 에러 처리&#10;&#10;에러메시지와 함께 기존 요청의 id/password/name/email를 담아서 보내준다">
+      <option name="closed" value="true" />
+      <created>1721706579758</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1721706579758</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -352,7 +378,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="#1-회원-가입-및-목록-조회-기능" />
                       </list>
                     </value>
                   </entry>
@@ -363,6 +389,14 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[Feat] static 리소스" />
+    <MESSAGE value="[Feat] 회원 가입 / 목록 조회 기능&#10;&#10;`+` POST /user : 회원 가입. id가 이미 존재하면 errorMsg를 담아서 /users/form.jsp에서 렌더링&#10;`+` GET /users : 회원 목록 조회. 유저 리스트를 담아서 /user/list.html에서 렌더링" />
+    <MESSAGE value="[Feat] 회원 가입 / 목록 조회 기능&#10;&#10;`+` POST /user : 회원 가입. id가 이미 존재하면 errorMsg를 담아서 /users/form.jsp에서 렌더링&#10;`+` GET /users : 회원 목록 조회. users에 유저 리스트를 담아서 /users/" />
+    <MESSAGE value="[Feat] 회원 가입 / 목록 조회 기능&#10;&#10;`+` POST /user : 회원 가입. id가 이미 존재하면 errorMsg를 담아서 /users/form.jsp에서 렌더링&#10;`+` GET /users : 회원 목록 조회. 유저 리스트를 담아서 /user/list.html에서 렌더링" />
+    <MESSAGE value="[Feat] 중복된 아이디로 회원가입할 때 에러 처리&#10;&#10;에러메시지와 함께 기존 요청의 id/password/name/email를 담아서 보내준다" />
+    <option name="LAST_COMMIT_MESSAGE" value="[Feat] 중복된 아이디로 회원가입할 때 에러 처리&#10;&#10;에러메시지와 함께 기존 요청의 id/password/name/email를 담아서 보내준다" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
