@@ -34,4 +34,9 @@ public class ArticleDatabase implements Database<Long, Article> {
 	private long getNextId() {
 		return idGenerator.incrementAndGet();
 	}
+
+	@Override
+	public void update(Long aLong, Article article) {
+		articles.put(aLong, article);
+	}
 }

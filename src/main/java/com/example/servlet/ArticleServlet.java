@@ -42,6 +42,10 @@ public class ArticleServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (req.getPathInfo() == null) {
+			req.getRequestDispatcher("/qna/form.jsp").forward(req, resp);
+			return;
+		}
 		Long articleId = Long.parseLong(req.getPathInfo().substring(1));
 		Optional<Article> articleOptional = articleDatabase.findById(articleId);
 		if (articleOptional.isEmpty()) {

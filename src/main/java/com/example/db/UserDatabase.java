@@ -31,4 +31,9 @@ public class UserDatabase implements Database<String, User> {
 	public Optional<User> findById(String id) {
 		return Optional.ofNullable(users.get(id));
 	}
+
+	@Override
+	public void update(String s, User user) {
+		users.put(s, user);
+	}
 }
