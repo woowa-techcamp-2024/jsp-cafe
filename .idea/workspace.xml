@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="jsp-cafe:war" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="744d90d3-7fdf-4910-8965-e8b2f965a5c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/GitCommitMessageStorage.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/jsp_cafe_war_exploded.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+    <list default="true" id="51dbe672-2fd3-419f-a7e7-20548c979324" name="Changes" comment="refactor: 필요없는 코드 삭제&#10;&#10;- 사용하지 않은 HelloServlet삭제">
+      <change afterPath="$PROJECT_DIR$/.idea/GitCommitMessageStorage.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jsp-cafe.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/WEB-INF/web.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/index.jsp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,19 +43,48 @@
         <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
       </MavenGeneralSettings>
     </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="jdkForImporter" value="corretto-17" />
+        <option name="workspaceImportForciblyTurnedOn" value="true" />
+      </MavenImportingSettings>
+    </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
-  <component name="ProjectId" id="2jakWh5AVMvmjkinXoj04E5Esnw" />
+  <component name="MavenRunner">
+    <option name="jreName" value="corretto-17" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2jctmqUzk8nbtTpdvvHtEiyzBbx" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.UserDaoTest.executor": "Run",
+    "JUnit.UserDaoTest.id로_유저정보를_찾을_수_있다.executor": "Run",
+    "JUnit.UserDaoTest.저장되어있는_모든_유저정보를_찾을_수_있다.executor": "Run",
+    "JUnit.UserServiceTest.executor": "Run",
+    "JUnit.UserServiceTest.id를_기준으로_유저의_정보를_가져온다.executor": "Run",
+    "JUnit.UserServiceTest.모든유저의_정보를_가져온다.executor": "Run",
+    "JUnit.UserServiceTest.유저를_정상적으로_저장한다.executor": "Run",
+    "JUnit.UserTest.User_객체가_올바르게_생성된다.executor": "Run",
+    "JUnit.UserTest.executor": "Run",
+    "JUnit.java in jsp-cafe.executor": "Coverage",
+    "JUnit.model in jsp-cafe.executor": "Run",
+    "JUnit.user in jsp-cafe.executor": "Coverage",
+    "JavaScript Debug.user_list.jsp.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Tomcat Server.Tomcat 10.1.26.executor": "Run",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "servlet-cafe-1-step-1",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -54,18 +92,75 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.importing",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration default="true" type="TomeeConfiguration" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
-      <deployment />
-      <server-settings />
-      <predefined_log_file enabled="true" id="Tomcat" />
-      <predefined_log_file enabled="true" id="Tomcat Catalina" />
-      <predefined_log_file id="Tomcat Manager" />
-      <predefined_log_file id="Tomcat Host Manager" />
-      <predefined_log_file id="Tomcat Localhost Access" />
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/user" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.jspcafe.user.service" />
+      <recent name="com.jspcafe.user.model" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.model in jsp-cafe">
+    <configuration name="UserDaoTest.저장되어있는_모든_유저정보를_찾을_수_있다" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="jsp-cafe" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.jspcafe.user.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.jspcafe.user.model" />
+      <option name="MAIN_CLASS_NAME" value="com.jspcafe.user.model.UserDaoTest" />
+      <option name="METHOD_NAME" value="저장되어있는_모든_유저정보를_찾을_수_있다" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.id를_기준으로_유저의_정보를_가져온다" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="jsp-cafe" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.jspcafe.user.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.jspcafe.user.service" />
+      <option name="MAIN_CLASS_NAME" value="com.jspcafe.user.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="id를_기준으로_유저의_정보를_가져온다" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in jsp-cafe" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="jsp-cafe" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="model in jsp-cafe" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="jsp-cafe" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/com/jspcafe/user/model" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="user in jsp-cafe" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="jsp-cafe" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/com/jspcafe/user" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -80,7 +175,7 @@
         </artifact>
       </deployment>
       <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="260b0f18-bd73-4fee-b1fb-9204d6f8a86c" />
+        <option name="BASE_DIRECTORY_NAME" value="e7f1af82-f1cb-4050-8353-3f65fcc08346" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -88,7 +183,7 @@
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="52986" />
+        <option name="DEBUG_PORT" value="57806" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />
@@ -157,6 +252,15 @@
         </option>
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.model in jsp-cafe" />
+        <item itemvalue="JUnit.UserDaoTest.저장되어있는_모든_유저정보를_찾을_수_있다" />
+        <item itemvalue="JUnit.java in jsp-cafe" />
+        <item itemvalue="JUnit.UserServiceTest.id를_기준으로_유저의_정보를_가져온다" />
+        <item itemvalue="JUnit.user in jsp-cafe" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -169,16 +273,195 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="744d90d3-7fdf-4910-8965-e8b2f965a5c4" name="Changes" comment="" />
-      <created>1721632608296</created>
+      <changelist id="51dbe672-2fd3-419f-a7e7-20548c979324" name="Changes" comment="" />
+      <created>1721698355494</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1721632608296</updated>
-      <workItem from="1721632609300" duration="310000" />
+      <updated>1721698355494</updated>
+      <workItem from="1721698357350" duration="1868000" />
+      <workItem from="1721700626040" duration="15530000" />
     </task>
+    <task id="LOCAL-00001" summary="feat: idea폴더 .gitignore추가&#10;&#10;- idea폴더의 내용이 트랙킹 되지 않도록 .gitignore추가">
+      <option name="closed" value="true" />
+      <created>1721698640666</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1721698640666</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: idea폴더 .gitignore추가&#10;&#10;- idea폴더의 내용이 트랙킹 되지 않도록 .gitignore추가">
+      <option name="closed" value="true" />
+      <created>1721698652279</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1721698652279</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: &quot;users/sign&quot;경로로 접속시 회원가입화면을 보여주는 기능 추가&#10;&#10;- 기존 signup.jsp파일을 WEB-INF로 옮겨 사용자가 직접적으로 접근하지 못하도록 변경">
+      <option name="closed" value="true" />
+      <created>1721700272001</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1721700272001</updated>
+    </task>
+    <task id="LOCAL-00004" summary="build: maven java 버전 11 -&gt; 17로 변경&#10;&#10;- record를 사용하기 위해 11에서 17로 변경">
+      <option name="closed" value="true" />
+      <created>1721700809229</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1721700809229</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: User DTO객체 추가&#10;&#10;- 이메일, 비밀번호, 닉네임을 검증하고 올바르지 않을 경우 예외를 발생&#10;- create 팩토리 메서드를 통해서  생성할 경우 id를 UUID로 변경&#10;- 비밀번호는 해시화하여 저장">
+      <option name="closed" value="true" />
+      <created>1721708633392</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721708633392</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: 유저의 정보를 저장하고 관리하는 UserDao 추가&#10;&#10;- 유저를 입력받으면 저장한다.&#10;- email을 기준으로 유저 정보를 찾을 수 있다.&#10;- id를 기준으로 유저 정보를 찾을 수 있다.">
+      <option name="closed" value="true" />
+      <created>1721711114042</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1721711114042</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: 이메일, 닉네임, 비밀번호를 입력받으면 유저를 저장하는 기능 추가&#10;&#10;- 유저를 생성하고, 해당 유저 객체를 저장한다.">
+      <option name="closed" value="true" />
+      <created>1721711920053</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721711920053</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: UserController에서 UserService객체를 init()을 통해 의존성 주입&#10;&#10;- ServletContext를 이용하여, 객체를 실행중 싱글톤으로 관리하고, 필요한 객체는 ServletContext의 getAttribute로 가져온다.">
+      <option name="closed" value="true" />
+      <created>1721712428129</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1721712428129</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: POST /users로 요청이 들어왔을시 회원가입이 되는 기능 추가&#10;&#10;- body에 있는 email, nickname, password정보로 service객체에 회원가입 요청한다.&#10;- 회원가입이 완료되었을시 &quot;/users&quot;로 리다이렉트 된다.">
+      <option name="closed" value="true" />
+      <created>1721713561489</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1721713561489</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: jstl의존성 추가&#10;&#10;- jstl을 사용하기 위해 의존성 라이브러리 추가">
+      <option name="closed" value="true" />
+      <created>1721714789814</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1721714789814</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat: 저장되어있는 모든 유저의 정보를 반환하는 기능 추가&#10;&#10;- UserDao에서 findAll()요청을하면 저장되어 있는 모든 정보를 반환하는 기능 추가">
+      <option name="closed" value="true" />
+      <created>1721715078292</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1721715078292</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: Service에서 모든 유저의 정보를 가져오는 기능 추가&#10;&#10;- Dao findAll() 요청을 보내면 모든 유저의 정보를 반환한다.">
+      <option name="closed" value="true" />
+      <created>1721715926264</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1721715926265</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat(GET /users로 접근할 시 모든 유저의 정보를 출력하는 기능 추가): &#10;&#10;- Service객체에 모든 유저의 정보를 얻고, 이를 Request객체에 넣어준다.&#10;- jsp에서는 Request객체에서 &quot;users&quot;라는 이름으로 유저의 정보를 가져온다.&#10;- 유저의 정보를 클릭하면  users/{userId}로 이동할 수 있게 한다.">
+      <option name="closed" value="true" />
+      <created>1721716789492</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1721716789492</updated>
+    </task>
+    <task id="LOCAL-00014" summary="refactor: Optional을 사용하여 null 체크를 더 명시적으로 하고, NPE의 위험성을 방지">
+      <option name="closed" value="true" />
+      <created>1721718894098</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1721718894098</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat: Service에서 유저의 id를 기준으로 유저 정보를 가져오는 기능 추가&#10;&#10;- 만약 유저 정보가 있을시 반환하고, 없을시 UserNotFoundException을 발생시킨다.">
+      <option name="closed" value="true" />
+      <created>1721719110960</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1721719110960</updated>
+    </task>
+    <task id="LOCAL-00016" summary="test: findAll()시 유저가 차례로 저장되지 않아 테스트가 실패되는 상황 수정&#10;&#10;- 유저의 정보는 HashMap에 저장되어 있으므로, 순서를 보장 할 수 없다.&#10;- 유저의 정보보다 유저가 저장되어 있는 수로 테스트가 성공되어 있는지 판단한다.">
+      <option name="closed" value="true" />
+      <created>1721719292622</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1721719292622</updated>
+    </task>
+    <task id="LOCAL-00017" summary="feat: GET /users/{userId}로 접근하면 프로필 화면을 보여주는 기능 추가">
+      <option name="closed" value="true" />
+      <created>1721720233175</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1721720233175</updated>
+    </task>
+    <task id="LOCAL-00018" summary="feat: 현재 완성되어 있는 화면만 나타나도록 url 변경">
+      <option name="closed" value="true" />
+      <created>1721720280267</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1721720280267</updated>
+    </task>
+    <task id="LOCAL-00019" summary="refactor: 필요없는 코드 삭제&#10;&#10;- 사용하지 않은 HelloServlet삭제">
+      <option name="closed" value="true" />
+      <created>1721720353917</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1721720353917</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: idea폴더 .gitignore추가&#10;&#10;- idea폴더의 내용이 트랙킹 되지 않도록 .gitignore추가" />
+    <MESSAGE value="feat: &quot;users/sign&quot;경로로 접속시 회원가입화면을 보여주는 기능 추가&#10;&#10;- 기존 signup.jsp파일을 WEB-INF로 옮겨 사용자가 직접적으로 접근하지 못하도록 변경" />
+    <MESSAGE value="build: maven java 버전 11 -&gt; 17로 변경&#10;&#10;- record를 사용하기 위해 11에서 17로 변경" />
+    <MESSAGE value="feat: User DTO객체 추가&#10;&#10;- 이메일, 비밀번호, 닉네임을 검증하고 올바르지 않을 경우 예외를 발생&#10;- create 팩토리 메서드를 통해서  생성할 경우 id를 UUID로 변경&#10;- 비밀번호는 해시화하여 저장" />
+    <MESSAGE value="feat: 유저의 정보를 저장하고 관리하는 UserDao 추가&#10;&#10;- 유저를 입력받으면 저장한다.&#10;- email을 기준으로 유저 정보를 찾을 수 있다.&#10;- id를 기준으로 유저 정보를 찾을 수 있다." />
+    <MESSAGE value="feat: 이메일, 닉네임, 비밀번호를 입력받으면 유저를 저장하는 기능 추가&#10;&#10;- 유저를 생성하고, 해당 유저 객체를 저장한다." />
+    <MESSAGE value="feat: UserController에서 UserService객체를 init()을 통해 의존성 주입&#10;&#10;- ServletContext를 이용하여, 객체를 실행중 싱글톤으로 관리하고, 필요한 객체는 ServletContext의 getAttribute로 가져온다." />
+    <MESSAGE value="feat: POST /users로 요청이 들어왔을시 회원가입이 되는 기능 추가&#10;&#10;- body에 있는 email, nickname, password정보로 service객체에 회원가입 요청한다.&#10;- 회원가입이 완료되었을시 &quot;/users&quot;로 리다이렉트 된다." />
+    <MESSAGE value="feat: jstl의존성 추가&#10;&#10;- jstl을 사용하기 위해 의존성 라이브러리 추가" />
+    <MESSAGE value="feat: 저장되어있는 모든 유저의 정보를 반환하는 기능 추가&#10;&#10;- UserDao에서 findAll()요청을하면 저장되어 있는 모든 정보를 반환하는 기능 추가" />
+    <MESSAGE value="feat: Service에서 모든 유저의 정보를 가져오는 기능 추가&#10;&#10;- Dao findAll() 요청을 보내면 모든 유저의 정보를 반환한다." />
+    <MESSAGE value="feat(GET /users로 접근할 시 모든 유저의 정보를 출력하는 기능 추가): &#10;&#10;- Service객체에 모든 유저의 정보를 얻고, 이를 Request객체에 넣어준다.&#10;- jsp에서는 Request객체에서 &quot;users&quot;라는 이름으로 유저의 정보를 가져온다.&#10;- 유저의 정보를 클릭하면  users/{userId}로 이동할 수 있게 한다." />
+    <MESSAGE value="refactor: Optional을 사용하여 null 체크를 더 명시적으로 하고, NPE의 위험성을 방지" />
+    <MESSAGE value="feat: Service에서 유저의 id를 기준으로 유저 정보를 가져오는 기능 추가&#10;&#10;- 만약 유저 정보가 있을시 반환하고, 없을시 UserNotFoundException을 발생시킨다." />
+    <MESSAGE value="test: findAll()시 유저가 차례로 저장되지 않아 테스트가 실패되는 상황 수정&#10;&#10;- 유저의 정보는 HashMap에 저장되어 있으므로, 순서를 보장 할 수 없다.&#10;- 유저의 정보보다 유저가 저장되어 있는 수로 테스트가 성공되어 있는지 판단한다." />
+    <MESSAGE value="feat: GET /users/{userId}로 접근하면 프로필 화면을 보여주는 기능 추가" />
+    <MESSAGE value="feat: 현재 완성되어 있는 화면만 나타나도록 url 변경" />
+    <MESSAGE value="refactor: 필요없는 코드 삭제&#10;&#10;- 사용하지 않은 HelloServlet삭제" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 필요없는 코드 삭제&#10;&#10;- 사용하지 않은 HelloServlet삭제" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/jsp_cafe$java_in_jsp_cafe.ic" NAME="java in jsp-cafe Coverage Results" MODIFIED="1721719145021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/jsp_cafe$user_in_jsp_cafe.ic" NAME="user in jsp-cafe Coverage Results" MODIFIED="1721718777123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
   </component>
 </project>
