@@ -31,9 +31,10 @@ public class InMemUserRepository implements UserRepository {
     }
 
     @Override
-    public void update(Long id, String userId, String updatedName, String updatedEmail) {
+    public Long update(Long id, String userId, String updatedName, String updatedEmail) {
         User user = users.get(id);
         user.update(userId, updatedName, updatedEmail);
+        return id;
     }
 
 
