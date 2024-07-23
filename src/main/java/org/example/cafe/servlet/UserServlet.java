@@ -1,5 +1,7 @@
 package org.example.cafe.servlet;
 
+import static org.example.cafe.utils.LoggerFactory.getLogger;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,20 +11,19 @@ import java.io.IOException;
 import java.util.List;
 import org.example.cafe.domain.user.User;
 import org.example.cafe.domain.user.UserRepository;
+import org.slf4j.Logger;
 
 @WebServlet(name = "UserServlet", value = "/users")
 public class UserServlet extends HttpServlet {
 
-    private UserRepository userRepository;
+    private static final Logger log = getLogger(UserServlet.class);
 
-    public UserServlet() {
-        System.out.println("UserServlet constructor");
-    }
+    private UserRepository userRepository;
 
     @Override
     public void init() {
-        System.out.println("UserServlet init");
         this.userRepository = (UserRepository) getServletContext().getAttribute("UserRepository");
+        log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
     /**
