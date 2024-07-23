@@ -14,7 +14,7 @@
 <body>
 <div class="container">
     <header class="header">
-        <h1 class="header-title"><a href="/">HELLO. WEB!</a></h1>
+        <h1 class="header-title"><a href="/">HELLO, WEB!</a></h1>
         <nav>
             <%
                 Boolean isLogined = (Boolean) session.getAttribute("isLogined");
@@ -74,6 +74,11 @@
     </section>
     <div class="pagination">
         <!-- Pagination component content -->
+    </div>
+    <div class="write-post">
+        <form action="posts.jsp" method="get">
+            <button type="submit" class="write-post-button">글쓰기</button>
+        </form>
     </div>
 </div>
 </body>

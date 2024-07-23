@@ -136,3 +136,20 @@ nav {
     display: flex;
     justify-content: center;
 }
+
+.write-post {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.write-post-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: #34d399;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
