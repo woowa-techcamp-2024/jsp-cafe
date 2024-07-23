@@ -3,22 +3,4 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
-
-    <filter>
-        <filter-name>StaticResourceFilter</filter-name>
-        <filter-class>com.woowa.hyeonsik.StaticResourceFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>StaticResourceFilter</filter-name>
-        <url-pattern>*.js</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaticResourceFilter</filter-name>
-        <url-pattern>*.css</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaticResourceFilter</filter-name>
-        <url-pattern>*.html</url-pattern>
-    </filter-mapping>
 </web-app>

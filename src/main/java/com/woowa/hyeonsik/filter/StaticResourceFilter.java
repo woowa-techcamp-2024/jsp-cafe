@@ -1,14 +1,17 @@
-package com.woowa.hyeonsik;
+package com.woowa.hyeonsik.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "StaticResourceFilter")
+@WebFilter(filterName = "StaticResourceFilter", urlPatterns = {"*.js", "*.css", "*.html"})
 public class StaticResourceFilter implements Filter {
-    private static final String SERVER_URI_PREFIX = "/cafe";
+    private static final Logger logger = LoggerFactory.getLogger(StaticResourceFilter.class);
+    private static final String SERVER_URI_PREFIX = "/";
     private static final String STATIC_RESOURCE_PREFIX = "/static/";
     private ServletContext context;
 
@@ -22,12 +25,9 @@ public class StaticResourceFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI();
+        logger.debug("StaticResourceFilter를 수행합니다. Path: {}, Content-Type: {}", path, request.getContentType());
 
-        if (path.startsWith(SERVER_URI_PREFIX) && (path.endsWith(".js") || path.endsWith(".css") || path.endsWith(".html"))) {
-            String newPath = path.replaceFirst(SERVER_URI_PREFIX, STATIC_RESOURCE_PREFIX);  // FIXME 경로 정보 하드코딩
-            context.getRequestDispatcher(newPath).forward(request, response);
-        } else {
-            chain.doFilter(request, response);
-        }
+        String newPath = path.replaceFirst(SERVER_URI_PREFIX, STATIC_RESOURCE_PREFIX);
+        context.getRequestDispatcher(newPath).forward(request, response);
     }
 }
