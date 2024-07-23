@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="woowa.camp.jspcafe.domain.User" %>
 <%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
 <!DOCTYPE html>
 <html>
@@ -97,8 +96,8 @@
                             UserResponse user = users.get(i);
                 %>
                 <tr>
-                    <th scope="row"><%= i + 1 %></th>
-                    <td><%= user.userId() %></td>
+                    <th scope="row"><%= user.id() %></th>
+                    <td><a href="/users/<%= user.id() %>" class="btn btn-link"><%= user.userId() %></a></td>
                     <td><%= user.name() %></td>
                     <td><%= user.email() %></td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
