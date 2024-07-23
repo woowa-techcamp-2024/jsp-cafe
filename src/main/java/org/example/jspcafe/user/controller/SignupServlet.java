@@ -5,7 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.jspcafe.ApplicationContext;
+import org.example.jspcafe.di.ApplicationContext;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 import org.example.jspcafe.user.service.SignupService;
 

@@ -1,9 +1,9 @@
-package org.example.jspcafe;
+package org.example.jspcafe.di;
+
 
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import org.example.jspcafe.di.SimpleDIContainer;
 
 @WebListener
 public class ApplicationContext implements ServletContextListener {
