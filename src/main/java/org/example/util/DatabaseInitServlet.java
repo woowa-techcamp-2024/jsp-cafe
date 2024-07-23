@@ -43,7 +43,7 @@ public class DatabaseInitServlet extends HttpServlet {
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
                 "writer VARCHAR(50) NOT NULL," +
                 "title VARCHAR(50) NOT NULL," +
-                "contents VARCHAR(100) NOT NULL," +
+                "contents TEXT NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                 ")";
     }
