@@ -29,8 +29,9 @@ public class SignupServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
-		if (userId == null || password == null || name == null || email == null) {
-			throw new IllegalArgumentException("All fields are required");
+		if (userId.isEmpty() || password.isEmpty() || name.isEmpty() || email.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
 		}
 		User user = new User(userId, password, name, email);
 		userDatabase.insert(user);
