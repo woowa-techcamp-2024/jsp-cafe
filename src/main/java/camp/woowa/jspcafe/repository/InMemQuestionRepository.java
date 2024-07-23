@@ -2,6 +2,7 @@ package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.models.Question;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -15,5 +16,10 @@ public class InMemQuestionRepository implements QuestionRepository {
         Long id = sequence_id.getAndIncrement();
         questions.put(id, new Question(id, title, content, writer));
         return id;
+    }
+
+    @Override
+    public List<Question> findAll() {
+        return List.copyOf(questions.values());
     }
 }
