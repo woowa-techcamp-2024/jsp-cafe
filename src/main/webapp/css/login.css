@@ -63,6 +63,10 @@ input::placeholder {
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 }
 
+#login-submit:hover {
+  background-color: #14212B;
+}
+
 #register-box {
   display: flex;
   flex-direction: row;
