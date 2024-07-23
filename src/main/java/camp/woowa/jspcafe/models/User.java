@@ -2,10 +2,10 @@ package camp.woowa.jspcafe.models;
 
 public class User {
     private final Long id;
-    private final String userId;
+    private String userId;
     private final String password;
-    private final String name;
-    private final String email;
+    private String name;
+    private String email;
 
     public User(Long id, String userId, String password, String name, String email) {
         this.id = id;
@@ -33,5 +33,11 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void update(String userId, String updatedName, String updatedEmail) {
+        this.userId = userId;
+        this.name = updatedName;
+        this.email = updatedEmail;
     }
 }
