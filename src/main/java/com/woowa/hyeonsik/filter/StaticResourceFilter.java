@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "StaticResourceFilter", urlPatterns = {"*.js", "*.css", "*.html"})
+@WebFilter(filterName = "StaticResourceFilter", urlPatterns = {"*.js", "*.css", "*.html", "*.png", "*.eot", "*.svg", "*.ttf", "*.woff", "*.woff2"})
 public class StaticResourceFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceFilter.class);
     private static final String SERVER_URI_PREFIX = "/";
