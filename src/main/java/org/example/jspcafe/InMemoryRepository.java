@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * InMemory를 사용하는 객체들은 모두 이 추상 클래스를 상속받아 구현합니다.
  */
 public abstract class InMemoryRepository<T> implements Repository<T> {
-    private final ConcurrentMap<Long, T> storage = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Long, T> storage = new ConcurrentHashMap<>();
     protected final AtomicLong idGenerator = new AtomicLong(0);
     private final Field idField;
 
