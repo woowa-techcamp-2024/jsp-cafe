@@ -53,6 +53,26 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new SerialException("Database Error");
         }
+    }
 
+    public User findUserByUserId(String userId) throws SQLException {
+        String sql = "SELECT * FROM users WHERE userId = ?";
+
+        try (Connection conn = DataUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()){
+                if (rs.next()) {
+                    String password = rs.getString("password");
+                    String name = rs.getString("name");
+                    String email = rs.getString("email");
+
+                    return User.createUser(userId, password, name, email);
+                }
+            }
+        }
+        throw new SQLException("User not found");
     }
 }

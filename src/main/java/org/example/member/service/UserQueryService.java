@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.example.member.model.dto.UserResponseDto;
 import org.example.member.repository.UserRepository;
 
-public class UserListService {
+public class UserQueryService {
 
     private final UserRepository userRepository = new UserRepository();
 
@@ -14,5 +14,9 @@ public class UserListService {
         return userRepository.findAllUsers()
                 .stream().map(UserResponseDto::toResponse)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    public UserResponseDto findUserByUserId(String userId) throws SQLException {
+        return UserResponseDto.toResponse(userRepository.findUserByUserId(userId));
     }
 }
