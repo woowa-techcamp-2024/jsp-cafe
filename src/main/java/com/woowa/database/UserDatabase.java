@@ -10,4 +10,6 @@ public interface UserDatabase {
     Optional<User> findByEmail(String email);
 
     List<User> findAll();
+
+    Optional<User> findById(String userId);
 }
