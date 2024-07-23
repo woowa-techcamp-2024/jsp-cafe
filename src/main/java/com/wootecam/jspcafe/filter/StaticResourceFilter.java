@@ -18,7 +18,6 @@ public class StaticResourceFilter implements Filter {
                          final FilterChain filterChain) throws ServletException, IOException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        System.out.println(request.getRequestURI());
         request.getRequestDispatcher("/static" + request.getRequestURI())
                 .forward(servletRequest, servletResponse);
     }
