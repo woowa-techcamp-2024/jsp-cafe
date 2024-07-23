@@ -34,6 +34,7 @@ public class ArticleController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        writeArticle(req, resp);
     }
 
     private void forward(String fileName, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,6 +42,10 @@ public class ArticleController extends HttpServlet {
     }
 
     private void writeArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        forward("article_form", req, resp);
+        String title = req.getParameter("title");
+        String nickname = req.getParameter("nickname");
+        String content = req.getParameter("content");
+        articleService.write(title, nickname, content);
+        resp.sendRedirect("/");
     }
 }
