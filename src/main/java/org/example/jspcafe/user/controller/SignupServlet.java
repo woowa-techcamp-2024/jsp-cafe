@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.jspcafe.ApplicationContext;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 import org.example.jspcafe.user.service.SignupService;
 
@@ -13,9 +14,14 @@ import java.io.IOException;
 @WebServlet(name = "signupServlet", value = "/api/signup")
 public class SignupServlet extends HttpServlet {
 
-    private final SignupService signupService;
+    private SignupService signupService;
 
-    // TODO 의존성 주입할 방법 찾기
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.signupService = ApplicationContext.getContainer().resolve(SignupService.class);
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String nickname = req.getParameter("nickname");
@@ -28,9 +34,5 @@ public class SignupServlet extends HttpServlet {
 
 
         resp.sendRedirect("/login");
-    }
-
-    public SignupServlet(SignupService signupService) {
-        this.signupService = signupService;
     }
 }
