@@ -35,4 +35,8 @@ public class UserDao {
     public List<User> findAll() {
         return Collections.unmodifiableList(users);
     }
+
+    public void clear() {
+        users.clear();
+    }
 }

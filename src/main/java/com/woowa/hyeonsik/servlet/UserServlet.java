@@ -1,7 +1,7 @@
 package com.woowa.hyeonsik.servlet;
 
-import com.woowa.hyeonsik.dao.UserDao;
 import com.woowa.hyeonsik.domain.User;
+import com.woowa.hyeonsik.service.UserService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -17,17 +17,17 @@ import java.util.List;
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
-    private UserDao userDao;
+    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        userDao = (UserDao) getServletContext().getAttribute("userDao");
+        userService = (UserService) getServletContext().getAttribute("userService");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> users = userDao.findAll();
+        List<User> users = userService.findAll();
         request.setAttribute("users", users);
         logger.debug("회원 목록 조회, 유저 목록: {}", users);
 
@@ -45,7 +45,7 @@ public class UserServlet extends HttpServlet {
         logger.debug("회원가입 요청도착! userId: {}, password: {}, name: {}, email: {}", userId, password, name, email);
 
         User user = new User(userId, password, name, email);
-        userDao.add(user);
+        userService.signUp(user);
 
         response.sendRedirect("/users");
     }
