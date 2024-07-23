@@ -18,7 +18,9 @@
                     <button class="btn">사용자 목록</button>
                 </a>
                 <button class="btn">로그인</button>
-                <button class="btn">회원가입</button>
+                <a href="/users/register">
+                    <button class="btn">회원가입</button>
+                </a>
             </div>
         </header>
 
@@ -30,6 +32,7 @@
             User user = (User) request.getAttribute("user");
         %>
         <form method="post" action="/api/users/update/${user.userId}">
+            <input type="hidden" name="userId" value="${user.userId}">
             <div class="form-group">
                 <label for="email">이메일</label>
                 <input name="email" type="email" id="email" value="${user.email}" readonly>

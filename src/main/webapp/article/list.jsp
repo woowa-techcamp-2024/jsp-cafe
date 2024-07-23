@@ -25,7 +25,9 @@
                 <button class="btn">사용자 목록</button>
             </a>
             <button class="btn">로그인</button>
-            <button class="btn">회원가입</button>
+            <a href="/users/register">
+                <button class="btn">회원가입</button>
+            </a>
             </div>
         </header>
 
@@ -53,6 +55,11 @@
                     <% } %>
                 </tbody>
             </table>
+            <div class="action-buttons">
+                <a href="/articles/register">
+                    <button class="btn-submit">글쓰기</button>
+                </a>
+            </div>
         </main>
     </div>
 <script>

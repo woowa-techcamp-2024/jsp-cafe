@@ -25,7 +25,9 @@
                     <button class="btn">사용자 목록</button>
                 </a>
                 <button class="btn">로그인</button>
-                <button class="btn">회원가입</button>
+                <a href="/users/register">
+                    <button class="btn">회원가입</button>
+                </a>
             </div>
         </header>
         <main>
@@ -38,6 +40,9 @@
                 <p>
                     <%= article.getContent() %>
                 </p>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-submit" onclick="window.history.back();">이전 페이지로 돌아가기</button>
             </div>
         </main>
     </div>
