@@ -54,4 +54,17 @@ class UserServiceTest {
         // Then
         assertEquals(2, users.size());
     }
+
+    @Test
+    void id를_기준으로_유저의_정보를_가져온다() {
+        // Given
+        User user = User.create("woowa@woowa.in", "김배달", "1234");
+        userDao.save(user);
+
+        // When
+        User storedUser = userService.findById(user.id());
+
+        // Then
+        assertEquals(user, storedUser);
+    }
 }

@@ -1,5 +1,6 @@
 package com.jspcafe.user.service;
 
+import com.jspcafe.exception.UserNotFoundException;
 import com.jspcafe.user.model.User;
 import com.jspcafe.user.model.UserDao;
 
@@ -18,5 +19,10 @@ public class UserService {
 
     public List<User> findAll() {
         return userDao.findAll();
+    }
+
+    public User findById(final String id) {
+        return userDao.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User id not found: id = " + id));
     }
 }
