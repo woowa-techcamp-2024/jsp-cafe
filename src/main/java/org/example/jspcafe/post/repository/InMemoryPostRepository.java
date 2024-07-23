@@ -25,6 +25,11 @@ public class InMemoryPostRepository extends InMemoryRepository<Post> implements 
                 .toList();
     }
 
+    @Override
+    public int count() {
+        return storage.size();
+    }
+
     public InMemoryPostRepository() {
         super(Post.class);
     }
