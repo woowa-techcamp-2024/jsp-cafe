@@ -53,7 +53,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/articles" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -138,8 +138,6 @@
 -->
 
 <!-- script references -->
-<script src="js/jquery-2.2.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
+<%@include file="template/footer.jsp" %>
 </body>
 </html>

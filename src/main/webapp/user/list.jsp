@@ -1,15 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.entity.User" %>
-<%@ page import="com.example.db.UserDatabase" %>
 <!DOCTYPE html>
 <html lang="kr">
-<head>
-    <meta charset="UTF-8">
-    <title>유저 리스트</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/styles.css" rel="stylesheet">
-</head>
+<%@ include file="../template/head.jsp"%>
 <body>
 <%@ include file="../template/top-header.jsp"%>
 <%@ include file="../template/sub-header.jsp"%>
@@ -25,16 +19,15 @@
                 </thead>
                 <tbody>
                 <%
-                    UserDatabase userDatabase = (UserDatabase) config.getServletContext().getAttribute("userDatabase");
-                    List<User> userList = userDatabase.findAll();
+                    List<User> userList = (List<User>) request.getAttribute("userList");
                     for(User user : userList) {
                 %>
                 <tr>
                     <th scope="row"><%= user.id() %></th>
-                    <td><a href="/users/<%= user.id() %>"><%= user.id() %></a></td>
+                    <td><a href="/users/profile/<%= user.id() %>"><%= user.id() %></a></td>
                     <td><%= user.name() %></td>
                     <td><%= user.email() %></td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <td><a class="btn btn-success" href="/users/edit/<%= user.id() %>">수정</a></td>
                 </tr>
                 <% } %>
                 </tbody>
@@ -44,8 +37,6 @@
 </div>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<%@include file="../template/footer.jsp" %>
 </body>
 </html>
