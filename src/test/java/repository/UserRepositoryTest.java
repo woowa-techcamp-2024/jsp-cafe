@@ -45,4 +45,21 @@ class UserRepositoryTest {
         assertEquals(users.size(), expected_size);
         assertEquals(users.get(expected_size - 1).getUserId(), userId);
     }
+
+    @Test
+    void testFindById() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        UserRepository userRepository = new InMemUserRepository();
+
+        // when
+        userRepository.save(userId, password, name, email);
+        User user = userRepository.findById(userId);
+
+        // then
+        assertEquals(user.getUserId(), userId);
+    }
 }
