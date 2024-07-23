@@ -2,6 +2,7 @@ package org.example.jspcafe.post.service;
 
 import org.example.jspcafe.post.repository.InMemoryPostRepository;
 import org.example.jspcafe.post.request.PostCreateRequest;
+import org.example.jspcafe.user.repository.InMemoryUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class PostServiceTest {
     @BeforeEach
     void setUp() {
         postRepository = new InMemoryPostRepository();
-        postService = new PostService(postRepository);
+        postService = new PostService(postRepository, new InMemoryUserRepository());
 
     }
 
