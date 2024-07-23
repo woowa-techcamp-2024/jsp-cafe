@@ -1,20 +1,23 @@
 package woowa.camp.jspcafe.domain;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import woowa.camp.jspcafe.domain.exception.UserException;
 
 public class User {
 
     private Long id;
-    private String email;
-    private String nickname;
-    private String password;
+    private final String email;
+    private final String nickname;
+    private final String password;
+    private final LocalDate registerAt;
 
-    public User(String email, String nickname, String password) {
+    public User(String email, String nickname, String password, LocalDate registerAt) {
         validate(email, nickname, password);
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.registerAt = registerAt;
     }
 
     private void validate(String password, String name, String email) {
@@ -75,5 +78,9 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public LocalDate getRegisterAt() {
+        return registerAt;
     }
 }
