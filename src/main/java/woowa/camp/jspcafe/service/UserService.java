@@ -16,7 +16,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void registration(final RegistrationRequest registrationRequest) {
+    public User registration(final RegistrationRequest registrationRequest) {
         // TODO: 회원 가입 검증 기능
         User user = new User(registrationRequest.userId(),
                 registrationRequest.password(),
@@ -24,6 +24,7 @@ public class UserService {
                 registrationRequest.email());
 
         userRepository.save(user);
+        return user;
     }
 
     public List<UserResponse> findAll() {
