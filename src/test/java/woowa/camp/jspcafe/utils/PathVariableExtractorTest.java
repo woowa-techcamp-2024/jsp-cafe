@@ -28,7 +28,6 @@ class PathVariableExtractorTest {
         String urlPattern = "/users/{userId}/posts/{postId}";
         String actualPath = "/users/123/posts/456";
         Map<String, String> result = PathVariableExtractor.extractPathVariables(urlPattern, actualPath);
-        System.out.println("result = " + result);
         assertEquals(2, result.size());
         assertEquals("123", result.get("userId"));
         assertEquals("456", result.get("postId"));

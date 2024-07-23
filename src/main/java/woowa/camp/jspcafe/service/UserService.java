@@ -3,6 +3,7 @@ package woowa.camp.jspcafe.service;
 import java.util.ArrayList;
 import java.util.List;
 import woowa.camp.jspcafe.domain.User;
+import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.UserRepository;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 import woowa.camp.jspcafe.service.dto.UserResponse;
@@ -34,6 +35,11 @@ public class UserService {
         }
 
         return userResponses;
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserException("User with id " + id + " not found"));
     }
 
 }
