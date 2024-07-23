@@ -24,7 +24,8 @@
                             UserResponse user = users.get(i);
                 %>
                 <tr>
-                    <td><a href="/users/<%= user.id() %>" class="btn btn-link"><%= user.nickname() %></a></td>
+
+                    <td><a href="${pageContext.request.contextPath}/users/<%= user.id() %>" class="btn btn-link"><%= user.nickname() %></a></td>
                     <td><%= user.email() %></td>
                     <td><%= user.registerAt() %></td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>

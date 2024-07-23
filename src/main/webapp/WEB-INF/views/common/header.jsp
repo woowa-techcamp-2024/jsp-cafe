@@ -6,18 +6,18 @@
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/static/css/bootstrap.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="/static/css/styles.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/static/css/styles.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="../" class="navbar-brand">HELLO, 우테캠!</a>
+            <a href="${pageContext.request.contextPath}/" class="navbar-brand">HELLO, 우테캠!</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -41,7 +41,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="../user/list.html"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="${pageContext.request.contextPath}/users"><i class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>
     </div>
@@ -53,7 +53,7 @@
                data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <li><a href="../user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
+                <li><a href="${pageContext.request.contextPath}/user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
                     Profile</a></li>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
@@ -68,10 +68,10 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../index.html">Posts</a></li>
-                <li><a href="../users" role="button">멤버리스트</a></li>
-                <li><a href="../user/login.html" role="button">로그인</a></li>
-                <li><a href="../users/registration" role="button">회원가입</a></li>
+                <li class="active"><a href="${pageContext.request.contextPath}">Posts</a></li>
+                <li><a href="${pageContext.request.contextPath}/users" role="button">멤버리스트</a></li>
+                <li><a href="${pageContext.request.contextPath}/user/login.html" role="button">로그인</a></li>
+                <li><a href="${pageContext.request.contextPath}/users/registration" role="button">회원가입</a></li>
                 <!--
                 <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
