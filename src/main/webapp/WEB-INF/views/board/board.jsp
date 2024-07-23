@@ -57,6 +57,12 @@
             <a href="#" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&gt;</a>
         </nav>
     </div>
+
+    <div class="fixed bottom-8 right-8 z-50">
+        <a href="<c:url value='/articles/form'/>" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            게시글 작성
+        </a>
+    </div>
 </main>
 </body>
 </html>
