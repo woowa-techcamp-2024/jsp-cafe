@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.service.UserService;
+import woowa.camp.jspcafe.service.dto.UserResponse;
 
 @WebServlet(name = "userServlet", value = "/users")
 public class UserServlet extends HttpServlet {
@@ -37,7 +37,7 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("userServlet doGet start");
 
-        List<User> users = userService.findAll();
+        List<UserResponse> users = userService.findAll();
         log.info("users - {}", users);
         req.setAttribute("users", users);
 

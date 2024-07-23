@@ -1,9 +1,11 @@
 package woowa.camp.jspcafe.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.repository.UserRepository;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
+import woowa.camp.jspcafe.service.dto.UserResponse;
 
 public class UserService {
 
@@ -23,8 +25,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        List<User> users = userRepository.findAll();
+
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (User user : users) {
+            userResponses.add(UserResponse.of(user));
+        }
+
+        return userResponses;
     }
 
 }

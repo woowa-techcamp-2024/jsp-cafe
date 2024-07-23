@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="woowa.camp.jspcafe.domain.User" %>
+<%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,16 +91,16 @@
                 </thead>
                 <tbody>
                 <%
-                    List<User> users = (List<User>)request.getAttribute("users");
+                    List<UserResponse> users = (List<UserResponse>)request.getAttribute("users");
                     if(users != null) {
                         for(int i = 0; i < users.size(); i++) {
-                            User user = users.get(i);
+                            UserResponse user = users.get(i);
                 %>
                 <tr>
                     <th scope="row"><%= i + 1 %></th>
-                    <td><%= user.getUserId() %></td>
-                    <td><%= user.getName() %></td>
-                    <td><%= user.getEmail() %></td>
+                    <td><%= user.userId() %></td>
+                    <td><%= user.name() %></td>
+                    <td><%= user.email() %></td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
