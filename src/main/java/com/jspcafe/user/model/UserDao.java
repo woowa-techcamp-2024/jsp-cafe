@@ -1,9 +1,6 @@
 package com.jspcafe.user.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserDao {
     private final Map<String, String> idByEmail = new HashMap<>();
@@ -14,13 +11,13 @@ public class UserDao {
         idByEmail.put(user.email(), user.id());
     }
 
-    public User findById(String id) {
-        return usersById.get(id);
+    public Optional<User> findById(String id) {
+        return Optional.ofNullable(usersById.get(id));
     }
 
-    public User findByEmail(String email) {
-        String id = idByEmail.get(email);
-        return findById(id);
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(idByEmail.get(email))
+                .flatMap(this::findById);
     }
 
     public List<User> findAll() {

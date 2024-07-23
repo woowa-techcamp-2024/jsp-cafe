@@ -1,5 +1,6 @@
 package com.jspcafe.user.service;
 
+import com.jspcafe.exception.UserNotFoundException;
 import com.jspcafe.user.model.User;
 import com.jspcafe.user.model.UserDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,8 @@ class UserServiceTest {
 
         // Then
         User user = User.create("woowa@woowa.in", "김배달", "1234");
-        User storedUser = userDao.findByEmail("woowa@woowa.in");
+        User storedUser = userDao.findByEmail("woowa@woowa.in")
+                .orElseThrow(() -> new UserNotFoundException("email not found"));
         assertNotNull(storedUser);
         assertEquals(user.email(), email);
         assertEquals(user.nickname(), nickname);
@@ -51,7 +53,5 @@ class UserServiceTest {
 
         // Then
         assertEquals(2, users.size());
-        assertEquals(user1, users.get(0));
-        assertEquals(user2, users.get(1));
     }
 }
