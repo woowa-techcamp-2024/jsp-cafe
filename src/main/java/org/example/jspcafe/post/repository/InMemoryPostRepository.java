@@ -15,6 +15,7 @@ public class InMemoryPostRepository extends InMemoryRepository<Post> implements 
 
     @Override
     public List<Post> findAll(int offset, int limit) {
+        validateOffsetAndLimit(offset, limit);
         return storage.values().stream()
                 .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
                 .skip(offset)
@@ -24,6 +25,12 @@ public class InMemoryPostRepository extends InMemoryRepository<Post> implements 
 
     protected InMemoryPostRepository() {
         super(Post.class);
+    }
+
+    private void validateOffsetAndLimit(int offset, int limit) {
+        if (offset < 0 || limit < 0) {
+            throw new IllegalArgumentException("offset과 limit은 0 이상이어야 합니다.");
+        }
     }
 
 }
