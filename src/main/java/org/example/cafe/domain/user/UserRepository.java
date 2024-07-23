@@ -9,11 +9,6 @@ public class UserRepository {
 
     private static final Map<String, User> storage = new ConcurrentHashMap<>();
 
-    static {
-        storage.put("javajigi", new User("javajigi", "javajigi", "자바지기", "javajigi@sample.net"));
-        storage.put("slipp", new User("slipp", "slipp", "슬립", "slipp@sample.net"));
-    }
-
     public void save(User user) {
         storage.put(user.getUserId(), user);
     }
@@ -24,5 +19,9 @@ public class UserRepository {
 
     public List<User> findAll() {
         return new ArrayList<>(storage.values());
+    }
+
+    public void deleteAll() {
+        storage.clear();
     }
 }
