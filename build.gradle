@@ -21,6 +21,8 @@ dependencies {
     implementation('ch.qos.logback:logback-classic:1.4.12')
     // assertj
     testImplementation 'org.assertj:assertj-core:3.23.1'
+    // db
+    implementation 'mysql:mysql-connector-java:8.0.33'
 }
 
 war {
