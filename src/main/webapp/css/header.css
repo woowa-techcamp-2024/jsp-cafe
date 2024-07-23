@@ -41,3 +41,6 @@
 .user-list-button:hover, .logout-button:hover, .login-button:hover, .signup-button:hover {
     background-color: #0056b3;
 }
+.edit-profile-button {
+    background-color: #f59e0b;
+}

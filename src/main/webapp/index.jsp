@@ -25,6 +25,9 @@
             <form action="api/logout" method="post" style="display: inline;">
                 <button type="submit" class="logout-button">로그아웃</button>
             </form>
+            <form action="editProfile" method="get" style="display: inline;">
+                <button type="submit" class="edit-profile-button">정보수정</button>
+            </form>
             <% } else { %>
             <form action="login" method="get" style="display: inline;">
                 <button type="submit" class="login-button">로그인</button>
