@@ -1,9 +1,11 @@
 package org.example.jspcafe.user.service;
 
+import org.example.jspcafe.Component;
 import org.example.jspcafe.Repository;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 
+@Component
 public class SignupService {
 
     private final Repository<User> userRepository;
