@@ -32,6 +32,22 @@ public class UserRepository {
         }
     }
 
+    public User update(User user) throws SQLException {
+        String sql = "update users set password=?, name=?, email=? where userId=?";
+        try (Connection conn = DataUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getPassword());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getUserId());
+            ps.executeUpdate();
+            return user;
+        } catch (SQLException e) {
+            logger.error("update user error", e);
+            throw e;
+        }
+    }
+
     public List<User> findAllUsers() throws SQLException {
         String sql = "SELECT * FROM users";
 
