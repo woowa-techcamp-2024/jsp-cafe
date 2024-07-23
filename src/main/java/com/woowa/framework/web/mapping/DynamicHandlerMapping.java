@@ -1,6 +1,8 @@
-package com.woowa.framework.web;
+package com.woowa.framework.web.mapping;
 
 import com.woowa.framework.BeanFactory;
+import com.woowa.framework.web.HttpMethod;
+import com.woowa.framework.web.RequestMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Map;

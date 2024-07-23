@@ -1,5 +1,6 @@
-package com.woowa.framework.web;
+package com.woowa.framework.web.mapping;
 
+import com.woowa.framework.web.ResponseEntity;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

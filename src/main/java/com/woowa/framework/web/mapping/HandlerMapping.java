@@ -1,4 +1,4 @@
-package com.woowa.framework.web;
+package com.woowa.framework.web.mapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 

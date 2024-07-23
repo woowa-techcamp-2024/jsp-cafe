@@ -1,5 +1,6 @@
-package com.woowa.framework.web;
+package com.woowa.framework.web.mapping;
 
+import com.woowa.framework.web.ResponseEntity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
