@@ -4,16 +4,22 @@ import org.example.post.model.dao.Post;
 
 public class PostResponse {
 
+    private Long id;
     private String writer;
     private String title;
     private String contents;
 
     public static PostResponse toResponse(Post post) {
         PostResponse postResponse = new PostResponse();
-        postResponse.setWriter(post.getWriter());
-        postResponse.setTitle(post.getTitle());
-        postResponse.setContents(post.getContents());
+        postResponse.id = post.getId();
+        postResponse.writer = post.getWriter();
+        postResponse.title = post.getTitle();
+        postResponse.contents = post.getContents();
         return postResponse;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getWriter() {
