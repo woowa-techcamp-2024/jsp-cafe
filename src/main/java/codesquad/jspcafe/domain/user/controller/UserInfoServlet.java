@@ -52,7 +52,8 @@ public class UserInfoServlet extends HttpServlet {
         // Case for /users/*/form
         if (pathInfo.endsWith("/form")) {
             String userId = pathInfo.substring(1, pathInfo.length() - "/form".length());
-            req.setAttribute("userId", userId);
+            UserCommonResponse userCommonResponse = userService.getUserById(userId);
+            req.setAttribute("userId", userCommonResponse.getUserId());
             req.getRequestDispatcher("/WEB-INF/jsp/userUpdateForm.jsp").forward(req, resp);
         } else {
             String userId = pathInfo.substring(1);
