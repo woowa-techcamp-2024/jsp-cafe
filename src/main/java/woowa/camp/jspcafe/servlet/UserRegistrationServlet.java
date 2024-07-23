@@ -30,4 +30,13 @@ public class UserRegistrationServlet extends HttpServlet {
         }
     }
 
+    // 회원가입 폼을 반환
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("userRegistrationServlet doGet start");
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/static/user/form.html");
+        requestDispatcher.forward(req, resp);
+        log.debug("userRegistrationServlet doGet end");
+    }
+
 }
