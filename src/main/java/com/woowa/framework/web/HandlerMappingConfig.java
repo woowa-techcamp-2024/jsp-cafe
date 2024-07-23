@@ -9,9 +9,7 @@ public class HandlerMappingConfig {
 
     @Bean
     public DynamicHandlerMapping dynamicHandlerMapping(BeanFactory beanFactory) {
-        DynamicHandlerMapping dynamicHandlerMapping = new DynamicHandlerMapping(beanFactory);
-        dynamicHandlerMapping.init();
-        return dynamicHandlerMapping;
+        return new DynamicHandlerMapping(beanFactory);
     }
 
     @Bean

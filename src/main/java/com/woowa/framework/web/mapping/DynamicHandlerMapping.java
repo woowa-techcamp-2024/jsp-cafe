@@ -1,6 +1,7 @@
 package com.woowa.framework.web.mapping;
 
 import com.woowa.framework.BeanFactory;
+import com.woowa.framework.Initializer;
 import com.woowa.framework.web.HttpMethod;
 import com.woowa.framework.web.RequestMapping;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DynamicHandlerMapping implements HandlerMapping {
+public class DynamicHandlerMapping implements HandlerMapping, Initializer {
 
     private final Map<String, Map<HttpMethod, HandlerMethod>> handlers = new ConcurrentHashMap<>();
     private final BeanFactory container;
@@ -18,6 +19,7 @@ public class DynamicHandlerMapping implements HandlerMapping {
         this.container = container;
     }
 
+    @Override
     public void init() {
         for (Object bean : container.getBeans()) {
             for (Method method : bean.getClass().getMethods()) {

@@ -1,5 +1,6 @@
 package com.woowa;
 
+import com.woowa.framework.ApplicationInitializer;
 import com.woowa.framework.BeanFactory;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -16,6 +17,9 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
     public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
         BeanFactory beanFactory = new BeanFactory();
         beanFactory.start();
+
+        ApplicationInitializer applicationInitializer = new ApplicationInitializer(beanFactory);
+        applicationInitializer.init();
 
         DispatcherServlet dispatcherServlet = new DispatcherServlet();
         dispatcherServlet.init(beanFactory);
