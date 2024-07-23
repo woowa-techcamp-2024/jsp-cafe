@@ -9,29 +9,29 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.jspcafe.user.User;
 import org.example.jspcafe.user.repository.MemoryUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
-import org.example.jspcafe.user.service.AuthService;
+import org.example.jspcafe.user.service.UserService;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "AuthController", value = "/users")
-public class UserAuth extends HttpServlet {
+public class UserAuthServlet extends HttpServlet {
 
-    private AuthService authService;
+    private UserService userService;
     private UserRepository userRepository;
 
     public void init(){
         this.userRepository = new MemoryUserRepository();
-        this.authService = new AuthService(userRepository);
+        this.userService = new UserService(userRepository);
     }
 
     public void destroy() {
 
     }
 
-    public UserAuth() {
+    public UserAuthServlet() {
         this.userRepository = new MemoryUserRepository();
-        this.authService = new AuthService(userRepository);
+        this.userService = new UserService(userRepository);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class UserAuth extends HttpServlet {
         String nickname = req.getParameter("nickname");
         String password = req.getParameter("password");
         User user = new User(userId,password,nickname,email);
-        authService.register(user);
+        userService.register(user);
         resp.sendRedirect("users");
     }
 }

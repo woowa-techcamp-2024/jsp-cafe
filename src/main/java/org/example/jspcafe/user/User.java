@@ -52,4 +52,8 @@ public class User {
     public String getUserId() {
         return userId;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
