@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceTest {
     UserRepository userRepository;
@@ -80,7 +81,7 @@ class UserServiceTest {
         String updatedEmail = "updatedEmail";
 
         // when
-        Long updated_id = userService.update(id, updatedUserId, updatedName, updatedEmail);
+        Long updated_id = userService.update(id, password, updatedUserId, updatedName, updatedEmail);
 
         // then
         User user = userService.findById(id);
@@ -90,5 +91,22 @@ class UserServiceTest {
         assertEquals(user.getUserId(), updatedUserId);
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
+    }
+
+    @Test
+    void TestFailUpdateByIncorrectPassword() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        Long id = userRepository.save(userId, password, name, email);
+        String updatedUserId = "updatedUserId";
+        String updatedName = "updatedName";
+        String updatedEmail = "updatedEmail";
+
+        // when
+        // then
+        assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedUserId, updatedName, updatedEmail));
     }
 }
