@@ -12,6 +12,7 @@
                 <tr>
                     <th>닉네임</th>
                     <th>이메일</th>
+                    <th>회원가입일</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -25,6 +26,7 @@
                 <tr>
                     <td><a href="/users/<%= user.id() %>" class="btn btn-link"><%= user.nickname() %></a></td>
                     <td><%= user.email() %></td>
+                    <td><%= user.registerAt() %></td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
