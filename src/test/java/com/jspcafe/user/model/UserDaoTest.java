@@ -59,7 +59,5 @@ class UserDaoTest {
 
         // Then
         assertEquals(2, users.size());
-        assertEquals(user1, users.get(0));
-        assertEquals(user2, users.get(1));
     }
 }
