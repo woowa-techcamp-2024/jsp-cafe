@@ -80,10 +80,13 @@ class UserServiceTest {
         String updatedEmail = "updatedEmail";
 
         // when
-        userService.update(id, updatedUserId, updatedName, updatedEmail);
+        Long updated_id = userService.update(id, updatedUserId, updatedName, updatedEmail);
 
         // then
         User user = userService.findById(id);
+        User updated = userRepository.findById(updated_id);
+
+        assertEquals(user, updated);
         assertEquals(user.getUserId(), updatedUserId);
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
