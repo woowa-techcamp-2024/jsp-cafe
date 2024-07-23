@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HELLO, WEB!</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
 <div class="container">
@@ -34,7 +33,7 @@
                 <label for="password">비밀번호</label>
                 <input name="password" type="password" id="password" placeholder="비밀번호를 입력해주세요">
             </div>
-            <button type="submit" class="btn btn-register">회원가입</button>
+            <button type="submit" class="btn-submit">회원가입</button>
         </form>
     </main>
 </div>

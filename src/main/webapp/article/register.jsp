@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posting</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/article/register.css">
 </head>
 <body>
     <div class="container">

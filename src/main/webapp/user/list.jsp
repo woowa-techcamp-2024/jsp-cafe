@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User List</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/list.css">
 </head>
 <body>
 <%
@@ -41,7 +40,7 @@
             </thead>
             <tbody>
             <% for(User user : users) { %>
-                <tr>
+                <tr class="clickable-tr" onclick="goToUserDetail('<%= user.getUserId() %>')">
                     <td><%= user.getNickname() %></td>
                     <td><%= user.getEmail() %></td>
                     <td><%= user.getCreatedDt().format(formatter) %></td>
@@ -51,5 +50,10 @@
         </table>
     </main>
 </div>
+<script>
+    function goToUserDetail(userId) {
+        window.location.href = '/users/' + userId;
+    }
+</script>
 </body>
 </html>
