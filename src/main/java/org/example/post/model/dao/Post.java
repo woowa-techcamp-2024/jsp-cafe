@@ -12,6 +12,7 @@ public class Post {
         post.writer = writer;
         post.title = title;
         post.contents = contents;
+        post.validate();
         return post;
     }
 
@@ -21,6 +22,7 @@ public class Post {
         post.writer = writer;
         post.title = title;
         post.contents = contents;
+        post.validate();
         return post;
     }
 
@@ -47,5 +49,17 @@ public class Post {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
+    }
+
+    private void validate() {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("title cannot be null or empty");
+        }
+        if (contents == null || contents.trim().isEmpty()) {
+            throw new IllegalArgumentException("contents cannot be null or empty");
+        }
+        if (writer == null || writer.trim().isEmpty()) {
+            throw new IllegalArgumentException("writer cannot be null or empty");
+        }
     }
 }
