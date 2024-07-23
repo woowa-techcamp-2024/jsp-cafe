@@ -25,7 +25,7 @@ public class InMemoryPostRepository extends InMemoryRepository<Post> implements 
                 .toList();
     }
 
-    protected InMemoryPostRepository() {
+    public InMemoryPostRepository() {
         super(Post.class);
     }
 
