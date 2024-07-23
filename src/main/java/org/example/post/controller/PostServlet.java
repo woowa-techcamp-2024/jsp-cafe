@@ -23,7 +23,7 @@ public class PostServlet extends HttpServlet {
             String contents = req.getParameter("contents");
             Post post = Post.create(writer, title, contents);
             postService.create(post);
-            resp.sendRedirect("/index.html");
+            resp.sendRedirect("/");
         } catch (SQLException e) {
 
         }
