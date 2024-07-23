@@ -1,6 +1,7 @@
 package camp.woowa.jspcafe.servlets;
 
 import camp.woowa.jspcafe.services.UserService;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,13 +22,24 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/list.jsp");
+
+        try {
+            dispatcher.forward(req, resp);
+        } catch (ServletException | IOException e) {
+            log(e.getMessage());
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         userService.createUser( req.getParameter("userId"),
                 req.getParameter("password"),
                 req.getParameter("name"),
                 req.getParameter("email"));
         try {
-            res.sendRedirect("/user/list.html");
+            res.sendRedirect("/users");
         } catch (IOException e) {
             log(e.getMessage());
         }
