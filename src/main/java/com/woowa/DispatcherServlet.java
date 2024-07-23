@@ -3,6 +3,7 @@ package com.woowa;
 import com.woowa.framework.BeanFactory;
 import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
 import com.woowa.framework.web.DynamicHandlerMapping;
+import com.woowa.framework.web.ContentType;
 import com.woowa.framework.web.HandlerMethod;
 import com.woowa.framework.web.ResponseEntity;
 import jakarta.servlet.http.HttpServlet;
@@ -45,10 +46,26 @@ public class DispatcherServlet extends HttpServlet {
 
         ResponseEntity responseEntity = handlerMethod.invoke(args);
 
+        String contentType = getContentType(req);
+        resp.setContentType(contentType);
+        resp.setContentLength(responseEntity.getBody().length);
         resp.setStatus(responseEntity.getStatus());
         for (Entry<String, String> entry : responseEntity.getHeader().entrySet()) {
             resp.addHeader(entry.getKey(), entry.getValue());
         }
-        resp.getWriter().print(Arrays.toString(responseEntity.getBody()));
+        resp.getOutputStream().write(responseEntity.getBody());
+        resp.getOutputStream().flush();
+    }
+
+    private String getContentType(HttpServletRequest request) {
+        if(request.getContentType() != null) {
+            return request.getContentType();
+        }
+
+        int lastIndexOfDot = request.getRequestURI().lastIndexOf(".");
+        if(lastIndexOfDot == -1) {
+            return ContentType.TEXT_HTML.getContentType();
+        }
+        return ContentType.getContentType(request.getRequestURI().substring(lastIndexOfDot + 1));
     }
 }
