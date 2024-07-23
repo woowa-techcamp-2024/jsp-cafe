@@ -11,6 +11,11 @@
 </head>
 <body>
 <%
+    Boolean isLogined = (Boolean) session.getAttribute("isLogined");
+    if (isLogined != null && isLogined) {
+        response.sendRedirect("/"); // 메인 페이지로 리디렉션
+        return;
+    }
     String errorMessage = (String) request.getAttribute("errorMessage");
 %>
 <div class="container">
