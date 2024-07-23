@@ -2,7 +2,7 @@ package com.example.servlet;
 
 import java.io.IOException;
 
-import com.example.db.UserMemoryDatabase;
+import com.example.db.UserDatabase;
 import com.example.entity.User;
 
 import jakarta.servlet.ServletConfig;
@@ -15,12 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/users/edit/*")
 public class UserUpdateServlet extends HttpServlet {
 
-	private UserMemoryDatabase userMemoryDatabase;
+	private UserDatabase userDatabase;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		userMemoryDatabase = (UserMemoryDatabase)config.getServletContext().getAttribute("userDatabase");
+		userDatabase = (UserDatabase)config.getServletContext().getAttribute("userDatabase");
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class UserUpdateServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String userId = req.getPathInfo().substring(1);
 
-		if (userMemoryDatabase.findById(userId).isEmpty()) {
+		if (userDatabase.findById(userId).isEmpty()) {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
@@ -41,7 +41,7 @@ public class UserUpdateServlet extends HttpServlet {
 		String email = req.getParameter("email");
 		String name = req.getParameter("name");
 
-		userMemoryDatabase.update(userId, new User(userId, password, name, email));
+		userDatabase.update(userId, new User(userId, password, name, email));
 		resp.sendRedirect("/users");
 	}
 }
