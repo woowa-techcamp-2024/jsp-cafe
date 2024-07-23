@@ -2,6 +2,7 @@ package com.jspcafe.board.service;
 
 import com.jspcafe.board.model.Article;
 import com.jspcafe.board.model.ArticleDao;
+import com.jspcafe.exception.ArticleNotFoundException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,6 +19,11 @@ public class ArticleService {
         Article article = Article.create(title, nickname, content);
         articleDao.save(article);
         return article.id();
+    }
+
+    public Article findById(final String id) {
+        return articleDao.findById(id)
+                .orElseThrow(() -> new ArticleNotFoundException("Article id not found, id: " + id));
     }
 
     public List<Article> findAll() {

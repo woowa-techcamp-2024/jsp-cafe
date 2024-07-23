@@ -40,6 +40,19 @@ class ArticleServiceTest {
     }
 
     @Test
+    void id값을_기준으로_게시글_정보를_가져온다() {
+        // Given
+        Article article = Article.create("testTitle", "testName", "test test test.");
+        articleDao.save(article);
+
+        // When
+        Article storedArticle = articleService.findById(article.id());
+
+        // Then
+        assertEquals(article, storedArticle);
+    }
+
+    @Test
     void 게시글을_최신순으로_정렬하여_가져온다() {
         // Given
         LocalDateTime now = LocalDateTime.now();
