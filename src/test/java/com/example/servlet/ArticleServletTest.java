@@ -1,6 +1,6 @@
 package com.example.servlet;
 
-import com.example.db.ArticleDatabase;
+import com.example.db.ArticleMemoryDatabase;
 import com.example.entity.Article;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class ArticleServletTest {
 
 	private ArticleServlet articleServlet;
-	private ArticleDatabase articleDatabase;
+	private ArticleMemoryDatabase articleMemoryDatabase;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private RequestDispatcher requestDispatcher;
@@ -31,7 +31,7 @@ class ArticleServletTest {
 	@BeforeEach
 	void setUp() throws ServletException {
 		articleServlet = new ArticleServlet();
-		articleDatabase = mock(ArticleDatabase.class);
+		articleMemoryDatabase = mock(ArticleMemoryDatabase.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		requestDispatcher = mock(RequestDispatcher.class);
@@ -39,7 +39,7 @@ class ArticleServletTest {
 		ServletConfig config = mock(ServletConfig.class);
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
-		when(context.getAttribute("articleDatabase")).thenReturn(articleDatabase);
+		when(context.getAttribute("articleDatabase")).thenReturn(articleMemoryDatabase);
 		when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
 		articleServlet.init(config);
@@ -58,7 +58,7 @@ class ArticleServletTest {
 
 		// then
 		ArgumentCaptor<Article> articleCaptor = ArgumentCaptor.forClass(Article.class);
-		verify(articleDatabase).insert(articleCaptor.capture());
+		verify(articleMemoryDatabase).insert(articleCaptor.capture());
 		Article insertedArticle = articleCaptor.getValue();
 		assertThat(insertedArticle.getWriter()).isEqualTo("writer");
 		assertThat(insertedArticle.getTitle()).isEqualTo("title");
@@ -86,7 +86,7 @@ class ArticleServletTest {
 		// given
 		Article article = new Article(1L, "writer", "title", "contents");
 		when(request.getPathInfo()).thenReturn("/1");
-		when(articleDatabase.findById(1L)).thenReturn(Optional.of(article));
+		when(articleMemoryDatabase.findById(1L)).thenReturn(Optional.of(article));
 
 		// when
 		articleServlet.doGet(request, response);
@@ -101,7 +101,7 @@ class ArticleServletTest {
 	void doGet_invalidArticleId_sendsError() throws Exception {
 		// given
 		when(request.getPathInfo()).thenReturn("/1");
-		when(articleDatabase.findById(1L)).thenReturn(Optional.empty());
+		when(articleMemoryDatabase.findById(1L)).thenReturn(Optional.empty());
 
 		// when
 		articleServlet.doGet(request, response);

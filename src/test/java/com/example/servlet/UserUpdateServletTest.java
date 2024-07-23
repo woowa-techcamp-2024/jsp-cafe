@@ -1,6 +1,6 @@
 package com.example.servlet;
 
-import com.example.db.UserDatabase;
+import com.example.db.UserMemoryDatabase;
 import com.example.entity.User;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class UserUpdateServletTest {
 
 	private UserUpdateServlet userUpdateServlet;
-	private UserDatabase userDatabase;
+	private UserMemoryDatabase userMemoryDatabase;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private RequestDispatcher requestDispatcher;
@@ -31,7 +31,7 @@ class UserUpdateServletTest {
 	@BeforeEach
 	void setUp() throws ServletException {
 		userUpdateServlet = new UserUpdateServlet();
-		userDatabase = mock(UserDatabase.class);
+		userMemoryDatabase = mock(UserMemoryDatabase.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		requestDispatcher = mock(RequestDispatcher.class);
@@ -39,7 +39,7 @@ class UserUpdateServletTest {
 		ServletConfig config = mock(ServletConfig.class);
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
-		when(context.getAttribute("userDatabase")).thenReturn(userDatabase);
+		when(context.getAttribute("userDatabase")).thenReturn(userMemoryDatabase);
 		when(request.getRequestDispatcher("/user/updateForm.jsp")).thenReturn(requestDispatcher);
 
 		userUpdateServlet.init(config);
@@ -51,7 +51,7 @@ class UserUpdateServletTest {
 		// given
 		User user = new User("1", "password", "name", "email@example.com");
 		when(request.getPathInfo()).thenReturn("/1");
-		when(userDatabase.findById("1")).thenReturn(Optional.of(user));
+		when(userMemoryDatabase.findById("1")).thenReturn(Optional.of(user));
 		when(request.getParameter("password")).thenReturn("newPassword");
 		when(request.getParameter("name")).thenReturn("newName");
 		when(request.getParameter("email")).thenReturn("newEmail@example.com");
@@ -61,7 +61,7 @@ class UserUpdateServletTest {
 
 		// then
 		ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-		verify(userDatabase).update(eq("1"), userCaptor.capture());
+		verify(userMemoryDatabase).update(eq("1"), userCaptor.capture());
 		User updatedUser = userCaptor.getValue();
 		assertThat(updatedUser.password()).isEqualTo("newPassword");
 		assertThat(updatedUser.name()).isEqualTo("newName");
@@ -75,7 +75,7 @@ class UserUpdateServletTest {
 	void doPost_invalidUserId_sendsError() throws IOException {
 		// given
 		when(request.getPathInfo()).thenReturn("/1");
-		when(userDatabase.findById("1")).thenReturn(Optional.empty());
+		when(userMemoryDatabase.findById("1")).thenReturn(Optional.empty());
 
 		// when
 		userUpdateServlet.doPost(request, response);

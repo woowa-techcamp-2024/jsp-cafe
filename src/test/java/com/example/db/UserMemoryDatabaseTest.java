@@ -17,13 +17,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.example.entity.User;
 
-public class UserDatabaseTest {
+public class UserMemoryDatabaseTest {
 
-	private UserDatabase userDatabase;
+	private UserMemoryDatabase userMemoryDatabase;
 
 	@BeforeEach
 	void setUp() {
-		userDatabase = new UserDatabase();
+		userMemoryDatabase = new UserMemoryDatabase();
 	}
 
 	@DisplayName("같은 userId가 동시에 접근하면 실패한다.")
@@ -39,7 +39,7 @@ public class UserDatabaseTest {
 		for (int i = 0; i < threadNum; i++) {
 			executorService.execute(() -> {
 				try {
-					userDatabase.insert(user);
+					userMemoryDatabase.insert(user);
 				} catch (Exception e) {
 					fail.getAndIncrement();
 				} finally {
@@ -57,14 +57,14 @@ public class UserDatabaseTest {
 	@DisplayName("유저를 데이터베이스에 추가할 수 있다")
 	void insertUser() {
 		// given
-		UserDatabase userDatabase = new UserDatabase();
+		UserMemoryDatabase userMemoryDatabase = new UserMemoryDatabase();
 		User user = new User("1", "password", "name", "email@example.com");
 
 		// when
-		userDatabase.insert(user);
+		userMemoryDatabase.insert(user);
 
 		// then
-		Optional<User> foundUser = userDatabase.findById("1");
+		Optional<User> foundUser = userMemoryDatabase.findById("1");
 		assertThat(foundUser).isPresent();
 		assertThat(foundUser.get().id()).isEqualTo("1");
 		assertThat(foundUser.get().name()).isEqualTo("name");
@@ -75,14 +75,14 @@ public class UserDatabaseTest {
 	@DisplayName("모든 유저를 조회할 수 있다")
 	void findAllUsers() {
 		// given
-		UserDatabase userDatabase = new UserDatabase();
+		UserMemoryDatabase userMemoryDatabase = new UserMemoryDatabase();
 		User user1 = new User("1", "password", "name1", "email1@example.com");
 		User user2 = new User("2", "password", "name2", "email2@example.com");
-		userDatabase.insert(user1);
-		userDatabase.insert(user2);
+		userMemoryDatabase.insert(user1);
+		userMemoryDatabase.insert(user2);
 
 		// when
-		List<User> users = userDatabase.findAll();
+		List<User> users = userMemoryDatabase.findAll();
 
 		// then
 		assertThat(users).hasSize(2).containsExactlyInAnyOrder(user1, user2);
@@ -93,14 +93,14 @@ public class UserDatabaseTest {
 	@DisplayName("유저 아이디로 유저를 조회할 수 있다")
 	void findUserById(String userId) {
 		// given
-		UserDatabase userDatabase = new UserDatabase();
+		UserMemoryDatabase userMemoryDatabase = new UserMemoryDatabase();
 		User user1 = new User("1", "password", "name1", "email1@example.com");
 		User user2 = new User("2", "password", "name2", "email2@example.com");
-		userDatabase.insert(user1);
-		userDatabase.insert(user2);
+		userMemoryDatabase.insert(user1);
+		userMemoryDatabase.insert(user2);
 
 		// when
-		Optional<User> foundUser = userDatabase.findById(userId);
+		Optional<User> foundUser = userMemoryDatabase.findById(userId);
 
 		// then
 		assertThat(foundUser).isPresent();
@@ -111,10 +111,10 @@ public class UserDatabaseTest {
 	@DisplayName("존재하지 않는 유저 아이디로 유저를 조회하면 빈 값을 반환한다")
 	void findUserByIdNotFound() {
 		// given
-		UserDatabase userDatabase = new UserDatabase();
+		UserMemoryDatabase userMemoryDatabase = new UserMemoryDatabase();
 
 		// when
-		Optional<User> foundUser = userDatabase.findById("nonexistent");
+		Optional<User> foundUser = userMemoryDatabase.findById("nonexistent");
 
 		// then
 		assertThat(foundUser).isNotPresent();
@@ -123,14 +123,14 @@ public class UserDatabaseTest {
 	@Test
 	@DisplayName("유저를 업데이트할 수 있다")
 	void updateUser() {
-		UserDatabase userDatabase = new UserDatabase();
+		UserMemoryDatabase userMemoryDatabase = new UserMemoryDatabase();
 		User user = new User("1", "password", "name", "email@example.com");
-		userDatabase.insert(user);
+		userMemoryDatabase.insert(user);
 
 		User updatedUser = new User("1", "newPassword", "newName", "newEmail@example.com");
-		userDatabase.update("1", updatedUser);
+		userMemoryDatabase.update("1", updatedUser);
 
-		Optional<User> foundUser = userDatabase.findById("1");
+		Optional<User> foundUser = userMemoryDatabase.findById("1");
 		assertThat(foundUser).isPresent();
 		assertThat(foundUser.get().password()).isEqualTo("newPassword");
 		assertThat(foundUser.get().name()).isEqualTo("newName");

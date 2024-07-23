@@ -2,7 +2,7 @@ package com.example.servlet;
 
 import java.io.IOException;
 
-import com.example.db.UserDatabase;
+import com.example.db.UserMemoryDatabase;
 import com.example.entity.User;
 
 import jakarta.servlet.ServletConfig;
@@ -15,17 +15,17 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
 
-	private UserDatabase userDatabase;
+	private UserMemoryDatabase userMemoryDatabase;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		userDatabase = (UserDatabase)getServletContext().getAttribute("userDatabase");
+		userMemoryDatabase = (UserMemoryDatabase)getServletContext().getAttribute("userDatabase");
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setAttribute("userList", userDatabase.findAll());
+		req.setAttribute("userList", userMemoryDatabase.findAll());
 		req.getRequestDispatcher("/user/list.jsp").forward(req, resp);
 	}
 
@@ -40,7 +40,7 @@ public class UserServlet extends HttpServlet {
 			return;
 		}
 		User user = new User(userId, password, name, email);
-		userDatabase.insert(user);
+		userMemoryDatabase.insert(user);
 		resp.sendRedirect("/users");
 	}
 }

@@ -3,7 +3,7 @@ package com.example.servlet;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.example.db.ArticleDatabase;
+import com.example.db.ArticleMemoryDatabase;
 import com.example.entity.Article;
 
 import jakarta.servlet.ServletConfig;
@@ -16,12 +16,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "ArticleServlet", urlPatterns = "/articles/*")
 public class ArticleServlet extends HttpServlet {
 
-	private ArticleDatabase articleDatabase;
+	private ArticleMemoryDatabase articleMemoryDatabase;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		articleDatabase = (ArticleDatabase)getServletContext().getAttribute("articleDatabase");
+		articleMemoryDatabase = (ArticleMemoryDatabase)getServletContext().getAttribute("articleDatabase");
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class ArticleServlet extends HttpServlet {
 			return;
 		}
 		Article article = new Article(null, writer, title, contents);
-		articleDatabase.insert(article);
+		articleMemoryDatabase.insert(article);
 		resp.sendRedirect("/");
 	}
 
@@ -46,7 +46,7 @@ public class ArticleServlet extends HttpServlet {
 			return;
 		}
 		Long articleId = Long.parseLong(req.getPathInfo().substring(1));
-		Optional<Article> articleOptional = articleDatabase.findById(articleId);
+		Optional<Article> articleOptional = articleMemoryDatabase.findById(articleId);
 		if (articleOptional.isEmpty()) {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
