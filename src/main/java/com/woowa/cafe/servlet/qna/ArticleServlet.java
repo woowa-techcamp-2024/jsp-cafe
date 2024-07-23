@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-@WebServlet(name = "articleServlet", urlPatterns = "/question")
+@WebServlet(name = "articleServlet", urlPatterns = {"/question", "/question/*"})
 public class ArticleServlet extends HttpServlet {
 
     private static final Logger log = getLogger(ArticleServlet.class);
@@ -35,7 +35,15 @@ public class ArticleServlet extends HttpServlet {
             resp.sendRedirect("/");
         }
 
-        req.getRequestDispatcher("/WEB-INF/views/qna/form.jsp").forward(req, resp);
+        if(req.getPathInfo() == null) {
+            req.getRequestDispatcher("/WEB-INF/views/qna/form.jsp").forward(req, resp);
+            return;
+        }
+
+        String[] path = req.getPathInfo().split("/");
+        Long articleId = Long.parseLong(path[1]);
+        req.setAttribute("article", articleService.findById(articleId));
+        req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp").forward(req, resp);
     }
 
     @Override

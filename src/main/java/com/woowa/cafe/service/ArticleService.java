@@ -29,4 +29,8 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
+    public Article findById(final Long articleId) {
+        return articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+    }
 }

@@ -23,7 +23,7 @@ public class InMemoryArticleRepository implements ArticleRepository {
     }
 
     @Override
-    public Optional<Article> findById(final Long questionId) {
+    public Optional<Article> findById(final Long articleId) {
         return Optional.ofNullable(questions.get(articleId));
     }
 
