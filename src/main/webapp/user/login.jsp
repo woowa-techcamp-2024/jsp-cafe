@@ -1,4 +1,4 @@
-<%@ page import="codesquad.jspcafe.common.DefaultHTMLData" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
   Date: 24. 7. 23.
@@ -8,11 +8,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE>
 <html lang="ko">
-<head>
-    <%=DefaultHTMLData.getHtmlHead()%>
-</head>
+<jsp:include page="/WEB-INF/jsp/component/headers.jsp"/>
 <body>
-<%=DefaultHTMLData.getNaviBar()%>
+<jsp:include page="/WEB-INF/jsp/component/navbar.jsp"/>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -35,9 +33,6 @@
     </div>
 </div>
 
-<!-- script references -->
-<script src="../resources/js/jquery-2.2.0.min.js"></script>
-<script src="../resources/js/bootstrap.min.js"></script>
-<script src="../resources/js/scripts.js"></script>
+<jsp:include page="/WEB-INF/jsp/component/scripts.jsp"/>
 </body>
 </html>

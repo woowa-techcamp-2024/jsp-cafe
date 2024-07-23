@@ -1,6 +1,5 @@
 <%@ page import="codesquad.jspcafe.domain.user.payload.response.UserCommonResponse" %>
-<%@ page import="java.util.List" %>
-<%@ page import="codesquad.jspcafe.common.DefaultHTMLData" %><%--
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
   Date: 24. 7. 22.
@@ -10,12 +9,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE>
 <html lang="ko">
-<head>
-    <%=DefaultHTMLData.getHtmlHead()%>
-</head>
+<jsp:include page="/WEB-INF/jsp/component/headers.jsp"/>
 <body>
-<%=DefaultHTMLData.getNaviBar()%>
-
+<jsp:include page="/WEB-INF/jsp/component/navbar.jsp"/>
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
@@ -63,6 +59,6 @@
 </div>
 
 <!-- script references -->
-<%=DefaultHTMLData.getScripts()%>
+<jsp:include page="/WEB-INF/jsp/component/scripts.jsp"/>
 </body>
 </html>
