@@ -119,4 +119,21 @@ public class UserDatabaseTest {
 		// then
 		assertThat(foundUser).isNotPresent();
 	}
+
+	@Test
+	@DisplayName("유저를 업데이트할 수 있다")
+	void updateUser() {
+		UserDatabase userDatabase = new UserDatabase();
+		User user = new User("1", "password", "name", "email@example.com");
+		userDatabase.insert(user);
+
+		User updatedUser = new User("1", "newPassword", "newName", "newEmail@example.com");
+		userDatabase.update("1", updatedUser);
+
+		Optional<User> foundUser = userDatabase.findById("1");
+		assertThat(foundUser).isPresent();
+		assertThat(foundUser.get().password()).isEqualTo("newPassword");
+		assertThat(foundUser.get().name()).isEqualTo("newName");
+		assertThat(foundUser.get().email()).isEqualTo("newEmail@example.com");
+	}
 }
