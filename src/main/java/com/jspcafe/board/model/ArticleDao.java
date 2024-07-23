@@ -1,8 +1,6 @@
 package com.jspcafe.board.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ArticleDao {
     private final Map<String, Article> articles = new HashMap<>();
@@ -13,5 +11,9 @@ public class ArticleDao {
 
     public Optional<Article> findById(final String id) {
         return Optional.ofNullable(articles.get(id));
+    }
+
+    public List<Article> findAll() {
+        return new ArrayList<>(articles.values());
     }
 }
