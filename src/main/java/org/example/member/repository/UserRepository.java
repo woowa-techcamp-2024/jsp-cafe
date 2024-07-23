@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.rowset.serial.SerialException;
 import org.example.member.model.dao.User;
-import org.example.member.model.dto.UserResponseDto;
 import org.example.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,7 @@ public class UserRepository {
 
             ps.setString(1, userId);
 
-            try (ResultSet rs = ps.executeQuery()){
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String password = rs.getString("password");
                     String name = rs.getString("name");
@@ -74,5 +73,24 @@ public class UserRepository {
             }
         }
         throw new SQLException("User not found");
+    }
+
+    public boolean existsByUserId(String userId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        boolean exists = false;
+
+        try (Connection conn = DataUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    exists = rs.getInt(1) > 0;
+                }
+            }
+        }
+
+        return exists;
     }
 }
