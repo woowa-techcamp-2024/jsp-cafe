@@ -33,6 +33,9 @@
                 <button type="submit" class="signup-button">회원가입</button>
             </form>
             <% } %>
+            <form action="${pageContext.request.contextPath}/users" method="get" style="display: inline;">
+                <button type="submit" class="user-list-button">사용자 목록</button>
+            </form>
         </nav>
     </header>
     <section class="banner">
