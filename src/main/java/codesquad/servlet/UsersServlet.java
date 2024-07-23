@@ -41,6 +41,10 @@ public class UsersServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/users");
         } catch (DuplicateIdException e) {
             req.setAttribute("errorMsg", e.getMessage());
+            req.setAttribute("userId", id);
+            req.setAttribute("password", password);
+            req.setAttribute("name", name);
+            req.setAttribute("email", email);
             req.getRequestDispatcher("/user/form.jsp").forward(req, resp);
         }
     }
