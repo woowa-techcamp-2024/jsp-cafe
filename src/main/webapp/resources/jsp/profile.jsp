@@ -1,9 +1,8 @@
-<%@ page import="codesquad.jspcafe.domain.user.payload.response.UserCommonResponse" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="codesquad.jspcafe.domain.user.payload.response.UserCommonResponse" %><%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
-  Date: 24. 7. 22.
-  Time: 오후 8:20
+  Date: 24. 7. 23.
+  Time: 오전 12:27
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -84,6 +83,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.html">Posts</a></li>
+                >
                 <li><a href="../user/login.html" role="button">로그인</a></li>
                 <li><a href="../user/form.html" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
@@ -94,45 +94,31 @@
 </div>
 
 <div class="container" id="main">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>사용자 아이디</th>
-                    <th>이름</th>
-                    <th>이메일</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <%
-                    @SuppressWarnings("unchecked")
-                    List<UserCommonResponse> userCommonResponses = (List<UserCommonResponse>) request.getAttribute(
-                            "userList");
-                    int idx = 1;
-                    for (UserCommonResponse commonResponse : userCommonResponses) {
-                %>
-                <tr>
-                    <th scope="row"><%=idx++%>
-                    </th>
-                    <td>
-                        <a href="/users/<%=commonResponse.getUserId()%>"><%=commonResponse.getUserId()%>
+            <div class="panel-heading"><h4>Profiles</h4></div>
+            <div class="panel-body">
+                <div class="well well-sm">
+                    <div class="media">
+                        <a class="thumbnail pull-left" href="#">
+                            <img class="media-object" src="../resources/images/80-text.png">
                         </a>
-                    </td>
-                    <td><%=commonResponse.getUsername()%>
-                    </td>
-                    <td><%=commonResponse.getEmail()%>
-                    </td>
-                    <td><a href="/users/<%=commonResponse.getUserId()%>" class="btn btn-success"
-                           role="button">수정</a></td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
+                        <div class="media-body">
+                            <%
+                                UserCommonResponse commonResponse = (UserCommonResponse) request.getAttribute(
+                                        "user");
+                            %>
+                            <h4 class="media-heading"><%=commonResponse.getUsername()%>
+                            </h4>
+                            <p>
+                                <a href="#" class="btn btn-xs btn-default"><span
+                                        class="glyphicon glyphicon-envelope"></span>&nbsp;<%=commonResponse.getEmail()%>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

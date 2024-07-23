@@ -23,6 +23,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public UserCommonResponse getUserById(String userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        return UserCommonResponse.from(user);
+    }
+
     public List<UserCommonResponse> findAllUser() {
         return userRepository.findAll().stream().map(UserCommonResponse::from).toList();
     }
