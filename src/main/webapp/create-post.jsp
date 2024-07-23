@@ -16,6 +16,7 @@
         response.sendRedirect("/login"); // 로그인 페이지로 리디렉션
         return;
     }
+    String errorMessage = (String) request.getAttribute("errorMessage");
 %>
 <div class="container">
     <header class="header">
@@ -57,6 +58,24 @@
                 </div>
                 <button type="submit" class="submit-button">작성 완료</button>
             </form>
+
+            <!-- errorMessage 확인용 -->
+            <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
+            <div id="error-message" class="error-message">
+                <%= errorMessage %>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const errorMessage = document.getElementById('error-message');
+                    if (errorMessage) {
+                        errorMessage.style.display = 'block';
+                        setTimeout(() => {
+                            errorMessage.style.display = 'none';
+                        }, 3000); // 3초 후에 사라짐
+                    }
+                });
+            </script>
+            <% } %>
         </div>
     </main>
 </div>
