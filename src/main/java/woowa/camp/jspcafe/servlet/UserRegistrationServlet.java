@@ -36,7 +36,7 @@ public class UserRegistrationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("userRegistrationServlet doGet start");
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/static/user/form.html");
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/user/form.jsp");
         requestDispatcher.forward(req, resp);
         log.debug("userRegistrationServlet doGet end");
     }
