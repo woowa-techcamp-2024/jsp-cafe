@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -17,7 +20,7 @@
         <h2 class="text-2xl font-bold">HELLO, WEB! 입니다.</h2>
     </div>
 
-    <p class="text-gray-600 mb-4">전체 글 60개</p>
+    <p class="text-gray-600 mb-4">전체 글 ${articles.size()}개</p>
 
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="w-full">
@@ -29,11 +32,16 @@
             </tr>
             </thead>
             <tbody class="text-gray-600 text-sm font-light">
-            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                <td class="py-3 px-6 text-left whitespace-nowrap">게시글 제목</td>
-                <td class="py-3 px-6 text-left">닉네임</td>
-                <td class="py-3 px-6 text-left">YYYY. MM. DD</td>
-            </tr>
+            <c:forEach var="article" items="${articles}">
+                <tr class="border-b border-gray-200 hover:bg-gray-100"
+                    onclick="window.location.href='<c:url value="/articles/${article.id()}"/>';">
+                    <td class="py-3 px-6 text-left whitespace-nowrap">${article.title()}</td>
+                    <td class="py-3 px-6 text-left">${article.nickname()}</td>
+                    <td class="py-3 px-6 text-left">
+                            ${fn:substring(article.createAt(), 0, 4)}. ${fn:substring(article.createAt(), 5, 7)}. ${fn:substring(article.createAt(), 8, 10)}
+                    </td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>

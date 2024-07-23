@@ -1,5 +1,6 @@
 package com.jspcafe.board.controller;
 
+import com.jspcafe.board.model.Article;
 import com.jspcafe.board.service.ArticleService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(urlPatterns = {"/", "/articles/*"})
 public class ArticleController extends HttpServlet {
@@ -25,7 +27,7 @@ public class ArticleController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         if (path == null || path.isEmpty() || path.isBlank()) {
-            forward("board", req, resp);
+            articleList(req, resp);
         }
         switch (path) {
             case "/form" -> forward("article_form", req, resp);
@@ -39,6 +41,12 @@ public class ArticleController extends HttpServlet {
 
     private void forward(String fileName, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/views/board/" + fileName + ".jsp").forward(req, resp);
+    }
+
+    private void articleList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<Article> articles = articleService.findAll();
+        req.setAttribute("articles", articles);
+        forward("board", req, resp);
     }
 
     private void writeArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
