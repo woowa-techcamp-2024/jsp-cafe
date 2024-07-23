@@ -31,7 +31,7 @@ public class UserController extends HttpServlet {
         }
         switch (path) {
             case "/sign" -> forward("signup", req, resp);
-            default -> resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            default -> userProfile(req, resp);
         }
     }
 
@@ -56,5 +56,12 @@ public class UserController extends HttpServlet {
         List<User> users = userService.findAll();
         req.setAttribute("users", users);
         forward("user_list", req, resp);
+    }
+
+    private void userProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getPathInfo().replace("/", "");
+        User user = userService.findById(id);
+        req.setAttribute("user", user);
+        forward("user_profile", req, resp);
     }
 }
