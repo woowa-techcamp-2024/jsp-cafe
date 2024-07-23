@@ -1,20 +1,33 @@
 package codesquad.user;
 
 public class User {
-    private String id;
+    private Long id;
+    private String userId;
     private String password;
     private String name;
     private String email;
 
-    public User(String id, String password, String name, String email) {
-        this.id = id;
+    public User(String userId, String password, String name, String email) {
+        this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
     }
 
-    public String getId() {
+    public User(Long id, User user) {
+        this.id = id;
+        this.userId = user.userId;
+        this.password = user.password;
+        this.name = user.name;
+        this.email = user.email;
+    }
+
+    public Long getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getName() {

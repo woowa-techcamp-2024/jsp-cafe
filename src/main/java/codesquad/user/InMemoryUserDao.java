@@ -6,21 +6,37 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class InMemoryUserDao implements UserDao {
-    private static final ConcurrentMap<String, User> users = new ConcurrentHashMap<>();
+    private static final AtomicLong ID_GENERATOR = new AtomicLong();
+    private static final ConcurrentMap<Long, User> users = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Long> userIdToIdMap = new ConcurrentHashMap<>();
 
     @Override
-    public void save(User user) throws DuplicateIdException {
-        User existUser = users.putIfAbsent(user.getId(), user);
-        if (existUser != null) {
+    public Long save(User user) throws DuplicateIdException {
+        Long id = ID_GENERATOR.incrementAndGet();
+        Long existUserId = userIdToIdMap.putIfAbsent(user.getUserId(), id);
+        if (existUserId != null) {
             throw new DuplicateIdException("이미 가입된 아이디 입니다.");
         }
+        user = new User(id, user);
+        users.put(id, user);
+        return id;
     }
 
     @Override
-    public Optional<User> findById(String userId) {
-        return Optional.ofNullable(users.get(userId));
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(users.get(id));
+    }
+
+    @Override
+    public Optional<User> findByUserId(String userId) {
+        Long id = userIdToIdMap.get(userId);
+        if (id == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(users.get(id));
     }
 
     @Override

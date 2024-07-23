@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-    void save(User user) throws DuplicateIdException;
+    Long save(User user) throws DuplicateIdException;
 
-    Optional<User> findById(String userId);
+    Optional<User> findById(Long id);
+
+    Optional<User> findByUserId(String userId);
 
     List<User> findAll();
 }

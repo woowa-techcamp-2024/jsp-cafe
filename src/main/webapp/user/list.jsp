@@ -102,7 +102,7 @@
                 <tr>
                     <th scope="row"><%= user.getId() %>
                     </th>
-                    <td><%= user.getId() %>
+                    <td><%= user.getUserId() %>
                     </td>
                     <td><%= user.getName() %>
                     </td>
