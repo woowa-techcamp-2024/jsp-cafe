@@ -31,6 +31,7 @@ public class ArticleController extends HttpServlet {
         }
         switch (path) {
             case "/form" -> forward("article_form", req, resp);
+            default -> articleDetail(req, resp);
         }
     }
 
@@ -55,5 +56,12 @@ public class ArticleController extends HttpServlet {
         String content = req.getParameter("content");
         articleService.write(title, nickname, content);
         resp.sendRedirect("/");
+    }
+
+    private void articleDetail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getPathInfo().replace("/", "");
+        Article article = articleService.findById(id);
+        req.setAttribute("article", article);
+        forward("article_detail", req, resp);
     }
 }
