@@ -4,24 +4,21 @@ import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.article.domain.Article;
 import java.time.LocalDateTime;
 
-public class ArticleCommonResponse {
+public class ArticleContentResponse {
 
     private final String title;
     private final String writer;
-    private final String contents;
     private final String createdAt;
 
-    private ArticleCommonResponse(String title, String writer, String contents,
-        LocalDateTime createdAt) {
+    private ArticleContentResponse(String title, String writer, LocalDateTime createdAt) {
         this.title = title;
         this.writer = writer;
-        this.contents = contents;
         this.createdAt = DateTimeFormatExecutor.execute(createdAt);
     }
 
-    public static ArticleCommonResponse from(Article article) {
-        return new ArticleCommonResponse(article.getTitle(), article.getWriter(),
-            article.getContents(), article.getCreatedAt());
+    public static ArticleContentResponse from(Article article) {
+        return new ArticleContentResponse(article.getTitle(), article.getWriter(),
+            article.getCreatedAt());
     }
 
     public String getTitle() {
@@ -30,10 +27,6 @@ public class ArticleCommonResponse {
 
     public String getWriter() {
         return writer;
-    }
-
-    public String getContents() {
-        return contents;
     }
 
     public String getCreatedAt() {

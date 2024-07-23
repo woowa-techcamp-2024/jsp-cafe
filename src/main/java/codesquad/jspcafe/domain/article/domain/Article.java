@@ -1,16 +1,20 @@
 package codesquad.jspcafe.domain.article.domain;
 
+import java.time.LocalDateTime;
+
 public class Article {
 
     private Long id;
     private final String title;
     private final String writer;
     private final String contents;
+    private final LocalDateTime createdAt;
 
-    public Article(String title, String writer, String contents) {
+    public Article(String title, String writer, String contents, LocalDateTime createdAt) {
         this.title = verifyTitle(title);
         this.writer = verifyWriter(writer);
         this.contents = verifyContents(contents);
+        this.createdAt = createdAt;
     }
 
     public String getTitle() {
@@ -23,6 +27,10 @@ public class Article {
 
     public String getContents() {
         return contents;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     private String verifyTitle(String title) {
