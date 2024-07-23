@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.member.model.dto.UserResponseDto;
-import org.example.member.service.UserListService;
+import org.example.member.service.UserQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 public class UserListServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(UserListServlet.class);
-    private UserListService userListService;
+    private UserQueryService userQueryService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<UserResponseDto> users = userListService.findAllUsers();
+            List<UserResponseDto> users = userQueryService.findAllUsers();
             req.setAttribute("users", users);
             req.getRequestDispatcher("/jsp/user/list.jsp").forward(req, resp);
         } catch (SQLException e) {
@@ -33,6 +33,6 @@ public class UserListServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        userListService = new UserListService();
+        userQueryService = new UserQueryService();
     }
 }
