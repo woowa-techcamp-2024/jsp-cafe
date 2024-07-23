@@ -34,12 +34,15 @@ class UserRepositoryTest {
         String name = "name";
         String email = "email";
         UserRepository userRepository = new InMemUserRepository();
+
+        int expected_size = 1;
+
         // when
         userRepository.save(userId, password, name, email);
         List<User> users = userRepository.findAll();
 
         // then
-        assertEquals(users.size(), 1);
-        assertEquals(users.get(0).getUserId(), userId);
+        assertEquals(users.size(), expected_size);
+        assertEquals(users.get(expected_size - 1).getUserId(), userId);
     }
 }
