@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +21,32 @@ class InMemoryUserRepositoryTest {
         userRepository = new InMemoryUserRepository();
     }
 
+    @DisplayName("userId 목록으로 유저를 조회할 수 있다")
+    @Test
+    void findAllById() {
+        // given
+        List<User> users = List.of(
+                new User("nickname1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname3", "email3@example.com", "password3", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname4", "email4@example.com", "password4", LocalDateTime.of(2021, 1, 1, 0, 0))
+        );
+
+
+        List<Long> userIds = users.stream()
+                .map(user -> userRepository.save(user).getUserId())
+                .toList();
+
+        // when
+        List<User> foundUsers = userRepository.findAllById(userIds);
+
+
+        // then
+        assertThat(foundUsers)
+                .hasSize(4)
+                .extracting(User::getUserId)
+                .containsAll(userIds);
+    }
     @DisplayName("기존 유저를 저장하면 기존 유저를 반환한다")
     @Test
     void saveAlreadyExists() {
