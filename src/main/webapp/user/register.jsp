@@ -11,6 +11,9 @@
     <header>
         <h1>HELLO, WEB!</h1>
         <div class="buttons">
+            <a href="/articles">
+                <button class="btn">글 목록</button>
+            </a>
             <a href="/users">
                 <button class="btn">사용자 목록</button>
             </a>
