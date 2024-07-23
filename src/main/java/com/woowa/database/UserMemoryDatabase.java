@@ -1,6 +1,7 @@
 package com.woowa.database;
 
 import com.woowa.model.User;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,5 +20,10 @@ public class UserMemoryDatabase implements UserDatabase{
         return users.values().stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst();
+    }
+
+    @Override
+    public List<User> findAll() {
+        return users.values().stream().toList();
     }
 }
