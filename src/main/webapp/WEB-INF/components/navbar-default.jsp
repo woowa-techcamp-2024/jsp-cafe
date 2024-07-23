@@ -1,3 +1,4 @@
+<%@ page import="com.woowa.cafe.repository.user.MemberRepository" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <div class="navbar navbar-default" id="subnav">
     <div class="col-md-12">
@@ -22,7 +23,8 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
-                <% if (session.getAttribute("JSESSIONID") == null || !(Boolean) session.getAttribute("JSESSIONID")) { %>
+                <% MemberRepository memberRepository = (MemberRepository) application.getAttribute("memberRepository"); %>
+                <% if (session.getAttribute("memberId") == null || memberRepository.findById((String) session.getAttribute("memberId")).isEmpty()) { %>
                 <li><a href="/user/login" role="button">로그인</a></li>
                 <li><a href="/user" role="button">회원가입</a></li>
                 <% } else { %>

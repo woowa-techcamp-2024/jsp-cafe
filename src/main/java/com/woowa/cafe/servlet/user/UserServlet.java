@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -32,7 +31,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getRequestURI().endsWith("/user")) {
+        if (req.getRequestURI().endsWith("/user")) {
             getForm(req, resp);
             return;
         }
@@ -53,7 +52,7 @@ public class UserServlet extends HttpServlet {
         String save = memberService.save(SaveMemberDto.from(body));
 
         HttpSession session = req.getSession();
-        session.setAttribute(UUID.randomUUID().toString(), save);
+        session.setAttribute("memberId", save);
 
         resp.sendRedirect("/users");
     }

@@ -19,6 +19,7 @@ public class AppContextListener implements ServletContextListener {
         MemberRepository memberRepository = new InMemoryMemberRepository();
         MemberService memberService = new MemberService(memberRepository);
         sce.getServletContext().setAttribute("memberService", memberService);
+        sce.getServletContext().setAttribute("memberRepository", memberRepository);
     }
 
 }
