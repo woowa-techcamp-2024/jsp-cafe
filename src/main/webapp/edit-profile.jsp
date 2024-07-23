@@ -23,11 +23,23 @@
     <header class="header">
         <h2 class="header-title"><a href="/">HELLO. WEB!</a></h2>
         <nav>
-            <form action="../login" method="get" style="display: inline;">
+            <%
+                if (isLogined != null && isLogined) {
+            %>
+            <span class="user-name">환영합니다, <%= nickname %>!</span>
+            <form action="api/logout" method="post" style="display: inline;">
+                <button type="submit" class="logout-button">로그아웃</button>
+            </form>
+            <% } else { %>
+            <form action="login" method="get" style="display: inline;">
                 <button type="submit" class="login-button">로그인</button>
             </form>
-            <form action="../signup" method="get" style="display: inline;">
+            <form action="signup" method="get" style="display: inline;">
                 <button type="submit" class="signup-button">회원가입</button>
+            </form>
+            <% } %>
+            <form action="users" method="get" style="display: inline;">
+                <button type="submit" class="user-list-button">사용자 목록</button>
             </form>
         </nav>
     </header>
