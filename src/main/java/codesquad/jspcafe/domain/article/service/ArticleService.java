@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class ArticleService {
 
-    private transient final ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
     public ArticleService() {
         articleRepository = new ArticleRepository();
