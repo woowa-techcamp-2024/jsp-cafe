@@ -30,9 +30,13 @@ public class SignupServlet extends HttpServlet {
 
         final RegisterUserServiceRequest request = new RegisterUserServiceRequest(nickname, email, password);
 
-        signupService.registerUser(request);
+        try {
+            signupService.registerUser(request);
+            resp.sendRedirect("/login");
+        } catch (Exception e) {
+            req.setAttribute("errorMessage", e.getMessage());
+            req.getRequestDispatcher("/signup/index.jsp").forward(req, resp);
 
-
-        resp.sendRedirect("/login");
+        }
     }
 }
