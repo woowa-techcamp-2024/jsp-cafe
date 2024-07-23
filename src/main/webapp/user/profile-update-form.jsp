@@ -39,7 +39,7 @@
                 <label for="password">비밀번호 확인</label>
                 <input name="password" type="password" id="password" placeholder="기존 비밀번호를 입력해주세요">
             </div>
-            <button type="submit" class="btn btn-register">수정 완료</button>
+            <button type="submit" class="btn-submit">수정 완료</button>
         </form>
     </div>
 </body>
