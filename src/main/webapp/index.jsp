@@ -27,16 +27,7 @@
                 <a href="/users/sign">회원가입 화면</a>
             </div>
             <div class="mb-4">
-                <a href="/signup_success.jsp">회원가입 성공 화면</a>
-            </div>
-            <div class="mb-4">
-                <a href="/board_list.jsp">게시판 화면</a>
-            </div>
-            <div class="mb-4">
-                <a href="/user_list.jsp">유저 리스트 화면</a>
-            </div>
-            <div class="mb-4">
-                <a href="/user_profile.jsp">유저 프로필 화면</a>
+                <a href="/users">유저 리스트 화면</a>
             </div>
         </form>
     </div>
