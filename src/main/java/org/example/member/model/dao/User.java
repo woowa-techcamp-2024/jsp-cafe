@@ -53,6 +53,14 @@ public class User {
         }
     }
 
+    public User changeUserInfo(String password, String name, String email) {
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        validate();
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Member{" +
