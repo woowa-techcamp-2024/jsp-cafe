@@ -58,4 +58,11 @@ public class Member {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public boolean validation(){
+        return this.memberId != null && !this.memberId.isBlank()
+                && this.password!=null && !this.password.isBlank()
+                && this.nickname != null && !this.nickname.isBlank()
+                && this.email != null && !this.email.isBlank();
+    }
 }
