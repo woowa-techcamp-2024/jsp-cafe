@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.example.entity.Article;
 
-public class ArticleMemoryDatabase implements Database<Long, Article> {
+public class ArticleMemoryDatabase implements ArticleDatabase {
 
 	private final Map<Long, Article> articles = new ConcurrentHashMap<>();
 	private final AtomicLong idGenerator = new AtomicLong(0);

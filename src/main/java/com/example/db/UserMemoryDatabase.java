@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.example.entity.User;
 
-public class UserMemoryDatabase implements Database<String, User> {
+public class UserMemoryDatabase implements UserDatabase {
 
 	private final Map<String, User> users = new ConcurrentHashMap<>();
 
