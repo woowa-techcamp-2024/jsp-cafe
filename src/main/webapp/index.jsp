@@ -24,7 +24,7 @@
                 <a href="/login.jsp">로그인 화면</a>
             </div>
             <div class="mb-4">
-                <a href="/signup.jsp">회원가입 화면</a>
+                <a href="/users/sign">회원가입 화면</a>
             </div>
             <div class="mb-4">
                 <a href="/signup_success.jsp">회원가입 성공 화면</a>
