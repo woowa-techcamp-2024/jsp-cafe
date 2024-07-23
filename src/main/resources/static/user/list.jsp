@@ -51,7 +51,7 @@
         <div class="navbar-header">
             <a href="#" style="margin-left:15px;" class="navbar-btn btn btn-default btn-plus dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <li><a href="../user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
+                <li><a href="profile.jsp"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
@@ -83,7 +83,7 @@
                 <tr>
                     <th>#</th>
                     <th>사용자 아이디</th>
-                    <th>이름</th>
+                    <th>닉네임</th>
                     <th>이메일</th>
                     <th></th>
                 </tr>
@@ -93,7 +93,7 @@
                   <tr>
                       <th scope="row">${status.count}</th>
                       <td>${user.userId}</td>
-                      <td>${user.nickname}</td>
+                      <td><a href="/users/${user.userId}">${user.nickname}</a></td>
                       <td>${user.email}</td>
                       <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                   </tr>

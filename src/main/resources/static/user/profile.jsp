@@ -1,3 +1,5 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="utf-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -84,9 +86,9 @@
                             <img class="media-object" src="../images/80-text.png">
                         </a>
                         <div class="media-body">
-                            <h4 class="media-heading">자바지기</h4>
+                            <h4 class="media-heading">${user.nickname}</h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;javajigi@slipp.net</a>
+                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>${user.email}</a>
                             </p>
                         </div>
                     </div>
