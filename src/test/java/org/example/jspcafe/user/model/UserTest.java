@@ -3,6 +3,8 @@ package org.example.jspcafe.user.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,7 +19,7 @@ class UserTest {
         String password = "password";
 
         // when
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
 
         // then
         assertThat(user).isNotNull()
@@ -33,7 +35,7 @@ class UserTest {
         String email = "email@example.com";
         String password = "password";
 
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
 
         String newPassword = "newPassword";
 
@@ -53,7 +55,7 @@ class UserTest {
         String email = "eamil@example.com";
         String password = "password";
 
-        User user = new User(nickname, email, password);
+        User user = new User(nickname, email, password, LocalDateTime.of(2021, 1, 1, 0, 0));
 
         // when & then
         assertThatThrownBy(() -> user.updatePassword(password))
