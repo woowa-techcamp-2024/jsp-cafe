@@ -9,7 +9,7 @@ import org.example.jspcafe.user.service.UserService;
 
 import java.io.IOException;
 
-@WebServlet(name = "UserController", value = "/users/*")
+@WebServlet(name = "UserServlet", value = "/users/*")
 public class UserServlet extends HttpServlet {
 
     private UserService userService;

@@ -14,8 +14,8 @@ import org.example.jspcafe.user.service.UserService;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "AuthController", value = "/users")
-public class UserAuthServlet extends HttpServlet {
+@WebServlet(name = "UsersServlet", value = "/users")
+public class UsersServlet extends HttpServlet {
 
     private UserService userService;
     private UserRepository userRepository;
@@ -29,7 +29,7 @@ public class UserAuthServlet extends HttpServlet {
 
     }
 
-    public UserAuthServlet() {
+    public UsersServlet() {
         this.userRepository = new MemoryUserRepository();
         this.userService = new UserService(userRepository);
     }
