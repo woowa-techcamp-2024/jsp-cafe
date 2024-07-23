@@ -10,7 +10,7 @@ public class Email {
     private final String value;
 
     private Email(String value) {
-        if (!PATTERN.matcher(value).matches()) {
+        if (value == null || value.isBlank() || !PATTERN.matcher(value).matches()) {
             throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
         }
         this.value = value;
@@ -22,5 +22,22 @@ public class Email {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Email email)) {
+            return false;
+        }
+
+        return getValue().equals(email.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return getValue().hashCode();
     }
 }

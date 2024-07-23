@@ -31,10 +31,10 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     compileOnly("jakarta.servlet:jakarta.servlet-api:${servletVersion}")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
     testImplementation("org.assertj:assertj-core:${assertJVersion}")
     testImplementation("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
 test {
