@@ -1,14 +1,15 @@
 package org.example.jspcafe.user.service;
 
 import org.example.jspcafe.Component;
-import org.example.jspcafe.Repository;
 import org.example.jspcafe.user.model.User;
+import org.example.jspcafe.user.repository.InMemoryUserRepository;
+import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.request.RegisterUserServiceRequest;
 
 @Component
 public class SignupService {
 
-    private final Repository<User> userRepository;
+    private final UserRepository userRepository;
 
     public void registerUser(final RegisterUserServiceRequest request) {
         final String nickname = request.nickname();
@@ -18,12 +19,10 @@ public class SignupService {
         User user = new User(nickname, email, password);
 
         userRepository.save(user);
-        System.out.println("user = " + user.getNickname() + " " + user.getEmail());
-
     }
 
 
-    public SignupService(Repository<User> userRepository) {
+    public SignupService(InMemoryUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 }
