@@ -2,7 +2,9 @@ package com.woowa.hyeonsik.servlet;
 
 import com.woowa.hyeonsik.dao.UserDao;
 import com.woowa.hyeonsik.domain.User;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -25,9 +27,14 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        List<User> all = userDao.findAll();
-        logger.debug("회원 목록 조회, 유저 목록: {}", all);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<User> users = userDao.findAll();
+        request.setAttribute("users", users);
+        logger.debug("회원 목록 조회, 유저 목록: {}", users);
+
+        ServletContext app = this.getServletContext();
+        RequestDispatcher dispatcher = app.getRequestDispatcher("/template/user/list.jsp");
+        dispatcher.forward(request, response);
     }
 
     @Override
