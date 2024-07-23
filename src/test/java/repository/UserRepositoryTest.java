@@ -40,6 +40,6 @@ class UserRepositoryTest {
 
         // then
         assertEquals(users.size(), 1);
-        assertEquals(users.get(1).getUserId(), userId);
+        assertEquals(users.get(0).getUserId(), userId);
     }
 }
