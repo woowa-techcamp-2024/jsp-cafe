@@ -2,16 +2,13 @@ package com.woowa.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.User;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -51,6 +48,22 @@ class UserHandlerTest {
                         assertThat(user.getNickname()).isEqualTo(nickname);
                         assertThat(user.getPassword()).isEqualTo(password);
                     });
+        }
+
+        @Test
+        @DisplayName("회원 목록 화면으로 리다이렉트한다.")
+        void redirectToUsers() {
+            //given
+            String email = "test@test.com";
+            String nickname = "tester";
+            String password = "123456";
+
+            //when
+            ResponseEntity response = userHandler.createUser(email, nickname, password);
+
+            //then
+            assertThat(response.getLocation()).isEqualTo("/users");
+            assertThat(response.getStatus()).isEqualTo(302);
         }
 
         @Test
