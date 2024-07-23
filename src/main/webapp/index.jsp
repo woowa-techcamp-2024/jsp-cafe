@@ -1,8 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.example.entity.Article" %>
-<%@ page import="com.example.db.ArticleMemoryDatabase" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.db.ArticleMemoryDatabase" %>
+<%@ page import="com.example.db.ArticleDatabase" %>
 <!DOCTYPE html>
 <html lang="kr">
 <%@ include file="template/head.jsp" %>
@@ -14,9 +13,9 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    ArticleMemoryDatabase articleMemoryDatabase = (ArticleMemoryDatabase)config.getServletContext()
+                    ArticleDatabase articleDatabase = (ArticleDatabase)config.getServletContext()
                             .getAttribute("articleDatabase");
-                    List<Article> articleList = articleMemoryDatabase.findAll();
+                    List<Article> articleList = articleDatabase.findAll();
                     for (Article article : articleList) {
                 %>
                 <li>
