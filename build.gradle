@@ -22,10 +22,16 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'ch.qos.logback:logback-core:1.5.6'
+    implementation 'ch.qos.logback:logback-classic:1.5.6'
+
     compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation 'org.assertj:assertj-core:3.25.3'
 }
 
 test {
