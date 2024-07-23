@@ -17,7 +17,7 @@
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="../index.html" class="navbar-brand">SLiPP</a>
+            <a href="../" class="navbar-brand">HELLO, 우테캠!</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -69,6 +69,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.html">Posts</a></li>
+                <li><a href="../users" role="button">멤버리스트</a></li>
                 <li><a href="../user/login.html" role="button">로그인</a></li>
                 <li><a href="../users/registration" role="button">회원가입</a></li>
                 <!--
