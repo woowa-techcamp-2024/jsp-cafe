@@ -52,7 +52,8 @@ public class UserRegistrationServlet extends HttpServlet {
         RegistrationRequest registrationRequest = new RegistrationRequest(email, nickname, password);
         userService.registration(registrationRequest);
 
-        resp.sendRedirect("/users");
+        String contextPath = req.getContextPath();
+        resp.sendRedirect(contextPath + "/users");
         log.debug("userRegistrationServlet doPost end");
     }
 }
