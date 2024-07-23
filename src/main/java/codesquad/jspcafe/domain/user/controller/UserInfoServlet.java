@@ -46,6 +46,6 @@ public class UserInfoServlet extends HttpServlet {
         String userId = pathInfo.substring(1);
         UserCommonResponse userCommonResponse = userService.getUserById(userId);
         req.setAttribute("user", userCommonResponse);
-        req.getRequestDispatcher("/resources/jsp/profile.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(req, resp);
     }
 }

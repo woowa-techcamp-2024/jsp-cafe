@@ -40,7 +40,7 @@ public class UserSignUpServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
         req.setAttribute("userList", userService.findAllUser());
-        req.getRequestDispatcher("/resources/jsp/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(req, resp);
     }
 
     /**
