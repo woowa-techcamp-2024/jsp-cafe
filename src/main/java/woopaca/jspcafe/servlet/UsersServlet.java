@@ -1,5 +1,7 @@
 package woopaca.jspcafe.servlet;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,7 +22,14 @@ public class UsersServlet extends HttpServlet {
 
     private final Logger log = LoggerFactory.getLogger(UsersServlet.class);
 
-    private final UserService userService = new UserService();
+    private UserService userService;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ServletContext servletContext = config.getServletContext();
+        this.userService = (UserService) servletContext.getAttribute("userService");
+    }
 
     /**
      * 회원가입 진행

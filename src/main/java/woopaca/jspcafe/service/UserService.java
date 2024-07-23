@@ -1,16 +1,20 @@
 package woopaca.jspcafe.service;
 
 import woopaca.jspcafe.model.User;
-import woopaca.jspcafe.repository.UserMemoryRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.MembersResponse;
 import woopaca.jspcafe.servlet.dto.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.UserProfile;
 
 import java.util.List;
 
 public class UserService {
 
-    private final UserRepository userRepository = new UserMemoryRepository();
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public void signUp(SignUpRequest signUpRequest) {
         validateSignUpRequest(signUpRequest);
