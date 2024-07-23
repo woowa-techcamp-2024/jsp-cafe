@@ -92,7 +92,7 @@
                         <td>${user.userId}</td>
                         <td><a href="<c:url value='/users/${user.userId}'/>">${user.name}</a></td>
                         <td>${user.email}</td>
-                        <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <td><a href="/users/${user.userId}/form" class="btn btn-success" role="button">수정</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
