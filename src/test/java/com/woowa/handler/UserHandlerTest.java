@@ -120,4 +120,23 @@ class UserHandlerTest {
             assertThat(exception).isInstanceOf(NoSuchElementException.class);
         }
     }
+
+    @Nested
+    @DisplayName("updateUserForm 호출 시")
+    class UpdateUserFormTest {
+
+        @Test
+        @DisplayName("유저 정보를 반환한다.")
+        void setAttributeUser() {
+            //given
+            User user = UserFixture.user();
+            userDatabase.save(user);
+
+            //when
+            ResponseEntity response = userHandler.updateUserForm(user.getUserId());
+
+            //then
+            assertThat(response.getModel().get("user")).isEqualTo(user);
+        }
+    }
 }

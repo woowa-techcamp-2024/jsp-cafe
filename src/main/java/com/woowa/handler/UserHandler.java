@@ -53,10 +53,23 @@ public class UserHandler {
     public ResponseEntity updateUser(
             String userId,
             @RequestParameter("nickname") String nickname) {
-        User user = userDatabase.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        User user = getUser(userId);
         user.update(nickname);
         return ResponseEntity.builder()
                 .found("/users/" + userId);
+    }
+
+    @RequestMapping(path = "/users/{userId}/edit", method = HttpMethod.GET)
+    public ResponseEntity updateUserForm(
+            String userId) {
+        User user = getUser(userId);
+        return ResponseEntity.builder()
+                .add("user", user)
+                .ok();
+    }
+
+    private User getUser(String userId) {
+        return userDatabase.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
     }
 }
