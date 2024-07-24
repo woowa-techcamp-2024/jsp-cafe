@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="org.example.domain.Article" %>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -15,21 +16,7 @@
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 %>
     <div class="container">
-        <header>
-            <h1>HELLO, WEB!</h1>
-            <div class="buttons">
-                <a href="/articles">
-                    <button class="btn">글 목록</button>
-                </a>
-                <a href="/users">
-                    <button class="btn">사용자 목록</button>
-                </a>
-                <button class="btn">로그인</button>
-                <a href="/users/register">
-                    <button class="btn">회원가입</button>
-                </a>
-            </div>
-        </header>
+        <%@ include file="/common/header.jsp" %>
         <main>
             <h2 class="post-title"><%= article.getTitle() %></h2>
             <div class="post-info">

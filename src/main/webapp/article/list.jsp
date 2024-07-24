@@ -2,6 +2,7 @@
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="org.example.domain.Article" %>
 <%@ page import="java.util.List" %>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -15,22 +16,7 @@
     List<Article> articles = (List<Article>)request.getAttribute("articles");
 %>
     <div class="container">
-        <header>
-            <h1>HELLO, WEB!</h1>
-            <div class="buttons">
-            <a href="/articles">
-                <button class="btn">글 목록</button>
-            </a>
-            <a href="/users">
-                <button class="btn">사용자 목록</button>
-            </a>
-            <button class="btn">로그인</button>
-            <a href="/users/register">
-                <button class="btn">회원가입</button>
-            </a>
-            </div>
-        </header>
-
+        <%@ include file="/common/header.jsp" %>
         <div class="info-box">
             <h2>게시글 목록</h2>
             <p>게시글을 확인할 수 있습니다.</p>
