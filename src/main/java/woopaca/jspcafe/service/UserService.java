@@ -18,6 +18,7 @@ public class UserService {
 
     public void signUp(SignUpRequest signUpRequest) {
         validateSignUpRequest(signUpRequest);
+        validateDuplicateUser(signUpRequest);
         User user = new User(signUpRequest.username(), signUpRequest.nickname(), signUpRequest.password());
         userRepository.save(user);
     }
@@ -32,6 +33,20 @@ public class UserService {
         if (signUpRequest.password().isBlank()) {
             throw new IllegalArgumentException("[ERROR] 비밀번호는 비어있을 수 없습니다.");
         }
+    }
+
+    private void validateDuplicateUser(SignUpRequest signUpRequest) {
+        String username = signUpRequest.username();
+        userRepository.findByUsername(username)
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 이메일입니다.");
+                });
+
+        String nickname = signUpRequest.nickname();
+        userRepository.findByNickname(nickname)
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 닉네임입니다.");
+                });
     }
 
     public List<MembersResponse> getAllMembers() {

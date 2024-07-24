@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public class UserMemoryRepository implements UserRepository {
 
@@ -46,5 +47,37 @@ public class UserMemoryRepository implements UserRepository {
             return Optional.of(users.get(id));
         }
         return Optional.empty();
+    }
+
+    /**
+     * username으로 사용자 조회
+     * @param username 조회할 사용자의 username
+     * @return 만약 존재하면 사용자, 존재하지 않으면 Optional.empty()
+     */
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return findBy(user -> user.getUsername().equals(username));
+    }
+
+    /**
+     * nickname으로 사용자 조회
+     * @param nickname 조회할 사용자의 nickname
+     * @return 만약 존재하면 사용자, 존재하지 않으면 Optional.empty()
+     */
+    @Override
+    public Optional<User> findByNickname(String nickname) {
+        return findBy(user -> user.getNickname().equals(nickname));
+    }
+
+    /**
+     * 사용자 조회
+     * @param predicate 사용자 조회 조건
+     * @return 만약 존재하면 사용자, 존재하지 않으면 Optional.empty()
+     */
+    private Optional<User> findBy(Predicate<User> predicate) {
+        return users.values()
+                .stream()
+                .filter(predicate)
+                .findFirst();
     }
 }
