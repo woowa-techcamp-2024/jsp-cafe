@@ -1,5 +1,6 @@
 package org.example.util.session;
 
+import jakarta.servlet.http.HttpSession;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class InMemorySessionManager implements SessionManager {
         return InstanceHolder.INSTANCE;
     }
 
-    private final Map<String, Session> sessions = new HashMap<>();
+    private final Map<String, HttpSession> sessions = new HashMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Duration sessionTimeout = Duration.ofMinutes(30);
 
@@ -30,12 +31,12 @@ public class InMemorySessionManager implements SessionManager {
     }
 
     @Override
-    public Session getSession(String sessionId) {
+    public HttpSession getSession(String sessionId) {
         lock.readLock().lock();
         try {
-            Session session = sessions.get(sessionId);
-            if (session != null) {
-                session.access();
+            HttpSession session = sessions.get(sessionId);
+            if (session != null && session instanceof Session) {
+                ((Session) session).access();
             }
             return session;
         } finally {
@@ -44,11 +45,11 @@ public class InMemorySessionManager implements SessionManager {
     }
 
     @Override
-    public Session createSession(String sessionId) {
-        Session session = new Session();
+    public HttpSession createSession() {
+        HttpSession session = new Session();
         lock.writeLock().lock();
         try {
-            sessions.put(sessionId, session);
+            sessions.put(session.getId(), session);
         } finally {
             lock.writeLock().unlock();
         }
@@ -59,7 +60,10 @@ public class InMemorySessionManager implements SessionManager {
     public void invalidateSession(String sessionId) {
         lock.writeLock().lock();
         try {
-            sessions.remove(sessionId);
+            HttpSession session = sessions.remove(sessionId);
+            if (session != null) {
+                session.invalidate();
+            }
         } finally {
             lock.writeLock().unlock();
         }
@@ -68,9 +72,13 @@ public class InMemorySessionManager implements SessionManager {
     private void cleanExpiredSessions() {
         Instant now = Instant.now();
         sessions.entrySet().removeIf(entry -> {
-            Session session = entry.getValue();
-            Duration sessionAge = Duration.between(session.getLastAccess(), now);
-            return sessionAge.compareTo(sessionTimeout) > 0;
+            HttpSession session = entry.getValue();
+            if (session instanceof Session) {
+                Session customSession = (Session) session;
+                Duration sessionAge = Duration.between(customSession.getLastAccess(), now);
+                return sessionAge.compareTo(sessionTimeout) > 0;
+            }
+            return false;
         });
     }
 }
