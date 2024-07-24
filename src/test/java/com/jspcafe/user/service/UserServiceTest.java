@@ -1,11 +1,14 @@
 package com.jspcafe.user.service;
 
 import com.jspcafe.exception.UserNotFoundException;
+import com.jspcafe.test_util.H2Connector;
+import com.jspcafe.test_util.H2Initializer;
 import com.jspcafe.user.model.User;
 import com.jspcafe.user.model.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,8 +18,9 @@ class UserServiceTest {
     private UserDao userDao;
 
     @BeforeEach
-    void setUp() {
-        userDao = new UserDao();
+    void setUp() throws SQLException {
+        H2Initializer.initializeDatabase(H2Connector.INSTANCE);
+        userDao = new UserDao(H2Connector.INSTANCE);
         userService = new UserService(userDao);
     }
 

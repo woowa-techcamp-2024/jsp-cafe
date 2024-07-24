@@ -3,6 +3,8 @@ package com.jspcafe.board.service;
 import com.jspcafe.board.model.Article;
 import com.jspcafe.board.model.ArticleDao;
 import com.jspcafe.exception.ArticleNotFoundException;
+import com.jspcafe.test_util.H2Connector;
+import com.jspcafe.test_util.H2Initializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +19,8 @@ class ArticleServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        articleDao = new ArticleDao();
+        H2Initializer.initializeDatabase(H2Connector.INSTANCE);
+        articleDao = new ArticleDao(H2Connector.INSTANCE);
         articleService = new ArticleService(articleDao);
     }
 

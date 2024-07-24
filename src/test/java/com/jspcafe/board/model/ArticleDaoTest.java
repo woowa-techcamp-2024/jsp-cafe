@@ -1,8 +1,14 @@
 package com.jspcafe.board.model;
 
 import com.jspcafe.exception.ArticleNotFoundException;
+import com.jspcafe.test_util.H2Connector;
+import com.jspcafe.test_util.H2Initializer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +17,8 @@ class ArticleDaoTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        articleDao = new ArticleDao();
+        H2Initializer.initializeDatabase(H2Connector.INSTANCE);
+        articleDao = new ArticleDao(H2Connector.INSTANCE);
     }
 
     @Test
