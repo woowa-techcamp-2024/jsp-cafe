@@ -28,6 +28,7 @@ public class ArticleController extends HttpServlet {
         String path = req.getPathInfo();
         if (path == null || path.isEmpty() || path.isBlank()) {
             articleList(req, resp);
+            return;
         }
         switch (path) {
             case "/form" -> forward("article_form", req, resp);
