@@ -1,30 +1,29 @@
 package com.example.servlet;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import com.example.db.UserDatabase;
+import com.example.db.UserMemoryDatabase;
 import com.example.entity.User;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @DisplayName("UserServlet 테스트")
 class UserServletTest {
 
 	private UserServlet userServlet;
-	private UserDatabase userDatabase;
+	private UserMemoryDatabase userMemoryDatabase;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private RequestDispatcher requestDispatcher;
@@ -32,7 +31,7 @@ class UserServletTest {
 	@BeforeEach
 	void setUp() throws ServletException {
 		userServlet = new UserServlet();
-		userDatabase = mock(UserDatabase.class);
+		userMemoryDatabase = mock(UserMemoryDatabase.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		requestDispatcher = mock(RequestDispatcher.class);
@@ -40,33 +39,62 @@ class UserServletTest {
 		ServletConfig config = mock(ServletConfig.class);
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
-		when(context.getAttribute("userDatabase")).thenReturn(userDatabase);
-		when(request.getRequestDispatcher("/user/profile.jsp")).thenReturn(requestDispatcher);
+		when(context.getAttribute("userDatabase")).thenReturn(userMemoryDatabase);
+		when(request.getRequestDispatcher("/user/list.jsp")).thenReturn(requestDispatcher);
 
 		userServlet.init(config);
 	}
 
 	@Test
-	@DisplayName("유효한 유저 아이디로 GET 요청을 처리할 수 있다")
-	void doGet_validUserId_displaysUserProfile() throws ServletException, IOException {
-		User user = new User("1", "password", "name", "email@example.com");
-		when(request.getPathInfo()).thenReturn("/1");
-		when(userDatabase.findById("1")).thenReturn(Optional.of(user));
+	@DisplayName("GET 요청을 처리할 수 있다")
+	void doGet_displaysUserList() throws ServletException, IOException {
+		// given
+		User user1 = new User("1", "password1", "name1", "email1@example.com");
+		User user2 = new User("2", "password2", "name2", "email2@example.com");
+		when(userMemoryDatabase.findAll()).thenReturn(List.of(user1, user2));
 
+		// when
 		userServlet.doGet(request, response);
 
-		verify(request).setAttribute("user", user);
+		// then
+		verify(request).setAttribute("userList", List.of(user1, user2));
 		verify(requestDispatcher).forward(request, response);
 	}
 
 	@Test
-	@DisplayName("존재하지 않는 유저 아이디로 GET 요청을 처리할 때 예외를 던진다")
-	void doGet_invalidUserId_throwsException() {
-		when(request.getPathInfo()).thenReturn("/1");
-		when(userDatabase.findById("1")).thenReturn(Optional.empty());
+	@DisplayName("유효한 유저 생성 요청을 처리할 수 있다")
+	void doPost_validRequest_createsUser() throws IOException {
+		// given
+		when(request.getParameter("userId")).thenReturn("1");
+		when(request.getParameter("password")).thenReturn("password");
+		when(request.getParameter("name")).thenReturn("name");
+		when(request.getParameter("email")).thenReturn("email@example.com");
 
-		assertThatThrownBy(() -> userServlet.doGet(request, response))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("User not found");
+		// when
+		userServlet.doPost(request, response);
+
+		// then
+		ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+		verify(userMemoryDatabase).insert(userCaptor.capture());
+		User insertedUser = userCaptor.getValue();
+		assertThat(insertedUser.id()).isEqualTo("1");
+		assertThat(insertedUser.password()).isEqualTo("password");
+		assertThat(insertedUser.name()).isEqualTo("name");
+		assertThat(insertedUser.email()).isEqualTo("email@example.com");
+
+		verify(response).sendRedirect("/users");
+	}
+
+	@Test
+	@DisplayName("필수 필드가 누락된 경우 예외를 던진다")
+	void doPost_missingFields_sendsError() throws IOException {
+		// given
+		when(request.getParameter("userId")).thenReturn("");
+
+		// when
+		userServlet.doPost(request, response);
+
+		// then
+		verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST);
 	}
 }

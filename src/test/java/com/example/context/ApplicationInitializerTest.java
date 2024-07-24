@@ -2,28 +2,38 @@ package com.example.context;
 
 import static org.mockito.Mockito.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.example.db.ArticleDatabase;
+import com.example.db.ArticleMemoryDatabase;
 import com.example.db.UserDatabase;
+import com.example.db.UserMemoryDatabase;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 
-public class ApplicationInitializerTest {
+@DisplayName("ApplicationInitializer 테스트")
+class ApplicationInitializerTest {
+
+	private ApplicationInitializer initializer;
+	private ServletContextEvent event;
+	private ServletContext context;
+
+	@BeforeEach
+	void setUp() {
+		initializer = new ApplicationInitializer();
+		context = mock(ServletContext.class);
+		event = new ServletContextEvent(context);
+	}
 
 	@Test
-	@DisplayName("contextInitialized는 UserDatabase를 ServletContext에 설정한다")
+	@DisplayName("contextInitialized는 UserDatabase와 ArticleDatabase를 ServletContext에 설정한다")
 	void contextInitialized() {
-		// given
-		ApplicationInitializer initializer = new ApplicationInitializer();
-		ServletContext servletContext = mock(ServletContext.class);
-		ServletContextEvent event = new ServletContextEvent(servletContext);
-
-		// when
 		initializer.contextInitialized(event);
 
-		// then
-		verify(servletContext).setAttribute(eq("userDatabase"), any(UserDatabase.class));
+		verify(context).setAttribute(eq("userDatabase"), any(UserDatabase.class));
+		verify(context).setAttribute(eq("articleDatabase"), any(ArticleDatabase.class));
 	}
 }

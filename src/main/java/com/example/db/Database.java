@@ -10,4 +10,6 @@ public interface Database<ID, T> {
 	Optional<T> findById(ID id);
 
 	List<T> findAll();
+
+	void update(ID id, T t);
 }
