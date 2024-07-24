@@ -28,7 +28,7 @@ class QuestionRepositoryTest {
         Long expectedId = 1L;
 
         // when
-        Long id = questionRepository.save(title, content, writer);
+        Long id = questionRepository.save(title, content, writer, 1L);
 
         // then
         assertEquals(expectedId, id);
@@ -40,7 +40,7 @@ class QuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        questionRepository.save(title, content, writer);
+        questionRepository.save(title, content, writer, 1L);
 
         int expectedSize = 1;
 
@@ -57,7 +57,7 @@ class QuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long id = questionRepository.save(title, content, writer);
+        Long id = questionRepository.save(title, content, writer, 1L);
 
         // when
         Question question = questionRepository.findById(id);
