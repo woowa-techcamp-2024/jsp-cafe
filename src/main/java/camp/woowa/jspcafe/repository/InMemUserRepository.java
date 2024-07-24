@@ -42,4 +42,15 @@ public class InMemUserRepository implements UserRepository {
         users.clear();
         sequence_id.set(1L);
     }
+
+    @Override
+    public boolean isExistedByUserId(String userId) {
+        // TODO: 매우 느림
+        for (User user : users.values()) {
+            if (user.getUserId().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
