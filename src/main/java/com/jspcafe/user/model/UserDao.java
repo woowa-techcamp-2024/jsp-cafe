@@ -1,15 +1,20 @@
 package com.jspcafe.user.model;
 
-import com.jspcafe.util.DBManager;
+import com.jspcafe.util.DatabaseConnector;
 
 import java.sql.*;
 import java.util.*;
 
 public class UserDao {
+    private final DatabaseConnector databaseConnector;
+
+    public UserDao(final DatabaseConnector databaseConnector) {
+        this.databaseConnector = databaseConnector;
+    }
 
     public void save(User user) {
         String sql = "INSERT INTO users (id, email, nickname, password) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DBManager.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, user.id());
             pstmt.setString(2, user.email());
@@ -23,7 +28,7 @@ public class UserDao {
 
     public Optional<User> findById(String id) {
         String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = DBManager.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -44,7 +49,7 @@ public class UserDao {
 
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = DBManager.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -66,7 +71,7 @@ public class UserDao {
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         List<User> users = new ArrayList<>();
-        try (Connection conn = DBManager.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
@@ -85,7 +90,7 @@ public class UserDao {
 
     public void update(final User updateUser) {
         String sql = "UPDATE users SET email = ?, nickname = ?, password = ? WHERE id = ?";
-        try (Connection conn = DBManager.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, updateUser.email());
             pstmt.setString(2, updateUser.nickname());

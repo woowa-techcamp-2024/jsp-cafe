@@ -5,7 +5,7 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DBManager {
+public class MysqlConnector implements DatabaseConnector {
     private static final String URL = "jdbc:mysql://mysql:3306/jspcafe?useSSL=false&allowPublicKeyRetrieval=true";
     private static final String USER = "jspcafe";
     private static final String PASSWORD = "jspcafe";
@@ -27,11 +27,13 @@ public class DBManager {
         }
     }
 
-    public static Connection getConnection() throws SQLException {
+    @Override
+    public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
 
-    public static void closeConnection(Connection conn) {
+    @Override
+    public void closeConnection(Connection conn) {
         if (conn != null) {
             try {
                 conn.close();
