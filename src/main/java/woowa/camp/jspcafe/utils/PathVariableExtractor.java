@@ -31,6 +31,6 @@ public class PathVariableExtractor {
     }
 
     private static boolean isPathVariablePattern(String[] patternParts, int idx) {
-        return patternParts[idx].startsWith("{") &&  patternParts[idx].endsWith("}");
+        return patternParts[idx].startsWith("{") && patternParts[idx].endsWith("}");
     }
 }
