@@ -37,6 +37,21 @@ class ArticleTest {
                     expectedCreatedAt);
         }
 
+        @DisplayName("정상적으로 생성된다.")
+        @Test
+        void createSuccessWithFull() {
+            // Assert
+            Long expectedId = 1L;
+            // Act
+            Article actualResult = new Article(expectedId, expectedTitle, expectedWriter,
+                expectedContents, expectedCreatedAt);
+            // Assert
+            assertThat(actualResult)
+                .extracting("id", "title", "writer", "contents", "createdAt")
+                .containsExactly(expectedId, expectedTitle, expectedWriter, expectedContents,
+                    expectedCreatedAt);
+        }
+
         @DisplayName("title이 null이거나 빈 문자열이면 예외가 발생한다.")
         @MethodSource("expectedValues")
         @ParameterizedTest

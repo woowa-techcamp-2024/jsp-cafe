@@ -17,6 +17,11 @@ public class Article {
         this.createdAt = createdAt;
     }
 
+    public Article(Long id, String title, String writer, String contents, LocalDateTime createdAt) {
+        this(title, writer, contents, createdAt);
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
