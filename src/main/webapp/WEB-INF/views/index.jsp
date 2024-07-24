@@ -25,7 +25,7 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time"><%= article.getCreatedAt().toString()%></span>
+                                <span class="time"><%= article.getFormattedCreatedAt()%></span>
                                 <a href="<%= "/user/" + memberRepository.findById(article.getWriterId()).get().getMemberId()%>"
                                    class="author"><%= memberRepository.findById(article.getWriterId()).get().getName()%>
                                 </a>

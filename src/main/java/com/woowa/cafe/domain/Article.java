@@ -1,6 +1,7 @@
 package com.woowa.cafe.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Article {
 
@@ -40,8 +41,9 @@ public class Article {
         return writerId;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public String getFormattedCreatedAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(createdAt);
     }
 
     public LocalDateTime getUpdatedAt() {

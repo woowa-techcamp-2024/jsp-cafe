@@ -26,7 +26,7 @@
                                class="article-author-name"><%= memberRepository.findById(article.getWriterId()).get().getName()%>
                                 ></a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                <%= article.getCreatedAt().toString()%>
+                                <%= article.getFormattedCreatedAt()%>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
