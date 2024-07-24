@@ -1,4 +1,4 @@
-package com.jspcafe.util;
+package com.jspcafe.test_util;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;

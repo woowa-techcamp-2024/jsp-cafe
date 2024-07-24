@@ -1,5 +1,6 @@
 package com.jspcafe.util;
 
+import com.jspcafe.test_util.StubHttpServletRequest;
 import jakarta.servlet.http.*;
 import org.junit.jupiter.api.Test;
 
