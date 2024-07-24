@@ -108,6 +108,6 @@ class UserRepositoryTest {
         boolean isExisted = userRepository.isExistedByUserId(userId);
 
         // then
-        assertEquals(isExisted, true);
+        assertEquals(true, isExisted);
     }
 }

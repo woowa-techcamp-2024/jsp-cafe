@@ -131,6 +131,6 @@ class UserServiceTest {
         boolean isExisted = userService.isExistedByUserId(userId);
 
         // then
-        assertEquals(isExisted, true);
+        assertEquals(true, isExisted);
     }
 }
