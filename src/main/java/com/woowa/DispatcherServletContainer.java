@@ -3,7 +3,9 @@ package com.woowa;
 import com.woowa.database.UserDatabase;
 import com.woowa.framework.ApplicationInitializer;
 import com.woowa.framework.BeanFactory;
+import com.woowa.handler.LoginHandler;
 import com.woowa.handler.QuestionHandler;
+import com.woowa.servlet.LoginServlet;
 import com.woowa.servlet.QuestionServlet;
 import com.woowa.servlet.UserProfileServlet;
 import jakarta.servlet.ServletContainerInitializer;
@@ -35,8 +37,13 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         Dynamic userProfileServlet = ctx.addServlet("userProfileServlet", new UserProfileServlet(beanFactory.getBean(
                 UserDatabase.class)));
         userProfileServlet.addMapping("/users/*");
+
         Dynamic questionServlet = ctx.addServlet("questionServlet",
                 new QuestionServlet(beanFactory.getBean(QuestionHandler.class)));
         questionServlet.addMapping("/questions");
+
+        Dynamic loginServlet = ctx.addServlet("loginServlet",
+                new LoginServlet(beanFactory.getBean(LoginHandler.class)));
+        loginServlet.addMapping("/login");
     }
 }
