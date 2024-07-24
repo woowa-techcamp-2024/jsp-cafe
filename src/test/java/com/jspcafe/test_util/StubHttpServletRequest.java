@@ -13,10 +13,6 @@ public class StubHttpServletRequest implements HttpServletRequest {
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, Object> attributes = new HashMap<>();
 
-    public StubHttpServletRequest(String body) {
-        this.body = body;
-    }
-
     @Override
     public BufferedReader getReader() throws IOException {
         return new BufferedReader(new StringReader(body));

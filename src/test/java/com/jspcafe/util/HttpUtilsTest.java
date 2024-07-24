@@ -15,7 +15,8 @@ public class HttpUtilsTest {
     void HttpRequest_body_내용을_정상적으로_반환한다() throws IOException {
         // Given
         String expectedBody = "This is the request body";
-        HttpServletRequest request = new StubHttpServletRequest(expectedBody);
+        StubHttpServletRequest request = new StubHttpServletRequest();
+        request.setBody(expectedBody);
 
         // When
         String actualBody = HttpUtils.readRequestBody(request);
@@ -28,7 +29,8 @@ public class HttpUtilsTest {
     void JSON_형식의_요청_본문을_Map으로_변환한다() throws IOException {
         // Given
         String jsonBody = "{\"name\":\"John Doe\",\"age\":30,\"city\":\"New York\"}";
-        HttpServletRequest request = new StubHttpServletRequest(jsonBody);
+        StubHttpServletRequest request = new StubHttpServletRequest();
+        request.setBody(jsonBody);
 
         // When
         Map<String, Object> result = HttpUtils.getJsonRequestBody(request);
