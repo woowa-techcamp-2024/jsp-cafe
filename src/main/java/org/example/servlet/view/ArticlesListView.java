@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/articles")
+@WebServlet("")
 public class ArticlesListView extends HttpServlet {
     private final Logger log = LoggerFactory.getLogger(ArticlesListView.class);
     private ArticleDataHandler articleDataHandler;

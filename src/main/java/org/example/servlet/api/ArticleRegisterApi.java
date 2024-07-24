@@ -35,6 +35,6 @@ public class ArticleRegisterApi extends HttpServlet {
         Article article = new Article(title, content, author, LocalDateTime.now());
         Article savedArticle = articleDataHandler.insert(article);
         log.debug("[ArticleRegisterApi]" + savedArticle.toString());
-        response.sendRedirect("/articles");
+        response.sendRedirect("/");
     }
 }
