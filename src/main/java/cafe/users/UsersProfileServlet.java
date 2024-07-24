@@ -2,7 +2,6 @@ package cafe.users;
 
 import cafe.MappingHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -15,7 +14,9 @@ public class UsersProfileServlet extends MappingHttpServlet {
     private final UserRepository userRepository;
 
     @Override
-    public List<String> mappings() { return List.of("/users/*"); }
+    public List<String> mappings() {
+        return List.of("/users/*");
+    }
 
     public UsersProfileServlet(UserRepository userRepository) {
         this.userRepository = userRepository;

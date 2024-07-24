@@ -11,7 +11,9 @@ import java.util.List;
 public class UserRegisterServlet extends MappingHttpServlet {
 
     @Override
-    public List<String> mappings() { return List.of("/user/register"); }
+    public List<String> mappings() {
+        return List.of("/user/register");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
