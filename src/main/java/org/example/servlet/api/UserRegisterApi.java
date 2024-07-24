@@ -23,7 +23,7 @@ public class UserRegisterApi extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        userDataHandler = (UserDataHandlerMySql) getServletContext().getAttribute(UserDataHandlerMySql.class.getName());
+        userDataHandler = (UserDataHandler) getServletContext().getAttribute(UserDataHandlerMySql.class.getName());
     }
 
     @Override

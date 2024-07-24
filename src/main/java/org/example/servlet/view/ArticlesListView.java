@@ -22,7 +22,7 @@ public class ArticlesListView extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        articleDataHandler = (ArticleDataHandlerMySql) getServletContext().getAttribute(ArticleDataHandlerMySql.class.getName());
+        articleDataHandler = (ArticleDataHandler) getServletContext().getAttribute(ArticleDataHandlerMySql.class.getName());
     }
 
     @Override
