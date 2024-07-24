@@ -1,6 +1,8 @@
 package codesqaud.app.dao;
 
+import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +19,19 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public void save(User user) {
+        //업데이트
         if (user.getId() != null) {
             users.put(user.getId(), user);
             return;
         }
 
-        userIdIndex.compute(user.getUserId(), (requestUserId, existingPk) -> {
+        //생성
+        users.compute(user.getId(), (id, existingUser) -> {
+            if (existingUser != null) {
+                throw new HttpException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
             user.setId(ID_GENERATOR.incrementAndGet());
-            users.put(user.getId(), user);
-            return user.getId();
+            return user;
         });
     }
 
