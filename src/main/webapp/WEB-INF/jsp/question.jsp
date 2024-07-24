@@ -1,4 +1,4 @@
-<%--
+<%@ page import="codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse" %><%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
   Date: 24. 7. 23.
@@ -15,9 +15,13 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
+            <%
+                ArticleCommonResponse articleCommonResponse = (ArticleCommonResponse) request.getAttribute(
+                        "article");
+            %>
             <header class="qna-header">
-                <h2 class="qna-title">InitializingBean implements afterPropertiesSet() 호출되지 않는
-                    문제.</h2>
+                <h2 class="qna-title"><%=articleCommonResponse.getTitle()%>
+                </h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -27,26 +31,31 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>
-                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                2015-12-30 01:47
+                            <a href="/users/<%=articleCommonResponse.getWriter()%>"
+                               class="article-author-name"><%=articleCommonResponse.getWriter()%>
+                            </a>
+                            <a href="/questions/<%=articleCommonResponse.getId()%>"
+                               class="article-header-time" title="퍼머링크">
+                                <%=articleCommonResponse.getCreatedAt()%>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="article-doc">
-                        <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p>
-                        <p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                            서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p>
-                        <p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                    <div class="article-doc"><%
+                        String contents = articleCommonResponse.getContents().replace("\n", "<br>");
+                    %>
+                        <%=contents%>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article"
+                                   href="/questions/<%=articleCommonResponse.getId()%>/form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete"
+                                      action="/questions/<%=articleCommonResponse.getId()%>"
+                                      method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
