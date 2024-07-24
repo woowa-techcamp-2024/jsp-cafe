@@ -28,8 +28,7 @@ public class UserProfileServlet extends HttpServlet {
 
     private Long parseSuffixPathVariable(final String pathInfo) {
         String[] splitPaths = pathInfo.split("/");
-        Long id = Long.parseLong(splitPaths[splitPaths.length - 1].trim());
 
-        return id;
+        return Long.parseLong(splitPaths[splitPaths.length - 1].trim());
     }
 }

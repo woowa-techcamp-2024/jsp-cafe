@@ -37,7 +37,9 @@ class UserServiceTest {
             @ParameterizedTest
             @MethodSource("generateInvalidUserInfo")
             void 예외를_발생시킨다(List<String> invalidUserInfo) {
-                assertThatThrownBy(() -> userService.signup(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2), invalidUserInfo.get(3)))
+                assertThatThrownBy(
+                        () -> userService.signup(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2),
+                                invalidUserInfo.get(3)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("회원가입 시 모든 정보를 입력해야 합니다.");
             }

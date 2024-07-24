@@ -29,4 +29,9 @@ public class QuestionService {
     public List<Question> readAll() {
         return questionRepository.findAll();
     }
+
+    public Question readById(final Long id) {
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다. id = " + id));
+    }
 }
