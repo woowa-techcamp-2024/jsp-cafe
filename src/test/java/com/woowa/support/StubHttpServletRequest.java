@@ -31,6 +31,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
     private final Map<String, String> parameters = new HashMap<String, String>();
     private StubHttpSession httpSession = null;
     private Map<String, Object> attributes = new HashMap<>();
+    private String requestUri = "";
 
     @Override
     public String getAuthType() {
@@ -114,7 +115,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestURI() {
-        return "";
+        return requestUri;
     }
 
     @Override
@@ -393,5 +394,9 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     public void setSession(StubHttpSession session) {
         this.httpSession = session;
+    }
+
+    public void setRequestUri(String uri) {
+        this.requestUri = uri;
     }
 }
