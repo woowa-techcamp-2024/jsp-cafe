@@ -63,6 +63,7 @@ public class MemberProfileServletTest {
             assertNotNull(attribute);
             Member find = (Member) attribute;
             assertEquals(member1,find);
+            assertEquals("/templates/user/profile.jsp",req.getForwardPath());
         }
 
         @DisplayName("path가 유효하지 않을때, 즉 /member/   로 들어올 경우 400오류를 던짐")

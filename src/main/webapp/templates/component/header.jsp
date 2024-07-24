@@ -64,10 +64,10 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>>
-                <li><a href="${pageContext.request.contextPath}/member/login" role="button">로그인</a></li>
-                <li><a href="${pageContext.request.contextPath}/member/regist" role="button">회원가입</a></li>
+                <li><a href="${pageContext.request.contextPath}/members/login" role="button">로그인</a></li>
+                <li><a href="${pageContext.request.contextPath}/members/regist" role="button">회원가입</a></li>
                 <li>
-                    <form method="post" action="${pageContext.request.contextPath}/member/logout">
+                    <form method="post" action="${pageContext.request.contextPath}/members/logout">
                         <button type="submit">로그아웃</button>
                     </form>
                 </li>

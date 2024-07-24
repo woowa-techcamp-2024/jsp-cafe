@@ -20,7 +20,7 @@
                   for(Member member : members){
               %>
               <tr>
-                <th scope="row"><%=member.getId()%></th> <td><%=member.getMemberId()%></td> <td><%=member.getNickname()%></td> <td><%=member.getEmail()%></td><td><a href="${pageContext.request.contextPath}/member/<%=member.getMemberId()%>" class="btn btn-success" role="button">수정</a></td>
+                <th scope="row"><%=member.getId()%></th> <td><%=member.getMemberId()%></td> <td><%=member.getNickname()%></td> <td><%=member.getEmail()%></td><td><a href="${pageContext.request.contextPath}/members/<%=member.getMemberId()%>" class="btn btn-success" role="button">수정</a></td>
               </tr>
               <%
                   }

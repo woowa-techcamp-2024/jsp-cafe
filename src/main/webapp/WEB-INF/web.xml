@@ -9,7 +9,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>memberRegistServlet</servlet-name>
-        <url-pattern>/member/regist</url-pattern>
+        <url-pattern>/members/regist</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -27,7 +27,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>memberProfileServlet</servlet-name>
-        <url-pattern>/member/*</url-pattern>
+        <url-pattern>/members/*</url-pattern>
     </servlet-mapping>
 
     <error-page>
