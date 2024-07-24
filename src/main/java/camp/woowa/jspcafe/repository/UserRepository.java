@@ -14,4 +14,6 @@ public interface UserRepository {
     Long update(Long id, String userId, String updatedName, String updatedEmail);
 
     void deleteAll();
+
+    boolean isExistedByUserId(String userId);
 }
