@@ -20,6 +20,7 @@ public class DatabaseInitServlet extends HttpServlet {
 
             logger.info("테이블 초기화");
             stmt.execute(createUserTable());
+            stmt.execute(createPostTable());
 
         } catch (SQLException e) {
             throw new ServletException("Unable to initialize database", e);
@@ -33,6 +34,16 @@ public class DatabaseInitServlet extends HttpServlet {
                 "name VARCHAR(50) NOT NULL UNIQUE," +
                 "email VARCHAR(100) NOT NULL UNIQUE," +
                 "password VARCHAR(255) NOT NULL," +
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                ")";
+    }
+
+    private String createPostTable() {
+        return "CREATE TABLE IF NOT EXISTS posts (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                "writer VARCHAR(50) NOT NULL," +
+                "title VARCHAR(50) NOT NULL," +
+                "contents TEXT NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                 ")";
     }

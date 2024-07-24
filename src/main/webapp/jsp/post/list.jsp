@@ -3,22 +3,18 @@
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="../../css/styles.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="../../index.html" class="navbar-brand">SLiPP</a>
+            <a href="index.html" class="navbar-brand">SLiPP</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -41,7 +37,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="../../user/list.html"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="./user/list.html"><i class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>
     </div>
@@ -51,23 +47,27 @@
         <div class="navbar-header">
             <a href="#" style="margin-left:15px;" class="navbar-btn btn btn-default btn-plus dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <li><a href="../../user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
+                <li><a href="user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
-            
+
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
-            	<span class="sr-only">Toggle navigation</span>
-            	<span class="icon-bar"></span>
-            	<span class="icon-bar"></span>
-            	<span class="icon-bar"></span>
-            </button>            
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../../index.html">Posts</a></li>
-                <li><a href="../../user/login.html" role="button">로그인</a></li>
-                <li><a href="../../user/form.html" role="button">회원가입</a></li>
+                <li class="active"><a href="index.html">Posts</a></li>
+                <li><a href="user/login.html" role="button">로그인</a></li>
+                <li><a href="user/form.html" role="button">회원가입</a></li>
+                <!--
+                <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
+                <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
+                -->
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
@@ -75,35 +75,46 @@
     </div>
 </div>
 
-
 <div class="container" id="main">
-    <div class="col-md-10 col-md-offset-1">
-        <div class="panel panel-default">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="user" items="${users}" varStatus="status">
-                    <tr>
-                        <th scope="row">${status.count}</th>
-                        <td>${user.userId}</td>
-                        <td><a href="<c:url value='/users/${user.userId}'/>">${user.name}</a></td>
-                        <td>${user.email}</td>
-                        <td><a href="/users/${user.userId}/form" class="btn btn-success" role="button">수정</a></td>
-                    </tr>
+    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+        <div class="panel panel-default qna-list">
+            <ul class="list">
+                <c:forEach items="${posts}" var="post">
+                    <li>
+                        <div class="wrap">
+                            <div class="main">
+                                <strong class="subject">
+                                    <a href="questions?id=${post.id}">${post.title}</a>
+                                </strong>
+                                <div class="auth-info">
+                                    <i class="icon-add-comment"></i>
+                                    <span class="time">작성 시간</span>
+                                    <a href="#" class="author">${post.writer}</a>
+                                </div>
+                                <div class="reply" title="댓글">
+                                    <i class="icon-reply"></i>
+                                    <span class="point">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </c:forEach>
-                </tbody>
-            </table>
+            </ul>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 text-center">
+                    <!-- 페이지네이션 -->
+                </div>
+                <div class="col-md-3 qna-write">
+                    <a href="../qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- script references -->
-<script src="../../js/jquery-2.2.0.min.js"></script>
-<script src="../../js/bootstrap.min.js"></script>
-<script src="../../js/scripts.js"></script>
+<script src="js/jquery-2.2.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/scripts.js"></script>
 </body>
 </html>

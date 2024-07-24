@@ -1,14 +1,12 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
     <link href="../css/styles.css" rel="stylesheet">
 </head>
 <body>
@@ -53,13 +51,13 @@
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
-            
+
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
-            	<span class="sr-only">Toggle navigation</span>
-            	<span class="icon-bar"></span>
-            	<span class="icon-bar"></span>
-            	<span class="icon-bar"></span>
-            </button>            
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
@@ -74,24 +72,51 @@
 </div>
 
 <div class="container" id="main">
-   <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
-      <div class="panel panel-default content-main">
-          <form name="question" method="post" action="/questions">
-              <div class="form-group">
-                  <label for="writer">글쓴이</label>
-                  <input class="form-control" id="writer" name="writer" placeholder="글쓴이"/>
-              </div>
-              <div class="form-group">
-                  <label for="title">제목</label>
-                  <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
-              </div>
-              <div class="form-group">
-                  <label for="contents">내용</label>
-                  <textarea name="contents" id="contents" rows="5" class="form-control"></textarea>
-              </div>
-              <button type="submit" class="btn btn-success clearfix pull-right">질문하기</button>
-              <div class="clearfix" />
-          </form>
+    <div class="col-md-12 col-sm-12 col-lg-12">
+        <div class="panel panel-default">
+            <header class="qna-header">
+                <h2 class="qna-title">${post.title}</h2>
+            </header>
+            <div class="content-main">
+                <article class="article">
+                    <div class="article-header">
+                        <div class="article-header-thumb">
+                            <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
+                        </div>
+                        <div class="article-header-text">
+                            <a href="/users/${post.writer}" class="article-author-name">${post.writer}</a>
+                            <a href="/questions/${post.id}" class="article-header-time" title="퍼머링크">
+                                <!-- 작성 시간을 표시할 수 있다면 여기에 추가 -->
+                                <i class="icon-link"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="article-doc">
+                        ${post.contents}
+                    </div>
+                    <div class="article-util">
+                        <ul class="article-util-list">
+                            <li>
+                                <a class="link-modify-article" href="/questions/${post.id}/form">수정</a>
+                            </li>
+                            <li>
+                                <form class="form-delete" action="/questions/${post.id}" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="link-delete-article" type="submit">삭제</button>
+                                </form>
+                            </li>
+                            <li>
+                                <a class="link-modify-article" href="/">목록</a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- 댓글 섹션 -->
+                <div class="qna-comment">
+                    <!-- 댓글 내용 -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -100,5 +125,5 @@
 <script src="../js/jquery-2.2.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/scripts.js"></script>
-	</body>
+</body>
 </html>

@@ -16,7 +16,7 @@ public class UserRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
-    public User register(User user) throws SQLException {
+    public User save(User user) throws SQLException {
         String sql = "insert into users (userId, password, name, email) values (?, ?, ?, ?)";
         try (Connection conn = DataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -28,6 +28,22 @@ public class UserRepository {
             return user;
         } catch (SQLException e) {
             logger.error("save user error", e);
+            throw e;
+        }
+    }
+
+    public User update(User user) throws SQLException {
+        String sql = "update users set password=?, name=?, email=? where userId=?";
+        try (Connection conn = DataUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getPassword());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getUserId());
+            ps.executeUpdate();
+            return user;
+        } catch (SQLException e) {
+            logger.error("update user error", e);
             throw e;
         }
     }
@@ -76,7 +92,7 @@ public class UserRepository {
     }
 
     public boolean existsByUserId(String userId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        String sql = "SELECT COUNT(*) FROM users WHERE userId = ?";
         boolean exists = false;
 
         try (Connection conn = DataUtil.getConnection();

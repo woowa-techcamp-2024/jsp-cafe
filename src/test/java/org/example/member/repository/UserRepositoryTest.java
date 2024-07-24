@@ -27,10 +27,10 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("유효한 사용자 정보는 정상적으로 db에 저장한다.")
-    public void register_new_user_successfully() throws SQLException {
+    public void save_new_user_successfully() throws SQLException {
         User user = User.createUser("user1", "password1", "John Doe", "john.doe@example.com");
 
-        User registeredUser = userRepository.register(user);
+        User registeredUser = userRepository.save(user);
 
         assertNotNull(registeredUser);
         assertEquals("user1", registeredUser.getUserId());
@@ -106,7 +106,7 @@ public class UserRepositoryTest {
         }
 
         @Override
-        public User register(User user) throws SQLException {
+        public User save(User user) throws SQLException {
             return user;
         }
     }

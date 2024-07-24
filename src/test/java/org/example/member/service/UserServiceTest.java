@@ -9,18 +9,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.sql.SQLException;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
+import org.example.member.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
-public class UserRegisterServiceTest {
+public class UserServiceTest {
 
-    private UserRegisterService userRegisterService;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
-        userRegisterService = new MockUserRegisterService();
+        userService = new MockUserService(new UserRepository());
     }
 
     @Test
@@ -28,7 +29,7 @@ public class UserRegisterServiceTest {
     public void register_new_user_successfully() throws SQLException {
         // Given
         User user = User.createUser("user123", "password", "John Doe", "john.doe@example.com");
-        UserRegisterService service = userRegisterService;
+        UserService service = userService;
 
         // When
         UserResponseDto response = service.register(user);
@@ -46,7 +47,7 @@ public class UserRegisterServiceTest {
     public void convert_user_to_user_response_dto_correctly() throws SQLException {
         // Given
         User user = User.createUser("user123", "password", "John Doe", "john.doe@example.com");
-        UserRegisterService service = userRegisterService;
+        UserService service = userService;
 
         // When
         UserResponseDto response = service.register(user);
@@ -64,7 +65,7 @@ public class UserRegisterServiceTest {
     public void register_user_with_duplicate_userid() throws SQLException {
         // Given, "user123" 이 존재한다고 가정
         User user1 = User.createUser("existingUser", "password", "John Doe", "john.doe@example.com");
-        UserRegisterService service = userRegisterService;
+        UserService service = userService;
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -79,7 +80,7 @@ public class UserRegisterServiceTest {
         String existingUserId = "existingUser";
 
         // When
-        boolean result = userRegisterService.existsByUserId(existingUserId);
+        boolean result = userService.existsByUserId(existingUserId);
 
         // Then
         assertTrue(result);
@@ -91,13 +92,18 @@ public class UserRegisterServiceTest {
         String nonExistingUserId = "nonExistingUser";
 
         // When
-        boolean result = userRegisterService.existsByUserId(nonExistingUserId);
+        boolean result = userService.existsByUserId(nonExistingUserId);
 
         // Then
         assertFalse(result);
     }
 
-    static class MockUserRegisterService extends UserRegisterService {
+    static class MockUserService extends UserService {
+
+        public MockUserService(UserRepository userRepository) {
+            super(userRepository);
+        }
+
         @Override
         public UserResponseDto register(User user) {
             if (existsByUserId(user.getUserId())) {
