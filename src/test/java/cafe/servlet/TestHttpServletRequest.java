@@ -10,12 +10,8 @@ import java.security.Principal;
 import java.util.*;
 
 public class TestHttpServletRequest implements HttpServletRequest {
-    private final String requestURI;
+    private String requestURI;
     private final Map<String, String> parameters = new HashMap<>();
-
-    public TestHttpServletRequest(String requestURI) {
-        this.requestURI = requestURI;
-    }
 
     public void setParameter(String name, String value) {
         parameters.put(name, value);
@@ -369,5 +365,9 @@ public class TestHttpServletRequest implements HttpServletRequest {
     @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> aClass) throws IOException, ServletException {
         return null;
+    }
+
+    public void setRequestURI(String uri) {
+        this.requestURI = uri;
     }
 }
