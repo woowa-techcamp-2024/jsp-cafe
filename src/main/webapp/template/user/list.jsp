@@ -29,9 +29,9 @@
                     <tr>
                         <th scope="row">${status.count}</th>
                         <td>${user.userId}</td>
-                        <td><a href="${pageContext.request.contextPath}/users/${user.userId}" class="btn btn-success" role="button">${user.name}</a></td>
+                        <td>${user.name}</td>
                         <td>${user.email}</td>
-                        <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <td><a href="${pageContext.request.contextPath}/users/${user.userId}/form" class="btn btn-success" role="button">수정</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

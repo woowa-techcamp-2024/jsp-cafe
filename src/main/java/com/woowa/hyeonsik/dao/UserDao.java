@@ -10,8 +10,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class UserDao {
     private static final List<User> users = new CopyOnWriteArrayList<>();
 
-    public void add(User user) {
+    public void save(User user) {
+        if (existsByUserId(user.getUserId())) {
+            removeByUserId(user.getUserId());
+        }
         users.add(user);
+    }
+
+    public void removeByUserId(String userId) {
+        Optional<User> first = users.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .findFirst();
+
+        if (!first.isPresent()) {
+            return;
+        }
+        users.remove(first.get());
     }
 
     public Optional<User> findByUserId(String userId) {

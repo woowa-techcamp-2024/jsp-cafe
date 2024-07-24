@@ -15,7 +15,7 @@ public class UserService {
         if (userDao.existsByUserId(user.getUserId())) {
             throw new IllegalArgumentException("이미 해당 아이디를 사용 중 입니다. ID: " + user.getUserId());
         }
-        userDao.add(user);
+        userDao.save(user);
     }
 
     public List<User> findAll() {
@@ -25,5 +25,14 @@ public class UserService {
     public User findByUserId(String id) {
         return userDao.findByUserId(id)
             .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void updateUser(User newUser) {
+        User originUser = findByUserId(newUser.getUserId());
+        if (!originUser.getPassword().equals(newUser.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        userDao.save(newUser);
     }
 }
