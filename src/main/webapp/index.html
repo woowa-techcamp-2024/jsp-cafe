@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" as="style" crossorigin
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/main.css">
   <title>찬우 카페</title>
@@ -16,7 +14,14 @@
     <a id="login-button" href="/user/login.html">로그인/회원가입</a>
   </div>
   <div id="posts-container">
-    <div id="posts-information">전체 글 60개</div>
+    <div id="info-card">
+      <div>게시글 목록</div>
+      <div id="info-card-explain">안녕하세요, 찬우 카페입니다!</div>
+    </div>
+    <div id="posts-information">
+      <div>전체 글 60개</div>
+      <a id="write-button" href="/post/form.html">글쓰기</a>
+    </div>
     <div id="posts">
       <div id="posts-header">
         <div id="left-header">제목</div>

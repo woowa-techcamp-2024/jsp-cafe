@@ -7,14 +7,13 @@
   border: none;
   background-color: #FFFFFF;
 
-  cursor: pointer;
   transition: background-color 0.3s;
 
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 }
 
 #login-button:hover {
-  background-color: #e6e6e6;
+  background-color: #E6E6E6;
 }
 
 #posts-container {
@@ -27,10 +26,29 @@
 #posts-information {
   display: flex;
   flex-direction: row;
+  align-items: end;
+  justify-content: space-between;
   color: #879298;
   font-size: 0.9em;
   margin-bottom: 10px;
   padding: 0 10px;
+}
+
+#write-button {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 1em;
+
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #62CBC6;
+
+  transition: background-color 0.3s;
+}
+
+#write-button:hover {
+  background-color: #51A9A5;
 }
 
 #posts-header {
@@ -107,4 +125,21 @@
   display: flex;
   flex: 1;
   justify-content: center;
+}
+
+#info-card {
+  display: flex;
+  flex-direction: column;
+  padding: 50px 40px;
+  border-radius: 12px;
+  background-color: #62CBC6;
+  margin-bottom: 60px;
+
+  color: white;
+}
+
+#info-card-explain {
+  font-size: 2em;
+  font-family: BM-Hanna-11yrs, serif;
+  margin-top: 8px;
 }

@@ -5,8 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" as="style" crossorigin
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/main.css">
   <title>찬우 카페</title>
@@ -18,6 +16,10 @@
     <a id="login-button" href="/user/login.html">로그인/회원가입</a>
   </div>
   <div id="posts-container">
+    <div id="info-card">
+      <div>멤버 리스트</div>
+      <div id="info-card-explain">찬우 카페 멤버들이에요!</div>
+    </div>
     <div id="posts-information">전체 멤버 <c:out value="${membersCount}" />명</div>
     <div id="posts">
       <div id="posts-header">
