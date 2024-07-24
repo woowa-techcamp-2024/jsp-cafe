@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<html>
+
 <%@ include file="../common/header.jsp" %>
+
+<body>
+
+<%@ include file="../common/navigation.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -26,3 +32,6 @@
 </div>
 
 <%@ include file="../common/footer.jsp" %>
+
+</body>
+</html>

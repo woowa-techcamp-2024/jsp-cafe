@@ -2,7 +2,13 @@
 <%@ page import="java.util.List" %>
 <%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
 
+<html>
+
 <%@ include file="../common/header.jsp" %>
+
+<body>
+
+<%@ include file="../common/navigation.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
@@ -41,3 +47,6 @@
 </div>
 
 <%@ include file="../common/footer.jsp" %>
+
+</body>
+</html>

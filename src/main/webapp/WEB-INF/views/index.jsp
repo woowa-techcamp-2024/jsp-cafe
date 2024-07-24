@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<html>
+
 <%@ include file="common/header.jsp" %>
+
+<body>
+
+<%@ include file="common/navigation.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -143,3 +149,6 @@
 
 <!-- script references -->
 <%@ include file="common/footer.jsp" %>
+
+</body>
+</html>
