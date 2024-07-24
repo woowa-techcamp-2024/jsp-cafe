@@ -16,7 +16,7 @@ public class InMemorySessionManager implements SessionManager {
         private static final SessionManager INSTANCE = new InMemorySessionManager();
     }
 
-    private static SessionManager getInstance() {
+    public static SessionManager getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
