@@ -5,7 +5,7 @@ import org.example.domain.User;
 import java.util.List;
 
 public interface UserDataHandler {
-    void save(User user);
+    User save(User user);
     User findByUserId(Long userId);
     List<User> findAll();
 }

@@ -12,11 +12,12 @@ public class UserDataHandlerInMemory implements UserDataHandler {
     private AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         if(user.getUserId() == null){
             user = new User(idGenerator.getAndIncrement(), user.getEmail(), user.getNickname(), user.getPassword(), user.getCreatedDt());
         }
         db.put(user.getUserId(), user);
+        return user;
     }
 
     @Override

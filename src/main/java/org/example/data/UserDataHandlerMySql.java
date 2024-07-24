@@ -13,15 +13,16 @@ public class UserDataHandlerMySql implements UserDataHandler {
     private Logger log = LoggerFactory.getLogger(UserDataHandlerMySql.class);
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         if (user.getUserId() == null) {
-            insert(user);
+            return insert(user);
         } else {
             update(user);
+            return user;
         }
     }
 
-    private void insert(User user) {
+    private User insert(User user) {
         String sql = "INSERT INTO users (email, nickname, password, created_dt) VALUES (?, ?, ?, ?)";
         try (Connection con = DatabaseConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -30,10 +31,21 @@ public class UserDataHandlerMySql implements UserDataHandler {
             pstmt.setString(3, user.getPassword());
             pstmt.setTimestamp(4, Timestamp.valueOf(user.getCreatedDt()));
             pstmt.executeUpdate();
+
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    long id = generatedKeys.getLong(1);
+                    user = new User(id, user.getEmail(), user.getNickname(), user.getPassword(), user.getCreatedDt());
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+
             log.debug("[UserDataHandlerMySql] inserted");
         } catch (SQLException e) {
             throw new RuntimeException("Failed to insert user", e);
         }
+        return user;
     }
 
     private void update(User user) {

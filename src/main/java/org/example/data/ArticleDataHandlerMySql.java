@@ -1,6 +1,7 @@
 package org.example.data;
 
 import org.example.domain.Article;
+import org.example.domain.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,15 +9,16 @@ import java.util.List;
 
 public class ArticleDataHandlerMySql implements ArticleDataHandler{
     @Override
-    public void save(Article article) {
+    public Article save(Article article) {
         if (article.getArticleId() == null) {
-            insert(article);
+            return insert(article);
         } else {
             update(article);
+            return article;
         }
     }
 
-    private void insert(Article article) {
+    private Article insert(Article article) {
         String sql = "INSERT INTO articles (title, content, author, created_dt) VALUES (?, ?, ?, ?)";
         try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, article.getTitle());
@@ -24,9 +26,20 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler{
             pstmt.setString(3, article.getAuthor());
             pstmt.setTimestamp(4, Timestamp.valueOf(article.getCreatedDt()));
             pstmt.executeUpdate();
+
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    long id = generatedKeys.getLong(1);
+                    article = new Article(id, article.getTitle(), article.getContent(), article.getAuthor(), article.getCreatedDt());
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException("Failed to insert article", e);
         }
+        return article;
     }
 
     private void update(Article article) {

@@ -12,11 +12,12 @@ public class ArticleDataHandlerInMemory implements ArticleDataHandler{
     private AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public void save(Article article) {
+    public Article save(Article article) {
         if(article.getArticleId() == null){
             article = new Article(idGenerator.getAndIncrement(), article.getTitle(), article.getContent(), article.getAuthor(), article.getCreatedDt());
         }
         db.put(article.getArticleId(), article);
+        return article;
     }
 
     @Override
