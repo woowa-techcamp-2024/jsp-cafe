@@ -33,4 +33,15 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. input path = " + id));
     }
+
+    public void edit(final Long id,
+                     final String originalPassword,
+                     final String newPassword,
+                     final String name,
+                     final String email) {
+        User user = read(id);
+        User editedUser = user.edit(originalPassword, newPassword, name, email);
+
+        userRepository.update(editedUser);
+    }
 }

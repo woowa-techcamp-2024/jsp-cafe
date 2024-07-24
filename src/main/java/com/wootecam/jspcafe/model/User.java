@@ -30,6 +30,29 @@ public class User {
         }
     }
 
+    public User edit(final String originalPassword, final String newPassword, final String name,
+                     final String email) {
+        validateUpdateInfo(originalPassword, newPassword, name, email);
+        validatePassword(originalPassword);
+
+        return new User(id, userId, newPassword, name, email);
+    }
+
+    private void validateUpdateInfo(final String originalPassword, final String newPassword, final String name,
+                                    final String email) {
+        if (Objects.isNull(originalPassword) || Objects.isNull(newPassword) || Objects.isNull(email) || Objects.isNull(
+                name)
+                || originalPassword.isEmpty() || newPassword.isEmpty() || email.isEmpty() || name.isEmpty()) {
+            throw new IllegalArgumentException("회원 수정 시 모든 정보를 입력해야 합니다.");
+        }
+    }
+
+    private void validatePassword(final String originalPassword) {
+        if (!originalPassword.equals(password)) {
+            throw new IllegalArgumentException("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }

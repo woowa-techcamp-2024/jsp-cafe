@@ -37,6 +37,7 @@ class UserServiceTest {
             @ParameterizedTest
             @MethodSource("generateInvalidUserInfo")
             void 예외를_발생시킨다(List<String> invalidUserInfo) {
+                // expect
                 assertThatThrownBy(
                         () -> userService.signup(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2),
                                 invalidUserInfo.get(3)))
@@ -78,6 +79,7 @@ class UserServiceTest {
 
             @Test
             void 예외를_발생시킨다() {
+                // expect
                 assertThatThrownBy(() -> userService.read(555555L))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("사용자를 찾을 수 없습니다. input path = " + 555555L);
@@ -122,6 +124,81 @@ class UserServiceTest {
             // then
             assertThat(users).size()
                     .isEqualTo(3);
+        }
+    }
+
+    @Nested
+    class edit_메소드는 {
+
+        @Nested
+        class 정상적인_수정_요청이_들어온다면 {
+
+            @Test
+            void 회원정보를_수정한다() {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+
+                // when
+                userService.edit(1L, "password", "newPassword", "newName", "newEmail");
+                User editedUser = userService.read(1L);
+
+                // then
+                assertAll(
+                        () -> assertThat(editedUser.getId()).isEqualTo(1L),
+                        () -> assertThat(editedUser.getUserId()).isEqualTo("userId"),
+                        () -> assertThat(editedUser.getPassword()).isEqualTo("newPassword"),
+                        () -> assertThat(editedUser.getName()).isEqualTo("newName"),
+                        () -> assertThat(editedUser.getEmail()).isEqualTo("newEmail")
+                );
+            }
+        }
+
+        @Nested
+        class 수정하는_사용자의_정보가_하나라도_비어있거나_null이라면 {
+
+            @ParameterizedTest
+            @MethodSource("generateInvalidEditUserInfo")
+            void 예외가_발생한다(List<String> invalidEditUserInfo) {
+                // given
+                userRepository.save(new User(1L, "id", "password", "name", "email"));
+
+                // expect
+                assertThatThrownBy(
+                        () -> userService.edit(1L, invalidEditUserInfo.get(0), invalidEditUserInfo.get(1),
+                                invalidEditUserInfo.get(2),
+                                invalidEditUserInfo.get(3)))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("회원 수정 시 모든 정보를 입력해야 합니다.");
+            }
+
+            private static Stream<Arguments> generateInvalidEditUserInfo() {
+                return Stream.of(
+                        Arguments.of(List.of("", "newPassword", "name", "email")),
+                        Arguments.of(List.of("originalPassword", "", "name", "email")),
+                        Arguments.of(List.of("originalPassword", "newPassword", "", "email")),
+                        Arguments.of(List.of("originalPassword", "newPassword", "name", "")),
+                        Arguments.of(Arrays.asList(null, "newPassword", "name", "email")),
+                        Arguments.of(Arrays.asList("originalPassword", null, "name", "email")),
+                        Arguments.of(Arrays.asList("originalPassword", "newPassword", null, "email")),
+                        Arguments.of(Arrays.asList("originalPassword", "newPassword", "name", null))
+                );
+            }
+        }
+
+        @Nested
+        class 수정하는_사용자의_기존_비밀번호가_다르다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                userRepository.save(new User(1L, "id", "password", "name", "email"));
+
+                // expect
+                assertThatThrownBy(
+                        () -> userService.edit(1L, "differentPassword", "newPassword", "name", "email"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
+            }
         }
     }
 }

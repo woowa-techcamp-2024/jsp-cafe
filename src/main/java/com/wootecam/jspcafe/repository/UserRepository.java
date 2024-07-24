@@ -28,4 +28,8 @@ public class UserRepository {
     public Optional<User> findById(final Long id) {
         return Optional.ofNullable(store.get(id));
     }
+
+    public void update(final User user) {
+        store.put(user.getId(), user);
+    }
 }
