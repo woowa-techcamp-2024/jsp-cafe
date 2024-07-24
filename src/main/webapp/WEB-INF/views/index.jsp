@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="codesquad.article.Article" %>
-<%@ page import="codesquad.article.ArticleDao" %>
+<%@ page import="codesquad.servlet.dto.ArticleResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -25,22 +24,22 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    List<Article> articles = (List<Article>) request.getAttribute("articles");
+                    List<ArticleResponse> articles = (List<ArticleResponse>) request.getAttribute("articleResponses");
                     if (articles != null) {
-                        for (Article article : articles) {
+                        for (ArticleResponse article : articles) {
                 %>
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="${pageContext.request.contextPath}/articles/<%=article.getId() %>"><%=article.getTitle() %>
+                                <a href="${pageContext.request.contextPath}/questions/<%=article.articleId() %>"><%=article.title() %>
                                 </a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">2016-01-05 18:47</span>
-                                <a href="${pageContext.request.contextPath}/users/<%=article.getWriter()%>"
-                                   class="author"><%=article.getWriter()%>
+                                <a href="${pageContext.request.contextPath}/users/<%=article.writerId()%>"
+                                   class="author"><%=article.writer()%>
                                 </a>
                             </div>
                             <div class="reply" title="댓글">

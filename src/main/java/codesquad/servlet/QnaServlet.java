@@ -1,7 +1,7 @@
 package codesquad.servlet;
 
-import codesquad.article.Article;
-import codesquad.article.ArticleDao;
+import codesquad.servlet.dao.ArticleQueryDao;
+import codesquad.servlet.dto.ArticleResponse;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -13,28 +13,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 
-@WebServlet(urlPatterns = "/questions")
+@WebServlet(urlPatterns = "/questions/*")
 public class QnaServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
 
-    private ArticleDao articleDao;
+    private ArticleQueryDao articleQueryDao;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        articleDao = (ArticleDao) servletContext.getAttribute("articleDao");
+        articleQueryDao = (ArticleQueryDao) servletContext.getAttribute("articleQueryDao");
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("uploading article");
-        String title = req.getParameter("title");
-        String writer = req.getParameter("writer");
-        String content = req.getParameter("contents");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("requesting article info");
+        long articleId;
+        try {
+            articleId = getArticleId(req);
+        } catch (NumberFormatException e) {
+            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        Optional<ArticleResponse> articleResponse = articleQueryDao.findById(articleId);
+        if (articleResponse.isEmpty()) {
+            req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        req.setAttribute("articleResponse", articleResponse.get());
+        req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp").forward(req, resp);
+    }
 
-        articleDao.save(new Article(title, writer, content));
-
-        resp.sendRedirect(req.getContextPath() + "/");
+    private long getArticleId(HttpServletRequest req) {
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || !pathInfo.startsWith("/")) {
+            throw new NumberFormatException("Invalid path info");
+        }
+        return Long.parseLong(pathInfo.substring(1));
     }
 }
