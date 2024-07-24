@@ -26,7 +26,7 @@ public class UsersServlet extends HttpServlet {
         logger.info("Listing all users");
         List<User> users = userDao.findAll();
         req.setAttribute("users", users);
-        req.getRequestDispatcher("/user/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/user/list.jsp").forward(req, resp);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class UsersServlet extends HttpServlet {
             req.setAttribute("password", password);
             req.setAttribute("name", name);
             req.setAttribute("email", email);
-            req.getRequestDispatcher("/user/form.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/user/form.jsp").forward(req, resp);
         }
     }
 }
