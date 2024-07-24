@@ -15,6 +15,15 @@ import java.io.IOException;
 public class ErrorHandlingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        handleException(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        handleException(req, resp);
+    }
+
+    private void handleException(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Throwable throwable = (Throwable) req.getAttribute("jakarta.servlet.error.exception");
         Integer statusCode = (Integer) req.getAttribute("jakarta.servlet.error.status_code");
         String errorMessage = null;
