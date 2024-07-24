@@ -1,5 +1,7 @@
 package cafe;
 
+import cafe.questions.ArticleRepository;
+import cafe.questions.MemoryArticleRepository;
 import cafe.users.MemoryUserRepository;
 import cafe.users.UserRepository;
 
@@ -14,7 +16,11 @@ public class Factory {
     private final Map<Class<?>, Lock> locks = new ConcurrentHashMap<>();
 
     public UserRepository userRepository() {
-        return getOrCreate(UserRepository.class, () -> new MemoryUserRepository());
+        return getOrCreate(UserRepository.class, MemoryUserRepository::new);
+    }
+
+    public ArticleRepository articleRepository() {
+        return getOrCreate(ArticleRepository.class, MemoryArticleRepository::new);
     }
 
     protected <T> T getOrCreate(Class<T> beanClass, Supplier<T> supplier) {
