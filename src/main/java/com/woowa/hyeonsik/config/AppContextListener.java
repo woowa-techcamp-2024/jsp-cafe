@@ -1,6 +1,8 @@
 package com.woowa.hyeonsik.config;
 
+import com.woowa.hyeonsik.dao.ArticleDao;
 import com.woowa.hyeonsik.dao.UserDao;
+import com.woowa.hyeonsik.service.ArticleService;
 import com.woowa.hyeonsik.service.UserService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -18,8 +20,12 @@ public class AppContextListener implements ServletContextListener {
 
         UserDao userDao = new UserDao();
         UserService userService = new UserService(userDao);
+        ArticleDao articleDao = new ArticleDao();
+        ArticleService articleService = new ArticleService(articleDao);
 
         sce.getServletContext().setAttribute("userDao", userDao);
         sce.getServletContext().setAttribute("userService", userService);
+        sce.getServletContext().setAttribute("articleDao", articleDao);
+        sce.getServletContext().setAttribute("articleService", articleService);
     }
 }
