@@ -32,12 +32,10 @@ public class BaseHttpServletResponse implements HttpServletResponse {
         return "";
     }
 
-    @Override
     public String encodeUrl(String s) {
         return "";
     }
 
-    @Override
     public String encodeRedirectUrl(String s) {
         return "";
     }
@@ -92,7 +90,6 @@ public class BaseHttpServletResponse implements HttpServletResponse {
 
     }
 
-    @Override
     public void setStatus(int i, String s) {
 
     }

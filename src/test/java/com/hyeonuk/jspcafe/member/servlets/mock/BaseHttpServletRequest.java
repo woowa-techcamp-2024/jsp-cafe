@@ -9,7 +9,18 @@ import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.*;
 
-public class BaseHttpServletRequest implements HttpServletRequest {
+public class BaseHttpServletRequest implements HttpServletRequest{
+    public String getProtocolRequestId(){
+        return null;
+    }
+
+    public ServletConnection getServletConnection(){
+        return null;
+    }
+
+    public String getRequestId(){
+        return null;
+    }
     @Override
     public String getAuthType() {
         return "";
@@ -135,7 +146,6 @@ public class BaseHttpServletRequest implements HttpServletRequest {
         return false;
     }
 
-    @Override
     public boolean isRequestedSessionIdFromUrl() {
         return false;
     }
@@ -295,7 +305,6 @@ public class BaseHttpServletRequest implements HttpServletRequest {
         return null;
     }
 
-    @Override
     public String getRealPath(String s) {
         return "";
     }
@@ -354,4 +363,6 @@ public class BaseHttpServletRequest implements HttpServletRequest {
     public DispatcherType getDispatcherType() {
         return null;
     }
+
+
 }
