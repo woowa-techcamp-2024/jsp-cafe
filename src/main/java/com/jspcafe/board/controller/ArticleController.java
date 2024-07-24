@@ -18,8 +18,8 @@ public class ArticleController extends HttpServlet {
     private ArticleService articleService;
 
     @Override
-    public void init() throws ServletException {
-        ServletContext ctx = getServletContext();
+    public void init(ServletConfig config) {
+        ServletContext ctx = config.getServletContext();
         articleService = (ArticleService) ctx.getAttribute("articleService");
     }
 

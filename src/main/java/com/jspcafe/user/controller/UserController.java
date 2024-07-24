@@ -3,6 +3,7 @@ package com.jspcafe.user.controller;
 import com.jspcafe.user.model.User;
 import com.jspcafe.user.service.UserService;
 import com.jspcafe.util.HttpUtils;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,8 +20,8 @@ public class UserController extends HttpServlet {
     private UserService userService;
 
     @Override
-    public void init() throws ServletException {
-        ServletContext ctx = getServletContext();
+    public void init(ServletConfig config) {
+        ServletContext ctx = config.getServletContext();
         userService = (UserService) ctx.getAttribute("userService");
     }
 
