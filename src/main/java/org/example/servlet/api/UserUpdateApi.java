@@ -33,16 +33,35 @@ public class UserUpdateApi extends HttpServlet {
         String nickname = request.getParameter("nickname");
         String password = request.getParameter("password");
         User user = userDataHandler.findByUserId(userId);
-        if(!user.getPassword().equals(password)){
-            request.setAttribute("status_code", HttpServletResponse.SC_BAD_REQUEST);
-            request.setAttribute("message", "기존 비밀번호와 맞지 않습니다");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            request.getRequestDispatcher("/error/error.jsp").forward(request, response);
-            return;
-        }
+        if (isUserNull(request, response, user)) return;
+        if (isInvalidPassword(request, response, user, password)) return;
         User updateUser = new User(user.getUserId(), email, nickname, password, user.getCreatedDt());
         log.debug("[UserUpdateApi] user" + updateUser.toString());
         userDataHandler.save(updateUser);
         response.sendRedirect("/users/" +user.getUserId());
     }
+
+    private boolean isUserNull(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
+        if(user == null){
+            request.setAttribute("status_code", HttpServletResponse.SC_NOT_FOUND);
+            request.setAttribute("message", "User 가 없습니다.");
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            request.getRequestDispatcher("/error/error.jsp").forward(request, response);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isInvalidPassword(HttpServletRequest request, HttpServletResponse response, User user, String password) throws ServletException, IOException {
+        if(!user.getPassword().equals(password)){
+            request.setAttribute("status_code", HttpServletResponse.SC_BAD_REQUEST);
+            request.setAttribute("message", "기존 비밀번호와 맞지 않습니다");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            request.getRequestDispatcher("/error/error.jsp").forward(request, response);
+            return true;
+        }
+        return false;
+    }
+
+
 }
