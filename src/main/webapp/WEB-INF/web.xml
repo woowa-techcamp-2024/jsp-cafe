@@ -20,6 +20,15 @@
         <servlet-name>memberListServlet</servlet-name>
         <url-pattern>/members</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>memberProfileServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>memberProfileServlet</servlet-name>
+        <url-pattern>/member/*</url-pattern>
+    </servlet-mapping>
 
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
