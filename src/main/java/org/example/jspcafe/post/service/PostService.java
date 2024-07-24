@@ -66,4 +66,21 @@ public class PostService {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
+
+    public PostResponse getPost(String postId) {
+        // TODO 나중에 조인 쿼리로 바꾸기
+        return postRepository.findById(Long.parseLong(postId))
+                .map(post -> {
+                    final User user = userRepository.findById(post.getUserId())
+                            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                    return new PostResponse(
+                            post.getPostId(),
+                            user.getNickname().getValue(),
+                            post.getTitle().getValue(),
+                            post.getContent().getValue(),
+                            post.getCreatedAt()
+                    );
+                })
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+    }
 }
