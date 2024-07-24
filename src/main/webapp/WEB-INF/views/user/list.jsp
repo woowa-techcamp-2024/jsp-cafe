@@ -34,7 +34,7 @@
                     </td>
                     <td><%= member.getEmail() %>
                     </td>
-                    <td><a href=# class="btn btn-success" role="button">수정</a>
+                    <td><a href="<%= "/user/" + member.getMemberId() + "/form"%>" class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
                 <%
