@@ -3,10 +3,10 @@
 <%@ page import="com.example.entity.User" %>
 <!DOCTYPE html>
 <html lang="kr">
-<%@ include file="../template/head.jsp"%>
+<%@ include file="../template/head.jsp" %>
 <body>
-<%@ include file="../template/top-header.jsp"%>
-<%@ include file="../template/sub-header.jsp"%>
+<%@ include file="../template/top-header.jsp" %>
+<%@ include file="../template/sub-header.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
@@ -14,20 +14,28 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>#</th>
+                    <th>사용자 아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <%
-                    List<User> userList = (List<User>) request.getAttribute("userList");
-                    for(User user : userList) {
+                    List<User> userList = (List<User>)request.getAttribute("userList");
+                    for (User user : userList) {
                 %>
                 <tr>
-                    <th scope="row"><%= user.id() %></th>
-                    <td><a href="/users/profile/<%= user.id() %>"><%= user.id() %></a></td>
-                    <td><%= user.name() %></td>
-                    <td><%= user.email() %></td>
-                    <td><a class="btn btn-success" href="/users/edit/<%= user.id() %>">수정</a></td>
+                    <th scope="row"><%= user.id() %>
+                    </th>
+                    <td><a href="/users/profile/<%= user.id() %>"><%= user.id() %>
+                    </a></td>
+                    <td><%= user.name() %>
+                    </td>
+                    <td><%= user.email() %>
+                    </td>
+                    <%--                    <td><a class="btn btn-success" href="/users/edit/<%= user.id() %>">수정</a></td>--%>
                 </tr>
                 <% } %>
                 </tbody>
