@@ -10,6 +10,14 @@ public class DatabaseConnectionManager {
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("JDBC 드라이버를 찾을 수 없습니다.");
+        }
+    }
+
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
