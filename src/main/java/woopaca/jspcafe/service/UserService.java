@@ -26,10 +26,10 @@ public class UserService {
         if (signUpRequest.username().isBlank()) {
             throw new IllegalArgumentException("[ERROR] 이메일은 비어있을 수 없습니다.");
         }
-        if (signUpRequest.nickname().length() < 2) {
+        if (signUpRequest.nickname().isBlank()) {
             throw new IllegalArgumentException("[ERROR] 닉네임은 비어있을 수 없습니다.");
         }
-        if (signUpRequest.password().length() < 4) {
+        if (signUpRequest.password().isBlank()) {
             throw new IllegalArgumentException("[ERROR] 비밀번호는 비어있을 수 없습니다.");
         }
     }
