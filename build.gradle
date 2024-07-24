@@ -22,7 +22,7 @@ dependencies {
     // assertj
     testImplementation 'org.assertj:assertj-core:3.23.1'
     // db
-    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'mysql:mysql-connector-java:8.0.28'
 }
 
 war {
