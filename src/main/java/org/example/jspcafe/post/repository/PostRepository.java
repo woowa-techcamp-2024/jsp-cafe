@@ -9,4 +9,6 @@ public interface PostRepository extends Repository<Post> {
     List<Post> findAll();
     List<Post> findAll(int offset, int limit);
     int count();
+
+    void deleteAllInBatch();
 }
