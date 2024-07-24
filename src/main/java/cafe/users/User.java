@@ -12,15 +12,6 @@ public class User {
     }
 
     public User(Long id, String userId, String email, String username, String password) {
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("Email must not be null or empty");
-        }
-        if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException("Username must not be null or empty");
-        }
-        if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("Password must not be null or empty");
-        }
         this.id = id;
         this.userId = userId;
         this.email = email;

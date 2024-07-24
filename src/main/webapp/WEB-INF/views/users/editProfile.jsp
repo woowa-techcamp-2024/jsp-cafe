@@ -9,6 +9,7 @@
             <div class="alert alert-danger">${errorMessage}</div>
         </c:if>
         <form action="${pageContext.request.contextPath}/users/edit/${user.id}" method="post">
+            <input type="hidden" name="userId" value="${user.userId}">
             <div class="mb-3">
                 <label for="userId" class="form-label">User ID</label>
                 <input type="text" class="form-control" id="userId" name="userId"

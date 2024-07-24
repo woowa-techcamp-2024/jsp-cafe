@@ -36,7 +36,8 @@ public class UserEditServlet extends MappingHttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
-        req.setAttribute("user", new User(userId, email, username, password));
+        Long id = Long.valueOf(req.getPathInfo().substring(1));
+        req.setAttribute("user", new User(userId, email, username, password).withId(id));
 
         if (userId == null || email == null|| username == null || password == null || confirmPassword == null
                 || userId.isBlank() || email.isBlank() || username.isBlank() || password.isBlank() || confirmPassword.isBlank()
@@ -46,7 +47,6 @@ public class UserEditServlet extends MappingHttpServlet {
             return;
         }
 
-        Long id = Long.valueOf(req.getPathInfo().substring(1));
         User user = userRepository.findById(id);
 
         if (user == null) {
