@@ -16,9 +16,15 @@ public class UserRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
+    private DataUtil dataUtil;
+
+    public UserRepository(DataUtil dataUtil) {
+        this.dataUtil = dataUtil;
+    }
+
     public User save(User user) throws SQLException {
         String sql = "insert into users (userId, password, name, email) values (?, ?, ?, ?)";
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUserId());
             ps.setString(2, user.getPassword());
@@ -34,7 +40,7 @@ public class UserRepository {
 
     public User update(User user) throws SQLException {
         String sql = "update users set password=?, name=?, email=? where userId=?";
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
             ps.setString(2, user.getName());
@@ -52,7 +58,7 @@ public class UserRepository {
         String sql = "SELECT * FROM users";
 
         List<User> users = new ArrayList<>();
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -73,7 +79,7 @@ public class UserRepository {
     public User findUserByUserId(String userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE userId = ?";
 
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, userId);
@@ -95,7 +101,7 @@ public class UserRepository {
         String sql = "SELECT COUNT(*) FROM users WHERE userId = ?";
         boolean exists = false;
 
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, userId);

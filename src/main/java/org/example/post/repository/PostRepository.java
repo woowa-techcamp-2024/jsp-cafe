@@ -15,12 +15,17 @@ import org.slf4j.LoggerFactory;
 public class PostRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
+    private DataUtil dataUtil;
+
+    public PostRepository(DataUtil dataUtil) {
+        this.dataUtil = dataUtil;
+    }
 
     public Post save(Post post) throws SQLException {
         logger.info("Saving post: {}", post);
         String sql = "insert into posts (writer, title, contents) values (?, ?, ?)";
 
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, post.getWriter());
             ps.setString(2, post.getTitle());
@@ -36,7 +41,7 @@ public class PostRepository {
     public Post findById(Long id) throws SQLException {
         String sql = "SELECT * FROM posts WHERE id = ?";
 
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, id);
@@ -58,7 +63,7 @@ public class PostRepository {
     public List<Post> findAll() throws SQLException {
         String sql = "SELECT * FROM posts";
         List<Post> posts = new ArrayList<>();
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
