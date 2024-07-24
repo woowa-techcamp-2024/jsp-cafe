@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="cafe.domain.entity.User" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ include file="/WEB-INF/components/head.jsp" %>
 <body>
 <%@ include file="/WEB-INF/components/header.jsp"%>
@@ -12,20 +13,23 @@
           <table class="table table-hover">
               <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th><th></th>
                 </tr>
               </thead>
               <tbody>
                 <%
-                    List<User> users = (List<User>) request.getAttribute("users");
+                    Map<String, User> users = (Map<String, User>) request.getAttribute("users");
                     for (int i = 0; i < users.size(); i++) {
+                        String key = (String) users.keySet().toArray()[i];
+                        User user = users.get(key);
                 %>
                 <tr>
                     <th scope="row"><%=i+1%></th>
-                    <td><%=users.get(i).getId()%></td>
-                    <td><%=users.get(i).getName()%></td>
-                    <td><%=users.get(i).getEmail()%></td>
-                    <td><a href="/users/<%=users.get(i).getId()%>" class="btn btn-success" role="button">조회</a></td>
+                    <td><%=user.getId()%></td>
+                    <td><%=user.getName()%></td>
+                    <td><%=user.getEmail()%></td>
+                    <td><a href="/users/<%=key%>" class="btn btn-success" role="button">조회</a></td>
+                    <td><a href="/users/<%=key%>/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
                     }
@@ -37,8 +41,6 @@
 </div>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<%@ include file="/WEB-INF/components/script.jsp" %>
 	</body>
 </html>
