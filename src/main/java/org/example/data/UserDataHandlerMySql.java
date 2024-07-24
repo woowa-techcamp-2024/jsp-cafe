@@ -12,17 +12,8 @@ import java.util.ArrayList;
 public class UserDataHandlerMySql implements UserDataHandler {
     private Logger log = LoggerFactory.getLogger(UserDataHandlerMySql.class);
 
-    @Override
-    public User save(User user) {
-        if (user.getUserId() == null) {
-            return insert(user);
-        } else {
-            update(user);
-            return user;
-        }
-    }
 
-    private User insert(User user) {
+    public User insert(User user) {
         String sql = "INSERT INTO users (email, nickname, password, created_dt) VALUES (?, ?, ?, ?)";
         try (Connection con = DatabaseConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -48,7 +39,7 @@ public class UserDataHandlerMySql implements UserDataHandler {
         return user;
     }
 
-    private void update(User user) {
+    public User update(User user) {
         String sql = "UPDATE users SET email = ?, nickname = ?, password = ?, created_dt = ? WHERE user_id = ?";
         try (Connection con = DatabaseConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -62,6 +53,7 @@ public class UserDataHandlerMySql implements UserDataHandler {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update user", e);
         }
+        return user;
     }
 
     @Override

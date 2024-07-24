@@ -36,7 +36,7 @@ public class UserUpdateApiTest {
 
         // 테스트용 사용자 추가
         User testUser = new User(1L, "old@example.com", "olduser", "oldpassword", LocalDateTime.now());
-        userDataHandler.save(testUser);
+        userDataHandler.update(testUser);
     }
 
     @Test

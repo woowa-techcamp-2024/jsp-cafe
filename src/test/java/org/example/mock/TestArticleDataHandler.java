@@ -13,10 +13,14 @@ public class TestArticleDataHandler implements ArticleDataHandler {
     private AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public Article save(Article article) {
-        if(article.getArticleId() == null){
-            article = new Article(idGenerator.getAndIncrement(), article.getTitle(), article.getContent(), article.getAuthor(), article.getCreatedDt());
-        }
+    public Article insert(Article article) {
+        article = new Article(idGenerator.getAndIncrement(), article.getTitle(), article.getContent(), article.getAuthor(), article.getCreatedDt());
+        db.put(article.getArticleId(), article);
+        return article;
+    }
+
+    @Override
+    public Article update(Article article) {
         db.put(article.getArticleId(), article);
         return article;
     }

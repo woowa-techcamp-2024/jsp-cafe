@@ -37,7 +37,7 @@ public class UserUpdateApi extends HttpServlet {
         if (isInvalidPassword(request, response, user, password)) return;
         User updateUser = new User(user.getUserId(), email, nickname, password, user.getCreatedDt());
         log.debug("[UserUpdateApi] user" + updateUser.toString());
-        userDataHandler.save(updateUser);
+        userDataHandler.update(updateUser);
         response.sendRedirect("/users/" +user.getUserId());
     }
 

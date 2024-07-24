@@ -35,7 +35,7 @@ public class UserRegisterApi extends HttpServlet {
         String password = request.getParameter("password");
 
         User user = new User(email, nickname, password, LocalDateTime.now());
-        User savedUser = userDataHandler.save(user);
+        User savedUser = userDataHandler.insert(user);
         log.debug("[UserRegisterApi]" + savedUser.toString());
         response.sendRedirect("/users");
     }

@@ -8,17 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleDataHandlerMySql implements ArticleDataHandler{
-    @Override
-    public Article save(Article article) {
-        if (article.getArticleId() == null) {
-            return insert(article);
-        } else {
-            update(article);
-            return article;
-        }
-    }
-
-    private Article insert(Article article) {
+    public Article insert(Article article) {
         String sql = "INSERT INTO articles (title, content, author, created_dt) VALUES (?, ?, ?, ?)";
         try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, article.getTitle());
@@ -42,7 +32,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler{
         return article;
     }
 
-    private void update(Article article) {
+    public Article update(Article article) {
         String sql = "UPDATE articles SET title = ?, content = ?, author = ?, created_dt = ? WHERE article_id = ?";
         try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, article.getTitle());
@@ -54,6 +44,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler{
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update article", e);
         }
+        return article;
     }
 
     @Override

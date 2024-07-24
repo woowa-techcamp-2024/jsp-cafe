@@ -33,7 +33,7 @@ public class ArticleRegisterApi extends HttpServlet {
         String content = request.getParameter("content");
         String author = "";
         Article article = new Article(title, content, author, LocalDateTime.now());
-        Article savedArticle = articleDataHandler.save(article);
+        Article savedArticle = articleDataHandler.insert(article);
         log.debug("[ArticleRegisterApi]" + savedArticle.toString());
         response.sendRedirect("/articles");
     }
