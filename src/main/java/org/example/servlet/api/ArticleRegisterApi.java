@@ -1,5 +1,6 @@
 package org.example.servlet.api;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,9 +21,9 @@ public class ArticleRegisterApi extends HttpServlet {
     private ArticleDataHandler articleDataHandler;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        articleDataHandler = (ArticleDataHandler) getServletContext().getAttribute(DataHandler.ARTICLE.getValue());
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        articleDataHandler = (ArticleDataHandler) config.getServletContext().getAttribute(DataHandler.ARTICLE.getValue());
     }
 
     @Override

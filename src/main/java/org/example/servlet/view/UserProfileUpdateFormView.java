@@ -1,5 +1,6 @@
 package org.example.servlet.view;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,9 +21,9 @@ public class UserProfileUpdateFormView extends HttpServlet {
     private  UserDataHandler userDataHandler;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        userDataHandler = (UserDataHandler) getServletContext().getAttribute(DataHandler.USER.getValue());
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        userDataHandler = (UserDataHandler) config.getServletContext().getAttribute(DataHandler.USER.getValue());
     }
 
     @Override
