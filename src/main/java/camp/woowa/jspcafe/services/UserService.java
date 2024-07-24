@@ -33,4 +33,8 @@ public class UserService {
         else
             throw new CustomException(HttpStatus.INVALID_PASSWORD);
     }
+
+    public boolean isExistedByUserId(String userId) {
+        return userRepository.isExistedByUserId(userId);
+    }
 }
