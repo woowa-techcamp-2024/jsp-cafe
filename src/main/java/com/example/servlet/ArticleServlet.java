@@ -33,7 +33,7 @@ public class ArticleServlet extends HttpServlet {
 			return;
 		}
 
-		String userId = (String)session.getAttribute("userId");
+		String userId = (String)session.getAttribute("id");
 		String title = req.getParameter("title");
 		String contents = req.getParameter("contents");
 
