@@ -37,12 +37,11 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findById(final String memberId) {
-        log.info("memberId: {}", memberId);
         try (var connection = dataSource.getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM member WHERE member_id = ?");
             pstmt.setString(1, memberId);
             var rs = pstmt.executeQuery();
-            log.info("rs: {}", rs);
+
             if (rs.next()) {
                 return Optional.of(new Member(rs.getString("member_id"),
                         rs.getString("password"),
@@ -57,10 +56,25 @@ public class JdbcMemberRepository implements MemberRepository {
     }
 
     public List<Member> findMembersByIds(final List<String> memberIds) {
-        try(var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM member WHERE member_id IN (?)");
-            pstmt.setString(1, String.join(",", memberIds));
+        if (memberIds.isEmpty()) {
+            return List.of();
+        }
+        try (var connection = dataSource.getConnection()) {
+            StringBuilder sb = new StringBuilder("SELECT * FROM member WHERE member_id IN (");
+            for (int i = 0; i < memberIds.size(); i++) {
+                sb.append("?");
+                if (i < memberIds.size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            sb.append(")");
+            PreparedStatement pstmt = connection.prepareStatement(sb.toString());
+            for (int i = 0; i < memberIds.size(); i++) {
+                pstmt.setString(i + 1, memberIds.get(i));
+            }
+
             var rs = pstmt.executeQuery();
+
             List<Member> members = new ArrayList<>();
             while (rs.next()) {
                 members.add(new Member(rs.getString("member_id"),
@@ -68,12 +82,12 @@ public class JdbcMemberRepository implements MemberRepository {
                         rs.getString("name"),
                         rs.getString("email")));
             }
-
             return members;
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public List<Member> findAll() {

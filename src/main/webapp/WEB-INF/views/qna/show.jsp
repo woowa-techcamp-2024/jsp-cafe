@@ -1,4 +1,5 @@
 <%@ page import="com.woowa.cafe.domain.Article" %>
+<%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -7,11 +8,11 @@
 <%@ include file="/WEB-INF/components/navbar-fixed-top-header.html" %>
 <%@ include file="/WEB-INF/components/navbar-default.jsp" %>
 <div class="container" id="main">
-    <% Article article = (Article) request.getAttribute("article");%>
+    <% ArticleDto article = (ArticleDto) request.getAttribute("article");%>
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title"><%= article.getTitle()%>
+                <h2 class="qna-title"><%= article.title()%>
                 </h2>
             </header>
             <div class="content-main">
@@ -22,17 +23,17 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="<%= "/user/" + article.getWriterId()%>>"
-                               class="article-author-name"><%= memberRepository.findById(article.getWriterId()).get().getName()%>
+                            <a href="<%= "/user/" + article.writerId()%>>"
+                               class="article-author-name"><%= article.writerName()%>
                                 ></a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                <%= article.getFormattedCreatedAt()%>
+                                <%= article.createdAt()%>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
                     <div class="article-doc">
-                        <%= article.getContents()%>
+                        <%= article.contents()%>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">

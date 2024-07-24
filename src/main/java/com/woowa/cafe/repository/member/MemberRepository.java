@@ -11,6 +11,8 @@ public interface MemberRepository {
 
     Optional<Member> findById(final String memberId);
 
+    List<Member> findMembersByIds(final List<String> memberIds);
+
     List<Member> findAll();
 
     Optional<Member> update(final Member member);

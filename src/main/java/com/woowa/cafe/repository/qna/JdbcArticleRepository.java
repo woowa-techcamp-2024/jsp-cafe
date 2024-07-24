@@ -22,7 +22,6 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public Long save(final Article article) {
         try (Connection connection = this.dataSource.getConnection()) {
-            log.info("article: {}", article);
             String sql = "INSERT INTO article (writer_id, title, contents, create_at, modified_at) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, article.getWriterId());
@@ -85,8 +84,6 @@ public class JdbcArticleRepository implements ArticleRepository {
                         resultSet.getTimestamp("create_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime());
                 articles.add(article);
-
-                log.info(article.getWriterId());
             }
 
             return articles;
