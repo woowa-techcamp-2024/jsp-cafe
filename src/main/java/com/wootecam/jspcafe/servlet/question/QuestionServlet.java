@@ -1,5 +1,6 @@
 package com.wootecam.jspcafe.servlet.question;
 
+import com.wootecam.jspcafe.service.QuestionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,12 @@ public class QuestionServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(QuestionServlet.class);
 
+    private final QuestionService questionService;
+
+    public QuestionServlet(final QuestionService questionService) {
+        this.questionService = questionService;
+    }
+
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
@@ -19,5 +26,17 @@ public class QuestionServlet extends HttpServlet {
 
         req.getRequestDispatcher("/WEB-INF/views/qna/form.jsp")
                 .forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+        questionService.append(
+                req.getParameter("writer"),
+                req.getParameter("title"),
+                req.getParameter("contents")
+        );
+
+        resp.sendRedirect("/");
     }
 }

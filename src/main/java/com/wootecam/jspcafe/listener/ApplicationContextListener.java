@@ -1,6 +1,8 @@
 package com.wootecam.jspcafe.listener;
 
+import com.wootecam.jspcafe.repository.QuestionRepository;
 import com.wootecam.jspcafe.repository.UserRepository;
+import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionServlet;
@@ -20,8 +22,10 @@ public class ApplicationContextListener implements ServletContextListener {
         ServletContext servletContext = sce.getServletContext();
 
         UserRepository userRepository = new UserRepository();
+        QuestionRepository questionRepository = new QuestionRepository();
 
         UserService userService = new UserService(userRepository);
+        QuestionService questionService = new QuestionService(questionRepository);
 
         servletContext.addServlet("homeServlet", new HomeServlet())
                 .addMapping("/");
@@ -31,7 +35,7 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/users");
         servletContext.addServlet("userProfileServlet", new UserProfileServlet(userService))
                 .addMapping("/users/*");
-        servletContext.addServlet("questionServlet", new QuestionServlet())
+        servletContext.addServlet("questionServlet", new QuestionServlet(questionService))
                 .addMapping("/questions");
     }
 }

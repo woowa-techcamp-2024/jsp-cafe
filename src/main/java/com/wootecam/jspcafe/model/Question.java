@@ -28,6 +28,10 @@ public class Question {
         this.id = id;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getWriter() {
         return writer;
     }
@@ -38,5 +42,15 @@ public class Question {
 
     public String getContents() {
         return contents;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

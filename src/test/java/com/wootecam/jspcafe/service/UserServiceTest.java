@@ -38,7 +38,7 @@ class UserServiceTest {
         }
 
         @Nested
-        class 만약_회원가입_정보에__하나라도_null이_포함되면 {
+        class 만약_회원가입_정보에_하나라도_null이_포함되면 {
 
             @Test
             void 예외를_발생시킨다() {
