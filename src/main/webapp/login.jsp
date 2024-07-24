@@ -48,7 +48,7 @@
             </div>
             <div class="text-center">
                 <span class="text-gray-600">아직 회원가입을 안하셨나요? </span>
-                <a href="#" class="text-teal-500 hover:text-teal-600">회원가입하기</a>
+                <a href="/users/sign" class="text-teal-500 hover:text-teal-600">회원가입하기</a>
             </div>
         </form>
     </div>

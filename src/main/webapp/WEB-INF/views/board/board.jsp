@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,14 +11,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<header class="bg-white shadow">
-    <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-        <h1 class="text-xl font-bold"><a href="/">HELLO, WEB!</a></h1>
-        <a href="#" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
-            로그인/회원가입
-        </a>
-    </div>
-</header>
+
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <main class="container mx-auto mt-8 px-4">
     <div class="bg-teal-500 text-white rounded-lg p-6 mb-8">
@@ -23,7 +20,7 @@
         <h2 class="text-2xl font-bold">HELLO, WEB! 입니다.</h2>
     </div>
 
-    <p class="text-gray-600 mb-4">전체 글 60개</p>
+    <p class="text-gray-600 mb-4">전체 글 ${articles.size()}개</p>
 
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="w-full">
@@ -32,17 +29,19 @@
                 <th class="py-3 px-6 text-left">제목</th>
                 <th class="py-3 px-6 text-left">작성자</th>
                 <th class="py-3 px-6 text-left">작성일자</th>
-                <th class="py-3 px-6 text-center">조회수</th>
             </tr>
             </thead>
             <tbody class="text-gray-600 text-sm font-light">
-            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                <td class="py-3 px-6 text-left whitespace-nowrap">게시글 제목</td>
-                <td class="py-3 px-6 text-left">닉네임</td>
-                <td class="py-3 px-6 text-left">YYYY. MM. DD</td>
-                <td class="py-3 px-6 text-center">0</td>
-            </tr>
-            <!-- Repeat the above <tr> 9 more times for a total of 10 rows -->
+            <c:forEach var="article" items="${articles}">
+                <tr class="border-b border-gray-200 hover:bg-gray-100"
+                    onclick="window.location.href='<c:url value="/articles/${article.id()}"/>';">
+                    <td class="py-3 px-6 text-left whitespace-nowrap">${article.title()}</td>
+                    <td class="py-3 px-6 text-left">${article.nickname()}</td>
+                    <td class="py-3 px-6 text-left">
+                            ${fn:substring(article.createAt(), 0, 4)}. ${fn:substring(article.createAt(), 5, 7)}. ${fn:substring(article.createAt(), 8, 10)}
+                    </td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
@@ -57,6 +56,12 @@
             <a href="#" class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">5</a>
             <a href="#" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&gt;</a>
         </nav>
+    </div>
+
+    <div class="fixed bottom-8 right-8 z-50">
+        <a href="<c:url value='/articles/form'/>" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            게시글 작성
+        </a>
     </div>
 </main>
 </body>

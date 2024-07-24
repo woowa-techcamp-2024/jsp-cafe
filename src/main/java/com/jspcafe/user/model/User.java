@@ -57,4 +57,8 @@ public record User(String id, String email, String nickname, String password) {
         String hashedPassword = hashPassword(password);
         return this.password.equals(hashedPassword);
     }
+
+    public User update(String email, String nickname, String password) {
+        return new User(id, email, nickname, hashPassword(password));
+    }
 }

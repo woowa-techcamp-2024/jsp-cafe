@@ -29,6 +29,12 @@
             <div class="mb-4">
                 <a href="/users">유저 리스트 화면</a>
             </div>
+            <div class="mb-4">
+                <a href="/">글 목록 화면</a>
+            </div>
+            <div class="mb-4">
+                <a href="/articles/form">글 작성 화면</a>
+            </div>
         </form>
     </div>
 </main>

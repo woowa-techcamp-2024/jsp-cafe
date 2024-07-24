@@ -54,4 +54,22 @@ class UserTest {
         // When Then
         assertThrows(IllegalArgumentException.class, () -> User.create(email, nickName, password));
     }
+
+    @Test
+    void User의_정보를_업데이트한다() {
+        // Given
+        User user = User.create("woowa@woowa.in", "김배달", "1234");
+
+        // When
+        String updateEmail = "wowa@wa.in";
+        String updateNickname = "이배민";
+        String updatePassword = "4321";
+        User updateUser = user.update(updateEmail, updateNickname, updatePassword);
+
+        // Then
+        assertEquals(user.id(), updateUser.id());
+        assertEquals(updateEmail, updateUser.email());
+        assertEquals(updateNickname, updateUser.nickname());
+        assertTrue(updateUser.verifyPassword("4321"));
+    }
 }
