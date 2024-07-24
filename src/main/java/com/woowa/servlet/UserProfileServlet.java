@@ -30,14 +30,6 @@ public class UserProfileServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/classes/static/user/profile.jsp").forward(req, resp);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = getUserId(req);
-        String nickname = req.getParameter("nickname");
-        ResponseEntity response = userHandler.updateUser(userId, nickname);
-        resp.sendRedirect(response.getLocation());
-    }
-
     private String getUserId(HttpServletRequest req) {
         String requestURI = req.getRequestURI();
         return requestURI.replace("/users/", "");

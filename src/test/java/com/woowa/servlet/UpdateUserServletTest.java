@@ -12,15 +12,14 @@ import com.woowa.support.StubHttpServletResponse;
 import com.woowa.support.UserFixture;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class UserProfileServletTest {
+class UpdateUserServletTest {
 
-    private UserProfileServlet userProfileServlet;
+    private UpdateUserServlet updateUserServlet;
     private UserHandler userHandler;
     private UserDatabase userDatabase;
 
@@ -31,7 +30,7 @@ class UserProfileServletTest {
     void setUp() {
         userDatabase = new UserMemoryDatabase();
         userHandler = new UserHandler(userDatabase);
-        userProfileServlet = new UserProfileServlet(userHandler, userDatabase);
+        updateUserServlet = new UpdateUserServlet(userHandler);
 
         request = new StubHttpServletRequest();
         response = new StubHttpServletResponse();
@@ -52,7 +51,7 @@ class UserProfileServletTest {
             userDatabase.save(user);
 
             //when
-            userProfileServlet.doPost(request, response);
+            updateUserServlet.doPost(request, response);
 
             //then
             assertThat(response.getRedirectLocation()).isEqualTo("/users/" + user.getUserId());
