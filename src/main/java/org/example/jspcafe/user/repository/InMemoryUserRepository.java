@@ -16,6 +16,12 @@ public class InMemoryUserRepository extends InMemoryRepository<User> implements 
                 .filter(user -> collectUserId.contains(user.getUserId()))
                 .toList();
     }
+
+    @Override
+    public void deleteAllInBatch() {
+        storage.clear();
+    }
+
     @Override
     public Optional<User> findByNickname(String nickname) {
         return storage.values().stream()
