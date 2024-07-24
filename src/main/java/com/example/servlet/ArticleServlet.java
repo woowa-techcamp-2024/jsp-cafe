@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.example.db.ArticleDatabase;
-import com.example.db.ArticleMemoryDatabase;
 import com.example.entity.Article;
 
 import jakarta.servlet.ServletConfig;
@@ -13,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "ArticleServlet", urlPatterns = "/articles/*")
 public class ArticleServlet extends HttpServlet {
@@ -27,15 +27,21 @@ public class ArticleServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String writer = req.getParameter("writer");
+		HttpSession session = req.getSession();
+		if (session.getAttribute("login") == null) {
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		String userId = (String)session.getAttribute("userId");
 		String title = req.getParameter("title");
 		String contents = req.getParameter("contents");
 
-		if (writer == null || title == null || contents == null) {
+		if (userId == null || title == null || contents == null) {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		Article article = new Article(null, writer, title, contents);
+		Article article = new Article(null, userId, title, contents);
 		articleDatabase.insert(article);
 		resp.sendRedirect("/");
 	}

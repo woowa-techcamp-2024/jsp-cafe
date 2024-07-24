@@ -19,12 +19,12 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 
 	@Override
 	public void insert(Article article) {
-		String sql = "insert into article (writer, title, contents) values (?, ?, ?)";
+		String sql = "insert into article (userId, title, contents) values (?, ?, ?)";
 		try (
 			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 		) {
-			pstmt.setString(1, article.getWriter());
+			pstmt.setString(1, article.getUserId());
 			pstmt.setString(2, article.getTitle());
 			pstmt.setString(3, article.getContents());
 			pstmt.executeUpdate();
@@ -44,10 +44,10 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 			ResultSet rs = pstmt.executeQuery();
 			Article article = null;
 			while (rs.next()) {
-				String writer = rs.getString("writer");
+				String userId = rs.getString("userId");
 				String title = rs.getString("title");
 				String contents = rs.getString("contents");
-				article = new Article(id, writer, title, contents);
+				article = new Article(id, userId, title, contents);
 			}
 			return Optional.ofNullable(article);
 		} catch (SQLException e) {
@@ -66,10 +66,10 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 			List<Article> articles = new ArrayList<>();
 			while (rs.next()) {
 				Long id = rs.getLong("id");
-				String writer = rs.getString("writer");
+				String userId = rs.getString("userId");
 				String title = rs.getString("title");
 				String contents = rs.getString("contents");
-				articles.add(new Article(id, writer, title, contents));
+				articles.add(new Article(id, userId, title, contents));
 			}
 			return articles;
 		} catch (SQLException e) {
@@ -79,12 +79,12 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 
 	@Override
 	public void update(Long id, Article article) {
-		String sql = "update article set writer = ?, title = ?, contents = ? where id = ?";
+		String sql = "update article set userId = ?, title = ?, contents = ? where id = ?";
 		try (
 			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 		) {
-			pstmt.setString(1, article.getWriter());
+			pstmt.setString(1, article.getUserId());
 			pstmt.setString(2, article.getTitle());
 			pstmt.setString(3, article.getContents());
 			pstmt.setLong(4, id);

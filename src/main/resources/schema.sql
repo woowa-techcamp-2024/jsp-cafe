@@ -12,7 +12,7 @@ create table user
 create table article
 (
     id       bigint primary key auto_increment,
-    writer   varchar(100) not null,
+    userId   varchar(100) not null,
     title    varchar(100) not null,
     contents varchar(100) not null
 )
