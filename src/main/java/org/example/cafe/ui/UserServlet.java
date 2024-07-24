@@ -1,4 +1,4 @@
-package org.example.cafe.servlet;
+package org.example.cafe.ui;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
@@ -9,8 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import org.example.cafe.domain.user.User;
-import org.example.cafe.domain.user.UserRepository;
+import org.example.cafe.application.UserService;
+import org.example.cafe.application.dto.UserCreateDto;
+import org.example.cafe.domain.User;
 import org.slf4j.Logger;
 
 @WebServlet(name = "UserServlet", value = "/users")
@@ -18,11 +19,11 @@ public class UserServlet extends HttpServlet {
 
     private static final Logger log = getLogger(UserServlet.class);
 
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Override
     public void init() {
-        this.userRepository = (UserRepository) getServletContext().getAttribute("UserRepository");
+        this.userService = (UserService) getServletContext().getAttribute("UserService");
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
@@ -38,7 +39,7 @@ public class UserServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
 
         request.setAttribute("users", users);
         request.getRequestDispatcher("/user/list.jsp").forward(request, response);
@@ -60,8 +61,8 @@ public class UserServlet extends HttpServlet {
         String nickname = request.getParameter("nickname");
         String email = request.getParameter("email");
 
-        User user = new User(userId, password, nickname, email);
-        userRepository.save(user);
+        UserCreateDto userCreateDto = new UserCreateDto(userId, password, nickname, email);
+        userService.createUser(userCreateDto);
 
         response.sendRedirect("/users");
     }

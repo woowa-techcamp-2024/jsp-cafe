@@ -7,7 +7,9 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import java.util.function.Supplier;
-import org.example.cafe.domain.user.UserRepository;
+import org.example.cafe.application.UserService;
+import org.example.cafe.domain.UserRepository;
+import org.example.cafe.infrastructure.UserInMemoryRepository;
 import org.slf4j.Logger;
 
 @WebListener
@@ -21,7 +23,10 @@ public class ServletContextInitializer implements ServletContextListener {
     }
 
     private void registerBean(ServletContext servletContext) {
-        setContext(servletContext, "UserRepository", UserRepository::new);
+        setContext(servletContext, "UserRepository", UserInMemoryRepository::new);
+        // todo: refactor
+        setContext(servletContext, "UserService", () ->
+                new UserService((UserRepository) servletContext.getAttribute("UserRepository")));
     }
 
     public void setContext(ServletContext servletContext, String name, Supplier<Object> supplier) {

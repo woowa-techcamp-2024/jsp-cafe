@@ -1,4 +1,4 @@
-<%@ page import="org.example.cafe.domain.user.User" %>
+<%@ page import="org.example.cafe.domain.User" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
