@@ -26,11 +26,12 @@ public class InMemoryUserDao implements UserDao {
         }
 
         //생성
+        user.setId(ID_GENERATOR.incrementAndGet());
         users.compute(user.getId(), (id, existingUser) -> {
             if (existingUser != null) {
                 throw new HttpException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-            user.setId(ID_GENERATOR.incrementAndGet());
+            userIdIndex.put(user.getUserId(), user.getId());
             return user;
         });
     }
