@@ -1,9 +1,10 @@
 package org.example.jspcafe.user.service;
 
 import org.example.jspcafe.user.model.User;
-import org.example.jspcafe.user.repository.InMemoryUserRepository;
+import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.response.UserListResponse;
 import org.example.jspcafe.user.response.UserProfileResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,20 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class UserServiceTest {
 
     private UserService userService;
-    private InMemoryUserRepository userRepository;
+    private JdbcUserRepository userRepository;
 
      @BeforeEach
      void setUp() {
-         userRepository = new InMemoryUserRepository();
+         userRepository = new JdbcUserRepository();
          userService = new UserService(userRepository);
      }
 
-     @DisplayName("사용자 리스트를 가져올 수 있다.")
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("사용자 리스트를 가져올 수 있다.")
      @Test
      void getUsers() {
          // given
@@ -74,6 +80,7 @@ class UserServiceTest {
      void getUserProfileWithNotExistsUser() {
          // given
          String nickname = "nickname";
+
 
          // when & then
          assertThatThrownBy(() -> userService.getProfile(nickname))

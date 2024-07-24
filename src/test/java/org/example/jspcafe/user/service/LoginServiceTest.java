@@ -1,9 +1,10 @@
 package org.example.jspcafe.user.service;
 
 import org.example.jspcafe.user.model.User;
-import org.example.jspcafe.user.repository.InMemoryUserRepository;
+import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.request.LoginServiceRequest;
 import org.example.jspcafe.user.request.LoginServiceResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,16 +16,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LoginServiceTest {
 
-    private InMemoryUserRepository userRepository;
+    private JdbcUserRepository userRepository;
     private LoginService loginService;
 
     @BeforeEach
     void setUp() {
-        userRepository = new InMemoryUserRepository();
+        userRepository = new JdbcUserRepository();
         loginService = new LoginService(userRepository);
 
         // given: 사용자 저장
         userRepository.save(new User("nickname", "email@example.com", "password", LocalDateTime.now()));
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAllInBatch();
     }
 
     @Test
