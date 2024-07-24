@@ -1,5 +1,7 @@
 package com.wootecam.jspcafe.model;
 
+import java.util.Objects;
+
 public class User {
 
     private Long id;
@@ -22,7 +24,7 @@ public class User {
     }
 
     private void validate(final String userId, final String password, final String name, final String email) {
-        if (userId == null || password == null || name == null || email == null
+        if (Objects.isNull(userId) || Objects.isNull(password) || Objects.isNull(name) || Objects.isNull(email)
                 || userId.isEmpty() || password.isEmpty() || name.isEmpty() || email.isEmpty()) {
             throw new IllegalArgumentException("회원가입 시 모든 정보를 입력해야 합니다.");
         }
