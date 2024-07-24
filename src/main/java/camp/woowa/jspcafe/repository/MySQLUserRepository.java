@@ -19,15 +19,18 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public Long save(String userId, String password, String name, String email) {
-        try (var pstmt = conn.prepareStatement("INSERT INTO user (userId, 'password', 'name', email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+        try (var pstmt = conn.prepareStatement("INSERT INTO user (userId, password, name, email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
             pstmt.setString(1, userId);
             pstmt.setString(2, password);
             pstmt.setString(3, name);
             pstmt.setString(4, email);
             pstmt.executeUpdate();
-            return pstmt.getGeneratedKeys().getLong(1); 
+
+            try (var gk = pstmt.getGeneratedKeys();) {
+                return gk.getLong(1);
+            }
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
