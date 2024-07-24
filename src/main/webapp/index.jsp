@@ -22,7 +22,7 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="qna/show.jsp"><%=post.getContents()%></a>
+                              <a href="/posts/<%=post.getId()%>"><%=post.getContents()%></a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
@@ -54,7 +54,7 @@
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
-                  <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                  <a href="/post/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
               </div>
           </div>
         </div>
