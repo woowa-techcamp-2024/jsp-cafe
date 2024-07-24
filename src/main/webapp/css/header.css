@@ -1,0 +1,46 @@
+/* header.css */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    height: 60px; /* 고정된 높이 설정 */
+    position: relative;
+    z-index: 1000; /* 다른 요소 위에 고정 */
+    width: 100%; /* 전체 너비 설정 */
+    box-sizing: border-box; /* 패딩과 보더를 포함한 전체 너비 계산 */
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.header nav {
+    display: flex;
+    align-items: center;
+}
+
+.header nav form {
+    margin-left: 10px;
+}
+
+.user-list-button, .logout-button, .login-button, .signup-button {
+    padding: 8px 12px;
+    background-color: #9ca3af;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.user-list-button:hover, .logout-button:hover, .login-button:hover, .signup-button:hover {
+    background-color: #0056b3;
+}
+.edit-profile-button {
+    background-color: #f59e0b;
+}
