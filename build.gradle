@@ -35,6 +35,6 @@ test {
 }
 
 war {
-    archiveFileName = 'jsp-cafe.war'
+    archiveFileName = 'ROOT.war'
     from 'src/main/webapp'
 }
