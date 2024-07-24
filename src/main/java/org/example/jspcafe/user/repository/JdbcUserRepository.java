@@ -177,6 +177,9 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
 
     @Override
     public List<User> findAllById(Collection<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return Collections.emptyList(); // 비어 있는 경우 빈 리스트 반환
+        }
         String placeholders = String.join(",", "?".repeat(userIds.size()).split(""));
         String sql = "SELECT * FROM users WHERE user_id IN (" + placeholders + ")";
 
