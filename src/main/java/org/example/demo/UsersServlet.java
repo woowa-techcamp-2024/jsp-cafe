@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.model.UserCreateDao;
 
 import java.io.IOException;
 
@@ -25,12 +26,14 @@ public class UsersServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = new User(
+                null,
                 request.getParameter("userId"),
                 request.getParameter("password"),
                 request.getParameter("name"),
                 request.getParameter("email"));
 
-        UserDb.addUser(user);
+        UserCreateDao dao = new UserCreateDao(request.getParameter("userId"), request.getParameter("password"), request.getParameter("name"), request.getParameter("email"));
+        UserDb.addUser(dao);
 
         response.sendRedirect("/users");
         System.out.println("do post /users");
