@@ -12,9 +12,9 @@ public class InMemQuestionRepository implements QuestionRepository {
     private static final Map<Long, Question> questions = new ConcurrentHashMap<>();
 
     @Override
-    public Long save(String title, String content, String writer) {
+    public Long save(String title, String content, String writer, Long writerId) {
         Long id = sequence_id.getAndIncrement();
-        questions.put(id, new Question(id, title, content, writer));
+        questions.put(id, new Question(id, title, content, writer, writerId));
         return id;
     }
 

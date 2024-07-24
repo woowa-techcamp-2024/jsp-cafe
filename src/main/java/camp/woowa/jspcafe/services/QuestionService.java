@@ -12,8 +12,8 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
-    public Long save(String title, String content, String writer) {
-        return questionRepository.save(title, content, writer);
+    public Long save(String title, String content, String writer, Long writerId) {
+        return questionRepository.save(title, content, writer, writerId);
     }
 
     public List<Question> findAll() {
