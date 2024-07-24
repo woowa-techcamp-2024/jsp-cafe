@@ -4,7 +4,6 @@ import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
 import cafe.servlet.TestHttpServletRequest;
 import cafe.servlet.TestHttpServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
