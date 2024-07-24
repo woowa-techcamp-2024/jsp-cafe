@@ -3,16 +3,16 @@ package codesquad.jspcafe.domain.user.service;
 import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
-import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
+import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
 
 public class UserService {
 
-    private final UserMemoryRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserService() {
-        userRepository = new UserMemoryRepository();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public UserCommonResponse createUser(Map<String, String[]> parameterMap) {

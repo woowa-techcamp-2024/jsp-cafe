@@ -8,6 +8,7 @@ import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
 import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
+import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("UserService는")
 class UserServiceTest {
 
-    private final UserService userService = new UserService();
-    private UserMemoryRepository userRepository;
+    private UserRepository userRepository = new UserMemoryRepository();
+    private final UserService userService = new UserService(userRepository);
 
     private final String expectedUserId = "test";
     private final String expectedPassword = "test";
