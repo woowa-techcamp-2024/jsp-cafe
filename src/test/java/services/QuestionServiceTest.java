@@ -17,6 +17,8 @@ class QuestionServiceTest {
     void setUp() {
         questionRepository = new InMemQuestionRepository();
         questionService = new QuestionService(questionRepository);
+
+        questionRepository.deleteAll();
     }
 
     @Test

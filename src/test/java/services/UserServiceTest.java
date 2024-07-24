@@ -20,6 +20,8 @@ class UserServiceTest {
     void setUp() {
         userRepository = new InMemUserRepository();
         userService = new UserService(userRepository);
+
+        userRepository.deleteAll();
     }
 
     @Test
@@ -54,7 +56,7 @@ class UserServiceTest {
         List<User> users = userService.findAll();
 
         // then
-        assertEquals(users.size(), expected_size);
+        assertEquals(expected_size, users.size());
     }
 
     @Test

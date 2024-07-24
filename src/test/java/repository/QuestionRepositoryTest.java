@@ -16,6 +16,7 @@ class QuestionRepositoryTest {
     @BeforeEach
     void setUp() {
         questionRepository = new InMemQuestionRepository();
+        questionRepository.deleteAll();
     }
 
     @Test
