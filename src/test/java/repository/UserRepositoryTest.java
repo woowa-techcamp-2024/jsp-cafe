@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserRepositoryTest {
     UserRepository userRepository;
@@ -108,6 +109,6 @@ class UserRepositoryTest {
         boolean isExisted = userRepository.isExistedByUserId(userId);
 
         // then
-        assertEquals(true, isExisted);
+        assertTrue(isExisted);
     }
 }
