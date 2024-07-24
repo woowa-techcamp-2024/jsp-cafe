@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.example.db.ArticleDatabase;
 import com.example.db.ArticleMemoryDatabase;
+import com.example.db.UserDatabase;
 import com.example.db.UserMemoryDatabase;
 
 import jakarta.servlet.ServletContext;
@@ -31,7 +33,7 @@ class ApplicationInitializerTest {
 	void contextInitialized() {
 		initializer.contextInitialized(event);
 
-		verify(context).setAttribute(eq("userDatabase"), any(UserMemoryDatabase.class));
-		verify(context).setAttribute(eq("articleDatabase"), any(ArticleMemoryDatabase.class));
+		verify(context).setAttribute(eq("userDatabase"), any(UserDatabase.class));
+		verify(context).setAttribute(eq("articleDatabase"), any(ArticleDatabase.class));
 	}
 }
