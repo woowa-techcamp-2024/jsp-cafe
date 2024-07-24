@@ -22,7 +22,7 @@
                         <div class="wrap">
                             <div class="main">
                                 <strong class="subject">
-                                    <a href="qna/<c:out value="${article.id}"/>">
+                                    <a href="/qna/<c:out value="${article.id}"/>">
                                         <c:out value=" ${article.title}"/>
                                     </a>
                                 </strong>
@@ -139,8 +139,8 @@
 -->
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<script src="/js/jquery-2.2.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>
