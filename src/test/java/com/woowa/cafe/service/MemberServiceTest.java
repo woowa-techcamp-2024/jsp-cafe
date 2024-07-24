@@ -1,10 +1,10 @@
 package com.woowa.cafe.service;
 
 import com.woowa.cafe.domain.Member;
-import com.woowa.cafe.dto.SaveMemberDto;
-import com.woowa.cafe.dto.UpdateMemberDto;
-import com.woowa.cafe.repository.user.InMemoryMemberRepository;
-import com.woowa.cafe.repository.user.MemberRepository;
+import com.woowa.cafe.dto.member.SaveMemberDto;
+import com.woowa.cafe.dto.member.UpdateMemberDto;
+import com.woowa.cafe.repository.member.InMemoryMemberRepository;
+import com.woowa.cafe.repository.member.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

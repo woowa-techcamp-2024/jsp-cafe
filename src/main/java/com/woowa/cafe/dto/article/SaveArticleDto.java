@@ -1,4 +1,4 @@
-package com.woowa.cafe.dto;
+package com.woowa.cafe.dto.article;
 
 import com.woowa.cafe.domain.Article;
 

@@ -1,6 +1,6 @@
 package com.woowa.cafe.servlet.qna;
 
-import com.woowa.cafe.dto.SaveArticleDto;
+import com.woowa.cafe.dto.article.SaveArticleDto;
 import com.woowa.cafe.service.ArticleService;
 import com.woowa.cafe.utils.HttpMessageUtils;
 import jakarta.servlet.ServletException;
@@ -35,7 +35,7 @@ public class ArticleServlet extends HttpServlet {
             resp.sendRedirect("/");
         }
 
-        if(req.getPathInfo() == null) {
+        if (req.getPathInfo() == null) {
             req.getRequestDispatcher("/WEB-INF/views/qna/form.jsp").forward(req, resp);
             return;
         }

@@ -2,11 +2,11 @@ package com.woowa.cafe.service;
 
 import com.woowa.cafe.domain.Article;
 import com.woowa.cafe.domain.Member;
-import com.woowa.cafe.dto.SaveArticleDto;
+import com.woowa.cafe.dto.article.SaveArticleDto;
 import com.woowa.cafe.repository.qna.ArticleRepository;
 import com.woowa.cafe.repository.qna.InMemoryArticleRepository;
-import com.woowa.cafe.repository.user.InMemoryMemberRepository;
-import com.woowa.cafe.repository.user.MemberRepository;
+import com.woowa.cafe.repository.member.InMemoryMemberRepository;
+import com.woowa.cafe.repository.member.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

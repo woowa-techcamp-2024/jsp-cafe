@@ -1,5 +1,5 @@
 <%@ page import="com.woowa.cafe.domain.Member" %>
-<%@ page import="com.woowa.cafe.repository.user.MemberRepository" %>
+<%@ page import="com.woowa.cafe.repository.member.MemberRepository" %>
 <%@ page import="java.util.Optional" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <div class="navbar navbar-default" id="subnav">

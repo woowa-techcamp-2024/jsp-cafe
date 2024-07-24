@@ -1,7 +1,7 @@
 package com.woowa.cafe.servlet.user;
 
-import com.woowa.cafe.dto.SaveMemberDto;
-import com.woowa.cafe.dto.UpdateMemberDto;
+import com.woowa.cafe.dto.member.SaveMemberDto;
+import com.woowa.cafe.dto.member.UpdateMemberDto;
 import com.woowa.cafe.service.MemberService;
 import com.woowa.cafe.utils.HttpMessageUtils;
 import jakarta.servlet.ServletException;

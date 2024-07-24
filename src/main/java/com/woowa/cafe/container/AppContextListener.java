@@ -2,8 +2,8 @@ package com.woowa.cafe.container;
 
 import com.woowa.cafe.repository.qna.ArticleRepository;
 import com.woowa.cafe.repository.qna.InMemoryArticleRepository;
-import com.woowa.cafe.repository.user.InMemoryMemberRepository;
-import com.woowa.cafe.repository.user.MemberRepository;
+import com.woowa.cafe.repository.member.InMemoryMemberRepository;
+import com.woowa.cafe.repository.member.MemberRepository;
 import com.woowa.cafe.service.ArticleService;
 import com.woowa.cafe.service.MemberService;
 import jakarta.servlet.ServletContextEvent;

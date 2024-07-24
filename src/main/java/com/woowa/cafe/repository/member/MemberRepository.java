@@ -1,4 +1,4 @@
-package com.woowa.cafe.repository.user;
+package com.woowa.cafe.repository.member;
 
 import com.woowa.cafe.domain.Member;
 
