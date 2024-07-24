@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS posts (
     post_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
+    content VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
 
