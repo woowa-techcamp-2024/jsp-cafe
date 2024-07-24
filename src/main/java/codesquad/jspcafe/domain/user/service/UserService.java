@@ -3,16 +3,16 @@ package codesquad.jspcafe.domain.user.service;
 import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
-import codesquad.jspcafe.domain.user.repository.UserRepository;
+import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
 import java.util.List;
 import java.util.Map;
 
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserMemoryRepository userRepository;
 
     public UserService() {
-        userRepository = new UserRepository();
+        userRepository = new UserMemoryRepository();
     }
 
     public UserCommonResponse createUser(Map<String, String[]> parameterMap) {
@@ -28,7 +28,7 @@ public class UserService {
         verifyUserPassword(updateRequest.getUserId(), updateRequest.getPassword());
         User user = findUserById(updateRequest.getUserId());
         user.updateValues(updateRequest.getUsername(), updateRequest.getEmail());
-        return UserCommonResponse.from(userRepository.save(user));
+        return UserCommonResponse.from(userRepository.update(user));
     }
 
     public UserCommonResponse getUserById(String userId) {
@@ -48,7 +48,7 @@ public class UserService {
     }
 
     private User findUserById(String userId) {
-        return userRepository.findById(userId)
+        return userRepository.findByUserId(userId)
             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다!"));
     }
 
