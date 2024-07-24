@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlets;
 
+import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.services.UserService;
 import jakarta.servlet.RequestDispatcher;
@@ -94,10 +95,13 @@ public class UsersServlet extends HttpServlet {
             } catch (NumberFormatException e) {
                 log(e.getMessage());
             }
-            userService.update(id, req.getParameter("userId"),
+
+            userService.update(id,
                     req.getParameter("password"),
+                    req.getParameter("userId"),
                     req.getParameter("name"),
                     req.getParameter("email"));
+
             try {
                 res.sendRedirect("/users/" + id + "/form");
             } catch (IOException e) {
