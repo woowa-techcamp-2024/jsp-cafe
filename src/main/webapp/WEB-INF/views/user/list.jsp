@@ -27,7 +27,7 @@
                         <td>${user.userId}</td>
                         <td>${user.name}</td>
                         <td>${user.email}</td>
-                        <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <td><a href="/users/edit/${user.id}" class="btn btn-success" role="button">수정</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
