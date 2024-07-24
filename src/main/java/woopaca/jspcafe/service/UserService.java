@@ -6,6 +6,7 @@ import woopaca.jspcafe.servlet.dto.MembersResponse;
 import woopaca.jspcafe.servlet.dto.SignUpRequest;
 import woopaca.jspcafe.servlet.dto.UserProfile;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class UserService {
@@ -53,6 +54,7 @@ public class UserService {
         return userRepository.findAll()
                 .stream()
                 .map(MembersResponse::from)
+                .sorted(Comparator.comparing(MembersResponse::createdAt).reversed())
                 .toList();
     }
 
