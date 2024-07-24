@@ -1,7 +1,7 @@
 #!/bin/bash
 # 1. tomcat폴더의 shutdown.sh를 실행
 echo "Stopping Tomcat..."
-TOMCAT_HOME=/Users/woowatech/apache-tomcat-10.1.26
+TOMCAT_HOME=~/apache-tomcat-10.1.26
 $TOMCAT_HOME/bin/shutdown.sh
 # 2. ./gradlew clean build를 통해 ROOT.war 생성
 echo "Building the project..."
