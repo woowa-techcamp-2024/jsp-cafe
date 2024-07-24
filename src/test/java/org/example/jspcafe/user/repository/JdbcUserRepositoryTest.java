@@ -2,6 +2,7 @@ package org.example.jspcafe.user.repository;
 
 import org.example.jspcafe.user.model.User;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +17,13 @@ class JdbcUserRepositoryTest {
 
     private UserRepository userRepository;
 
+    @BeforeEach
+    void setUp() {
+        userRepository = new JdbcUserRepository();
+    }
+
     @AfterEach
     void tearDown() {
-        userRepository = new JdbcUserRepository();
         userRepository.deleteAllInBatch();
     }
 

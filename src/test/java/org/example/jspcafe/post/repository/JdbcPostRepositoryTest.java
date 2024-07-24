@@ -2,6 +2,7 @@ package org.example.jspcafe.post.repository;
 
 import org.example.jspcafe.post.model.Post;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +18,13 @@ class JdbcPostRepositoryTest {
 
     private PostRepository postRepository;
 
+    @BeforeEach
+    void setUp() {
+        postRepository = new JdbcPostRepository();
+    }
+
     @AfterEach
     void tearDown() {
-        postRepository = new JdbcPostRepository();
         postRepository.deleteAllInBatch();
     }
 
