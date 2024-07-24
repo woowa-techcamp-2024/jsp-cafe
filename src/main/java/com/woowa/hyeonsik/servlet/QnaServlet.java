@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet({"/questions", "/"})
+@WebServlet({"/questions", ""})
 public class QnaServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
     private ArticleService articleService;

@@ -14,6 +14,7 @@ public class ArticleDao {
 
     public void save(Article article) {
         long id = autoIncrement.getAndIncrement();
+        article.setId(id);
         articles.put(id, article);
     }
 

@@ -12,17 +12,17 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
 
-                <c:forEach var="question" items="${questions}" varStatus="status">
+                <c:forEach var="article" items="${questions}" varStatus="status">
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="${pageContext.request.contextPath}/qna/show.jsp">${question.title} </a>
+                                <a href="${pageContext.request.contextPath}/questions/${article.id}">${article.title} </a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time">${question.createdAt}</span>
-                                <a href="${pageContext.request.contextPath}/user/profile.jsp" class="author">${question.writer}</a>
+                                <span class="time">${article.createdAt}</span>
+                                <a href="${pageContext.request.contextPath}/user/profile.jsp" class="author">${article.writer}</a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>

@@ -7,7 +7,7 @@ public final class Article {
     private static final int WRITER_MAX_LENGTH = 30;
     private static final int TITLE_MAX_LENGTH = 30;
     private static final int CONTENT_MAX_LENGTH = 200;
-    private final Long id;
+    private Long id;
     private final String writer;
     private final String title;
     private final String contents;
@@ -41,6 +41,10 @@ public final class Article {
         if (contents.length() > CONTENT_MAX_LENGTH) {
             throw new IllegalArgumentException("내용은 " + CONTENT_MAX_LENGTH + "자를 초과할 수 없습니다.");
         }
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Long getId() {

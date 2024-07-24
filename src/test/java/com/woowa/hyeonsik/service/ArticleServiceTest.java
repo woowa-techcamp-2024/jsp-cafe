@@ -26,11 +26,11 @@ class ArticleServiceTest {
         Article article = new Article(null, "TEST_USER", "테스트 글입니다", "안녕하세요? 반갑습니다 ^^");
 
         articleService.write(article);
-        Article findedArticle = articleService.findById(1);
+        Article foundArticle = articleService.findById(1);
 
-        assertThat(findedArticle.getWriter()).isEqualTo("TEST_USER");
-        assertThat(findedArticle.getTitle()).isEqualTo("테스트 글입니다");
-        assertThat(findedArticle.getContents()).isEqualTo("안녕하세요? 반갑습니다 ^^");
+        assertThat(foundArticle.getWriter()).isEqualTo("TEST_USER");
+        assertThat(foundArticle.getTitle()).isEqualTo("테스트 글입니다");
+        assertThat(foundArticle.getContents()).isEqualTo("안녕하세요? 반갑습니다 ^^");
     }
 
     @Test
