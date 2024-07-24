@@ -26,7 +26,10 @@ public class MySQLUserRepository implements UserRepository{
             pstmt.setString(4, email);
             pstmt.executeUpdate();
 
-            try (var gk = pstmt.getGeneratedKeys();) {
+            try (var gk = pstmt.getGeneratedKeys()) {
+                if (!gk.next()) {
+                    throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
                 return gk.getLong(1);
             }
         } catch (SQLException e) {

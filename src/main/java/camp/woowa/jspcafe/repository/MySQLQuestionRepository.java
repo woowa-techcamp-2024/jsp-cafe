@@ -26,7 +26,10 @@ public class MySQLQuestionRepository implements QuestionRepository {
             pstmt.setLong(4, writerId);
             pstmt.executeUpdate();
 
-            try (var gk = pstmt.getGeneratedKeys();) {
+            try (var gk = pstmt.getGeneratedKeys()) {
+                if (!gk.next()) {
+                    throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
                 return gk.getLong(1);
             }
 
