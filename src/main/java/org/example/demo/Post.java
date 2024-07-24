@@ -4,23 +4,24 @@ import java.time.LocalDateTime;
 
 public class Post {
     private Long id;
-    private String writer;
+    private User writer;
     private String title;
     private String contents;
     private LocalDateTime createdAt;
 
-    public Post(Long id, String writer, String title, String contents) {
+    public Post(Long id, User writer, String title, String contents, LocalDateTime createdAt) {
         this.id = id;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 

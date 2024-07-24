@@ -1,5 +1,8 @@
 package org.example.demo;
 
+import org.example.demo.model.PostCreateDao;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,9 +15,11 @@ public class PostDb{
         return Optional.ofNullable(posts.get(postId));
     }
 
-    public static void addPost(Post post) {
-        post.setId(generateNxtId());
-        posts.put(post.getId(), post);
+    public static void addPost(PostCreateDao dao) {
+        //TODO User 로직 분리 필요
+        User user = UserDb.getUserByUserId(dao.getWriter()).orElseThrow(() -> new RuntimeException("user not found"));
+        Post post = new Post(generateNxtId(), user, dao.getTitle(), dao.getContents(), LocalDateTime.now());
+        posts.putIfAbsent(post.getId(), post);
     }
 
     public static List<Post> getPosts() {
