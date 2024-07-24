@@ -9,6 +9,7 @@ import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;
 import com.woowa.model.Question;
 import com.woowa.model.User;
+import java.time.ZonedDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -32,7 +33,8 @@ public class QuestionHandler {
             @RequestParameter("content") String content) {
         User user = userDatabase.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
-        Question question = Question.create(UUID.randomUUID().toString(), title, content, Author.from(user));
+        Question question = Question.create(UUID.randomUUID().toString(), title, content, Author.from(user),
+                ZonedDateTime.now());
         log.info("새로운 질문이 등록되었습니다. qusetionId={}", question.getQuestionId());
         questionDatabase.save(question);
         return ResponseEntity.builder()
