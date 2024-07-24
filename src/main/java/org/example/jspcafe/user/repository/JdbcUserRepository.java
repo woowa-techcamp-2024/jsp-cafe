@@ -1,16 +1,15 @@
 package org.example.jspcafe.user.repository;
 
+import org.example.jspcafe.Component;
 import org.example.jspcafe.DatabaseConnectionManager;
 import org.example.jspcafe.ReflectionIdFieldExtractor;
 import org.example.jspcafe.user.model.User;
 
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+@Component
 public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> implements UserRepository {
 
     public JdbcUserRepository() {
@@ -203,6 +202,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
             throw new RuntimeException("Error finding users by IDs", e);
         }
     }
+
 
     @Override
     public void deleteAllInBatch() {

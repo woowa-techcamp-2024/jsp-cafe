@@ -1,5 +1,6 @@
 package org.example.jspcafe.post.repository;
 
+import org.example.jspcafe.Component;
 import org.example.jspcafe.DatabaseConnectionManager;
 import org.example.jspcafe.ReflectionIdFieldExtractor;
 import org.example.jspcafe.post.model.Post;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> implements PostRepository {
 
     public JdbcPostRepository() {
