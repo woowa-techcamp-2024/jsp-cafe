@@ -99,7 +99,7 @@ public class IntegrationTest {
         UserRepository userRepository = factory.userRepository();
 
         assertTrue(userRepository.findAll().stream().anyMatch(user ->
-                user.username().equals(username) && user.userId().equals(email) && user.password().equals(password)
+                user.getUsername().equals(username) && user.getUserId().equals(email) && user.getPassword().equals(password)
         ));
     }
 
@@ -110,7 +110,7 @@ public class IntegrationTest {
         String password = "password" + System.currentTimeMillis();
 
         User user = factory.userRepository().save(new User(email, username, password));
-        Long id = user.id();
+        Long id = user.getId();
 
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder()
@@ -122,6 +122,44 @@ public class IntegrationTest {
         assertEquals(200, response.statusCode());
         assertTrue(response.body().contains(username));
         assertTrue(response.body().contains(email));
+    }
+
+    @Test
+    void 질문등록_테스트() throws IOException, InterruptedException, URISyntaxException {
+        String title = "질문 제목" + System.currentTimeMillis();
+        String content = "질문 내용" + System.currentTimeMillis();
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:" + port + "/question/write"))
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("title=%s&content=%s", title, content)
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(302, response.statusCode());
+        assertEquals("/questions", response.headers().firstValue("Location").orElse(null));
+    }
+
+    @Test
+    void 질문내용부족_실패테스트() throws IOException, InterruptedException {
+        String title = "질문 제목" + System.currentTimeMillis();
+        String content = "";
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/question/write"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("title=%s&content=%s", title, content)
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("제목과 내용을 모두 입력해주세요."));
     }
 
 }
