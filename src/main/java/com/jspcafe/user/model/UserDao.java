@@ -1,38 +1,102 @@
 package com.jspcafe.user.model;
 
+import com.jspcafe.util.DBManager;
+
+import java.sql.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class UserDao {
-    private final Map<String, String> idByEmail = new ConcurrentHashMap<>();
-    private final Map<String, User> usersById = new ConcurrentHashMap<>();
 
     public void save(User user) {
-        usersById.put(user.id(), user);
-        idByEmail.put(user.email(), user.id());
+        String sql = "INSERT INTO users (id, email, nickname, password) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.id());
+            pstmt.setString(2, user.email());
+            pstmt.setString(3, user.nickname());
+            pstmt.setString(4, user.password());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error saving user", e);
+        }
     }
 
     public Optional<User> findById(String id) {
-        return Optional.ofNullable(usersById.get(id));
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new User(
+                            rs.getString("id"),
+                            rs.getString("email"),
+                            rs.getString("nickname"),
+                            rs.getString("password")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding user by id", e);
+        }
+        return Optional.empty();
     }
 
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(idByEmail.get(email))
-                .flatMap(this::findById);
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new User(
+                            rs.getString("id"),
+                            rs.getString("email"),
+                            rs.getString("nickname"),
+                            rs.getString("password")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding user by email", e);
+        }
+        return Optional.empty();
     }
 
     public List<User> findAll() {
-        return new ArrayList<>(usersById.values());
+        String sql = "SELECT * FROM users";
+        List<User> users = new ArrayList<>();
+        try (Connection conn = DBManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                users.add(new User(
+                        rs.getString("id"),
+                        rs.getString("email"),
+                        rs.getString("nickname"),
+                        rs.getString("password")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all users", e);
+        }
+        return users;
     }
 
     public void update(final User updateUser) {
-        usersById.compute(updateUser.id(), (id, existingUser) -> {
-            if (existingUser == null) {
-                return null;
+        String sql = "UPDATE users SET email = ?, nickname = ?, password = ? WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, updateUser.email());
+            pstmt.setString(2, updateUser.nickname());
+            pstmt.setString(3, updateUser.password());
+            pstmt.setString(4, updateUser.id());
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating user failed, no rows affected.");
             }
-            idByEmail.remove(existingUser.email());
-            idByEmail.put(updateUser.email(), id);
-            return updateUser;
-        });
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating user", e);
+        }
     }
 }

@@ -1,20 +1,67 @@
 package com.jspcafe.board.model;
 
+import com.jspcafe.util.DBManager;
+
+import java.sql.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ArticleDao {
-    private final Map<String, Article> articles = new ConcurrentHashMap<>();
 
     public void save(final Article article) {
-        articles.put(article.id(), article);
+        String sql = "INSERT INTO articles (id, title, nickname, content, create_at) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, article.id());
+            pstmt.setString(2, article.title());
+            pstmt.setString(3, article.nickname());
+            pstmt.setString(4, article.content());
+            pstmt.setTimestamp(5, Timestamp.valueOf(article.createAt()));
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error saving article", e);
+        }
     }
 
     public Optional<Article> findById(final String id) {
-        return Optional.ofNullable(articles.get(id));
+        String sql = "SELECT * FROM articles WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new Article(
+                            rs.getString("id"),
+                            rs.getString("title"),
+                            rs.getString("nickname"),
+                            rs.getString("content"),
+                            rs.getTimestamp("create_at").toLocalDateTime()
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding article by id", e);
+        }
+        return Optional.empty();
     }
 
     public List<Article> findAll() {
-        return new ArrayList<>(articles.values());
+        String sql = "SELECT * FROM articles ORDER BY create_at DESC";
+        List<Article> articles = new ArrayList<>();
+        try (Connection conn = DBManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                articles.add(new Article(
+                        rs.getString("id"),
+                        rs.getString("title"),
+                        rs.getString("nickname"),
+                        rs.getString("content"),
+                        rs.getTimestamp("create_at").toLocalDateTime()
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all articles", e);
+        }
+        return articles;
     }
 }
