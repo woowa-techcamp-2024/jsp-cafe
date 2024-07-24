@@ -1,5 +1,6 @@
 package org.example.cafe.domain;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ public class Question {
     private String title;
     private String content;
     private String writer;
+    private LocalDateTime createdAt;
 
     public Question(String title,
                     String content,
@@ -17,6 +19,7 @@ public class Question {
         this.title = title;
         this.content = content;
         this.writer = writer;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Question(String questionId,
@@ -28,7 +31,6 @@ public class Question {
         this.content = content;
         this.writer = writer;
     }
-
 
     public String getQuestionId() {
         return questionId;
@@ -44,6 +46,10 @@ public class Question {
 
     public String getWriter() {
         return writer;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override

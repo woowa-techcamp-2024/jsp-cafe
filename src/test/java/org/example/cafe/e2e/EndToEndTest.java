@@ -16,6 +16,8 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.example.cafe.domain.Question;
+import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.User;
 import org.example.cafe.domain.UserRepository;
 import org.junit.jupiter.api.AfterAll;
@@ -37,6 +39,7 @@ public class EndToEndTest {
     private static int localPort;
 
     private static UserRepository userRepository;
+    private static QuestionRepository questionRepository;
 
     private HttpURLConnection con;
 
@@ -61,6 +64,7 @@ public class EndToEndTest {
 
         localPort = tomcat.getConnector().getLocalPort();
         userRepository = (UserRepository) context.getServletContext().getAttribute("UserRepository");
+        questionRepository = (QuestionRepository) context.getServletContext().getAttribute("QuestionRepository");
     }
 
     @AfterAll
@@ -202,6 +206,24 @@ public class EndToEndTest {
             assertAll(() -> {
                 assertThat(con.getResponseCode()).isEqualTo(302);
                 assertThat(con.getHeaderField("Location")).isEqualTo("/");
+            });
+        }
+
+        @Test
+        void 사용자는_게시글_목록을_조회할_수_있다() throws IOException {
+            questionRepository.save(new Question("title1", "content1", "writer1"));
+            questionRepository.save(new Question("title2", "content2", "writer2"));
+
+            //given
+            con = createGetConnection("/");
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("title1", "title2", "writer1", "writer2");
             });
         }
     }
