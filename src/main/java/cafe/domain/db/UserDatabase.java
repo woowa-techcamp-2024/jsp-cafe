@@ -4,12 +4,17 @@ import cafe.domain.entity.User;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class UserDatabase {
-    private final Map<String, User> userDatabase = new HashMap<>();
+    private final Map<String, User> userDatabase;
+
+    public UserDatabase() {
+        this.userDatabase = new HashMap<>();
+    }
 
     public void save(User user) {
-        userDatabase.put(user.getId(), user);
+        userDatabase.put(UUID.randomUUID().toString(), user);
     }
 
     public User find(String id) {
@@ -21,5 +26,9 @@ public class UserDatabase {
 
     public Map<String, User> findAll() {
         return userDatabase;
+    }
+
+    public void update(String id, User user) {
+        userDatabase.put(id, user);
     }
 }

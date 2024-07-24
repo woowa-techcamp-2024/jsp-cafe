@@ -1,14 +1,16 @@
+<%@ page import="cafe.domain.entity.Article" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/components/head.jsp" %>
 <body>
 <%@ include file="/WEB-INF/components/header.jsp"%>
 <%@ include file="/WEB-INF/components/navigation.jsp"%>
 
+<% Article article = (Article) request.getAttribute("article"); %>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
           <header class="qna-header">
-              <h2 class="qna-title">InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.</h2>
+              <h2 class="qna-title"><%=article.getTitle()%></h2>
           </header>
           <div class="content-main">
               <article class="article">
@@ -17,16 +19,15 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>
+                          <a href="/users/92/kimmunsu" class="article-author-name"><%=article.getWriter()%></a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              2015-12-30 01:47
+                              <%=article.getCreated()%>
                               <i class="icon-link"></i>
                           </a>
                       </div>
                   </div>
                   <div class="article-doc">
-                      <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p><p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                      서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p><p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                      <p><%=article.getContents()%></p>
                   </div>
                   <div class="article-util">
                       <ul class="article-util-list">
@@ -40,7 +41,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/index.jsp">목록</a>
+                              <a class="link-modify-article" href="/board.jsp">목록</a>
                           </li>
                       </ul>
                   </div>
@@ -155,8 +156,6 @@
 </script>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<%@ include file="/WEB-INF/components/script.jsp" %>
 	</body>
 </html>
