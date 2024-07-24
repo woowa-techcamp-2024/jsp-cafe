@@ -15,6 +15,14 @@ public class Author {
         return new Author(user.getUserId(), user.getNickname());
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
