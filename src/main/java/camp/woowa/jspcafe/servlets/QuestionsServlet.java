@@ -2,6 +2,7 @@ package camp.woowa.jspcafe.servlets;
 
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
+import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.services.QuestionService;
 import camp.woowa.jspcafe.services.UserService;
 import jakarta.servlet.ServletContext;
@@ -33,9 +34,9 @@ public class QuestionsServlet extends HttpServlet {
         String writer = req.getParameter("writer");
 
 
-        isExistedByUserIdOrThrow(writer); // Check if the user exists
+        User w = findByUserIdOrThrow(writer);// Check if the user exists
 
-        questionService.save(title, content, writer);
+        questionService.save(title, content, writer, w.getId());
 
 
         try {
@@ -45,8 +46,13 @@ public class QuestionsServlet extends HttpServlet {
         }
     }
 
-    private void isExistedByUserIdOrThrow(String writer) {
-        if (!userService.isExistedByUserId(writer))
+    private User findByUserIdOrThrow(String w) {
+        User writer = userService.findByUserId(w);
+
+        if (writer == null) {
             throw new CustomException(HttpStatus.USER_NOT_FOUND);
+        } else {
+            return writer;
+        }
     }
 }
