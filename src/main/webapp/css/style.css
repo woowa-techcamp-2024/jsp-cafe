@@ -1,0 +1,39 @@
+@font-face {
+  font-family: 'BM-Hanna-11yrs';
+  src: url('../fonts/BMHANNA_11yrs.otf') format('opentype');
+}
+
+body {
+  font-family: Pretendard, serif;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+
+  cursor: pointer;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#header {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #62CBC6;
+  padding: 20px 10vw;
+
+  margin-bottom: 40px;
+}
+
+#greeting {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 2em;
+
+  color: white;
+}
