@@ -37,6 +37,21 @@ class UserTest {
                     Email.from(expectedEmail));
         }
 
+        @DisplayName("정상적으로 생성된다.")
+        @Test
+        void createSuccessWithFull() {
+            // Arrange
+            Long expectedId = 1L;
+            // Act
+            User actualResult = new User(expectedId, expectedUserId, expectedPassword, expectedUsername,
+                Email.from(expectedEmail));
+            // Assert
+            assertThat(actualResult)
+                .extracting("id", "userId", "password", "username", "email")
+                .containsExactly(expectedId, expectedUserId, expectedPassword, expectedUsername,
+                    Email.from(expectedEmail));
+        }
+
         @DisplayName("userId가 null이거나 빈 문자열이면 예외가 발생한다.")
         @MethodSource("exceptedValues")
         @ParameterizedTest
@@ -86,6 +101,23 @@ class UserTest {
                 Arguments.of((String) null),
                 Arguments.of("")
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("생성 이후")
+    class afterCreated {
+
+        @Test
+        @DisplayName("id를 추가할 수 있다.")
+        void setIdAfterCreated() {
+            // Arrange
+            Long expectedId = 1L;
+            User user = new User(expectedUserId, expectedPassword, expectedUsername, expectedEmail);
+            // Act
+            user.setId(expectedId);
+            // Assert
+            assertThat(user.getId()).isEqualTo(expectedId);
         }
     }
 

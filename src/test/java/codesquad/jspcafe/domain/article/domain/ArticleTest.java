@@ -40,7 +40,7 @@ class ArticleTest {
         @DisplayName("정상적으로 생성된다.")
         @Test
         void createSuccessWithFull() {
-            // Assert
+            // Arrange
             Long expectedId = 1L;
             // Act
             Article actualResult = new Article(expectedId, expectedTitle, expectedWriter,

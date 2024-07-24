@@ -4,6 +4,7 @@ import codesquad.jspcafe.domain.user.domain.values.Email;
 
 public class User {
 
+    private Long id;
     private String userId;
     private String password;
     private String username;
@@ -14,6 +15,22 @@ public class User {
         this.password = verifyPasswordValue(password);
         this.username = verifyUsername(username);
         this.email = Email.from(email);
+    }
+
+    public User(Long id, String userId, String password, String username, Email email) {
+        this.id = id;
+        this.userId = userId;
+        this.password = password;
+        this.username = username;
+        this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
