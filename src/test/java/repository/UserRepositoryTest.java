@@ -94,4 +94,20 @@ class UserRepositoryTest {
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
     }
+
+    @Test
+    void testIsExistedByUserId() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        userRepository.save(userId, password, name, email);
+
+        // when
+        boolean isExisted = userRepository.isExistedByUserId(userId);
+
+        // then
+        assertEquals(isExisted, true);
+    }
 }
