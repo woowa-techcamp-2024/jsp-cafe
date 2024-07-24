@@ -12,6 +12,8 @@ import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;
 import com.woowa.model.Question;
 import com.woowa.model.User;
+import com.woowa.support.QuestionFixture;
+import com.woowa.support.UserFixture;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -143,6 +145,33 @@ class QuestionHandlerTest {
                     .hasSize(10)
                     .first()
                     .satisfies(question -> assertThat(((Question) question).getTitle()).isEqualTo("title" + 9));
+        }
+    }
+
+    @Nested
+    @DisplayName("findQuestion 호출 시")
+    class FindQuestionTest {
+
+        @Test
+        @DisplayName("단일 게시글을 조회한다.")
+        void findQuestion() {
+            //given
+            User user = UserFixture.user();
+            Question question = QuestionFixture.question(user);
+
+            questionDatabase.save(question);
+
+            //when
+            ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());
+
+            //then
+            Object result = response.getModel().get("question");
+            assertThat(result).isNotNull().isInstanceOf(Question.class);
+            Question findQuestion = (Question) result;
+            assertThat(findQuestion.getTitle()).isEqualTo(question.getTitle());
+            assertThat(findQuestion.getContent()).isEqualTo(question.getContent());
+            assertThat(findQuestion.getAuthor()).isEqualTo(Author.from(user));
+            assertThat(findQuestion.getCreatedAt()).isEqualTo(question.getCreatedAt());
         }
     }
 }

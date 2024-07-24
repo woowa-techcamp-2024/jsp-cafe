@@ -51,4 +51,13 @@ public class QuestionHandler {
         return ResponseEntity.builder()
                 .found("/");
     }
+
+    @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.GET)
+    public ResponseEntity findQuestion(String questionId) {
+        Question question = questionDatabase.findById(questionId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
+        return ResponseEntity.builder()
+                .add("question", question)
+                .ok();
+    }
 }
