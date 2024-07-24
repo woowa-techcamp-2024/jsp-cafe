@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // servlet
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+    // slf4j
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation('ch.qos.logback:logback-core:1.4.14')
+    implementation('ch.qos.logback:logback-classic:1.4.12')
+    // assertj
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+}
+
+war {
+    archiveFileName = 'ROOT.war'
+}
+
+
+test {
+    useJUnitPlatform()
+}
