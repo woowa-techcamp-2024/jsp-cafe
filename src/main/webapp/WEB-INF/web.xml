@@ -3,4 +3,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
   version="6.0">
+  <!-- 기본 서블릿에 대한 URL 매핑 설정 -->
+  <!-- 기본 서블릿 설정 -->
+  <filter>
+    <filter-name>staticResourceFilter</filter-name>
+    <filter-class>org.example.filter.StaticResourceFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>staticResourceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 </web-app>
+
