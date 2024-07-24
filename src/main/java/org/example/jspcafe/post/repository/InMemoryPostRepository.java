@@ -30,6 +30,11 @@ public class InMemoryPostRepository extends InMemoryRepository<Post> implements 
         return storage.size();
     }
 
+    @Override
+    public void deleteAllInBatch() {
+        storage.clear();
+    }
+
     public InMemoryPostRepository() {
         super(Post.class);
     }
