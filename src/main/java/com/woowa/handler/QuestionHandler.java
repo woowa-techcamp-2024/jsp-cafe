@@ -10,6 +10,7 @@ import com.woowa.model.Author;
 import com.woowa.model.Question;
 import com.woowa.model.User;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -24,6 +25,16 @@ public class QuestionHandler {
     public QuestionHandler(UserDatabase userDatabase, QuestionDatabase questionDatabase) {
         this.userDatabase = userDatabase;
         this.questionDatabase = questionDatabase;
+    }
+
+    @RequestMapping(path = "/", method = HttpMethod.GET)
+    public ResponseEntity findQuestions(
+            @RequestParameter("page") int page,
+            @RequestParameter("size") int size) {
+        List<Question> questions = questionDatabase.findAllOrderByCreatedAt(page, size);
+        return ResponseEntity.builder()
+                .add("questions", questions)
+                .ok();
     }
 
     @RequestMapping(path = "/questions", method = HttpMethod.POST)
