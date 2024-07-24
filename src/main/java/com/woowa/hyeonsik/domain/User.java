@@ -2,14 +2,9 @@ package com.woowa.hyeonsik.domain;
 
 import java.util.regex.Pattern;
 
-public class User {
+public record User(String userId, String password, String name, String email) {
     private static final int MIN_PASSWORD_LENGTH = 2;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^([A-Za-z0-9+_.-]+@[A-Za-z0-9+_-]+[.][A-Za-z0-9+_-]+)$");
-
-    private final String userId;
-    private final String password;
-    private final String name;
-    private final String email;
 
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
@@ -32,21 +27,5 @@ public class User {
         if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
             throw new IllegalArgumentException("이메일이 규격에 맞지 않습니다. Email: " + email);
         }
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
     }
 }

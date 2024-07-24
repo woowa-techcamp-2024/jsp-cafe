@@ -22,10 +22,10 @@ class UserTest {
 
         final User user = new User(userId, password, name, email);
 
-        assertThat(user.getUserId()).isEqualTo("testUser");
-        assertThat(user.getPassword()).isEqualTo("testPassword");
-        assertThat(user.getName()).isEqualTo("testName");
-        assertThat(user.getEmail()).isEqualTo("test@mail.com");
+        assertThat(user.userId()).isEqualTo("testUser");
+        assertThat(user.password()).isEqualTo("testPassword");
+        assertThat(user.name()).isEqualTo("testName");
+        assertThat(user.email()).isEqualTo("test@mail.com");
     }
 
     @ParameterizedTest

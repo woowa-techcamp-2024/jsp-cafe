@@ -12,8 +12,8 @@ public class UserService {
     }
 
     public void signUp(User user) {
-        if (userDao.existsByUserId(user.getUserId())) {
-            throw new IllegalArgumentException("이미 해당 아이디를 사용 중 입니다. ID: " + user.getUserId());
+        if (userDao.existsByUserId(user.userId())) {
+            throw new IllegalArgumentException("이미 해당 아이디를 사용 중 입니다. ID: " + user.userId());
         }
         userDao.add(user);
     }
