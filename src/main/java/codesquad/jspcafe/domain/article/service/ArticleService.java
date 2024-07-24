@@ -3,6 +3,7 @@ package codesquad.jspcafe.domain.article.service;
 import codesquad.jspcafe.domain.article.domain.Article;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
+import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +14,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     public ArticleService() {
-        articleRepository = new ArticleRepository();
+        articleRepository = new ArticleMemoryRepository();
     }
 
     public ArticleCommonResponse createArticle(Map<String, String[]> parameterMap) {
