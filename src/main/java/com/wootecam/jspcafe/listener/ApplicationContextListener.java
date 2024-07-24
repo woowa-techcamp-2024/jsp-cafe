@@ -27,7 +27,7 @@ public class ApplicationContextListener implements ServletContextListener {
         UserService userService = new UserService(userRepository);
         QuestionService questionService = new QuestionService(questionRepository);
 
-        servletContext.addServlet("homeServlet", new HomeServlet())
+        servletContext.addServlet("homeServlet", new HomeServlet(questionService))
                 .addMapping("/");
         servletContext.addServlet("signupFormServlet", new SignupFormServlet())
                 .addMapping("/users/signup");

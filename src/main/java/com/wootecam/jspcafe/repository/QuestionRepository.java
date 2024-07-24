@@ -1,6 +1,8 @@
 package com.wootecam.jspcafe.repository;
 
 import com.wootecam.jspcafe.model.Question;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -16,5 +18,9 @@ public class QuestionRepository {
 
     public void save(final Question question) {
         store.put(question.getId(), question);
+    }
+
+    public List<Question> findAll() {
+        return new ArrayList<>(store.values());
     }
 }
