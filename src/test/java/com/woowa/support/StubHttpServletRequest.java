@@ -30,6 +30,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     private final Map<String, String> parameters = new HashMap<String, String>();
     private StubHttpSession httpSession = null;
+    private Map<String, Object> attributes = new HashMap<>();
 
     @Override
     public String getAuthType() {
@@ -192,7 +193,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Object getAttribute(String name) {
-        return null;
+        return attributes.get(name);
     }
 
     @Override
@@ -287,7 +288,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public void setAttribute(String name, Object o) {
-
+        attributes.put(name, o);
     }
 
     @Override
@@ -312,7 +313,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public RequestDispatcher getRequestDispatcher(String path) {
-        return null;
+        return new StubRequestDispatcher(path);
     }
 
     @Override
