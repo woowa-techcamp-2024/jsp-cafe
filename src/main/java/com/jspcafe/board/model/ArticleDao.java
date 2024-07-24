@@ -1,9 +1,10 @@
 package com.jspcafe.board.model;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ArticleDao {
-    private final Map<String, Article> articles = new HashMap<>();
+    private final Map<String, Article> articles = new ConcurrentHashMap<>();
 
     public void save(final Article article) {
         articles.put(article.id(), article);
