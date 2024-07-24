@@ -102,7 +102,7 @@ class UserServiceTest {
     }
 
     @Test
-    void TestFailUpdateByIncorrectPassword() {
+    void testFailUpdateByIncorrectPassword() {
         // given
         String userId = "userId";
         String password = "password";
