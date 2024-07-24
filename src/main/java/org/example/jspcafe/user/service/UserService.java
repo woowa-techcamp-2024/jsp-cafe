@@ -2,7 +2,7 @@ package org.example.jspcafe.user.service;
 
 import org.example.jspcafe.Component;
 import org.example.jspcafe.user.model.User;
-import org.example.jspcafe.user.repository.InMemoryUserRepository;
+import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.response.UserListResponse;
 import org.example.jspcafe.user.response.UserProfileResponse;
@@ -22,7 +22,7 @@ public class UserService {
         return UserListResponse.of(userList);
     }
 
-    public UserService(InMemoryUserRepository userRepository) {
+    public UserService(JdbcUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -3,6 +3,7 @@ package org.example.jspcafe.user.service;
 import org.example.jspcafe.Component;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.repository.InMemoryUserRepository;
+import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.request.LoginServiceRequest;
 import org.example.jspcafe.user.request.LoginServiceResponse;
@@ -28,7 +29,7 @@ public class LoginService {
     }
 
 
-    public LoginService(InMemoryUserRepository userRepository) {
+    public LoginService(JdbcUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 }
