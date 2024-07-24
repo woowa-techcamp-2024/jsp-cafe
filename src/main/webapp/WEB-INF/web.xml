@@ -12,6 +12,15 @@
         <url-pattern>/member/regist</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>memberListServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>memberListServlet</servlet-name>
+        <url-pattern>/members</url-pattern>
+    </servlet-mapping>
+
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
         <location>/error.jsp</location>
