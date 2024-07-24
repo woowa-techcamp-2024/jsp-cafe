@@ -18,4 +18,9 @@
         <url-pattern>*.woff</url-pattern>
         <url-pattern>*.ttf</url-pattern>
     </servlet-mapping>
+    
+    <error-page>
+        <exception-type>camp.woowa.jspcafe.exception.CustomException</exception-type>
+        <location>/error</location>
+    </error-page>
 </web-app>
