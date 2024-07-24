@@ -7,4 +7,6 @@ public interface QuestionDatabase {
     void save(Question question);
 
     List<Question> findAll();
+
+    List<Question> findAllOrderByCreatedAt(int page, int size);
 }

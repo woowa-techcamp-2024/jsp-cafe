@@ -18,4 +18,12 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
     public List<Question> findAll() {
         return questions.values().stream().toList();
     }
+
+    @Override
+    public List<Question> findAllOrderByCreatedAt(int page, int size) {
+        return questions.values().stream()
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .limit((long) page * size + size).skip((long) page * size)
+                .toList();
+    }
 }
