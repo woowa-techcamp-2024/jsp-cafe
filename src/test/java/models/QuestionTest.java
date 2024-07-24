@@ -15,7 +15,7 @@ class QuestionTest {
         String writer = "1234";
 
         // when
-        Question question = new Question(id, title, content, writer);
+        Question question = new Question(id, title, content, writer, 1L);
 
         // then
         assertEquals(id, question.getId());

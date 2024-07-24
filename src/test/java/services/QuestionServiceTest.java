@@ -29,7 +29,7 @@ class QuestionServiceTest {
         String writer = "1234";
 
         // when
-        Long id = questionService.save(title, content, writer);
+        Long id = questionService.save(title, content, writer, 1L);
         Question question = questionService.findById(id);
 
         // then
@@ -42,7 +42,7 @@ class QuestionServiceTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        questionService.save(title, content, writer);
+        questionService.save(title, content, writer, 1L);
 
         int expectedSize = 1;
 
@@ -59,7 +59,7 @@ class QuestionServiceTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long id = questionService.save(title, content, writer);
+        Long id = questionService.save(title, content, writer, 1L);
 
         // when
         String foundTitle = questionService.findById(id).getTitle();
