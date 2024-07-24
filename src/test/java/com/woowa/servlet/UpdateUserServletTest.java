@@ -45,7 +45,7 @@ class UpdateUserServletTest {
         void redirectToProfile() throws ServletException, IOException {
             //given
             User user = UserFixture.user();
-            request.setRequestUri("/users/" + user.getUserId());
+            request.setRequestUri("/users/" + user.getUserId() + "/edit");
             request.setAttribute("nickname", "updateNickname");
 
             userDatabase.save(user);
@@ -55,6 +55,28 @@ class UpdateUserServletTest {
 
             //then
             assertThat(response.getRedirectLocation()).isEqualTo("/users/" + user.getUserId());
+        }
+    }
+
+    @Nested
+    @DisplayName("doGet 호출 시")
+    class DoGetTest {
+
+        @Test
+        @DisplayName("개인 정보 수정 폼으로 이동한다.")
+        void dispatchToUpdateUserForm() throws ServletException, IOException {
+            //given
+            User user = UserFixture.user();
+
+            request.setRequestUri("/users/" + user.getUserId() + "/edit");
+            userDatabase.save(user);
+
+            //when
+            updateUserServlet.doGet(request, response);
+
+            //then
+            assertThat(request.getRequestDispatcher().getPath())
+                    .isEqualTo("/WEB-INF/classes/static/user/update.jsp");
         }
     }
 }

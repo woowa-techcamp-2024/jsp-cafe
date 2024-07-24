@@ -32,6 +32,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
     private StubHttpSession httpSession = null;
     private Map<String, Object> attributes = new HashMap<>();
     private String requestUri = "";
+    private StubRequestDispatcher requestDispatcher = null;
 
     @Override
     public String getAuthType() {
@@ -314,7 +315,14 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public RequestDispatcher getRequestDispatcher(String path) {
-        return new StubRequestDispatcher(path);
+        if(requestDispatcher == null) {
+            requestDispatcher = new StubRequestDispatcher(path);
+        }
+        return requestDispatcher;
+    }
+
+    public StubRequestDispatcher getRequestDispatcher() {
+        return requestDispatcher;
     }
 
     @Override

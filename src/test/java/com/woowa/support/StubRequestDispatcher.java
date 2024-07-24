@@ -23,4 +23,8 @@ public class StubRequestDispatcher implements RequestDispatcher {
     public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 
     }
+
+    public String getPath() {
+        return path;
+    }
 }

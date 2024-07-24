@@ -17,6 +17,14 @@ public class UpdateUserServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = getUserId(req);
+        ResponseEntity response = userHandler.updateUserForm(userId);
+        req.setAttribute("user", response.getModel().get("user"));
+        req.getRequestDispatcher("/WEB-INF/classes/static/user/update.jsp").forward(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = getUserId(req);
         String nickname = req.getParameter("nickname");
