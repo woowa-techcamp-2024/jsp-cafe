@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.services;
 
+import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.repository.UserRepository;
 
@@ -29,6 +31,6 @@ public class UserService {
         if (targetUser.validatePassword(password))
             return userRepository.update(id, updatedUserId, updatedName, updatedEmail);
         else
-            throw new RuntimeException("Password is not correct");
+            throw new CustomException(HttpStatus.INVALID_PASSWORD);
     }
 }
