@@ -38,6 +38,14 @@ public class UserService {
         userRepository.update(user);
     }
 
+    public boolean validateUser(String userId, String password) throws SQLException {
+        User user = userRepository.findUserByUserId(userId);
+        if (user == null || !user.getPassword().equals(password)) {
+            return false;
+        }
+        return true;
+    }
+
     private void userValidate(User user) {
         if (user.getUserId() == null) {
             throw new IllegalArgumentException("userId is null");

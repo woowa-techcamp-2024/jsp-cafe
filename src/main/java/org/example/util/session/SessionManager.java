@@ -1,8 +1,10 @@
 package org.example.util.session;
 
+import jakarta.servlet.http.HttpSession;
+
 public interface SessionManager {
 
-    Session getSession(String sessionId);
-    Session createSession(String sessionId);
+    HttpSession getSession(String sessionId);
+    HttpSession createSession();
     void invalidateSession(String sessionId);
 }
