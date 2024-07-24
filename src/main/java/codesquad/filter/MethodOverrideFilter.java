@@ -9,12 +9,13 @@ import java.io.IOException;
 public class MethodOverrideFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request instanceof HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String method = httpRequest.getParameter("_method");
-            if (method != null && (method.equalsIgnoreCase("PUT") || method.equalsIgnoreCase("DELETE"))) {
-                chain.doFilter(new HttpMethodRequestWrapper(httpRequest, method), response);
-                return;
+        if (request instanceof HttpServletRequest httpRequest) {
+            if (httpRequest.getDispatcherType() == DispatcherType.REQUEST) {
+                String method = httpRequest.getParameter("_method");
+                if (method != null && (method.equalsIgnoreCase("PUT") || method.equalsIgnoreCase("DELETE"))) {
+                    chain.doFilter(new HttpMethodRequestWrapper(httpRequest, method), response);
+                    return;
+                }
             }
         }
         chain.doFilter(request, response);

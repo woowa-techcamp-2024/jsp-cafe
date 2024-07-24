@@ -1,5 +1,7 @@
 package codesquad.domain.user;
 
+import codesquad.exception.IncorrectPasswordException;
+
 public class User {
     private Long id;
     private String userId;
@@ -42,8 +44,10 @@ public class User {
         return email;
     }
 
-    public void update(String password, String name, String email) {
-        this.password = password;
+    public void update(String password, String name, String email) throws IncorrectPasswordException {
+        if (!this.password.equals(password)) {
+            throw new IncorrectPasswordException();
+        }
         this.name = name;
         this.email = email;
     }

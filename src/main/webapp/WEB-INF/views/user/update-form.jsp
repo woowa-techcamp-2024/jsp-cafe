@@ -23,6 +23,16 @@
                 User user = (User) request.getAttribute("user");
             %>
             <form name="question" method="post" action="${pageContext.request.contextPath}/users">
+                <div class="form-group">
+                    <%
+                        String errorMessage = (String) request.getAttribute("errorMsg");
+                        if (errorMessage != null) {
+                    %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= errorMessage %>
+                    </div>
+                    <% } %>
+                </div>
                 <input type="hidden" name="_method" value="PUT">
                 <div class="form-group">
                     <label for="id">id</label>
@@ -34,7 +44,7 @@
                 </div>
                 <div class="form-group">
                     <label for="password">비밀번호</label>
-                    <input class="form-control" id="password" name="password" value="<%=user.getPassword()%>" type="password"/>
+                    <input class="form-control" id="password" name="password" value="" type="password"/>
                 </div>
                 <div class="form-group">
                     <label for="name">이름</label>

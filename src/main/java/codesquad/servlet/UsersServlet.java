@@ -3,6 +3,7 @@ package codesquad.servlet;
 import codesquad.exception.DuplicateIdException;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
+import codesquad.exception.IncorrectPasswordException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -72,7 +73,14 @@ public class UsersServlet extends HttpServlet {
             return;
         }
         User user = findUser.get();
-        user.update(password, name, email);
+        try {
+            user.update(password, name, email);
+        } catch (IncorrectPasswordException e) {
+            req.setAttribute("errorMsg", "잘못된 비밀번호 입니다.");
+            req.setAttribute("user", user);
+            resp.sendRedirect(req.getContextPath() + "/users/" + user.getId() + "/update-form");
+            return;
+        }
         userDao.update(user);
         resp.sendRedirect(req.getContextPath() + "/users");
     }
