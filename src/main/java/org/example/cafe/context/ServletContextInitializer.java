@@ -7,8 +7,11 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import java.util.function.Supplier;
+import org.example.cafe.application.QuestionService;
 import org.example.cafe.application.UserService;
+import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.UserRepository;
+import org.example.cafe.infrastructure.QuestionInMemoryRepository;
 import org.example.cafe.infrastructure.UserInMemoryRepository;
 import org.slf4j.Logger;
 
@@ -22,11 +25,15 @@ public class ServletContextInitializer implements ServletContextListener {
         registerBean(sce.getServletContext());
     }
 
+    // todo: 생성자 필요한 빈들 등록 과정 리팩토링
     private void registerBean(ServletContext servletContext) {
         setContext(servletContext, "UserRepository", UserInMemoryRepository::new);
-        // todo: refactor
         setContext(servletContext, "UserService", () ->
                 new UserService((UserRepository) servletContext.getAttribute("UserRepository")));
+
+        setContext(servletContext, "QuestionRepository", QuestionInMemoryRepository::new);
+        setContext(servletContext, "QuestionService", () ->
+                new QuestionService((QuestionRepository) servletContext.getAttribute("QuestionRepository")));
     }
 
     public void setContext(ServletContext servletContext, String name, Supplier<Object> supplier) {

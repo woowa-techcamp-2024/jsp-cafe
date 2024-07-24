@@ -181,4 +181,28 @@ public class EndToEndTest {
             });
         }
     }
+
+    @Nested
+    class STEP_2 {
+
+        @Test
+        void 사용자는_게시글을_작성할_수_있다() throws IOException {
+            //given
+            con = createPostConnection("/questions");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "writer=test&title=test&contents=test";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/");
+            });
+        }
+    }
 }
