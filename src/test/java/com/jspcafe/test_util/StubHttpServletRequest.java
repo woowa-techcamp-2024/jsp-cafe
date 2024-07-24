@@ -10,6 +10,7 @@ import java.util.*;
 public class StubHttpServletRequest implements HttpServletRequest {
     private String body;
     private String pathInfo;
+    private String forwardedPath;
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, Object> attributes = new HashMap<>();
 
@@ -81,8 +82,22 @@ public class StubHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public RequestDispatcher getRequestDispatcher(String s) {
-        return null;
+    public RequestDispatcher getRequestDispatcher(String path) {
+        return new RequestDispatcher() {
+            @Override
+            public void forward(ServletRequest request, ServletResponse response) {
+                forwardedPath = path;
+            }
+
+            @Override
+            public void include(ServletRequest request, ServletResponse response) {
+                // 구현 필요 없음
+            }
+        };
+    }
+
+    public String getForwardedPath() {
+        return forwardedPath;
     }
 
     @Override
