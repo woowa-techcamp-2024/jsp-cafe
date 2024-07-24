@@ -29,7 +29,11 @@ public class UserServlet extends HttpServlet {
             String uri = req.getRequestURI();
 
             if (uri.equals("/users")) doGetUsers(req, resp);
-            else doGetUser(req, resp);
+            else {
+                String[] uriParts = uri.split("/");
+                if (uriParts[uriParts.length-1].equals("form")) doGetUser(req, resp, "/user/update_form.jsp");
+                else doGetUser(req, resp, "/user/profile.jsp");
+            }
         } catch (IOException | ServletException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -38,7 +42,10 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            userService.save(req, resp);
+            String uri = req.getRequestURI();
+
+            if (uri.equals("/users")) userService.save(req, resp);
+            else userService.update(req, resp);
             resp.sendRedirect("/users");
         } catch (IOException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -51,9 +58,9 @@ public class UserServlet extends HttpServlet {
         dispatcher.forward(req, resp);
     }
 
-    private void doGetUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    private void doGetUser(HttpServletRequest req, HttpServletResponse resp, String url) throws IOException, ServletException {
         req.setAttribute("user", userService.find(req, resp));
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/user/profile.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher(url);
         dispatcher.forward(req, resp);
     }
 }
