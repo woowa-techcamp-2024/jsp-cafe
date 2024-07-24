@@ -1,0 +1,21 @@
+-- initdb/init.sql
+CREATE DATABASE IF NOT EXISTS jsp_cafe;
+
+USE jsp_cafe;
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nickname VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+    post_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME NOT NULL
+);
+
