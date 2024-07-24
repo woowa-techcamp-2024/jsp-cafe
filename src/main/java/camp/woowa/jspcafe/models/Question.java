@@ -5,12 +5,14 @@ public class Question {
     private final String title;
     private final String content;
     private final String writer;
+    private final Long writerId;
 
-    public Question(Long id, String title, String content, String writer) {
+    public Question(Long id, String title, String content, String writer, Long writerId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.writer = writer;
+        this.writerId = writerId;
     }
 
     public Long getId() {
@@ -27,5 +29,9 @@ public class Question {
 
     public String getWriter() {
         return writer;
+    }
+
+    public Long getWriterId() {
+        return writerId;
     }
 }
