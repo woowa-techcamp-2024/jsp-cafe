@@ -10,15 +10,41 @@ import java.security.Principal;
 import java.util.*;
 
 public class TestHttpServletRequest implements HttpServletRequest {
-    private Map<String, String> parameters = new HashMap<>();
+    private final Map<String, String> parameters = new HashMap<>();
+    private final Map<String, Object> attributes = new HashMap<>();
+    private RequestDispatcher requestDispatcher;
+
+    public void setRequestDispatcher(RequestDispatcher dispatcher){
+        this.requestDispatcher = dispatcher;
+    }
 
     public void setParameter(String name, String value){
         parameters.put(name, value);
     }
 
     @Override
+    public void setAttribute(String s, Object o) {
+        attributes.put(s, o);
+    }
+
+    @Override
     public String getParameter(String s) {
         return parameters.get(s);
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+        return "UTF-8";
+    }
+
+    @Override
+    public RequestDispatcher getRequestDispatcher(String s) {
+        return requestDispatcher;
+    }
+
+    @Override
+    public Object getAttribute(String s) {
+        return attributes.get(s);
     }
 
 
@@ -184,19 +210,10 @@ public class TestHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Object getAttribute(String s) {
-        return null;
-    }
-
-    @Override
     public Enumeration<String> getAttributeNames() {
         return null;
     }
 
-    @Override
-    public String getCharacterEncoding() {
-        return "";
-    }
 
     @Override
     public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
@@ -273,10 +290,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
         return "";
     }
 
-    @Override
-    public void setAttribute(String s, Object o) {
-
-    }
 
     @Override
     public void removeAttribute(String s) {
@@ -296,11 +309,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
     @Override
     public boolean isSecure() {
         return false;
-    }
-
-    @Override
-    public RequestDispatcher getRequestDispatcher(String s) {
-        return null;
     }
 
     @Override

@@ -12,6 +12,8 @@ import java.util.Locale;
 
 public class TestHttpServletResponse implements HttpServletResponse {
     private String redirectLocation;
+    private int status;
+    private String statusMessage;
 
     public String getRedirectLocation(){
         return redirectLocation;
@@ -20,6 +22,17 @@ public class TestHttpServletResponse implements HttpServletResponse {
     @Override
     public void sendRedirect(String s) throws IOException {
         this.redirectLocation = s;
+    }
+
+    @Override
+    public void setStatus(int i, String s) {
+        this.status = i;
+        this.statusMessage = s;
+    }
+
+    @Override
+    public int getStatus() {
+        return status;
     }
 
     // not impl
@@ -100,15 +113,6 @@ public class TestHttpServletResponse implements HttpServletResponse {
 
     }
 
-    @Override
-    public void setStatus(int i, String s) {
-
-    }
-
-    @Override
-    public int getStatus() {
-        return 0;
-    }
 
     @Override
     public String getHeader(String s) {
