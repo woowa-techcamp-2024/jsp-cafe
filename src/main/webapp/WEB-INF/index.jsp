@@ -6,47 +6,39 @@
 <%@include file="share/navbar.jsp" %>
 <%@include file="share/sub_navbar.jsp" %>
 
-
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <li>
+                <c:if test="${articleSize eq 0}">
                     <div class="wrap">
                         <div class="main">
-                            <strong class="subject">
-                                <a href="qna/show.jsp">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
-                            </strong>
-                            <div class="auth-info">
-                                <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-15 18:47</span>
-                                <a href="user/profile.jsp" class="author">자바지기</a>
-                            </div>
-                            <div class="reply" title="댓글">
-                                <i class="icon-reply"></i>
-                                <span class="point">8</span>
-                            </div>
+                            <p>게시물이 존재하지 않습니다.</p>
                         </div>
                     </div>
-                </li>
-                <li>
-                    <div class="wrap">
-                        <div class="main">
-                            <strong class="subject">
-                                <a href="qna/show.jsp">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
-                            </strong>
-                            <div class="auth-info">
-                                <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-05 18:47</span>
-                                <a href="user/profile.jsp" class="author">김문수</a>
-                            </div>
-                            <div class="reply" title="댓글">
-                                <i class="icon-reply"></i>
-                                <span class="point">12</span>
+                </c:if>
+                <c:forEach var="article" items="${articles}" varStatus="status">
+                    <li>
+                        <div class="wrap">
+                            <div class="main">
+                                <strong class="subject">
+                                    <a href="qna/<c:out value="${article.id}"/>">
+                                        <c:out value=" ${article.title}"/>
+                                    </a>
+                                </strong>
+                                <div class="auth-info">
+                                    <i class="icon-add-comment"></i>
+                                    <span class="time">2016-01-15 18:47</span>
+                                    <a href="user/profile.jsp" class="author"><c:out value=" ${article.contents}"/></a>
+                                </div>
+                                <div class="reply" title="댓글">
+                                    <i class="icon-reply"></i>
+                                    <span class="point"><c:out value="${article.id}"/></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                </c:forEach>
             </ul>
             <div class="row">
                 <div class="col-md-3"></div>
@@ -62,7 +54,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/qna/form" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -147,8 +139,8 @@
 -->
 
 <!-- script references -->
-<script src="js/jquery-2.2.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
+<script src="../js/jquery-2.2.0.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/scripts.js"></script>
 </body>
 </html>

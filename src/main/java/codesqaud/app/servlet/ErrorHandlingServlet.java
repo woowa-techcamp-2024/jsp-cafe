@@ -49,6 +49,6 @@ public class ErrorHandlingServlet extends HttpServlet {
 
         req.setAttribute("errorMessage", errorMessage);
         req.setAttribute("statusCode", statusCode);
-        req.getRequestDispatcher("/error.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/error.jsp").forward(req, resp);
     }
 }

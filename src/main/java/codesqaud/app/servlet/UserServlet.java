@@ -30,7 +30,19 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getRequestURI().equals("/users")) {
             handleUserList(req, resp);
+            return;
         }
+
+        if (req.getRequestURI().equals("/users/login")) {
+            handleLoginForm(req, resp);
+            return;
+        }
+
+        if (req.getRequestURI().equals("/users/form")) {
+            handleSignUpForm(req, resp);
+            return;
+        }
+
 
         Matcher matcher = USER_PROFILE_PATTERN.matcher(req.getRequestURI());
         if (matcher.matches()) {
@@ -39,13 +51,23 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void handleSignUpForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/user/form.jsp");
+        requestDispatcher.forward(req,resp);
+    }
+
+    private void handleLoginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/user/login.jsp");
+        requestDispatcher.forward(req,resp);
+    }
+
     private void handleUserProfile(HttpServletRequest req, HttpServletResponse resp, long id) throws ServletException, IOException {
         User user = userDao.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디를 가진 사용자는 찾을 수 없습니다.")
         );
 
-        req.setAttribute("userProfile", user);
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/user/profile.jsp");
+        req.setAttribute("user", user);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/user/profile.jsp");
         dispatcher.forward(req, resp);
     }
 
@@ -53,7 +75,7 @@ public class UserServlet extends HttpServlet {
         List<User> uesrs = userDao.findAll();
         req.setAttribute("users", uesrs);
 
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/user/list.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
         dispatcher.forward(req, resp);
     }
 

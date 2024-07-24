@@ -1,10 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
-<%@include file="/share/header.jsp" %>
+<%@include file="/WEB-INF/share/header.jsp" %>
 <body>
-<%@include file="/share/navbar.jsp" %>
-<%@include file="/share/sub_navbar.jsp" %>
+<%@include file="/WEB-INF/share/navbar.jsp" %>
+<%@include file="/WEB-INF/share/sub_navbar.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
@@ -45,7 +45,7 @@
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-articleDao" href="/index.jsp">목록</a>
+                                <a class="link-modify-articleDao" href="/WEB-INF/index.jspndex.jsp">목록</a>
                             </li>
                         </ul>
                     </div>
@@ -166,8 +166,8 @@
 </script>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<script src="../../js/jquery-2.2.0.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/scripts.js"></script>
 </body>
 </html>
