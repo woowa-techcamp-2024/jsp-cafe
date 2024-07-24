@@ -108,6 +108,8 @@ public class EndToEndTest {
         if (con != null) {
             con.disconnect();
         }
+        userRepository.deleteAll();
+        questionRepository.deleteAll();
     }
 
     @Nested
@@ -224,6 +226,24 @@ public class EndToEndTest {
             assertAll(() -> {
                 assertThat(con.getResponseCode()).isEqualTo(200);
                 assertThat(getResponse(con)).contains("title1", "title2", "writer1", "writer2");
+            });
+        }
+
+        @Test
+        void 사용자는_특정_게시글을_상세_조회할_수_있다() throws IOException {
+            Question question = new Question("title1", "content1", "writer1");
+            questionRepository.save(question);
+
+            //given
+            con = createGetConnection("/questions/" + question.getQuestionId());
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("title1", "content1", "writer1");
             });
         }
     }
