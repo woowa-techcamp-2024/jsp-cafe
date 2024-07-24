@@ -99,7 +99,7 @@ class QuestionServiceTest {
                 questionRepository.save(new Question(1L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
 
                 // when
-                Question question = questionService.readById(1L);
+                Question question = questionService.read(1L);
 
                 // then
                 assertAll(

@@ -25,7 +25,7 @@ public class QuestionDetailServlet extends HttpServlet {
             throws ServletException, IOException {
         Long id = parseSuffixPathVariable(req.getPathInfo());
 
-        Question question = questionService.readById(id);
+        Question question = questionService.read(id);
 
         log.info(question.toString());
 
