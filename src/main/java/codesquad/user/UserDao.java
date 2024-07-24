@@ -13,4 +13,6 @@ public interface UserDao {
     Optional<User> findByUserId(String userId);
 
     List<User> findAll();
+
+    void update(User user);
 }

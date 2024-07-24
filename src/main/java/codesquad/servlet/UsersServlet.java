@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet(urlPatterns = "/users")
 public class UsersServlet extends HttpServlet {
@@ -54,5 +55,25 @@ public class UsersServlet extends HttpServlet {
             req.setAttribute("email", email);
             req.getRequestDispatcher("/WEB-INF/views/user/form.jsp").forward(req, resp);
         }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("Updating user info");
+        String id = req.getParameter("id");
+        String password = req.getParameter("password");
+        String name = req.getParameter("name");
+        String email = req.getParameter("email");
+
+        Optional<User> findUser = userDao.findById(Long.parseLong(id));
+        if (findUser.isEmpty()) {
+            req.setAttribute("errorMsg", "존재하지 않는 유저입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        User user = findUser.get();
+        user.update(password, name, email);
+        userDao.update(user);
+        resp.sendRedirect(req.getContextPath() + "/users");
     }
 }
