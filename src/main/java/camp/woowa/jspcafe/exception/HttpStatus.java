@@ -13,8 +13,10 @@ public enum HttpStatus {
 
     // custom status
     INVALID_PASSWORD(400, "Invalid Password", "Password is invalid"),
+    USER_NOT_FOUND(404, "Not Found", "User is not found")
 
     ;
+
     private final int statusCode;
     private final String message;
     private final String description;
