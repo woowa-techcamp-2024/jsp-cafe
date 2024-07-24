@@ -22,7 +22,7 @@ class ArticleMemoryDatabaseTest {
 
 		Optional<Article> foundArticle = articleMemoryDatabase.findById(article.getId());
 		assertThat(foundArticle).isPresent();
-		assertThat(foundArticle.get().getWriter()).isEqualTo("writer");
+		assertThat(foundArticle.get().getUserId()).isEqualTo("writer");
 		assertThat(foundArticle.get().getTitle()).isEqualTo("title");
 		assertThat(foundArticle.get().getContents()).isEqualTo("contents");
 	}
@@ -53,7 +53,7 @@ class ArticleMemoryDatabaseTest {
 		Optional<Article> foundArticle = articleMemoryDatabase.findById(article1.getId());
 
 		assertThat(foundArticle).isPresent();
-		assertThat(foundArticle.get().getWriter()).isEqualTo("writer1");
+		assertThat(foundArticle.get().getUserId()).isEqualTo("writer1");
 	}
 
 	@Test
@@ -78,7 +78,7 @@ class ArticleMemoryDatabaseTest {
 
 		Optional<Article> foundArticle = articleMemoryDatabase.findById(article.getId());
 		assertThat(foundArticle).isPresent();
-		assertThat(foundArticle.get().getWriter()).isEqualTo("newWriter");
+		assertThat(foundArticle.get().getUserId()).isEqualTo("newWriter");
 		assertThat(foundArticle.get().getTitle()).isEqualTo("newTitle");
 		assertThat(foundArticle.get().getContents()).isEqualTo("newContents");
 	}

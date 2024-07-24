@@ -1,6 +1,6 @@
 package com.example.servlet;
 
-import com.example.db.UserMemoryDatabase;
+import com.example.db.UserDatabase;
 import com.example.entity.User;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -8,6 +8,8 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,24 +25,28 @@ import static org.mockito.Mockito.*;
 class UserUpdateServletTest {
 
 	private UserUpdateServlet userUpdateServlet;
-	private UserMemoryDatabase userMemoryDatabase;
+	private UserDatabase userDatabase;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private RequestDispatcher requestDispatcher;
+	private HttpSession session;
 
 	@BeforeEach
 	void setUp() throws ServletException {
 		userUpdateServlet = new UserUpdateServlet();
-		userMemoryDatabase = mock(UserMemoryDatabase.class);
+		userDatabase = mock(UserDatabase.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		requestDispatcher = mock(RequestDispatcher.class);
+		session = mock(HttpSession.class);
 
 		ServletConfig config = mock(ServletConfig.class);
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
-		when(context.getAttribute("userDatabase")).thenReturn(userMemoryDatabase);
+		when(context.getAttribute("userDatabase")).thenReturn(userDatabase);
 		when(request.getRequestDispatcher("/user/updateForm.jsp")).thenReturn(requestDispatcher);
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute("login")).thenReturn(new Object());
 
 		userUpdateServlet.init(config);
 	}
@@ -51,19 +57,19 @@ class UserUpdateServletTest {
 		// given
 		User user = new User("1", "password", "name", "email@example.com");
 		when(request.getPathInfo()).thenReturn("/1");
-		when(userMemoryDatabase.findById("1")).thenReturn(Optional.of(user));
-		when(request.getParameter("password")).thenReturn("newPassword");
+		when(userDatabase.findById("1")).thenReturn(Optional.of(user));
+		when(request.getParameter("password")).thenReturn("password");
 		when(request.getParameter("name")).thenReturn("newName");
 		when(request.getParameter("email")).thenReturn("newEmail@example.com");
+		when(session.getAttribute("id")).thenReturn("1");
 
 		// when
 		userUpdateServlet.doPost(request, response);
 
 		// then
 		ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-		verify(userMemoryDatabase).update(eq("1"), userCaptor.capture());
+		verify(userDatabase).update(eq("1"), userCaptor.capture());
 		User updatedUser = userCaptor.getValue();
-		assertThat(updatedUser.password()).isEqualTo("newPassword");
 		assertThat(updatedUser.name()).isEqualTo("newName");
 		assertThat(updatedUser.email()).isEqualTo("newEmail@example.com");
 
@@ -75,7 +81,7 @@ class UserUpdateServletTest {
 	void doPost_invalidUserId_sendsError() throws IOException {
 		// given
 		when(request.getPathInfo()).thenReturn("/1");
-		when(userMemoryDatabase.findById("1")).thenReturn(Optional.empty());
+		when(userDatabase.findById("1")).thenReturn(Optional.empty());
 
 		// when
 		userUpdateServlet.doPost(request, response);
@@ -94,7 +100,42 @@ class UserUpdateServletTest {
 		userUpdateServlet.doGet(request, response);
 
 		// then
-		verify(request).setAttribute("userId", "1");
+		verify(request).setAttribute("id", "1");
 		verify(requestDispatcher).forward(request, response);
+	}
+
+	@Test
+	@DisplayName("login이 되지 않았을 때, 실패한다.")
+	void doPost_loginError() throws ServletException, IOException {
+		when(session.getAttribute(anyString())).thenReturn(null);
+
+		userUpdateServlet.doPost(request, response);
+
+		verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
+	}
+
+	@Test
+	@DisplayName("id가 일치하지 않을 때 실패한다.")
+	void doPost_invalidId() throws ServletException, IOException {
+		when(session.getAttribute("id")).thenReturn("123");
+		when(request.getPathInfo()).thenReturn("/1");
+		when(userDatabase.findById(anyString())).thenReturn(Optional.of(new User("1", "1", "1", "1")));
+
+		userUpdateServlet.doPost(request, response);
+
+		verify(response).sendError(HttpServletResponse.SC_FORBIDDEN);
+	}
+
+	@Test
+	@DisplayName("pw가 일치하지 않을 때 실패한다.")
+	void doPost_invalidPw() throws ServletException, IOException {
+		when(session.getAttribute("id")).thenReturn("1");
+		when(request.getPathInfo()).thenReturn("/1");
+		when(userDatabase.findById(anyString())).thenReturn(Optional.of(new User("1", "1", "1", "1")));
+		when(request.getParameter("password")).thenReturn("alsjdflkasjdf");
+
+		userUpdateServlet.doPost(request, response);
+
+		verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST);
 	}
 }

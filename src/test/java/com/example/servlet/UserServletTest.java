@@ -1,5 +1,6 @@
 package com.example.servlet;
 
+import com.example.db.UserDatabase;
 import com.example.db.UserMemoryDatabase;
 import com.example.entity.User;
 import jakarta.servlet.RequestDispatcher;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 class UserServletTest {
 
 	private UserServlet userServlet;
-	private UserMemoryDatabase userMemoryDatabase;
+	private UserDatabase userDatabase;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private RequestDispatcher requestDispatcher;
@@ -31,7 +32,7 @@ class UserServletTest {
 	@BeforeEach
 	void setUp() throws ServletException {
 		userServlet = new UserServlet();
-		userMemoryDatabase = mock(UserMemoryDatabase.class);
+		userDatabase = mock(UserDatabase.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		requestDispatcher = mock(RequestDispatcher.class);
@@ -39,7 +40,7 @@ class UserServletTest {
 		ServletConfig config = mock(ServletConfig.class);
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
-		when(context.getAttribute("userDatabase")).thenReturn(userMemoryDatabase);
+		when(context.getAttribute("userDatabase")).thenReturn(userDatabase);
 		when(request.getRequestDispatcher("/user/list.jsp")).thenReturn(requestDispatcher);
 
 		userServlet.init(config);
@@ -51,7 +52,7 @@ class UserServletTest {
 		// given
 		User user1 = new User("1", "password1", "name1", "email1@example.com");
 		User user2 = new User("2", "password2", "name2", "email2@example.com");
-		when(userMemoryDatabase.findAll()).thenReturn(List.of(user1, user2));
+		when(userDatabase.findAll()).thenReturn(List.of(user1, user2));
 
 		// when
 		userServlet.doGet(request, response);
@@ -75,7 +76,7 @@ class UserServletTest {
 
 		// then
 		ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-		verify(userMemoryDatabase).insert(userCaptor.capture());
+		verify(userDatabase).insert(userCaptor.capture());
 		User insertedUser = userCaptor.getValue();
 		assertThat(insertedUser.id()).isEqualTo("1");
 		assertThat(insertedUser.password()).isEqualTo("password");

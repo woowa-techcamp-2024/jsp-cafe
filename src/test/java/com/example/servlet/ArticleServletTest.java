@@ -1,45 +1,50 @@
 package com.example.servlet;
 
-import com.example.db.ArticleMemoryDatabase;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import com.example.db.ArticleDatabase;
 import com.example.entity.Article;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import jakarta.servlet.http.HttpSession;
 
 @DisplayName("ArticleServlet 테스트")
 class ArticleServletTest {
 
 	private ArticleServlet articleServlet;
-	private ArticleMemoryDatabase articleMemoryDatabase;
+	private ArticleDatabase articleDatabase;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private RequestDispatcher requestDispatcher;
+	private HttpSession session;
 
 	@BeforeEach
 	void setUp() throws ServletException {
 		articleServlet = new ArticleServlet();
-		articleMemoryDatabase = mock(ArticleMemoryDatabase.class);
+		articleDatabase = mock(ArticleDatabase.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		requestDispatcher = mock(RequestDispatcher.class);
+		session = mock(HttpSession.class);
 
 		ServletConfig config = mock(ServletConfig.class);
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
-		when(context.getAttribute("articleDatabase")).thenReturn(articleMemoryDatabase);
+		when(context.getAttribute("articleDatabase")).thenReturn(articleDatabase);
 		when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
 		articleServlet.init(config);
@@ -49,18 +54,20 @@ class ArticleServletTest {
 	@DisplayName("유효한 게시글 작성 요청을 처리할 수 있다")
 	void doPost_validRequest_createsArticle() throws IOException {
 		// given
-		when(request.getParameter("writer")).thenReturn("writer");
 		when(request.getParameter("title")).thenReturn("title");
 		when(request.getParameter("contents")).thenReturn("contents");
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute("login")).thenReturn(" ");
+		when(session.getAttribute("id")).thenReturn("id");
 
 		// when
 		articleServlet.doPost(request, response);
 
 		// then
 		ArgumentCaptor<Article> articleCaptor = ArgumentCaptor.forClass(Article.class);
-		verify(articleMemoryDatabase).insert(articleCaptor.capture());
+		verify(articleDatabase).insert(articleCaptor.capture());
 		Article insertedArticle = articleCaptor.getValue();
-		assertThat(insertedArticle.getWriter()).isEqualTo("writer");
+		assertThat(insertedArticle.getUserId()).isEqualTo("id");
 		assertThat(insertedArticle.getTitle()).isEqualTo("title");
 		assertThat(insertedArticle.getContents()).isEqualTo("contents");
 
@@ -72,6 +79,8 @@ class ArticleServletTest {
 	void doPost_missingFields_sendsError() throws IOException {
 		// given
 		when(request.getParameter("writer")).thenReturn(null);
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute(anyString())).thenReturn(" ");
 
 		// when
 		articleServlet.doPost(request, response);
@@ -86,7 +95,7 @@ class ArticleServletTest {
 		// given
 		Article article = new Article(1L, "writer", "title", "contents");
 		when(request.getPathInfo()).thenReturn("/1");
-		when(articleMemoryDatabase.findById(1L)).thenReturn(Optional.of(article));
+		when(articleDatabase.findById(1L)).thenReturn(Optional.of(article));
 
 		// when
 		articleServlet.doGet(request, response);
@@ -101,7 +110,7 @@ class ArticleServletTest {
 	void doGet_invalidArticleId_sendsError() throws Exception {
 		// given
 		when(request.getPathInfo()).thenReturn("/1");
-		when(articleMemoryDatabase.findById(1L)).thenReturn(Optional.empty());
+		when(articleDatabase.findById(1L)).thenReturn(Optional.empty());
 
 		// when
 		articleServlet.doGet(request, response);
@@ -119,5 +128,16 @@ class ArticleServletTest {
 
 		// then
 		verify(requestDispatcher).forward(request, response);
+	}
+
+	@Test
+	@DisplayName("로그인 실패 시, 예외 처리된다.")
+	void doPost_notLogin() throws Exception {
+		when(request.getSession()).thenReturn(session);
+		when(session.getAttribute(anyString())).thenReturn(null);
+
+		articleServlet.doPost(request, response);
+
+		verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 }
