@@ -1,6 +1,5 @@
-<%@ page import="cafe.users.User" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/WEB-INF/views/header.jsp" %>
 
 <div class="row justify-content-center">
@@ -14,18 +13,13 @@
             </tr>
             </thead>
             <tbody>
-            <%
-                List<User> userList = (List<User>) request.getAttribute("userList");
-                for (User user : userList) {
-            %>
-            <tr onclick="location.href='${pageContext.request.contextPath}/users/<%=user.id()%>'"
-                style="cursor: pointer;">
-                <td><%= user.username() %>
-                </td>
-                <td><%= user.userId() %>
-                </td>
-            </tr>
-            <% } %>
+            <c:forEach var="user" items="${userList}">
+                <tr onclick="location.href='${pageContext.request.contextPath}/users/${user.id}'"
+                    style="cursor: pointer;">
+                    <td>${user.username}</td>
+                    <td>${user.userId}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
