@@ -37,4 +37,8 @@ public class UserService {
     public boolean isExistedByUserId(String userId) {
         return userRepository.isExistedByUserId(userId);
     }
+
+    public User findByUserId(String w) {
+        return userRepository.findByUserId(w);
+    }
 }

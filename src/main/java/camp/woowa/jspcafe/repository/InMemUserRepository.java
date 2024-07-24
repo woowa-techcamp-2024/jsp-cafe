@@ -53,4 +53,12 @@ public class InMemUserRepository implements UserRepository {
         }
         return false;
     }
+
+    @Override
+    public User findByUserId(String w) {
+        return users.values().stream()
+                .filter(user -> user.getUserId().equals(w))
+                .findFirst()
+                .orElse(null);
+    }
 }
