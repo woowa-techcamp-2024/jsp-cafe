@@ -1,6 +1,7 @@
 package com.woowa.cafe.servlet.user;
 
-import com.woowa.cafe.dto.SaveMemberDto;
+import com.woowa.cafe.dto.member.SaveMemberDto;
+import com.woowa.cafe.dto.member.UpdateMemberDto;
 import com.woowa.cafe.service.MemberService;
 import com.woowa.cafe.utils.HttpMessageUtils;
 import jakarta.servlet.ServletException;
@@ -40,9 +41,13 @@ public class UserServlet extends HttpServlet {
         }
 
         String[] path = req.getPathInfo().split("/");
-        String memberId = path[path.length - 1];
-        getProfile(req, resp, memberId);
+        String lastPath = path[path.length - 1];
 
+        if (lastPath.equals("form")) {
+            getUpdateForm(req, resp, path[path.length - 2]);
+        }
+
+        getProfile(req, resp, lastPath);
     }
 
     private void getForm(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
@@ -50,13 +55,33 @@ public class UserServlet extends HttpServlet {
     }
 
     private void getProfile(final HttpServletRequest req, final HttpServletResponse resp, final String userId) throws ServletException, IOException {
+        if (req.getSession().getAttribute("memberId") == null || !req.getSession().getAttribute("memberId").equals(userId)) {
+            resp.sendRedirect("/users");
+            return;
+        }
+
         req.setAttribute("member", memberService.findById(userId));
         req.getRequestDispatcher("/WEB-INF/views/user/profile.jsp").forward(req, resp);
     }
 
+    private void getUpdateForm(final HttpServletRequest req, final HttpServletResponse resp, final String userId) throws ServletException, IOException {
+        req.setAttribute("member", memberService.findById(userId));
+        req.getRequestDispatcher("/WEB-INF/views/user/updateForm.jsp").forward(req, resp);
+    }
+
     @Override
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        saveMember(req, resp);
+        if (req.getRequestURI().endsWith("/user")) {
+            saveMember(req, resp);
+            return;
+        }
+
+
+        String pathInfo = req.getPathInfo();
+        String[] path = pathInfo.split("/");
+        String memberId = path[path.length - 1];
+
+        updateMember(req, resp, memberId);
     }
 
     private void saveMember(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
@@ -69,5 +94,23 @@ public class UserServlet extends HttpServlet {
 
         resp.sendRedirect("/users");
     }
+
+    private void updateMember(final HttpServletRequest req, final HttpServletResponse resp, final String memberId) throws IOException {
+        Map<String, String> body = HttpMessageUtils.getBodyFormData(req);
+
+        HttpSession session = req.getSession();
+        String loginId = (String) session.getAttribute("memberId");
+
+        // 로그인 페이지로 이동 처리
+        if (loginId == null || !loginId.equals(memberId)) {
+            resp.sendRedirect("/users");
+            return;
+        }
+
+        memberService.update(memberId, UpdateMemberDto.from(body));
+
+        resp.sendRedirect("/user/" + memberId);
+    }
+
 
 }

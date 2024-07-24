@@ -1,5 +1,7 @@
 package com.woowa.cafe.servlet;
 
+import com.woowa.cafe.domain.Article;
+import com.woowa.cafe.service.ArticleService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -8,21 +10,27 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-@WebServlet(name = "HomeServlet", urlPatterns = "/")
+@WebServlet(name = "homeServlet", urlPatterns = "/")
 public class HomeServlet extends HttpServlet {
 
     private static final Logger log = getLogger(HomeServlet.class);
 
+    private ArticleService articleService;
+
     @Override
     public void init() throws ServletException {
+        this.articleService = (ArticleService) getServletContext().getAttribute("articleService");
         log.info("HomeServlet is initialized");
     }
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        List<Article> articles = articleService.findAll();
+        req.setAttribute("articles", articles);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }
 

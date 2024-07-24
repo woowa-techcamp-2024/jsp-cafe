@@ -1,5 +1,5 @@
 <%@ page import="com.woowa.cafe.domain.Member" %>
-<%@ page import="com.woowa.cafe.repository.user.MemberRepository" %>
+<%@ page import="com.woowa.cafe.repository.member.MemberRepository" %>
 <%@ page import="java.util.Optional" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <div class="navbar navbar-default" id="subnav">
@@ -36,7 +36,7 @@
                 <li><a href="/user" role="button">회원가입</a></li>
                 <% } else { %>
                 <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li><a href="<%= "/user/" + (String) session.getAttribute("memberId") + "/form"%>" role="button">개인정보수정</a></li>
                 <% } %>
             </ul>
         </div>

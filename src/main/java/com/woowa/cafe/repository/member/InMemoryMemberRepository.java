@@ -1,4 +1,4 @@
-package com.woowa.cafe.repository.user;
+package com.woowa.cafe.repository.member;
 
 import com.woowa.cafe.domain.Member;
 
@@ -42,7 +42,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 
         members.put(member.getMemberId(), member);
 
-        return Optional.ofNullable(member);
+        return Optional.of(member);
     }
 
     @Override
