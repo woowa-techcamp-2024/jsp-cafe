@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.wootecam'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.10.0'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    // jstl
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+    // logging
+    implementation('ch.qos.logback:logback-classic:1.5.6')
+
+    // servlet
+    implementation('jakarta.servlet:jakarta.servlet-api:6.0.0')
+
+    // test
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation platform('org.assertj:assertj-bom:3.25.1')
+    testImplementation('org.assertj:assertj-core')
+}
+
+test {
+    useJUnitPlatform()
+}
