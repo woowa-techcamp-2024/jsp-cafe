@@ -11,7 +11,7 @@ import lass9436.user.model.User;
 import lass9436.user.model.UserRepository;
 
 @WebServlet("/users/*")
-public class UserProfileServlet extends HttpServlet {
+public class UserDetailServlet extends HttpServlet {
 
 	private UserRepository userRepository;
 
@@ -30,7 +30,7 @@ public class UserProfileServlet extends HttpServlet {
 			User user = userRepository.findByUserSeq(userId);
 			if (user != null) {
 				req.setAttribute("user", user);
-				req.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(req, resp);
+				req.getRequestDispatcher("/WEB-INF/user/detail.jsp").forward(req, resp);
 			} else {
 				resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
 			}
