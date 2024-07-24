@@ -118,7 +118,7 @@ class UserServiceTest {
             UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
                 "userId", new String[]{expectedUserId},
                 "password", new String[]{"wrongPassword"},
-                "name", new String[]{expectedName},
+                "username", new String[]{expectedName},
                 "email", new String[]{expectedEmail}
             ));
             // Act & Assert
@@ -139,7 +139,7 @@ class UserServiceTest {
             UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
                 "userId", new String[]{expectedUserId},
                 "password", new String[]{expectedPassword},
-                "name", new String[]{expectedUpdatedUsername},
+                "username", new String[]{expectedUpdatedUsername},
                 "email", new String[]{expectedUpdatedEmail}
             ));
             // Act
