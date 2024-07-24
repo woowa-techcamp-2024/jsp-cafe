@@ -1,4 +1,4 @@
-package com.wootecam.jspcafe.servlet;
+package com.wootecam.jspcafe.servlet.user;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
