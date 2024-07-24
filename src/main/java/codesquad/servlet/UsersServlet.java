@@ -4,6 +4,8 @@ import codesquad.exception.DuplicateIdException;
 import codesquad.user.InMemoryUserDao;
 import codesquad.user.User;
 import codesquad.user.UserDao;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +21,13 @@ import java.util.List;
 public class UsersServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UsersServlet.class);
 
-    private final UserDao userDao = new InMemoryUserDao();
+    private UserDao userDao;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        userDao = (UserDao) servletContext.getAttribute("userDao");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

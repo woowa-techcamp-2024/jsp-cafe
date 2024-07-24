@@ -9,12 +9,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(urlPatterns = "/")
-public class IndexServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/questions")
+public class QnaServlet extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
+
     private ArticleDao articleDao;
 
     @Override
@@ -24,9 +27,14 @@ public class IndexServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Article> articles = articleDao.findAll();
-        req.setAttribute("articles", articles);
-        req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("uploading article");
+        String title = req.getParameter("title");
+        String writer = req.getParameter("writer");
+        String content = req.getParameter("contents");
+
+        articleDao.save(new Article(title, writer, content));
+
+        resp.sendRedirect(req.getContextPath() + "/");
     }
 }

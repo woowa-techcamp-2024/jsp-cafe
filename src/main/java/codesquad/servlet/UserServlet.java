@@ -1,8 +1,9 @@
 package codesquad.servlet;
 
-import codesquad.user.InMemoryUserDao;
 import codesquad.user.User;
 import codesquad.user.UserDao;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +19,13 @@ import java.util.Optional;
 public class UserServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
-    private final UserDao userDao = new InMemoryUserDao();
+    private UserDao userDao;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        userDao = (UserDao) servletContext.getAttribute("userDao");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
