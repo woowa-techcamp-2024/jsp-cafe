@@ -27,4 +27,10 @@ public class InMemQuestionRepository implements QuestionRepository {
     public Question findById(Long id) {
         return questions.get(id);
     }
+
+    @Override
+    public void deleteAll() {
+        questions.clear();
+        sequence_id.set(1L);
+    }
 }

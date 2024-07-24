@@ -37,5 +37,9 @@ public class InMemUserRepository implements UserRepository {
         return id;
     }
 
-
+    @Override
+    public void deleteAll() {
+        users.clear();
+        sequence_id.set(1L);
+    }
 }
