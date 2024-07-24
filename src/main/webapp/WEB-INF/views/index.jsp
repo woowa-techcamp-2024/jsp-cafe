@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="kr">
-<jsp:include page="snippet/meta-header.jsp"/>
+<jsp:include page="snippet/meta_header.jsp"/>
 
 <body>
 <jsp:include page="snippet/navigation.jsp"/>
