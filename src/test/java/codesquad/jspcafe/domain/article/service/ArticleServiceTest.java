@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("ArticleService는")
 class ArticleServiceTest {
 
-    private final ArticleService articleService = new ArticleService();
-    private ArticleRepository articleRepository;
+    private ArticleRepository articleRepository = new ArticleMemoryRepository();
+    private final ArticleService articleService = new ArticleService(articleRepository);
 
     private final String expectedTitle = "title";
     private final String expectedWriter = "writer";
