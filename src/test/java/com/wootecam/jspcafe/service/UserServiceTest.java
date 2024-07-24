@@ -27,7 +27,7 @@ class UserServiceTest {
     class signup_메소드는 {
 
         @Nested
-        class 만약_회원가입_정보가_비어있다면 {
+        class 만약_회원가입_정보가_하나라도_비어있다면 {
 
             @Test
             void 예외를_발생시킨다() {
@@ -38,7 +38,7 @@ class UserServiceTest {
         }
 
         @Nested
-        class 만약_회원가입_정보에_null이_포함되면 {
+        class 만약_회원가입_정보에__하나라도_null이_포함되면 {
 
             @Test
             void 예외를_발생시킨다() {
