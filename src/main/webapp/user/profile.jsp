@@ -1,5 +1,6 @@
 <%@ page import="org.example.cafe.domain.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/base/head.jsp" %>
 <%@ include file="/base/header.jsp" %>
 <%@ include file="/base/nav.jsp" %>
@@ -32,6 +33,7 @@
                                         class="glyphicon glyphicon-envelope"></span>&nbsp;<%= user.getEmail()%>
                                 </a>
                             </p>
+                            <a class="link-modify-article" href="/users/${user.userId}/form">수정</a>
                         </div>
                         <%
                             }

@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import org.example.cafe.application.UserService;
+import org.example.cafe.application.dto.UserUpdateDto;
+import org.example.cafe.common.error.BadAuthenticationException;
+import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.User;
 import org.slf4j.Logger;
 
@@ -43,9 +46,60 @@ public class UserProfileServlet extends HttpServlet {
         String[] pathParts = path.split("/");
         String userId = URLDecoder.decode(pathParts[2], StandardCharsets.UTF_8);
 
+        if (path.endsWith("/form")) {
+            forwardModifyForm(request, response, userId);
+            return;
+        }
+
         User user = userService.findById(userId);
 
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+    }
+
+    private void forwardModifyForm(HttpServletRequest request, HttpServletResponse response, String userId)
+            throws IOException, ServletException {
+        request.setAttribute("user", userService.findById(userId));
+        request.getRequestDispatcher("/user/update_form.jsp").forward(request, response);
+    }
+
+    /**
+     * 회원 정보를 수정한다.
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the
+     *                 servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html");
+
+        String path = request.getRequestURI();
+        String[] pathParts = path.split("/");
+        String userId = URLDecoder.decode(pathParts[2], StandardCharsets.UTF_8);
+
+        if (!path.endsWith("/form")) {
+            super.doPost(request, response);
+            return;
+        }
+
+        String checkPassword = request.getParameter("checkPassword");
+        String password = request.getParameter("password");
+        String nickname = request.getParameter("nickname");
+        String email = request.getParameter("email");
+
+        try {
+            User user = userService.updateUser(userId, new UserUpdateDto(checkPassword, password, nickname, email));
+            request.setAttribute("user", user);
+            request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+        } catch (DataNotFoundException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        } catch (BadAuthenticationException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        }
     }
 }
