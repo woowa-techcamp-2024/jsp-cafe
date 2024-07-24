@@ -19,10 +19,12 @@ import org.junit.jupiter.api.Test;
 public class UserRepositoryTest {
 
     private UserRepository userRepository;
+    private DataUtil dataUtil;
 
     @BeforeEach
     void setUp() {
-        userRepository = new MockUserRepository();
+        dataUtil = new DataUtil();
+        userRepository = new MockUserRepository(dataUtil);
     }
 
     @Test
@@ -80,7 +82,7 @@ public class UserRepositoryTest {
 
         String invalidSql = "SELECT * FROM non_existent_table";
 
-        try (Connection conn = DataUtil.getConnection();
+        try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(invalidSql)) {
 
             assertThrows(SQLException.class, () -> {
@@ -94,6 +96,10 @@ public class UserRepositoryTest {
     }
 
     static class MockUserRepository extends UserRepository {
+
+        public MockUserRepository(DataUtil dataUtil) {
+            super(dataUtil);
+        }
 
         @Override
         public User findUserByUserId(String userId) throws SQLException {

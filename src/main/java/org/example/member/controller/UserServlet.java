@@ -13,6 +13,7 @@ import org.example.member.model.dto.UserResponseDto;
 import org.example.member.repository.UserRepository;
 import org.example.member.service.UserQueryService;
 import org.example.member.service.UserService;
+import org.example.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +121,7 @@ public class UserServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        this.userService = new UserService(new UserRepository());
-        this.userQueryService = new UserQueryService(new UserRepository());
+        this.userService = new UserService(new UserRepository(new DataUtil()));
+        this.userQueryService = new UserQueryService(new UserRepository(new DataUtil()));
     }
 }

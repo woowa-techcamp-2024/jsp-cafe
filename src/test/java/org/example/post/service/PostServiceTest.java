@@ -10,6 +10,7 @@ import java.util.List;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostResponse;
 import org.example.post.repository.PostRepository;
+import org.example.util.DataUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,12 @@ import org.junit.jupiter.api.Test;
 public class PostServiceTest {
 
     PostService postService;
+    DataUtil dataUtil;
 
     @BeforeEach
     public void setUp() {
-        postService = new PostService(new MockPostRepository());
+        dataUtil = new DataUtil();
+        postService = new PostService(new MockPostRepository(dataUtil));
     }
 
     @Test
@@ -122,6 +125,10 @@ public class PostServiceTest {
     }
 
     static class MockPostRepository extends PostRepository {
+        public MockPostRepository(DataUtil dataUtil) {
+            super(dataUtil);
+        }
+
         @Override
         public Post save(Post post) throws SQLException {
             return post;

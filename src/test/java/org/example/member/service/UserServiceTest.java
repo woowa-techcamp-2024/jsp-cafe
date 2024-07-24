@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
 import org.example.member.repository.UserRepository;
+import org.example.util.DataUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,12 @@ import org.junit.jupiter.api.Test;
 public class UserServiceTest {
 
     private UserService userService;
+    private DataUtil dataUtil;
 
     @BeforeEach
     void setUp() {
-        userService = new MockUserService(new UserRepository());
+        dataUtil = new DataUtil();
+        userService = new MockUserService(new UserRepository(dataUtil));
     }
 
     @Test

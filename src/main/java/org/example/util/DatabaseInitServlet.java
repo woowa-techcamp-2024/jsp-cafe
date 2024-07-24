@@ -12,10 +12,12 @@ import org.slf4j.LoggerFactory;
 @WebServlet(urlPatterns = "/init", loadOnStartup = 1)
 public class DatabaseInitServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitServlet.class);
+    private DataUtil dataUtil;
 
     @Override
     public void init() throws ServletException {
-        try (Connection conn = DataUtil.getConnection();
+        dataUtil = new DataUtil();
+        try (Connection conn = dataUtil.getConnection();
              Statement stmt = conn.createStatement()) {
 
             logger.info("테이블 초기화");

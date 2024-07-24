@@ -11,6 +11,7 @@ import java.util.List;
 import org.example.post.model.dto.PostResponse;
 import org.example.post.repository.PostRepository;
 import org.example.post.service.PostService;
+import org.example.util.DataUtil;
 
 @WebServlet("")
 public class MainServlet extends HttpServlet {
@@ -31,6 +32,6 @@ public class MainServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        postService = new PostService(new PostRepository());
+        postService = new PostService(new PostRepository(new DataUtil()));
     }
 }
