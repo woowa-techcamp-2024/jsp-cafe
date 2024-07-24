@@ -14,7 +14,7 @@
                 <div class="well well-sm">
                     <div class="media">
                         <a class="thumbnail pull-left" href="#">
-                            <img class="media-object" src="../images/80-text.png">
+                            <img class="media-object" src="/static/images/80-text.png">
                         </a>
                         <div class="media-body">
                             <h4 class="media-heading"><%=user.getName()%></h4>
@@ -30,8 +30,6 @@
 </div>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<%@ include file="/WEB-INF/components/script.jsp" %>
 	</body>
 </html>
