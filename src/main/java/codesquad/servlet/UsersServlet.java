@@ -1,7 +1,6 @@
 package codesquad.servlet;
 
 import codesquad.exception.DuplicateIdException;
-import codesquad.user.InMemoryUserDao;
 import codesquad.user.User;
 import codesquad.user.UserDao;
 import jakarta.servlet.ServletConfig;
