@@ -80,15 +80,14 @@ public class UserMysqlDatabase implements UserDatabase {
 
 	@Override
 	public void update(String id, User user) {
-		String sql = "update user set password = ?, name = ?, email = ? where id = ?";
+		String sql = "update user set name = ?, email = ? where id = ?";
 		try (
 			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 		) {
-			pstmt.setString(1, user.password());
-			pstmt.setString(2, user.name());
-			pstmt.setString(3, user.email());
-			pstmt.setString(4, id);
+			pstmt.setString(1, user.name());
+			pstmt.setString(2, user.email());
+			pstmt.setString(3, id);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
