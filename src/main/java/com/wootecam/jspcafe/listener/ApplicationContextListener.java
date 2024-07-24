@@ -11,8 +11,8 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
-@WebListener("dependencyListener")
-public class DependencyListener implements ServletContextListener {
+@WebListener("applicationContextListener")
+public class ApplicationContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
