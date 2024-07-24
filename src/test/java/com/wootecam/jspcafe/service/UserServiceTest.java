@@ -7,10 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.model.User;
 import com.wootecam.jspcafe.repository.UserRepository;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class UserServiceTest {
 
@@ -27,24 +32,27 @@ class UserServiceTest {
     class signup_메소드는 {
 
         @Nested
-        class 만약_회원가입_정보가_하나라도_비어있다면 {
+        class 만약_회원가입_정보가_하나라도_비어있거나_null을_갖는다면 {
 
-            @Test
-            void 예외를_발생시킨다() {
-                assertThatThrownBy(() -> userService.signup("", "password", "name", "email"))
+            @ParameterizedTest
+            @MethodSource("generateInvalidUserInfo")
+            void 예외를_발생시킨다(List<String> invalidUserInfo) {
+                assertThatThrownBy(() -> userService.signup(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2), invalidUserInfo.get(3)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("회원가입 시 모든 정보를 입력해야 합니다.");
             }
-        }
 
-        @Nested
-        class 만약_회원가입_정보에_하나라도_null이_포함되면 {
-
-            @Test
-            void 예외를_발생시킨다() {
-                assertThatThrownBy(() -> userService.signup(null, "password", "name", "email"))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("회원가입 시 모든 정보를 입력해야 합니다.");
+            private static Stream<Arguments> generateInvalidUserInfo() {
+                return Stream.of(
+                        Arguments.of(List.of("", "password", "name", "email")),
+                        Arguments.of(List.of("userId", "", "name", "email")),
+                        Arguments.of(List.of("userId", "password", "", "email")),
+                        Arguments.of(List.of("userId", "password", "name", "")),
+                        Arguments.of(Arrays.asList(null, "password", "name", "email")),
+                        Arguments.of(Arrays.asList("userId", null, "name", "email")),
+                        Arguments.of(Arrays.asList("userId", "password", null, "email")),
+                        Arguments.of(Arrays.asList("userId", "password", "name", null))
+                );
             }
         }
 
