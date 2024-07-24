@@ -19,7 +19,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public Long save(String userId, String password, String name, String email) {
-        try (var pstmt = conn.prepareStatement("INSERT INTO users (userId, 'password', 'name', email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+        try (var pstmt = conn.prepareStatement("INSERT INTO user (userId, 'password', 'name', email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
             pstmt.setString(1, userId);
             pstmt.setString(2, password);
             pstmt.setString(3, name);
@@ -33,7 +33,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public User findById(Long userId) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM users WHERE id = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE id = ?");){
             pstmt.setLong(1, userId);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -48,7 +48,7 @@ public class MySQLUserRepository implements UserRepository{
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        try (var pstmt = conn.prepareStatement("SELECT * FROM users");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
                 users.add(new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email")));
@@ -61,7 +61,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public Long update(Long id, String userId, String updatedName, String updatedEmail) {
-        try (var pstmt = conn.prepareStatement("UPDATE users SET userId = ?, name = ?, email = ? WHERE id = ?");){
+        try (var pstmt = conn.prepareStatement("UPDATE user SET userId = ?, name = ?, email = ? WHERE id = ?");){
             pstmt.setString(1, userId);
             pstmt.setString(2, updatedName);
             pstmt.setString(3, updatedEmail);
@@ -74,7 +74,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public void deleteAll() {
-        try (var pstmt = conn.prepareStatement("DELETE FROM users");){
+        try (var pstmt = conn.prepareStatement("DELETE FROM user");){
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,7 +83,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public boolean isExistedByUserId(String userId) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM users WHERE userId = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE userId = ?");){
             pstmt.setString(1, userId);
             var rs = pstmt.executeQuery();
             return rs.next();
@@ -94,7 +94,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public User findByUserId(String w) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM users WHERE userId = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE userId = ?");){
             pstmt.setString(1, w);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
