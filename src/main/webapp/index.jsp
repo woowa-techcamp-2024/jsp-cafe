@@ -27,7 +27,7 @@
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
                               <span class="time"><%=post.getCreatedAt()%></span>
-                              <a href="user/profile.jsp" class="author"><%=post.getWriter()%></a>
+                              <a href="/users/<%=post.getWriter().getId()%>" class="author"><%=post.getWriter().getName()%></a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>

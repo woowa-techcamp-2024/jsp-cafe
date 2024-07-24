@@ -23,7 +23,7 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users/92/kimmunsu" class="article-author-name"><%=post.getWriter()%></a>
+                          <a href="/users/<%=post.getWriter().getId()%>" class="article-author-name"><%=post.getWriter().getName()%></a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
                               <%=post.getCreatedAt()%>
                               <i class="icon-link"></i>
@@ -45,7 +45,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/index.jsp">목록</a>
+                              <a class="link-modify-article" href="/">목록</a>
                           </li>
                       </ul>
                   </div>
