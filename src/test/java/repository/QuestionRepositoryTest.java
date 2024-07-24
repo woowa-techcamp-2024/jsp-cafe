@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QuestionRepositoryTest {
     QuestionRepository questionRepository;
+
     @BeforeEach
     void setUp() {
         questionRepository = new InMemQuestionRepository();
     }
+
     @Test
     void TestSave() {
         // given

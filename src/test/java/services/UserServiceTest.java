@@ -30,18 +30,24 @@ class UserServiceTest {
         String name = "name";
         String email = "email";
 
-        Long expectedId = 1L;
         // when
         Long id = userService.createUser(userId, password, name, email);
 
+        User user = userService.findById(id);
         // then
-        assertEquals(expectedId, id);
+        assertEquals(userId, user.getUserId());
     }
 
     @Test
     void testFindAll() {
         // given
-        testCreateUser();
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+
+        userService.createUser(userId, password, name, email);
+
         int expected_size = 1;
 
         // when

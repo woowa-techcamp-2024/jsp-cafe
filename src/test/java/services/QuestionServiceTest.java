@@ -1,5 +1,6 @@
 package services;
 
+import camp.woowa.jspcafe.models.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
 import camp.woowa.jspcafe.services.QuestionService;
@@ -24,13 +25,13 @@ class QuestionServiceTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long expectedId = 1L;
 
         // when
         Long id = questionService.save(title, content, writer);
+        Question question = questionService.findById(id);
 
         // then
-        assertEquals(expectedId, id);
+        assertEquals(title, question.getTitle());
     }
 
     @Test
