@@ -8,7 +8,10 @@ import java.security.Principal;
 import java.util.*;
 
 public class StubHttpServletRequest implements HttpServletRequest {
-    private final String body;
+    private String body;
+    private String pathInfo;
+    private final Map<String, String> parameters = new HashMap<>();
+    private final Map<String, Object> attributes = new HashMap<>();
 
     public StubHttpServletRequest(String body) {
         this.body = body;
@@ -19,6 +22,38 @@ public class StubHttpServletRequest implements HttpServletRequest {
         return new BufferedReader(new StringReader(body));
     }
 
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setPathInfo(String pathInfo) {
+        this.pathInfo = pathInfo;
+    }
+
+    public void setParameter(String name, String value) {
+        parameters.put(name, value);
+    }
+
+    @Override
+    public String getPathInfo() {
+        return pathInfo;
+    }
+
+    @Override
+    public String getParameter(String name) {
+        return parameters.get(name);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
+
+    @Override
+    public Object getAttribute(String name) {
+        return attributes.get(name);
+    }
+
     @Override
     public String getRemoteAddr() {
         return "";
@@ -27,11 +62,6 @@ public class StubHttpServletRequest implements HttpServletRequest {
     @Override
     public String getRemoteHost() {
         return "";
-    }
-
-    @Override
-    public void setAttribute(String s, Object o) {
-
     }
 
     @Override
@@ -130,11 +160,6 @@ public class StubHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Object getAttribute(String s) {
-        return null;
-    }
-
-    @Override
     public Enumeration<String> getAttributeNames() {
         return null;
     }
@@ -187,13 +212,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
             public int read() throws IOException {
                 return inputStream.read();
             }
-            // 여기에 필요한 다른 메서드들을 구현...
         };
-    }
-
-    @Override
-    public String getParameter(String s) {
-        return "";
     }
 
     @Override
@@ -268,11 +287,6 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getMethod() {
-        return "";
-    }
-
-    @Override
-    public String getPathInfo() {
         return "";
     }
 
