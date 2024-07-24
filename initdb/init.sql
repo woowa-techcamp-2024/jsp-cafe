@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     nickname VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL
+    created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -16,6 +16,6 @@ CREATE TABLE IF NOT EXISTS posts (
     user_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    created_at DATETIME NOT NULL
+    created_at TIMESTAMP NOT NULL
 );
 
