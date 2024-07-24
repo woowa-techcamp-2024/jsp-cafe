@@ -15,7 +15,7 @@ public class ServletConfig implements ServletContextListener {
         UserDataHandlerMySql userDataHandlerMySql = new UserDataHandlerMySql();
         ArticleDataHandlerMySql articleDataHandlerMySql = new ArticleDataHandlerMySql();
 
-        context.setAttribute(UserDataHandlerMySql.class.getName(), userDataHandlerMySql);
-        context.setAttribute(ArticleDataHandlerMySql.class.getName(), articleDataHandlerMySql);
+        context.setAttribute(DataHandler.USER.getValue(), userDataHandlerMySql);
+        context.setAttribute(DataHandler.ARTICLE.getValue(), articleDataHandlerMySql);
     }
 }

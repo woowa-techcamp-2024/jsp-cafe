@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
+import org.example.config.DataHandler;
 import org.example.data.UserDataHandler;
-import org.example.data.UserDataHandlerMySql;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class UserRegisterApi extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        userDataHandler = (UserDataHandler) getServletContext().getAttribute(UserDataHandlerMySql.class.getName());
+        userDataHandler = (UserDataHandler) getServletContext().getAttribute(DataHandler.USER.getValue());
     }
 
     @Override
