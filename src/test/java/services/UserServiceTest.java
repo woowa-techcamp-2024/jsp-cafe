@@ -117,4 +117,20 @@ class UserServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedUserId, updatedName, updatedEmail));
     }
+
+    @Test
+    void testIsExistedByUserId() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        userRepository.save(userId, password, name, email);
+
+        // when
+        boolean isExisted = userService.isExistedByUserId(userId);
+
+        // then
+        assertEquals(isExisted, true);
+    }
 }
