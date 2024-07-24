@@ -1,4 +1,4 @@
-package codesquad.article;
+package codesquad.domain.article;
 
 public class Article {
     private Long id;

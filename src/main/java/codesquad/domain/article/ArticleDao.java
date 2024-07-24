@@ -1,4 +1,4 @@
-package codesquad.article;
+package codesquad.domain.article;
 
 import java.util.List;
 import java.util.Optional;

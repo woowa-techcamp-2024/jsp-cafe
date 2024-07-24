@@ -1,7 +1,7 @@
 package codesquad.servlet;
 
-import codesquad.article.Article;
-import codesquad.article.ArticleDao;
+import codesquad.domain.article.Article;
+import codesquad.domain.article.ArticleDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

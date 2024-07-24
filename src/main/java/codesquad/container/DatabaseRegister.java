@@ -1,11 +1,11 @@
 package codesquad.container;
 
-import codesquad.article.ArticleDao;
-import codesquad.article.InMemoryArticleDao;
+import codesquad.domain.article.ArticleDao;
+import codesquad.infra.InMemoryArticleDao;
 import codesquad.servlet.dao.ArticleQueryDao;
 import codesquad.servlet.dao.InMemoryArticleQueryDao;
-import codesquad.user.InMemoryUserDao;
-import codesquad.user.UserDao;
+import codesquad.infra.InMemoryUserDao;
+import codesquad.domain.user.UserDao;
 import jakarta.servlet.ServletContext;
 
 public class DatabaseRegister implements AppInit {

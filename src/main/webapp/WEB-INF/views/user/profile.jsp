@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="codesquad.user.User" %>
+<%@ page import="codesquad.domain.user.User" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>

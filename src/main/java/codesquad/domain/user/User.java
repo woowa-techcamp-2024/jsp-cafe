@@ -1,4 +1,4 @@
-package codesquad.user;
+package codesquad.domain.user;
 
 public class User {
     private Long id;

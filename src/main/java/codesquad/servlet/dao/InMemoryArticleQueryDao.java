@@ -1,10 +1,10 @@
 package codesquad.servlet.dao;
 
-import codesquad.article.Article;
-import codesquad.article.ArticleDao;
+import codesquad.domain.article.Article;
+import codesquad.domain.article.ArticleDao;
 import codesquad.servlet.dto.ArticleResponse;
-import codesquad.user.User;
-import codesquad.user.UserDao;
+import codesquad.domain.user.User;
+import codesquad.domain.user.UserDao;
 
 import java.util.ArrayList;
 import java.util.List;

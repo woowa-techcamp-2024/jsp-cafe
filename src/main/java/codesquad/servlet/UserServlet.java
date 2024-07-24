@@ -1,7 +1,7 @@
 package codesquad.servlet;
 
-import codesquad.user.User;
-import codesquad.user.UserDao;
+import codesquad.domain.user.User;
+import codesquad.domain.user.UserDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

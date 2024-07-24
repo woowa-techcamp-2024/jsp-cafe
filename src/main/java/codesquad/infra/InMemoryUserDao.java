@@ -1,5 +1,7 @@
-package codesquad.user;
+package codesquad.infra;
 
+import codesquad.domain.user.User;
+import codesquad.domain.user.UserDao;
 import codesquad.exception.DuplicateIdException;
 
 import java.util.List;
