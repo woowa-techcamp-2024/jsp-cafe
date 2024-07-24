@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="component/header.jsp"%>
+<%@ include file="/templates/component/header.jsp"%>
 <!DOCTYPE html>
 <html lang="kr">
 	<body>

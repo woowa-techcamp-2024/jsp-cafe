@@ -22,6 +22,6 @@ public class MemberListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Member> members = memberDao.findAll();
         req.setAttribute("members",members);
-        req.getRequestDispatcher("/user/list.jsp").forward(req,resp);
+        req.getRequestDispatcher("/templates/user/list.jsp").forward(req,resp);
     }
 }

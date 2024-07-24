@@ -7,7 +7,7 @@
 <div class="container" id="main">
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
-          <form name="question" method="post" action="/member/regist">
+          <form name="question" method="post" action="${pageContext.request.contextPath}/member/regist">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
                   <input class="form-control" id="userId" name="userId" placeholder="User ID">
@@ -30,10 +30,5 @@
         </div>
     </div>
 </div>
-
-<!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
-	</body>
+</body>
 </html>

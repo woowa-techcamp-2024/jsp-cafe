@@ -59,7 +59,7 @@ class MemberListServletTest {
             assertNotNull(attribute);
             List<Member> members = (List<Member>) attribute;
             assertEquals(saveMembers,members);
-            assertEquals("/user/list.jsp",req.getForwardPath());
+            assertEquals("/templates/user/list.jsp",req.getForwardPath());
         }
     }
 

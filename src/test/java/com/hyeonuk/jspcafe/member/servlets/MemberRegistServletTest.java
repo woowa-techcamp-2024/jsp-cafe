@@ -51,7 +51,7 @@ class MemberRegistServletTest {
 
             //then
             String forwardPath = req.getForwardPath();
-            assertEquals("/user/form.jsp",forwardPath);
+            assertEquals("/templates/user/form.jsp",forwardPath);
         }
     }
 

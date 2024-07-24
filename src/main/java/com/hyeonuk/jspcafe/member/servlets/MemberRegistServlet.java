@@ -29,7 +29,7 @@ public class MemberRegistServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
 
-        req.getRequestDispatcher("/user/form.jsp").forward(req, resp);
+        req.getRequestDispatcher("/templates/user/form.jsp").forward(req, resp);
     }
 
     @Override
@@ -47,6 +47,6 @@ public class MemberRegistServlet extends HttpServlet {
         if(memberDao.findByMemberId(userId).isPresent()) throw new InvalidMemberRegistRequest("이미 존재하는 유저입니다.");
 
         memberDao.save(member);
-        resp.sendRedirect("/members");
+        resp.sendRedirect(req.getContextPath()+"/members");
     }
 }
