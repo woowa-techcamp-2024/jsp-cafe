@@ -1,5 +1,6 @@
 package codesqaud.app.config;
 
+import codesqaud.app.dao.InMemoryArticleDao;
 import codesqaud.app.dao.InMemoryUserDao;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -12,5 +13,6 @@ public class ServletContextInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
         servletContext.setAttribute("userDao", new InMemoryUserDao());
+        servletContext.setAttribute("articleDao", new InMemoryArticleDao());
     }
 }
