@@ -5,7 +5,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.di.ApplicationContext;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.post.response.PostResponse;
