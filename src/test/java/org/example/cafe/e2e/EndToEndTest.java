@@ -213,10 +213,10 @@ public class EndToEndTest {
 
         @Test
         void 사용자는_게시글_목록을_조회할_수_있다() throws IOException {
+            //given
             questionRepository.save(new Question("title1", "content1", "writer1"));
             questionRepository.save(new Question("title2", "content2", "writer2"));
 
-            //given
             con = createGetConnection("/");
 
             //when
@@ -231,10 +231,10 @@ public class EndToEndTest {
 
         @Test
         void 사용자는_특정_게시글을_상세_조회할_수_있다() throws IOException {
+            //given
             Question question = new Question("title1", "content1", "writer1");
             questionRepository.save(question);
 
-            //given
             con = createGetConnection("/questions/" + question.getQuestionId());
 
             //when
@@ -252,10 +252,10 @@ public class EndToEndTest {
 
             @Test
             void 사용자는_회원_정보를_수정할_수_있다() throws IOException {
+                //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
                 userRepository.save(user);
 
-                //given
                 con = createPostConnection("/users/" + user.getUserId() + "/form");
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
@@ -275,10 +275,10 @@ public class EndToEndTest {
 
             @Test
             void 회원이_존재하지_않으면_404_에러를_반환한다() throws IOException {
+                //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
                 userRepository.save(user);
 
-                //given
                 con = createPostConnection("/users/no-user/form");
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
@@ -297,10 +297,10 @@ public class EndToEndTest {
 
             @Test
             void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws IOException {
+                //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
                 userRepository.save(user);
 
-                //given
                 con = createPostConnection("/users/" + user.getUserId() + "/form");
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 String urlParameters = "checkPassword=notMatchPass&password=newPass&nickname=updateNick&email=update@example.com";
