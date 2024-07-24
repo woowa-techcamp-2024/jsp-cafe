@@ -10,7 +10,6 @@ import com.woowa.servlet.FindQuestionServlet;
 import com.woowa.servlet.ListQuestionServlet;
 import com.woowa.servlet.LoginServlet;
 import com.woowa.servlet.QuestionServlet;
-import com.woowa.servlet.UpdateUserServlet;
 import com.woowa.servlet.UserProfileServlet;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -58,9 +57,5 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet",
                 new FindQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
         findQuestionServlet.addMapping("/questions/*");
-
-        Dynamic updateUserServlet = ctx.addServlet("updateUserServlet",
-                new UpdateUserServlet(beanFactory.getBean(UserHandler.class)));
-        updateUserServlet.addMapping("/users/*/edit");
     }
 }

@@ -1,7 +1,6 @@
 package com.woowa.servlet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
@@ -17,9 +16,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class UpdateUserServletTest {
-
-    private UpdateUserServlet updateUserServlet;
+class UserProfileServletTest {
+    private UserProfileServlet userProfileServlet;
     private UserHandler userHandler;
     private UserDatabase userDatabase;
 
@@ -30,7 +28,7 @@ class UpdateUserServletTest {
     void setUp() {
         userDatabase = new UserMemoryDatabase();
         userHandler = new UserHandler(userDatabase);
-        updateUserServlet = new UpdateUserServlet(userHandler);
+        userProfileServlet = new UserProfileServlet(userHandler, userDatabase);
 
         request = new StubHttpServletRequest();
         response = new StubHttpServletResponse();
@@ -51,7 +49,7 @@ class UpdateUserServletTest {
             userDatabase.save(user);
 
             //when
-            updateUserServlet.doPost(request, response);
+            userProfileServlet.doPost(request, response);
 
             //then
             assertThat(response.getRedirectLocation()).isEqualTo("/users/" + user.getUserId());
@@ -72,7 +70,7 @@ class UpdateUserServletTest {
             userDatabase.save(user);
 
             //when
-            updateUserServlet.doGet(request, response);
+            userProfileServlet.doGet(request, response);
 
             //then
             assertThat(request.getRequestDispatcher().getPath())

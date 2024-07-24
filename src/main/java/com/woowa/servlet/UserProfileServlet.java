@@ -23,15 +23,31 @@ public class UserProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = getUserId(req);
-        User user = userDatabase.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
-        req.setAttribute("user", user);
-        req.getRequestDispatcher("/WEB-INF/classes/static/user/profile.jsp").forward(req, resp);
+        String requestURI = req.getRequestURI();
+        if (requestURI.endsWith("/edit")) {
+            String userId = requestURI.replace("/users/", "").replace("/edit", "");
+            ResponseEntity response = userHandler.updateUserForm(userId);
+            req.setAttribute("user", response.getModel().get("user"));
+            req.getRequestDispatcher("/WEB-INF/classes/static/user/update.jsp").forward(req, resp);
+        } else {
+            String userId = getUserId(req);
+            User user = userDatabase.findById(userId)
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/WEB-INF/classes/static/user/profile.jsp").forward(req, resp);
+        }
     }
 
-    private String getUserId(HttpServletRequest req) {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = getUserId(req);
+        String nickname = req.getParameter("nickname");
+        ResponseEntity response = userHandler.updateUser(userId, nickname);
+        resp.sendRedirect(response.getLocation());
+    }
+
+    private static String getUserId(HttpServletRequest req) {
         String requestURI = req.getRequestURI();
-        return requestURI.replace("/users/", "");
+        return requestURI.replace("/users/", "").replace("/edit", "");
     }
 }
