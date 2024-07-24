@@ -44,9 +44,9 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 			ResultSet rs = pstmt.executeQuery();
 			Article article = null;
 			while (rs.next()) {
-				String writer = rs.getString("password");
-				String title = rs.getString("name");
-				String contents = rs.getString("email");
+				String writer = rs.getString("writer");
+				String title = rs.getString("title");
+				String contents = rs.getString("contents");
 				article = new Article(id, writer, title, contents);
 			}
 			return Optional.ofNullable(article);
