@@ -22,10 +22,10 @@ class UserTest {
 
         final User user = new User(userId, password, name, email);
 
-        assertThat(user.userId()).isEqualTo("testUser");
-        assertThat(user.password()).isEqualTo("testPassword");
-        assertThat(user.name()).isEqualTo("testName");
-        assertThat(user.email()).isEqualTo("test@mail.com");
+        assertThat(user.getUserId()).isEqualTo("testUser");
+        assertThat(user.getPassword()).isEqualTo("testPassword");
+        assertThat(user.getName()).isEqualTo("testName");
+        assertThat(user.getEmail()).isEqualTo("test@mail.com");
     }
 
     @ParameterizedTest
@@ -48,7 +48,7 @@ class UserTest {
 
     @Test
     @DisplayName("암호가 2글자 보다 작으면 예외가 발생한다.")
-    void throw_when_least_password() {
+    void throw_when_least_getPassword() {
         String userId = "testUser";
         String password = "t";
         String name = "testName";
@@ -60,7 +60,7 @@ class UserTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "javajigi.com", "javajigi", "javajigi@com", "javajigi@@@", "javajigi@@@.com", "javajigi@@@naver.com"})
     @DisplayName("이메일 규격에 맞지 않으면 예외가 발생한다.")
-    void throw_when_email(String email) {
+    void throw_when_getEmail(String email) {
         String userId = "testUser";
         String password = "testPassword";
         String name = "testName";

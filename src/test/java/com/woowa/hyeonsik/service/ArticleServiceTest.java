@@ -28,9 +28,9 @@ class ArticleServiceTest {
         articleService.write(article);
         Article findedArticle = articleService.findById(1);
 
-        assertThat(findedArticle.writer()).isEqualTo("TEST_USER");
-        assertThat(findedArticle.title()).isEqualTo("테스트 글입니다");
-        assertThat(findedArticle.contents()).isEqualTo("안녕하세요? 반갑습니다 ^^");
+        assertThat(findedArticle.getWriter()).isEqualTo("TEST_USER");
+        assertThat(findedArticle.getTitle()).isEqualTo("테스트 글입니다");
+        assertThat(findedArticle.getContents()).isEqualTo("안녕하세요? 반갑습니다 ^^");
     }
 
     @Test

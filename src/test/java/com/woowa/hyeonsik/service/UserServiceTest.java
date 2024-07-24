@@ -30,11 +30,11 @@ class UserServiceTest {
         User user = new User("test", "test", "test", "test@test.test");
 
         userService.signUp(user);
-        final User findedUser = userService.findByUserId(user.userId());
+        final User findedUser = userService.findByUserId(user.getUserId());
 
-        assertThat(findedUser.userId()).isEqualTo("test");
-        assertThat(findedUser.name()).isEqualTo("test");
-        assertThat(findedUser.email()).isEqualTo("test@test.test");
+        assertThat(findedUser.getUserId()).isEqualTo("test");
+        assertThat(findedUser.getName()).isEqualTo("test");
+        assertThat(findedUser.getEmail()).isEqualTo("test@test.test");
     }
 
     @Test
@@ -79,11 +79,11 @@ class UserServiceTest {
         User user = new User("test", "test", "test", "test@test.test");
         userService.signUp(user);
 
-        final User findedUser = userService.findByUserId(user.userId());
+        final User findedUser = userService.findByUserId(user.getUserId());
 
-        assertThat(findedUser.userId()).isEqualTo("test");
-        assertThat(findedUser.name()).isEqualTo("test");
-        assertThat(findedUser.email()).isEqualTo("test@test.test");
+        assertThat(findedUser.getUserId()).isEqualTo("test");
+        assertThat(findedUser.getName()).isEqualTo("test");
+        assertThat(findedUser.getEmail()).isEqualTo("test@test.test");
     }
 
     @Test

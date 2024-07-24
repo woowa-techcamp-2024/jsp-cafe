@@ -20,13 +20,13 @@ public class UserDao {
         }
 
         return users.stream()
-                .filter(user -> user.userId().equals(userId))
+                .filter(user -> user.getUserId().equals(userId))
                 .findFirst();
     }
 
     public boolean existsByUserId(String userId) {
         Optional<User> first = users.stream()
-                .filter(user -> user.userId().equals(userId))
+                .filter(user -> user.getUserId().equals(userId))
                 .findFirst();
 
         return first.isPresent();

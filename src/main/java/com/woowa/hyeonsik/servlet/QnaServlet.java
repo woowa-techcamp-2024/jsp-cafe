@@ -10,8 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
-@WebServlet("/questions")
+@WebServlet({"/questions", "/"})
 public class QnaServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
     private ArticleService articleService;
@@ -23,8 +24,12 @@ public class QnaServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus(405);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Article> list = articleService.list();
+        request.setAttribute("questions", list);
+        logger.debug("전체 질문 목록을 조회합니다. size: {}", list.size());
+
+        SendPageUtil.forward("/template/index.jsp", getServletContext(), request, response);
     }
 
     @Override

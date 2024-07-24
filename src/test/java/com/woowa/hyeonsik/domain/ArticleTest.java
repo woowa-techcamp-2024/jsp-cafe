@@ -17,9 +17,9 @@ class ArticleTest {
     void create() {
         Article article = new Article(1L, "작성자", "제목", "내용");
         assertNotNull(article);
-        assertEquals("작성자", article.writer());
-        assertEquals("제목", article.title());
-        assertEquals("내용", article.contents());
+        assertEquals("작성자", article.getWriter());
+        assertEquals("제목", article.getTitle());
+        assertEquals("내용", article.getContents());
     }
 
     @ParameterizedTest
@@ -42,7 +42,7 @@ class ArticleTest {
 
     @Test
     @DisplayName("작성자가 30글자를 초과하면 예외가 발생한다.")
-    void exception_writer_length() {
+    void exception_getWriter_length() {
         String longWriter = "a".repeat(31);
         assertThrows(IllegalArgumentException.class, () ->
                 new Article(1L, longWriter, "제목", "내용")
@@ -51,7 +51,7 @@ class ArticleTest {
 
     @Test
     @DisplayName("제목이 30글자가 초과하면 예외가 발생한다.")
-    void exception_title_length() {
+    void exception_getTitle_length() {
         String longTitle = "a".repeat(31);
         assertThrows(IllegalArgumentException.class, () ->
                 new Article(1L, "작성자", longTitle, "내용")

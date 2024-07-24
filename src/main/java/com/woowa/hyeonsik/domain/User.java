@@ -1,10 +1,15 @@
 package com.woowa.hyeonsik.domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public record User(String userId, String password, String name, String email) {
+public final class User {
     private static final int MIN_PASSWORD_LENGTH = 2;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^([A-Za-z0-9+_.-]+@[A-Za-z0-9+_-]+[.][A-Za-z0-9+_-]+)$");
+    private final String userId;
+    private final String password;
+    private final String name;
+    private final String email;
 
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
@@ -27,5 +32,46 @@ public record User(String userId, String password, String name, String email) {
         if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
             throw new IllegalArgumentException("이메일이 규격에 맞지 않습니다. Email: " + email);
         }
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (User) obj;
+        return Objects.equals(this.userId, that.userId) &&
+                Objects.equals(this.password, that.password) &&
+                Objects.equals(this.name, that.name) &&
+                Objects.equals(this.email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, password, name, email);
+    }
+
+    @Override
+    public String toString() {
+        return "User[" +
+                "userId=" + userId + ", " +
+                "password=" + password + ", " +
+                "name=" + name + ", " +
+                "email=" + email + ']';
     }
 }
