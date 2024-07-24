@@ -12,6 +12,7 @@ public class MemoryArticleRepository implements ArticleRepository {
             articles.set(Math.toIntExact(article.getId() - 1), article);
         } else {
             article = article.withId((long) (articles.size() + 1));
+
             articles.add(article);
         }
         return article;
@@ -20,5 +21,10 @@ public class MemoryArticleRepository implements ArticleRepository {
     @Override
     public List<Article> findAll() {
         return List.copyOf(articles);
+    }
+
+    @Override
+    public Article findById(Long id) {
+        return articles.get(Math.toIntExact(id - 1));
     }
 }

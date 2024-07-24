@@ -17,7 +17,7 @@
                 <tr onclick="location.href='${pageContext.request.contextPath}/users/${user.id}'"
                     style="cursor: pointer;">
                     <td>${user.username}</td>
-                    <td>${user.userId}</td>
+                    <td>${user.email}</td>
                 </tr>
             </c:forEach>
             </tbody>

@@ -8,8 +8,10 @@
     <div class="card-body">
         <h5 class="card-title">Username: ${user.username}
         </h5>
-        <p class="card-text">Email: ${user.userId}
+        <p class="card-text">Email: ${user.email}
         </p>
+        <a href="${pageContext.request.contextPath}/users/edit/${user.id}" class="btn btn-primary">Edit Profile
+        </a>
     </div>
 </div>
 
