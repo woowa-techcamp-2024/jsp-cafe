@@ -18,10 +18,15 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/users">Home</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/questions">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/question/write">Write</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/users">Users</a>
                 </li>
