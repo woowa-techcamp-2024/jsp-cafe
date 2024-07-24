@@ -27,13 +27,6 @@ public class QuestionDetailServlet extends HttpServlet {
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
-    /**
-     * 게시글을 작성한다.
-     *
-     * @param request
-     * @param response
-     * @throws IOException
-     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
@@ -49,6 +42,6 @@ public class QuestionDetailServlet extends HttpServlet {
         }
 
         request.setAttribute("question", question);
-        request.getRequestDispatcher("/qna/detail.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/qna/detail.jsp").forward(request, response);
     }
 }

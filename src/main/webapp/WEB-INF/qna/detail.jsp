@@ -2,9 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/WEB-INF/functions.tld" prefix="fn" %>
-<%@ include file="/base/head.jsp" %>
-<%@ include file="/base/header.jsp" %>
-<%@ include file="/base/nav.jsp" %>
+<%@ include file="/WEB-INF/base/head.jsp" %>
+<%@ include file="/WEB-INF/base/header.jsp" %>
+<%@ include file="/WEB-INF/base/nav.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
@@ -132,4 +132,4 @@
     </article>
 </script>
 
-<%@ include file="/base/footer.jsp" %>
+<%@ include file="/WEB-INF/base/footer.jsp" %>

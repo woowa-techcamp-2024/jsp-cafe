@@ -2,6 +2,7 @@ package org.example.cafe.ui;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +12,7 @@ import org.example.cafe.application.QuestionService;
 import org.example.cafe.application.dto.QuestionCreateDto;
 import org.slf4j.Logger;
 
-@WebServlet("/questions")
+@WebServlet(name = "QuestionServlet", urlPatterns = "/questions")
 public class QuestionServlet extends HttpServlet {
 
     private static final Logger log = getLogger(QuestionServlet.class);
@@ -22,6 +23,13 @@ public class QuestionServlet extends HttpServlet {
     public void init() {
         questionService = (QuestionService) getServletContext().getAttribute("QuestionService");
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
+        req.getRequestDispatcher("/WEB-INF/qna/form.jsp").forward(req, resp);
     }
 
     /**

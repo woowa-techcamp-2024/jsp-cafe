@@ -42,11 +42,21 @@ public class UserProfileServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
 
-        String path = request.getRequestURI();
-        String[] pathParts = path.split("/");
+        String requestURI = request.getRequestURI();
+        String[] pathParts = requestURI.split("/");
         String userId = URLDecoder.decode(pathParts[2], StandardCharsets.UTF_8);
 
-        if (path.endsWith("/form")) {
+        if (requestURI.equals("/user/regist")) {
+            forward("/WEB-INF/user/regist.jsp", request, response);
+            return;
+        }
+
+        if (requestURI.equals("/user/login")) {
+            forward("/WEB-INF/user/login.jsp", request, response);
+            return;
+        }
+
+        if (requestURI.endsWith("/form")) {
             forwardModifyForm(request, response, userId);
             return;
         }
@@ -54,13 +64,19 @@ public class UserProfileServlet extends HttpServlet {
         User user = userService.findById(userId);
 
         request.setAttribute("user", user);
-        request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+
+        request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
+    }
+
+    private void forward(String path, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher(path).forward(request, response);
     }
 
     private void forwardModifyForm(HttpServletRequest request, HttpServletResponse response, String userId)
             throws IOException, ServletException {
         request.setAttribute("user", userService.findById(userId));
-        request.getRequestDispatcher("/user/update_form.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/update.jsp").forward(request, response);
     }
 
     /**
@@ -95,7 +111,7 @@ public class UserProfileServlet extends HttpServlet {
         try {
             User user = userService.updateUser(userId, new UserUpdateDto(checkPassword, password, nickname, email));
             request.setAttribute("user", user);
-            request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
         } catch (DataNotFoundException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         } catch (BadAuthenticationException e) {

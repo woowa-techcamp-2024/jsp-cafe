@@ -28,11 +28,13 @@ public class UserServlet extends HttpServlet {
     }
 
     /**
-     * 회원 목록 조회 페이지를 반환한다.
+     * 회원 목록을 반환한다.
+     * @param request an {@link HttpServletRequest} object that contains the request the client has made of the servlet
      *
-     * @param request
-     * @param response
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     *
      * @throws IOException
+     * @throws ServletException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -42,7 +44,7 @@ public class UserServlet extends HttpServlet {
         List<User> users = userService.findAll();
 
         request.setAttribute("users", users);
-        request.getRequestDispatcher("/user/list.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(request, response);
     }
 
     /**

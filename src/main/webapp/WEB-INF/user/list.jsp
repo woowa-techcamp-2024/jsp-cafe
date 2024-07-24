@@ -2,9 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="/base/head.jsp" %>
-<%@ include file="/base/header.jsp" %>
-<%@ include file="/base/nav.jsp" %>
+<%@ include file="/WEB-INF/base/head.jsp" %>
+<%@ include file="/WEB-INF/base/header.jsp" %>
+<%@ include file="/WEB-INF/base/nav.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
@@ -59,4 +59,4 @@
     });
 </script>
 
-<%@ include file="/base/footer.jsp" %>
+<%@ include file="/WEB-INF/base/footer.jsp" %>

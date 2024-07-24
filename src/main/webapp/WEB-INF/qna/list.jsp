@@ -2,9 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/WEB-INF/functions.tld" prefix="fn" %>
-<%@ include file="/base/head.jsp" %>
-<%@ include file="/base/header.jsp" %>
-<%@ include file="/base/nav.jsp" %>
+<%@ include file="/WEB-INF/base/head.jsp" %>
+<%@ include file="/WEB-INF/base/header.jsp" %>
+<%@ include file="/WEB-INF/base/nav.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -20,7 +20,7 @@
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
                                     <span class="time">${fn:formatDateTime(question.createdAt)}</span>
-                                    <a href="user/profile.jsp" class="author">${question.writer}</a>
+                                    <a href="/users" class="author">${question.writer}</a>
                                 </div>
                                 <div class="reply" title="댓글">
                                     <i class="icon-reply"></i>
@@ -45,7 +45,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -129,4 +129,4 @@
 </div>
 -->
 
-<%@ include file="/base/footer.jsp" %>
+<%@ include file="/WEB-INF/base/footer.jsp" %>

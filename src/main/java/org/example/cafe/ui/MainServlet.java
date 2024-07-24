@@ -40,6 +40,6 @@ public class MainServlet extends HttpServlet {
         List<Question> questions = questionService.findAll();
 
         request.setAttribute("questions", questions);
-        request.getRequestDispatcher("/qna/list.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/qna/list.jsp").forward(request, response);
     }
 }

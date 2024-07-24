@@ -1,22 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ include file="/base/head.jsp" %>
-<%@ include file="/base/header.jsp" %>
-<%@ include file="/base/nav.jsp" %>
+<%@ include file="/WEB-INF/base/head.jsp" %>
+<%@ include file="/WEB-INF/base/header.jsp" %>
+<%@ include file="/WEB-INF/base/nav.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
             <form name="question" method="post" action="/users/${user.userId}/form">
-                <c:if test="${not empty user}">
-                    <h2>${errorMessage}</h2>
-                </c:if>
                 <div class="form-group">
                     <label for="userId">사용자 아이디</label>
                     <input class="form-control" id="userId" placeholder="User ID" readonly value=${user.userId}>
                 </div>
                 <div class="form-group">
-                    <label for="password">현재 비밀번호</label>
+                    <label for="current_password">현재 비밀번호</label>
                     <input type="password" class="form-control" id="current_password" name="checkPassword"
                            placeholder="Password">
                 </div>
@@ -42,4 +39,4 @@
     </div>
 </div>
 
-<%@ include file="/base/footer.jsp" %>
+<%@ include file="/WEB-INF/base/footer.jsp" %>
