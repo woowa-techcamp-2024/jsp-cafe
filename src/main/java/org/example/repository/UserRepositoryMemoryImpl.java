@@ -1,5 +1,7 @@
 package org.example.repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,28 +15,39 @@ public class UserRepositoryMemoryImpl implements UserRepository{
     private static UserRepositoryMemoryImpl instance;
 
     public User saveUser(User user) {
-        user.setUserId(index.incrementAndGet());
-        users.put(user.getUserId(), user);
+        users.put(index.incrementAndGet(), user);
         return user;
     }
 
     //삭제가 아니라 null 처리
-    public void deleteUser(Integer userId) {
-        // user 목록 출력
-        users.remove(userId);
+    public void deleteUser(String userId) {
+        users.forEach((key, value) -> {
+            if (value != null && value.getUserId().equals(userId)) {
+                users.remove(key);
+            }
+        });
     }
 
-    public Optional<User> getUser(Integer userId) {
-        return Optional.ofNullable(users.get(userId));
+
+    public Optional<User> getUserByUserId(String userId) {
+        return users.values().stream()
+            .filter(user -> user.getUserId().equals(userId))
+            .findAny();
     }
 
     public void clear() {
         users.clear();
     }
 
-    public UserRepositoryMemoryImpl getInstance() {
+    public List<User> findAll() {
+        return new ArrayList<>(users.values());
+    }
+
+    public static UserRepositoryMemoryImpl getInstance() {
         if (instance == null) {
             instance = new UserRepositoryMemoryImpl();
+            instance.saveUser(new User("test", "test", "test@naver.com", "test"));
+            instance.saveUser(new User("test2", "test2", "test2@naver.com", "test2"));
         }
         return instance;
     }

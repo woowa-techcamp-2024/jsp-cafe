@@ -1,14 +1,21 @@
 package org.example.servlet;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import org.example.dto.UserCreateReqDto;
+import org.example.entity.User;
+import org.example.service.UserService;
 
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
+
+    UserService userService = new UserService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -24,6 +31,7 @@ public class UserServlet extends HttpServlet {
         System.out.println("Password: " + password);
         System.out.println("Name: " + name);
         System.out.println("Email: " + email);
+        userService.createUser(new UserCreateReqDto(userId, password, name, email));
 
         // 처리 후 리다이렉션 또는 응답 작성
         response.sendRedirect("/users");
@@ -32,7 +40,14 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // GET 요청 처리
-        response.getWriter().println("GET 요청은 지원하지 않습니다.");
+        // 회원 목록 조회
+        List<User> users = userService.getAllUsers();
+
+        request.setAttribute("users", users);
+
+        // list.jsp로 포워드
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/user/list.jsp");
+        dispatcher.forward(request, response);
     }
 }
 

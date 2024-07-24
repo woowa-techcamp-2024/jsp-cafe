@@ -22,28 +22,28 @@ class UserRepositoryMemoryImplTest {
 
     @Test
     void testAddUser() {
-        User newUser = new User("123", "testUser@naver.com", "testUser");
+        User newUser = new User("123","123", "testUser@naver.com", "testUser");
         userRepository.saveUser(newUser);
-        Optional<User> retrievedUser = userRepository.getUser(1);
+        Optional<User> retrievedUser = userRepository.getUserByUserId("123");
         assertTrue(retrievedUser.isPresent());
         assertEquals("testUser", retrievedUser.get().getNickname());
     }
 
     @Test
     void testFindUser() {
-        User newUser = new User("2", "findUser", "findUser");
+        User newUser = new User("123","2", "findUser", "findUser");
         userRepository.saveUser(newUser);
-        Optional<User> foundUser = userRepository.getUser(1);
+        Optional<User> foundUser = userRepository.getUserByUserId("123");
         assertTrue(foundUser.isPresent());
         assertEquals("findUser", foundUser.get().getNickname());
     }
 
     @Test
     void testRemoveUser() {
-        User newUser = new User("3", "removeUser", "removeUser");
+        User newUser = new User("123", "3", "removeUser", "removeUser");
         userRepository.saveUser(newUser);
-        userRepository.deleteUser(1);
-        Optional<User> userAfterRemoval = userRepository.getUser(1);
+        userRepository.deleteUser("123");
+        Optional<User> userAfterRemoval = userRepository.getUserByUserId("123");
         assertFalse(userAfterRemoval.isPresent());
     }
 }

@@ -1,19 +1,19 @@
 package org.example.entity;
 
 public class User {
-    private Integer userId;
+    private String userId;
     private String password;
     private String email;
     private String nickname;
 
-    public User(String password, String email, String nickname) {
-        this.userId = null;
+    public User(String userId,String password, String email, String nickname) {
+        this.userId = userId;
         this.password = password;
         this.email = email;
         this.nickname = nickname;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -29,7 +29,7 @@ public class User {
         return nickname;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 }
