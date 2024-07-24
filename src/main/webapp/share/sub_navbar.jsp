@@ -20,10 +20,10 @@
             </button>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="index.html">Posts</a></li>
-                <li><a href="user/login.jsp" role="button">로그인</a></li>
-                <li><a href="user/form.jsp" role="button">회원가입</a></li>
+            <ul id="nav-menu" class="nav navbar-nav navbar-right">
+                <li><a href="/">Posts</a></li>
+                <li><a href="/user/login.jsp" role="button">로그인</a></li>
+                <li><a href="/user/form.jsp" role="button">회원가입</a></li>
                 <!--
                 <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
