@@ -1,9 +1,10 @@
 package cafe;
 
+import cafe.questions.QuestionWriteServlet;
+import cafe.questions.QuestionsServlet;
 import cafe.users.UserRegisterServlet;
 import cafe.users.UsersProfileServlet;
 import cafe.users.UsersServlet;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -29,6 +30,8 @@ public class AppContextListener implements ServletContextListener {
         addServlet(sc, UserRegisterServlet::new);
         addServlet(sc, () -> new UsersServlet(factory.userRepository()));
         addServlet(sc, () -> new UsersProfileServlet(factory.userRepository()));
+        addServlet(sc, () -> new QuestionWriteServlet(factory.articleRepository()));
+        addServlet(sc, () -> new QuestionsServlet(factory.articleRepository()));
     }
 
     private void addServlet(ServletContext sc, Supplier<MappingHttpServlet> servletSupplier) {
