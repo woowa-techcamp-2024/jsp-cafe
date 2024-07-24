@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'DoHyeon';
+    src: url('../fonts/DoHyeon-Regular.ttf') format('truetype');
+}
+
+body {
+    font-family: 'DoHyeon', sans-serif;
+}

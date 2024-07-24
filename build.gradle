@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'cafe'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Tomcat
+    implementation 'org.apache.tomcat:tomcat-servlet-api:10.1.26'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.26'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.1.26'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+war {
+    archiveFileName = 'ROOT.war'
+}
+
+// Read property values
+def tomcatWebappsDir = project.findProperty('tomcatWebappsDir') ?: '/default/tomcat/webapps'
+def catalina = project.findProperty('catalina') ?: '/default/tomcat/bin/catalina'
+
+task copyWarToTomcat(type: Copy) {
+    dependsOn 'build'
+    def warFile = layout.buildDirectory.file("libs/${war.archiveFileName.get()}").get().asFile
+    DuplicatesStrategy.INCLUDE
+
+    from warFile
+    into tomcatWebappsDir
+}
+
+task startTomcat(type: Exec) {
+    commandLine "${catalina}", 'stop'
+    dependsOn copyWarToTomcat
+    commandLine "${catalina}", 'start'
+}
