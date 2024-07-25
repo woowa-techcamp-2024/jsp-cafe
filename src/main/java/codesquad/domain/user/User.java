@@ -52,6 +52,10 @@ public class User {
         return email;
     }
 
+    public boolean matches(String password) {
+        return this.password.equals(password);
+    }
+
     public void update(String password, String name, String email) throws IncorrectPasswordException {
         if (!this.password.equals(password)) {
             throw new IncorrectPasswordException();
