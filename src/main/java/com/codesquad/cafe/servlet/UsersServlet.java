@@ -2,8 +2,6 @@ package com.codesquad.cafe.servlet;
 
 import com.codesquad.cafe.db.InMemoryUserRepository;
 import com.codesquad.cafe.model.User;
-import com.codesquad.cafe.model.UserJoinRequest;
-import com.codesquad.cafe.util.RequestParamModelMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
