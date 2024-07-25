@@ -9,6 +9,10 @@ import codesquad.jspcafe.domain.user.service.UserService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,18 +27,23 @@ public class DefaultServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        jdbcDriverInit();
         sce.getServletContext().setAttribute("userService",
             new UserService(new UserJdbcRepository(connectionManager)));
         sce.getServletContext().setAttribute("articleService",
             new ArticleService(new ArticleJdbcRepository(connectionManager)));
     }
 
-    private void jdbcDriverInit() {
-        try {
-            Class.forName(applicationProperties.getJdbcDriver());
-        } catch (ClassNotFoundException e) {
-            log.error(e.getMessage());
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        Enumeration<Driver> drivers = DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            Driver driver = drivers.nextElement();
+            try {
+                DriverManager.deregisterDriver(driver);
+            } catch (SQLException e) {
+                log.error(e.getMessage());
+            }
         }
     }
+
 }

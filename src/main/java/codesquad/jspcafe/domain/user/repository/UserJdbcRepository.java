@@ -18,11 +18,21 @@ import org.slf4j.LoggerFactory;
 public class UserJdbcRepository implements UserRepository {
 
     private static final Logger log = LoggerFactory.getLogger(UserJdbcRepository.class);
+    private static final String SCHEMA_DDL = """
+        CREATE TABLE IF NOT EXISTS users
+        (
+            id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+            user_id  VARCHAR(255) UNIQUE NOT NULL,
+            password VARCHAR(255)        NOT NULL,
+            username VARCHAR(255)        NOT NULL,
+            email    VARCHAR(255)        NOT NULL
+        );""";
 
     private final JDBCConnectionManager connectionManager;
 
     public UserJdbcRepository(JDBCConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
+        init();
     }
 
     @Override
@@ -108,5 +118,14 @@ public class UserJdbcRepository implements UserRepository {
             log.error(e.getMessage());
         }
         return Collections.unmodifiableList(users);
+    }
+
+    private void init() {
+        try (Connection connection = connectionManager.getConnection();
+            Statement statement = connection.createStatement()) {
+            statement.execute(SCHEMA_DDL);
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
     }
 }

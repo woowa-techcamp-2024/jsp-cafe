@@ -12,10 +12,6 @@ public class ApplicationProperties {
         this.properties = init();
     }
 
-    public String getJdbcDriver() {
-        return properties.getProperty("jdbc.mysql.driver");
-    }
-
     public String getJdbcUrl() {
         return properties.getProperty("jdbc.mysql.url");
     }
@@ -26,10 +22,6 @@ public class ApplicationProperties {
 
     public String getJdbcPassword() {
         return properties.getProperty("jdbc.mysql.password");
-    }
-
-    public String getJdbcSqlSchema() {
-        return properties.getProperty("jdbc.sql.schema");
     }
 
     private Properties init() {

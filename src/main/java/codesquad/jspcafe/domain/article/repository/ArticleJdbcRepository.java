@@ -18,11 +18,21 @@ import org.slf4j.LoggerFactory;
 public class ArticleJdbcRepository implements ArticleRepository {
 
     private static final Logger log = LoggerFactory.getLogger(ArticleJdbcRepository.class);
+    private static final String SCHEMA_DDL = """
+        CREATE TABLE IF NOT EXISTS articles
+        (
+            id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+            title     VARCHAR(255) NOT NULL,
+            writer    VARCHAR(255) NOT NULL,
+            contents  TEXT         NOT NULL,
+            createdAt DATETIME
+        );""";
 
     private final JDBCConnectionManager connectionManager;
 
     public ArticleJdbcRepository(JDBCConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
+        init();
     }
 
     @Override
@@ -91,5 +101,14 @@ public class ArticleJdbcRepository implements ArticleRepository {
             log.error(e.getMessage());
         }
         return Collections.unmodifiableList(articles);
+    }
+
+    private void init() {
+        try (Connection connection = connectionManager.getConnection();
+            Statement statement = connection.createStatement()) {
+            statement.execute(SCHEMA_DDL);
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
     }
 }
