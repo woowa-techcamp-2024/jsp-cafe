@@ -25,14 +25,39 @@ public class UserPathServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String requestURI = request.getRequestURI();
+        String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/users/".length());
         String[] split = requestURI.split("/");
-        String userId = split[split.length - 1];
+        String userId = split[0];
         logger.debug("특정 유저의 프로필을 조회합니다. UserID: {}", userId);
 
         User user = userService.findByUserId(userId);
         request.setAttribute("user", user);
 
-        SendPageUtil.forward("/template/user/profile.jsp", this.getServletContext(), request, response);
+        if (requestURI.endsWith("/form")) {
+            // 회원정보 수정
+            SendPageUtil.forward("/template/user/updateForm.jsp", this.getServletContext(), request, response);
+        } else {
+            // 회원정보 확인
+            SendPageUtil.forward("/template/user/profile.jsp", this.getServletContext(), request, response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/users/".length());
+        String[] split = requestURI.split("/");
+        String userId = split[0];
+        logger.debug("특정 유저의 정보를 수정합니다. UserID: {}", userId);
+
+        String password = request.getParameter("password");
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        logger.debug("수정 정보! userId: {}, password: {}, name: {}, email: {}", userId, password, name, email);
+
+        User user = new User(userId, password, name, email);
+        userService.updateUser(user);
+
+        request.setAttribute("user", user);
+        SendPageUtil.forward("/template/user/updateForm.jsp", this.getServletContext(), request, response);
     }
 }

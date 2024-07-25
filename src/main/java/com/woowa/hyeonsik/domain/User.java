@@ -1,11 +1,11 @@
 package com.woowa.hyeonsik.domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class User {
+public final class User {
     private static final int MIN_PASSWORD_LENGTH = 2;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^([A-Za-z0-9+_.-]+@[A-Za-z0-9+_-]+[.][A-Za-z0-9+_-]+)$");
-
     private final String userId;
     private final String password;
     private final String name;
@@ -48,5 +48,30 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (User) obj;
+        return Objects.equals(this.userId, that.userId) &&
+                Objects.equals(this.password, that.password) &&
+                Objects.equals(this.name, that.name) &&
+                Objects.equals(this.email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, password, name, email);
+    }
+
+    @Override
+    public String toString() {
+        return "User[" +
+                "userId=" + userId + ", " +
+                "password=" + password + ", " +
+                "name=" + name + ", " +
+                "email=" + email + ']';
     }
 }

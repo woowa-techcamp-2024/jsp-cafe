@@ -48,7 +48,7 @@ class UserTest {
 
     @Test
     @DisplayName("암호가 2글자 보다 작으면 예외가 발생한다.")
-    void throw_when_least_password() {
+    void throw_when_least_getPassword() {
         String userId = "testUser";
         String password = "t";
         String name = "testName";
@@ -60,7 +60,7 @@ class UserTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "javajigi.com", "javajigi", "javajigi@com", "javajigi@@@", "javajigi@@@.com", "javajigi@@@naver.com"})
     @DisplayName("이메일 규격에 맞지 않으면 예외가 발생한다.")
-    void throw_when_email(String email) {
+    void throw_when_getEmail(String email) {
         String userId = "testUser";
         String password = "testPassword";
         String name = "testName";
