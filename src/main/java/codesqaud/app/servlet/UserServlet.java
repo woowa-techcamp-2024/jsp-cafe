@@ -10,9 +10,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,8 +104,18 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getRequestURI().equals("/users")) {
+        if (req.getRequestURI().equals("/users")) {
             handleSignUp(req, resp);
+            return;
+        }
+
+        if (req.getRequestURI().equals("/users/login")) {
+            handleLogin(req, resp);
+            return;
+        }
+
+        if (req.getRequestURI().equals("/users/logout")) {
+            handleLogout(req, resp);
             return;
         }
 
@@ -114,6 +126,28 @@ public class UserServlet extends HttpServlet {
             handleProfileUpdate(req, resp, id);
             return;
         }
+    }
+
+    private void handleLogout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession();
+        session.invalidate();
+        resp.sendRedirect(req.getHeader("Referer"));
+    }
+
+    private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("userId");
+        String password = req.getParameter("password");
+
+        Optional<User> user = userDao.findByUserId(userId);
+        if (user.isEmpty() || !user.get().getPassword().equals(password)) {
+            req.setAttribute("isFailed", true);
+            req.getRequestDispatcher("/WEB-INF/user/login.jsp").forward(req, resp);
+            return;
+        }
+
+        HttpSession session = req.getSession(true);
+        session.setAttribute("user", user.get());
+        resp.sendRedirect("/");
     }
 
     private void handleSignUp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
