@@ -19,6 +19,9 @@ public class MysqlArticleDao implements ArticleDao{
 
     @Override
     public Article save(Article article) {
+        if(!article.validation()){
+            throw new DataIntegrityViolationException("can't persist null or empty value");
+        }
         try(Connection conn = manager.getConnection()) {
             if(article.getId() == null){//save작업
                 String writer = article.getWriter();
