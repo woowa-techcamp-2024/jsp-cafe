@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
@@ -72,12 +73,21 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="${pageContext.request.contextPath}/index.html">Posts</a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/user/login"
-                       role="button">로그인</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/form.html"
-                       role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <c:if test="${empty sessionScope.user}">
+                    <li><a href="${pageContext.request.contextPath}/user/login"
+                           role="button">로그인</a></li>
+                    <li><a href="${pageContext.request.contextPath}/user/form.html"
+                           role="button">회원가입</a></li>
+                </c:if>
+                <c:if test="${not empty sessionScope.user}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/user/logout"
+                           role="button">로그아웃</a>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/users/${sessionScope.user.userId}/form"
+                           role="button">개인정보수정</a>
+                    </li>
+                </c:if>
             </ul>
         </div>
     </div>
