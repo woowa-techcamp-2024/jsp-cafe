@@ -1,3 +1,7 @@
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="com.woowa.model.Question" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="utf-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -16,7 +20,7 @@
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="../index.html" class="navbar-brand">SLiPP</a>
+            <a href="../index.jsp" class="navbar-brand">SLiPP</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -63,7 +67,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../index.html">Posts</a></li>
+                <li class="active"><a href="../index.jsp">Posts</a></li>
                 <li><a href="../user/login.html" role="button">로그인</a></li>
                 <li><a href="../user/form.html" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
@@ -76,8 +80,13 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
+            <%
+                Question question = (Question) request.getAttribute("question");
+                String dateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm").format(question.getCreatedAt());
+                pageContext.setAttribute("createdAt", dateTime);
+            %>
           <header class="qna-header">
-              <h2 class="qna-title">InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.</h2>
+              <h2 class="qna-title">${question.title}</h2>
           </header>
           <div class="content-main">
               <article class="article">
@@ -86,16 +95,15 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>
+                          <a href="/users/92/kimmunsu" class="article-author-name">${question.author.nickname}</a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              2015-12-30 01:47
+                              ${createdAt}
                               <i class="icon-link"></i>
                           </a>
                       </div>
                   </div>
                   <div class="article-doc">
-                      <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p><p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                      서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p><p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                      ${question.content}
                   </div>
                   <div class="article-util">
                       <ul class="article-util-list">
@@ -109,7 +117,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/index.html">목록</a>
+                              <a class="link-modify-article" href="/index.jsp">목록</a>
                           </li>
                       </ul>
                   </div>

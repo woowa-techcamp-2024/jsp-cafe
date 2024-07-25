@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class UserHandler {
@@ -46,5 +47,29 @@ public class UserHandler {
             throw new RuntimeException("대상 리소스를 찾지 못하였습니다.");
         }
         return null;
+    }
+
+    @RequestMapping(path = "/users/{userId}/edit", method = HttpMethod.POST)
+    public ResponseEntity updateUser(
+            String userId,
+            @RequestParameter("nickname") String nickname) {
+        User user = getUser(userId);
+        user.update(nickname);
+        return ResponseEntity.builder()
+                .found("/users/" + userId);
+    }
+
+    @RequestMapping(path = "/users/{userId}/edit", method = HttpMethod.GET)
+    public ResponseEntity updateUserForm(
+            String userId) {
+        User user = getUser(userId);
+        return ResponseEntity.builder()
+                .add("user", user)
+                .ok();
+    }
+
+    private User getUser(String userId) {
+        return userDatabase.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
     }
 }

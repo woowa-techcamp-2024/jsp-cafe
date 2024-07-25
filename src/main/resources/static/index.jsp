@@ -1,3 +1,8 @@
+<%@ page import="com.woowa.model.Question" %>
+<%@ page import="java.time.ZonedDateTime" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="utf-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -82,16 +87,22 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
+                <c:forEach var="question" items="${questions}" varStatus="status">
+                    <%
+                        Question question = (Question) pageContext.getAttribute("question");
+                        String dateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm").format(question.getCreatedAt());
+                        pageContext.setAttribute("createdAt", dateTime);
+                    %>
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="./qna/show.html">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
+                                <a href="/questions/${question.questionId}">${question.title}</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-15 18:47</span>
-                                <a href="user/profile.jsp" class="author">자바지기</a>
+                                <span class="time">${createdAt}</span>
+                                <a href="user/profile.jsp" class="author">${question.author.nickname}</a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -100,24 +111,7 @@
                         </div>
                     </div>
                 </li>
-                <li>
-                    <div class="wrap">
-                        <div class="main">
-                            <strong class="subject">
-                                <a href="./qna/show.html">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
-                            </strong>
-                            <div class="auth-info">
-                                <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-05 18:47</span>
-                                <a href="user/profile.jsp" class="author">김문수</a>
-                            </div>
-                            <div class="reply" title="댓글">
-                                <i class="icon-reply"></i>
-                                <span class="point">12</span>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+                </c:forEach>
             </ul>
             <div class="row">
                 <div class="col-md-3"></div>

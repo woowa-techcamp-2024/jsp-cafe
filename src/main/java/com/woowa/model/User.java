@@ -1,10 +1,12 @@
 package com.woowa.model;
 
+import java.util.NoSuchElementException;
+
 public class User {
     private final String userId;
     private final String email;
     private final String password;
-    private final String nickname;
+    private String nickname;
 
     private User(String userId, String email, String password, String nickname) {
         this.userId = userId;
@@ -31,5 +33,18 @@ public class User {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void checkPassword(String password) {
+        if(password.equals(this.password)) {
+            return;
+        }
+        throw new NoSuchElementException("아이디/패스워드가 일치하지 않습니다.");
+    }
+
+    public void update(String nickname) {
+        if(nickname != null && !nickname.isBlank()) {
+            this.nickname = nickname.trim();
+        }
     }
 }

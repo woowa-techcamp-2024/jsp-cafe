@@ -7,6 +7,8 @@ import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.User;
+import com.woowa.support.UserFixture;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,6 +83,60 @@ class UserHandlerTest {
 
             //then
             assertThat(exception).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateUser 호출 시")
+    class UpdateUserTest {
+
+        @Test
+        @DisplayName("유저의 닉네임을 업데이트한다.")
+        void updateNickname() {
+            //given
+            User user = UserFixture.user();
+            String updateNickname = "updateNickname";
+
+            userDatabase.save(user);
+
+            //when
+            ResponseEntity response = userHandler.updateUser(user.getUserId(), updateNickname);
+
+            //then
+            User findUser = userDatabase.findById(user.getUserId()).get();
+            assertThat(findUser.getNickname()).isEqualTo(updateNickname);
+        }
+
+        @Test
+        @DisplayName("예외(NoSuchElement): 회원이 존재하지 않으면")
+        void noSuchElement_WhenUserNotFound() {
+            //given
+            User user = UserFixture.user();
+
+            //when
+            Exception exception = catchException(() -> userHandler.updateUser(user.getUserId(), "test"));
+
+            //then
+            assertThat(exception).isInstanceOf(NoSuchElementException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateUserForm 호출 시")
+    class UpdateUserFormTest {
+
+        @Test
+        @DisplayName("유저 정보를 반환한다.")
+        void setAttributeUser() {
+            //given
+            User user = UserFixture.user();
+            userDatabase.save(user);
+
+            //when
+            ResponseEntity response = userHandler.updateUserForm(user.getUserId());
+
+            //then
+            assertThat(response.getModel().get("user")).isEqualTo(user);
         }
     }
 }
