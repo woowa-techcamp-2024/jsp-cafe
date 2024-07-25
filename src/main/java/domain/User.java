@@ -54,4 +54,14 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User user = (User) obj;
+        return id.equals(user.id);
+    }
+
 }
