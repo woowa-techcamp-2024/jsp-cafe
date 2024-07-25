@@ -23,7 +23,7 @@ public class HomeServlet extends HttpServlet {
     private ArticleService articleService;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         this.articleService = (ArticleService) getServletContext().getAttribute("articleService");
         log.info("HomeServlet is initialized");
     }

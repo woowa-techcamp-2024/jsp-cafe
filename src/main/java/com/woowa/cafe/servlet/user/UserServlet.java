@@ -26,7 +26,7 @@ public class UserServlet extends HttpServlet {
     private MemberService memberService;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         this.memberService = (MemberService) getServletContext().getAttribute("memberService");
         log.info("UserServlet is initialized");
     }
