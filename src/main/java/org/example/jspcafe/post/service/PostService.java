@@ -2,7 +2,6 @@ package org.example.jspcafe.post.service;
 
 import org.example.jspcafe.Component;
 import org.example.jspcafe.post.model.Post;
-import org.example.jspcafe.post.repository.InMemoryPostRepository;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
 import org.example.jspcafe.post.repository.PostRepository;
 import org.example.jspcafe.post.request.PostCreateRequest;
@@ -10,7 +9,6 @@ import org.example.jspcafe.post.response.PostListResponse;
 import org.example.jspcafe.post.response.PostResponse;
 import org.example.jspcafe.user.model.Nickname;
 import org.example.jspcafe.user.model.User;
-import org.example.jspcafe.user.repository.InMemoryUserRepository;
 import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 
