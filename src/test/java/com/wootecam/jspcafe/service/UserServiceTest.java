@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.jspcafe.model.User;
+import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.repository.UserRepository;
 import java.util.Arrays;
 import java.util.List;

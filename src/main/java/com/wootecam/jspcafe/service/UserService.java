@@ -1,6 +1,6 @@
 package com.wootecam.jspcafe.service;
 
-import com.wootecam.jspcafe.model.User;
+import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.repository.UserRepository;
 import java.util.List;
 import org.slf4j.Logger;

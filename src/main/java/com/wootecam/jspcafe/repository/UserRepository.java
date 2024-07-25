@@ -1,6 +1,6 @@
 package com.wootecam.jspcafe.repository;
 
-import com.wootecam.jspcafe.model.User;
+import com.wootecam.jspcafe.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

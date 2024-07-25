@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.jspcafe.model.Question;
+import com.wootecam.jspcafe.domain.Question;
 import com.wootecam.jspcafe.repository.QuestionRepository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
