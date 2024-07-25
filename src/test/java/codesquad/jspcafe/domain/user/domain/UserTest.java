@@ -3,7 +3,6 @@ package codesquad.jspcafe.domain.user.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import codesquad.jspcafe.domain.user.domain.values.Email;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,8 +32,7 @@ class UserTest {
             // Assert
             assertThat(actualResult)
                 .extracting("userId", "password", "username", "email")
-                .containsExactly(expectedUserId, expectedPassword, expectedUsername,
-                    Email.from(expectedEmail));
+                .containsExactly(expectedUserId, expectedPassword, expectedUsername, expectedEmail);
         }
 
         @DisplayName("정상적으로 생성된다.")
@@ -43,13 +41,13 @@ class UserTest {
             // Arrange
             Long expectedId = 1L;
             // Act
-            User actualResult = new User(expectedId, expectedUserId, expectedPassword, expectedUsername,
-                Email.from(expectedEmail));
+            User actualResult = new User(expectedId, expectedUserId, expectedPassword,
+                expectedUsername, expectedEmail);
             // Assert
             assertThat(actualResult)
                 .extracting("id", "userId", "password", "username", "email")
                 .containsExactly(expectedId, expectedUserId, expectedPassword, expectedUsername,
-                    Email.from(expectedEmail));
+                    expectedEmail);
         }
 
         @DisplayName("userId가 null이거나 빈 문자열이면 예외가 발생한다.")
@@ -173,7 +171,7 @@ class UserTest {
             // Act
             user.updateValues(expectedUsername, value);
             // Assert
-            assertThat(user.getEmail()).isEqualTo(Email.from(expectedEmail));
+            assertThat(user.getEmail()).isEqualTo(expectedEmail);
         }
 
         @DisplayName("유저 이름이 변경된다.")
@@ -197,7 +195,7 @@ class UserTest {
             // Act
             user.updateValues(null, changedEmail);
             // Assert
-            assertThat(user.getEmail()).isEqualTo(Email.from(changedEmail));
+            assertThat(user.getEmail()).isEqualTo(changedEmail);
         }
 
         private static Stream<Arguments> exceptedValues() {

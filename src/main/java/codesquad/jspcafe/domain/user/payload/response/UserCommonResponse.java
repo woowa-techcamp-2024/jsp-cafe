@@ -15,8 +15,7 @@ public class UserCommonResponse {
     }
 
     public static UserCommonResponse from(User user) {
-        return new UserCommonResponse(user.getUserId(), user.getUsername(),
-            user.getEmail().getValue());
+        return new UserCommonResponse(user.getUserId(), user.getUsername(), user.getEmail());
     }
 
     public String getUserId() {

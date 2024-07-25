@@ -17,12 +17,12 @@ public class User {
         this.email = Email.from(email);
     }
 
-    public User(Long id, String userId, String password, String username, Email email) {
+    public User(Long id, String userId, String password, String username, String email) {
         this.id = id;
         this.userId = userId;
         this.password = password;
         this.username = username;
-        this.email = email;
+        this.email = Email.from(email);
     }
 
     public Long getId() {
@@ -45,8 +45,8 @@ public class User {
         return username;
     }
 
-    public Email getEmail() {
-        return email;
+    public String getEmail() {
+        return email.getValue();
     }
 
     public boolean verifyPassword(String password) {
