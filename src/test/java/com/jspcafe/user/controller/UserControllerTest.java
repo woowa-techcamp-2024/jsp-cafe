@@ -164,4 +164,25 @@ class UserControllerTest {
         assertEquals("/WEB-INF/views/user/login.jsp", request.getForwardedPath());
         assertTrue((Boolean) request.getAttribute("loginFailed"));
     }
+
+    @Test
+    void 로그아웃시_session을_지우고_루트로_리다이렉트_된다() throws ServletException, IOException {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        request.setPathInfo("/login");
+        request.setParameter("email", "user1@example.com");
+        request.setParameter("password", "password1");
+
+        userController.doPost(request, response);
+
+        // When
+        request.setPathInfo("/logout");
+        userController.doGet(request, response);
+
+        //Then
+        assertNull(request.getSession().getAttribute("userInfo"));
+        assertEquals("/", response.getRedirectLocation());
+    }
 }

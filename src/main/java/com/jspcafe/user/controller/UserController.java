@@ -44,6 +44,7 @@ public class UserController extends HttpServlet {
         switch (path) {
             case "/sign" -> forward("signup", req, resp);
             case "/login" -> forward("login", req, resp);
+            case "/logout" -> logout(req, resp);
             default -> userProfile(req, resp);
         }
     }
@@ -133,5 +134,11 @@ public class UserController extends HttpServlet {
         }
         req.setAttribute("loginFailed", true);
         forward("login", req, resp);
+    }
+
+    private void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        session.invalidate();
+        resp.sendRedirect("/");
     }
 }
