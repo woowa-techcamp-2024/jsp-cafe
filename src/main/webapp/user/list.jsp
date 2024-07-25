@@ -1,3 +1,8 @@
+<%@ page import="codesquad.javacafe.member.dto.response.MemberResponseDto" %>
+<%@ page import="java.util.List" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -79,16 +84,21 @@
           <table class="table table-hover">
               <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                    <th scope="row">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
+                <%
+                    List<MemberResponseDto> members = (List<MemberResponseDto>) request.getAttribute("memberList");
+                    int row = 1;
+                    for(MemberResponseDto memberResponseDto : members) {
+                %>
+                    <tr>
+                        <th scope="row"><%= row++%></th> <td><%=memberResponseDto.getUserId()%></td> <td><%=memberResponseDto.getName()%></td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    </tr>
+              <%
+                  }
+              %>
               </tbody>
           </table>
         </div>
