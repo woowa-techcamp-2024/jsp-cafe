@@ -1,5 +1,7 @@
 package codesqaud.mock;
 
+import codesqaud.app.dao.ArticleDao;
+import codesqaud.app.dao.InMemoryArticleDao;
 import codesqaud.app.dao.InMemoryUserDao;
 import codesqaud.app.dao.UserDao;
 import jakarta.servlet.*;
@@ -15,6 +17,9 @@ public class MockServletContext implements ServletContext {
     {
         UserDao userDao= new InMemoryUserDao();
         attributes.put("userDao", userDao);
+
+        ArticleDao articleDao = new InMemoryArticleDao();
+        attributes.put("articleDao", articleDao);
     }
 
     @Override
