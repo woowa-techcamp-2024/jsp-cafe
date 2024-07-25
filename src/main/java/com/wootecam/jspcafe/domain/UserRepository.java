@@ -12,4 +12,6 @@ public interface UserRepository {
     Optional<User> findById(final Long id);
 
     void update(final User user);
+
+    Optional<User> findByUserId(String userId);
 }

@@ -9,6 +9,7 @@ import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -196,6 +197,80 @@ class UserServiceTest extends ServiceTest {
                         () -> userService.edit(1L, "differentPassword", "newPassword", "name", "email"))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
+            }
+        }
+    }
+
+    @Nested
+    class signIn_메소드는 {
+
+        @Nested
+        class 로그인_정보가_비어있거나_null값_이라면 {
+
+            @ParameterizedTest
+            @MethodSource("generateInvalidSignInInfo")
+            void 예외가_발생한다(List<String> invalidSignInInfo) {
+                // expect
+                assertThatThrownBy(() -> userService.signIn(invalidSignInInfo.get(0), invalidSignInInfo.get(1)));
+            }
+
+            private static Stream<Arguments> generateInvalidSignInInfo() {
+                return Stream.of(
+                        Arguments.of(List.of("", "password")),
+                        Arguments.of(List.of("userId", "")),
+                        Arguments.of(Arrays.asList(null, "password")),
+                        Arguments.of(Arrays.asList("userId", null))
+                );
+            }
+        }
+
+        @Nested
+        class 존재하지_않는_사용자의_userId로_로그인을_시도하면 {
+
+            @Test
+            void 비어있는_사용자가_반환한다() {
+                // when
+                Optional<User> user = userService.signIn("notExistsUserId", "password");
+
+                // then
+                assertThat(user).isEmpty();
+            }
+        }
+
+        @Nested
+        class 입력한_비밀번호와_DB에_저장된_사용자의_비밀번호가_다르다면 {
+
+            @Test
+            void 비어있는_사용자를_반환한다() {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+
+                // when
+                Optional<User> user = userService.signIn("userId", "differentPassword");
+
+                // then
+                assertThat(user).isEmpty();
+            }
+        }
+
+        @Nested
+        class 입력한_아이디와_비밀번호가_일치한다면 {
+
+            @Test
+            void 로그인_성공의_의미로_실제_사용자를_반환한다() {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+
+                // when
+                User user = userService.signIn("userId", "password").get();
+
+                // then
+                assertAll(
+                        () -> assertThat(user.getUserId()).isEqualTo("userId"),
+                        () -> assertThat(user.getPassword()).isEqualTo("password"),
+                        () -> assertThat(user.getName()).isEqualTo("name"),
+                        () -> assertThat(user.getEmail()).isEqualTo("email")
+                );
             }
         }
     }

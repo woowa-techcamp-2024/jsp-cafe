@@ -3,6 +3,8 @@ package com.wootecam.jspcafe.service;
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.domain.UserRepository;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,5 +44,19 @@ public class UserService {
         User editedUser = user.edit(originalPassword, newPassword, name, email);
 
         userRepository.update(editedUser);
+    }
+
+    public Optional<User> signIn(final String userId, final String password) {
+        validateSignInInfo(userId, password);
+
+        return userRepository.findByUserId(userId)
+                .filter(user -> user.confirmPassword(password));
+    }
+
+    private void validateSignInInfo(final String userId, final String password) {
+        if (Objects.isNull(userId) || Objects.isNull(password)
+                || userId.isEmpty() || password.isEmpty()) {
+            throw new IllegalArgumentException("로그인 정보를 모두 입력해야 합니다.");
+        }
     }
 }

@@ -10,6 +10,7 @@ import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionServlet;
+import com.wootecam.jspcafe.servlet.user.SignInFormServlet;
 import com.wootecam.jspcafe.servlet.user.SignupFormServlet;
 import com.wootecam.jspcafe.servlet.user.UserEditServlet;
 import com.wootecam.jspcafe.servlet.user.UserProfileServlet;
@@ -43,6 +44,8 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/users/*");
         servletContext.addServlet("userEditServlet", new UserEditServlet(userService))
                 .addMapping("/users/edit/*");
+        servletContext.addServlet("signInFormServlet", new SignInFormServlet(userService))
+                .addMapping("/users/sign-in");
 
         servletContext.addServlet("questionServlet", new QuestionServlet(questionService))
                 .addMapping("/questions");

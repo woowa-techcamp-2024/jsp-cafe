@@ -53,6 +53,10 @@ public class User {
         }
     }
 
+    public boolean confirmPassword(final String password) {
+        return this.password.equals(password);
+    }
+
     public Long getId() {
         return id;
     }

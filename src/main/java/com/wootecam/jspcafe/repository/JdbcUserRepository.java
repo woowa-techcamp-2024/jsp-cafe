@@ -89,4 +89,23 @@ public class JdbcUserRepository implements UserRepository {
                 }
         );
     }
+
+    @Override
+    public Optional<User> findByUserId(final String userId) {
+        String query = "SELECT id, user_id, password, name, email FROM users WHERE user_id = ?";
+
+        User user = jdbcTemplate.selectOne(
+                query,
+                ps -> ps.setString(1, userId),
+                resultSet -> new User(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5)
+                )
+        );
+
+        return Optional.ofNullable(user);
+    }
 }
