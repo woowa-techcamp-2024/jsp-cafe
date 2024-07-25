@@ -18,12 +18,16 @@
                     <input type="email" class="form-control" id="email" name="email" value="${user.email}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="nickname">새로운 닉네임</label>
-                    <input class="form-control" id="nickname" name="nickname" value="${user.nickname}" placeholder="Name">
+                    <label for="newNickname">새로운 닉네임</label>
+                    <input class="form-control" id="newNickname" name="newNickname" value="${user.nickname}" placeholder="Name">
                 </div>
                 <div class="form-group">
-                    <label for="password">새로운 비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
+                    <label for="newPassword">새로운 비밀번호</label>
+                    <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="New Password">
+                </div>
+                <div class="form-group">
+                    <label for="password">기존 비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="password">
                 </div>
                 <button type="submit" class="btn btn-success clearfix pull-right">정보 수정</button>
                 <div class="clearfix" />

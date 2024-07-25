@@ -51,8 +51,13 @@ public class UserService {
                 .orElseThrow(() -> new UserException("User with id " + id + " not found"));
     }
 
-    public UserResponse updateUserInfo(Long userId, UserUpdateRequest userUpdateRequest) {
+    public UserResponse updateUserInfo(Long userId, String password, UserUpdateRequest userUpdateRequest) {
         User user = findById(userId);
+
+        if (!user.getPassword().equals(password)) {
+            throw new UserException("비밀번호가 일치하지 않습니다.");
+        }
+
         return UserResponse.of(userRepository.update(user, userUpdateRequest));
     }
 

@@ -57,12 +57,13 @@ public class UserEditServlet extends HttpServlet {
         Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/users/edit/{userId}",
                 req.getRequestURI());
         Long userId = Long.parseLong(pathVariables.get("userId"));
-
-        String nickname = req.getParameter("nickname");
         String password = req.getParameter("password");
-        UserUpdateRequest updateRequest = new UserUpdateRequest(password, nickname);
+        log.debug("기존 비밀번호 : {}", password);
+        String newNickname = req.getParameter("newNickname");
+        String newPassword = req.getParameter("newPassword");
+        UserUpdateRequest updateRequest = new UserUpdateRequest(newPassword, newNickname);
 
-        userService.updateUserInfo(userId, updateRequest);
+        userService.updateUserInfo(userId, password, updateRequest);
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/users");
 
