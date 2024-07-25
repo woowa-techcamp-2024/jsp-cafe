@@ -9,8 +9,8 @@ import java.util.List;
 public class SimpleConnectionPool {
     private static final int INITIAL_POOL_SIZE = 10;
     private static final int MAX_POOL_SIZE = 20;
-    private List<Connection> connectionPool;
-    private List<Connection> usedConnections = new ArrayList<>();
+    private static List<Connection> connectionPool;
+    private static List<Connection> usedConnections = new ArrayList<>();
 
     private static SimpleConnectionPool instance;
 
@@ -42,7 +42,7 @@ public class SimpleConnectionPool {
         return connection;
     }
 
-    public synchronized boolean releaseConnection(Connection connection) {
+    public static synchronized boolean releaseConnection(Connection connection) {
         connectionPool.add(connection);
         return usedConnections.remove(connection);
     }
@@ -52,6 +52,7 @@ public class SimpleConnectionPool {
             return JdbcTemplate.getConnection();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to create a new connection!");
         }
     }
 
@@ -59,8 +60,8 @@ public class SimpleConnectionPool {
         return connectionPool.size() + usedConnections.size();
     }
 
-    public void shutdown() throws SQLException {
-        usedConnections.forEach(this::releaseConnection);
+    public static void shutdown() throws SQLException {
+        usedConnections.forEach(SimpleConnectionPool::releaseConnection);
         for (Connection c : connectionPool) {
             c.close();
         }
