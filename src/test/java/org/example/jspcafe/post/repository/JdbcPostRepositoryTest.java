@@ -22,6 +22,43 @@ class JdbcPostRepositoryTest extends AbstractRepositoryTestSupport {
         postRepository.deleteAllInBatch();
     }
 
+
+    @DisplayName("deleteAllInBatch 메서드를 호출하면 저장된 모든 게시글을 삭제한다.")
+    @Test
+    void deleteAllInBatchTest() {
+        // given
+        List<Post> posts = List.of(
+                new Post(1L, "title1", "content1", LocalDateTime.of(2021, 1, 1, 0, 0, 0)),
+                new Post(2L, "title2", "content2", LocalDateTime.of(2021, 1, 2, 0, 0, 0)),
+                new Post(3L, "title3", "content3", LocalDateTime.of(2021, 1, 3, 0, 0, 0))
+        );
+
+        posts.forEach(postRepository::save);
+
+        // when
+        postRepository.deleteAllInBatch();
+
+        // then
+        assertThat(postRepository.findAll()).isEmpty();
+    }
+
+    @DisplayName("현재 저장된 게시물의 수를 조회할 수 있다.")
+    @Test
+    void count() {
+        // given
+        List<Post> posts = List.of(
+                new Post(1L, "title1", "content1", LocalDateTime.of(2021, 1, 1, 0, 0, 0)),
+                new Post(2L, "title2", "content2", LocalDateTime.of(2021, 1, 2, 0, 0, 0)),
+                new Post(3L, "title3", "content3", LocalDateTime.of(2021, 1, 3, 0, 0, 0))
+        );
+
+        // when
+        posts.forEach(postRepository::save);
+
+        // then
+        assertThat(postRepository.count()).isEqualTo(3);
+    }
+
     @DisplayName("기존 포스트를 저장하면 기존 포스트를 반환한다")
     @Test
     void saveAlreadyExists() {
