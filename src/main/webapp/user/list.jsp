@@ -31,7 +31,7 @@
                     <td><%= user.getPassword() %></td>
                     <td><%= user.getName() %></td>
                     <td><%= user.getEmail() %></td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/<%=user.getId()%>/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
                     }

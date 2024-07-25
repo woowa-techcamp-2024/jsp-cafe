@@ -2,7 +2,7 @@ package org.example.demo;
 
 public class User {
     private Long id;
-    private String userId;
+    private final String userId;
     private String password;
     private String name;
     private String email;
@@ -37,5 +37,17 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

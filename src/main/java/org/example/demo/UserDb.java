@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import org.example.demo.model.UserCreateDao;
+import org.example.demo.model.UserUpdateDao;
 
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,15 @@ public class UserDb {
         return users.values().stream()
                 .filter(user -> user.getUserId().equals(writer))
                 .findAny();
+    }
+
+    public static void updateUser(UserUpdateDao dao) {
+        //TODO 나중에 user 메소드로 정의하면 좋을 듯?
+        //TODO 동시성 문제 고려해보기
+        User user = users.get(dao.getId());
+        user.setName(dao.getName());
+        user.setPassword(dao.getPassword());
+        user.setEmail(dao.getEmail());
+        users.put(dao.getId(), user);
     }
 }
