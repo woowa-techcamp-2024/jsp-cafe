@@ -80,6 +80,29 @@ public class UserDataHandlerMySql implements UserDataHandler {
     }
 
     @Override
+    public User findByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection con = DatabaseConnectionManager.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getLong("user_id"),
+                            rs.getString("email"),
+                            rs.getString("nickname"),
+                            rs.getString("password"),
+                            rs.getTimestamp("created_dt").toLocalDateTime()
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find user by email", e);
+        }
+        return null;
+    }
+
+    @Override
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         List<User> users = new ArrayList<>();

@@ -30,6 +30,14 @@ public class UserDataHandlerInMemory implements UserDataHandler {
     }
 
     @Override
+    public User findByEmail(String email) {
+        return db.values().stream()
+                .filter(e -> e.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public List<User> findAll() {
         return db.values().stream().toList();
     }
