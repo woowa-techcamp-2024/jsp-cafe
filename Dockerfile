@@ -20,5 +20,3 @@ RUN mv target/*.war /usr/local/tomcat/webapps/ROOT.war
 RUN rm -rf /usr/local/tomcat/webapps/myapp /root/.m2
 
 EXPOSE 8080
-
-CMD ["catalina.sh", "run"]
