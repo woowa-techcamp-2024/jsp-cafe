@@ -17,7 +17,7 @@ public record UserUpdateRequest(
 
 	public void validate() {
 		DtoValidationUtil.validate(this);
-		if (email != null) {
+		if (email != null && !email.isBlank()) {
 			Matcher emailMatcher = emailPattern.matcher(email);
 			if (!emailMatcher.matches()) {
 				throw new RuntimeException("Invalid email pattern");
