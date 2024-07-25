@@ -4,6 +4,15 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
     <servlet>
+        <servlet-name>articleListServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>articleListServlet</servlet-name>
+        <url-pattern></url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>memberRegistServlet</servlet-name>
         <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberRegistServlet</servlet-class>
     </servlet>
@@ -38,6 +47,7 @@
         <servlet-name>articleRegisterServlet</servlet-name>
         <url-pattern>/questions</url-pattern>
     </servlet-mapping>
+
 
     <filter>
         <filter-name>xssFilter</filter-name>
