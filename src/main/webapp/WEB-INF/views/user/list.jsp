@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.List" %>
 <%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
 
@@ -23,23 +24,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%
-                    List<UserResponse> users = (List<UserResponse>)request.getAttribute("users");
-                    if(users != null) {
-                        for(int i = 0; i < users.size(); i++) {
-                            UserResponse user = users.get(i);
-                %>
-                <tr>
-
-                    <td><a href="${pageContext.request.contextPath}/users/<%= user.id() %>" class="btn btn-link"><%= user.nickname() %></a></td>
-                    <td><%= user.email() %></td>
-                    <td><%= user.registerAt() %></td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-                <%
-                        }
-                    }
-                %>
+                <c:forEach var="user" items="${requestScope.users}">
+                    <tr>
+                        <td><a href="${pageContext.request.contextPath}/users/${user.id}"
+                               class="btn btn-link">${user.nickname}</a></td>
+                        <td>${user.email}</td>
+                        <td>${user.registerAt}</td>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/users/edit/${user.id}" class="btn btn-success"
+                               role="button">수정</a>
+                        </td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
