@@ -1,6 +1,8 @@
 package codesquad.javacafe.member.controller;
 
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
+import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
 import codesquad.javacafe.member.service.MemberService;
 import jakarta.servlet.ServletException;
@@ -20,15 +22,29 @@ public class MemberInfoController implements SubController {
         log.info("[MemberInfoController doProcess]");
         var method = req.getMethod();
         log.info("[MemberInfoController doProcess] method: {}", method);
-
-        switch (method) {
-            case "GET":{
+        switch(method){
+            case "GET" : {
                 var userId = req.getParameter("userId");
-                var memberInfo = memberService.getMemberInfo(userId);
-                req.setAttribute("memberInfo", memberInfo);
-                var dispatcher = req.getRequestDispatcher("/WEB-INF/user/profile.jsp");
+                req.setAttribute("userId", userId);
+                var dispatcher = req.getRequestDispatcher("/user/memberInfo.jsp");
+                dispatcher.forward(req, res);
+            }
+            case "POST" : {
+                updateMember(req);
+                var memberList = memberService.getMemberList();
+                for (MemberResponseDto memberResponseDto : memberList) {
+                    System.out.println(memberResponseDto);
+                }
+                req.setAttribute("memberList", memberList);
+                var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
                 dispatcher.forward(req, res);
             }
         }
+    }
+
+    private void updateMember(HttpServletRequest req) {
+        var body = req.getParameterMap();
+        var memberDto = new MemberUpdateRequestDto(body);
+        memberService.updateMember(memberDto);
     }
 }

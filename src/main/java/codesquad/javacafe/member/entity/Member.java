@@ -1,5 +1,7 @@
 package codesquad.javacafe.member.entity;
 
+import java.util.Objects;
+
 public class Member {
     private long id;
     private String userId;
@@ -24,6 +26,10 @@ public class Member {
         return password;
     }
 
+    public boolean isPasswordSame(String oldPassword) {
+        return Objects.equals(oldPassword, password);
+    }
+
     public String getName() {
         return name;
     }
@@ -36,5 +42,10 @@ public class Member {
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void update(String password, String name) {
+        this.password = password;
+        this.name = name;
     }
 }

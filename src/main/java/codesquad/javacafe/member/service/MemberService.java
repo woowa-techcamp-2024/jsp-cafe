@@ -1,6 +1,7 @@
 package codesquad.javacafe.member.service;
 
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
+import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
 import codesquad.javacafe.member.repository.MemberRepository;
 
@@ -16,8 +17,7 @@ public class MemberService {
     }
 
     public void createMember(MemberCreateRequestDto memberDto) {
-        var member = memberDto.toEntity();
-        memberRepository.save(member);
+        memberRepository.save(memberDto);
     }
 
     public List<MemberResponseDto> getMemberList() {
@@ -29,5 +29,9 @@ public class MemberService {
 
     public MemberResponseDto getMemberInfo(String userId) {
         return new MemberResponseDto(memberRepository.findByUserId(userId));
+    }
+
+    public void updateMember(MemberUpdateRequestDto memberDto) {
+        memberRepository.update(memberDto);
     }
 }

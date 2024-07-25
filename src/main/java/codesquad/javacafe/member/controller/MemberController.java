@@ -3,8 +3,6 @@ package codesquad.javacafe.member.controller;
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
-import codesquad.javacafe.member.entity.Member;
-import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.member.service.MemberService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,8 +33,8 @@ public class MemberController implements SubController {
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
                 dispatcher.forward(req,res);
             }
-            case "POST" : {
-                createMember(req,res);
+            case "POST" :{
+                createMember(req);
                 res.sendRedirect("/api/users");
             }
         }
@@ -46,7 +44,7 @@ public class MemberController implements SubController {
         return memberService.getMemberList();
     }
 
-    private void createMember(HttpServletRequest req, HttpServletResponse res) {
+    private void createMember(HttpServletRequest req) {
         var body = req.getParameterMap();
         var memberDto = new MemberCreateRequestDto(body);
         memberService.createMember(memberDto);

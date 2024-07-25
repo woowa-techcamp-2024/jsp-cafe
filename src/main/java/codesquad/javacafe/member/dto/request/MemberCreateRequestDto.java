@@ -2,7 +2,6 @@ package codesquad.javacafe.member.dto.request;
 
 import codesquad.javacafe.member.entity.Member;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class MemberCreateRequestDto {

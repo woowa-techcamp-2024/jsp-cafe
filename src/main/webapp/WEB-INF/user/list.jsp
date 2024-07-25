@@ -38,7 +38,7 @@
                         for(MemberResponseDto memberResponseDto : members) {
                 %>
                     <tr>
-                        <th scope="row"><%= row++%></th> <td><a href = "/api/users/profile?userId=<%=memberResponseDto.getUserId()%>"><%=memberResponseDto.getUserId()%></a></td><td><%=memberResponseDto.getName()%></td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <th scope="row"><%= row++%></th> <td><a href = "/api/users/profile?userId=<%=memberResponseDto.getUserId()%>"><%=memberResponseDto.getUserId()%></a></td><td><%=memberResponseDto.getName()%></td><td><a href="/api/users/info?userId=<%=memberResponseDto.getUserId()%>" class="btn btn-success" role="button">수정</a></td>
                     </tr>
               <%
                     }
