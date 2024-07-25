@@ -37,7 +37,6 @@ public class MemberControlServlet extends HttpServlet {
         }
         String memberId = pathParts[1];
         if(pathParts.length == 2){
-
             forwardToProfile(req, resp, memberId);
         }
         else if(pathParts.length == 3 && "form".equals(pathParts[2])){
@@ -64,15 +63,15 @@ public class MemberControlServlet extends HttpServlet {
             throw new HttpBadRequestException("잘못된 요청입니다.");
         }
         String memberId = pathParts[1];
-        Member origin = memberDao.findByMemberId(memberId)
-                .orElseThrow(() -> new HttpNotFoundException("해당 유저를 찾을 수 없습니다."));
-        String passwordCheck = req.getParameter("passwordCheck");
-        if(!passwordEncoder.match(passwordCheck,origin.getPassword())) throw new HttpBadRequestException("비밀번호가 일치하지 않습니다.");
         Member member = (Member) session.getAttribute("member");
         if(!member.getMemberId().equals(memberId)) {
             resp.sendRedirect("/login");
             return;
         }
+        Member origin = memberDao.findByMemberId(memberId)
+                .orElseThrow(() -> new HttpNotFoundException("해당 유저를 찾을 수 없습니다."));
+        String passwordCheck = req.getParameter("passwordCheck");
+        if(!passwordEncoder.match(passwordCheck,origin.getPassword())) throw new HttpBadRequestException("비밀번호가 일치하지 않습니다.");
 
         //update 로직
         String newPassword = req.getParameter("password");
