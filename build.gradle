@@ -35,6 +35,10 @@ dependencies {
   // EL (Expression Language) 추가
   implementation 'jakarta.el:jakarta.el-api:5.0.0'
 
+  // DB
+  testImplementation 'com.h2database:h2:2.3.230'
+  // MySQL JDBC 드라이버
+  implementation 'mysql:mysql-connector-java:8.0.26'
 
   // log
   implementation 'org.slf4j:slf4j-api:2.0.6'
