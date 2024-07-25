@@ -1,6 +1,6 @@
 package com.wootecam.jspcafe.servlet.user;
 
-import com.wootecam.jspcafe.model.User;
+import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
