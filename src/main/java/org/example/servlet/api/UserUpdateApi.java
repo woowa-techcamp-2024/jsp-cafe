@@ -34,7 +34,7 @@ public class UserUpdateApi extends HttpServlet {
         String password = request.getParameter("password");
         User user = userDataHandler.findByUserId(userId);
         if (isUserNull(request, response, user)) return;
-        if (isInvalidPassword(request, response, user, password)) return;
+        if (isInvalidPassword(request, response, user.getPassword(), password)) return;
         User updateUser = new User(user.getUserId(), email, nickname, password, user.getCreatedDt());
         log.debug("[UserUpdateApi] user" + updateUser.toString());
         userDataHandler.update(updateUser);
@@ -52,10 +52,10 @@ public class UserUpdateApi extends HttpServlet {
         return false;
     }
 
-    private boolean isInvalidPassword(HttpServletRequest request, HttpServletResponse response, User user, String password) throws ServletException, IOException {
-        if(!user.getPassword().equals(password)){
+    private boolean isInvalidPassword(HttpServletRequest request, HttpServletResponse response, String userPassword, String inputPassword) throws ServletException, IOException {
+        if(!userPassword.equals(inputPassword)){
             request.setAttribute("status_code", HttpServletResponse.SC_BAD_REQUEST);
-            request.setAttribute("message", "기존 비밀번호와 맞지 않습니다");
+            request.setAttribute("message", "비밀번호가 맞지 않습니다");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             request.getRequestDispatcher("/error/error.jsp").forward(request, response);
             return true;
