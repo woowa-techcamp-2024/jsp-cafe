@@ -14,7 +14,7 @@
                         <div class="wrap">
                             <div class="main">
                                 <strong class="subject">
-                                    <a href="posts/${post.id}">${post.title}</a>
+                                    <a href="posts/${post.postId}">${post.title}</a>
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
