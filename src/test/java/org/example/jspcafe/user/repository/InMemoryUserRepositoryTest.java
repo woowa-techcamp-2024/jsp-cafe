@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
 
 class InMemoryUserRepositoryTest {
 
@@ -20,6 +21,116 @@ class InMemoryUserRepositoryTest {
     void setUp() {
         userRepository = new InMemoryUserRepository();
     }
+
+    @DisplayName("deleteAllInBatch 메서드를 호출하면 저장된 모든 유저를 삭제한다")
+    @Test
+    void deleteAllInBatch() {
+        // given
+        List<User> users = List.of(
+                new User("nickname1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname3", "email3@example.com", "password3", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname4", "email4@example.com", "password4", LocalDateTime.of(2021, 1, 1, 0, 0))
+        );
+
+        users.forEach(userRepository::save);
+
+        // when
+        userRepository.deleteAllInBatch();
+
+        // then
+        assertThat(userRepository.findAll()).isEmpty();
+    }
+
+    @DisplayName("nickname으로 유저를 조회할 수 있다")
+    @Test
+    void findByNickname() {
+        // given
+        String nickname = "nickname";
+        User user = new User(nickname, "email@example.com", "password", LocalDateTime.of(2021, 1, 1, 0, 0));
+        userRepository.save(user);
+
+        // when
+        Optional<User> maybeUser = userRepository.findByNickname(nickname);
+
+        // then
+        assertThat(maybeUser).isPresent()
+                .get()
+                .extracting("nickname.value")
+                .isEqualTo(nickname);
+    }
+
+    @DisplayName("없는 nickname으로 유저를 조회하면 빈 Optional을 반환한다")
+    @Test
+    void findByNicknameNotFound() {
+        // given
+        String nickname = "nickname";
+
+        // when
+        Optional<User> maybeUser = userRepository.findByNickname(nickname);
+
+        // then
+        assertThat(maybeUser).isNotPresent();
+    }
+
+
+    @DisplayName("email로 유저를 조회할 수 있다")
+    @Test
+    void findByEmail() {
+        // given
+        String email = "email@example.com";
+        User user = new User("nickname", email, "password", LocalDateTime.of(2021, 1, 1, 0, 0));
+        userRepository.save(user);
+
+        // when
+        Optional<User> maybeUser = userRepository.findByEmail(email);
+
+        // then
+        assertThat(maybeUser).isPresent()
+                .get()
+                .extracting("email.value")
+                .isEqualTo(email);
+    }
+
+    @DisplayName("없는 email로 유저를 조회하면 빈 Optional을 반환한다")
+    @Test
+    void findByEmailNotFound() {
+        // given
+        String email = "email@example.com";
+
+        // when
+        Optional<User> maybeUser = userRepository.findByEmail(email);
+
+        // then
+        assertThat(maybeUser).isNotPresent();
+    }
+
+    @DisplayName("저장된 모든 유저를 조회할 수 있다")
+    @Test
+    void findAll() {
+        // given
+        List<User> users = List.of(
+                new User("nickname1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("nickname3", "email3@example.com", "password3", LocalDateTime.of(2021, 1, 1, 0, 0))
+        );
+
+        users.forEach(userRepository::save);
+
+        // when
+        List<User> foundUsers = userRepository.findAll();
+
+        // then
+        assertThat(foundUsers)
+                .hasSize(3)
+                .extracting("nickname.value", "email.value", "password.value")
+                .containsExactly(
+                        tuple("nickname1", "email1@example.com", "password1"),
+                        tuple("nickname2", "email2@example.com", "password2"),
+                        tuple("nickname3", "email3@example.com", "password3")
+                );
+    }
+
 
     @DisplayName("userId 목록으로 유저를 조회할 수 있다")
     @Test
