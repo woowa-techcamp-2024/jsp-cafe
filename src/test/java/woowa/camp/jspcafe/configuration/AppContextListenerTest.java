@@ -6,7 +6,7 @@ import jakarta.servlet.ServletContextEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
-import woowa.camp.jspcafe.repository.UserRepository;
+import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.UserService;
 
