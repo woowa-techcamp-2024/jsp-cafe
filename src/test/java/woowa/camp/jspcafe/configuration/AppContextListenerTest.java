@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.servlet.ServletContextEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import woowa.camp.jspcafe.repository.ArticleRepository;
+import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.UserRepository;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.UserService;

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.fixture.ArticleFixture;
+import woowa.camp.jspcafe.repository.article.ArticleRepository;
+import woowa.camp.jspcafe.repository.article.InMemoryArticleRepository;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
