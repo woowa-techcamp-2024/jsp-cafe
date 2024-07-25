@@ -7,11 +7,11 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 
-public class DatabaseSetupExtension implements BeforeEachCallback, AfterEachCallback {
+public class ArticleDBSetupExtension implements BeforeEachCallback, AfterEachCallback {
 
     private final DatabaseConnector connector;
 
-    public DatabaseSetupExtension() {
+    public ArticleDBSetupExtension() {
         this.connector = new DatabaseConnector();
     }
 
@@ -32,7 +32,7 @@ public class DatabaseSetupExtension implements BeforeEachCallback, AfterEachCall
             String createTableSQL = """
                     CREATE TABLE IF NOT EXISTS articles (
                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        author_id BIGINT NOT NULL,
+                        author_id BIGINT,
                         title VARCHAR(255) NOT NULL,
                         content VARCHAR(5000) NOT NULL,
                         hits INT DEFAULT 0,
