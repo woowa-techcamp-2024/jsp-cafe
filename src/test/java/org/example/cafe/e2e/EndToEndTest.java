@@ -16,8 +16,10 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
-import org.example.cafe.domain.user.User;
-import org.example.cafe.domain.user.UserRepository;
+import org.example.cafe.domain.Question;
+import org.example.cafe.domain.QuestionRepository;
+import org.example.cafe.domain.User;
+import org.example.cafe.domain.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,6 +39,7 @@ public class EndToEndTest {
     private static int localPort;
 
     private static UserRepository userRepository;
+    private static QuestionRepository questionRepository;
 
     private HttpURLConnection con;
 
@@ -61,6 +64,7 @@ public class EndToEndTest {
 
         localPort = tomcat.getConnector().getLocalPort();
         userRepository = (UserRepository) context.getServletContext().getAttribute("UserRepository");
+        questionRepository = (QuestionRepository) context.getServletContext().getAttribute("QuestionRepository");
     }
 
     @AfterAll
@@ -104,6 +108,8 @@ public class EndToEndTest {
         if (con != null) {
             con.disconnect();
         }
+        userRepository.deleteAll();
+        questionRepository.deleteAll();
     }
 
     @Nested
@@ -179,6 +185,137 @@ public class EndToEndTest {
                 assertThat(con.getResponseCode()).isEqualTo(200);
                 assertThat(getResponse(con)).contains("해당하는 사용자 정보가 없습니다.");
             });
+        }
+    }
+
+    @Nested
+    class STEP_2 {
+
+        @Test
+        void 사용자는_게시글을_작성할_수_있다() throws IOException {
+            //given
+            con = createPostConnection("/questions");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "writer=test&title=test&contents=test";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/");
+            });
+        }
+
+        @Test
+        void 사용자는_게시글_목록을_조회할_수_있다() throws IOException {
+            //given
+            questionRepository.save(new Question("title1", "content1", "writer1"));
+            questionRepository.save(new Question("title2", "content2", "writer2"));
+
+            con = createGetConnection("/");
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("title1", "title2", "writer1", "writer2");
+            });
+        }
+
+        @Test
+        void 사용자는_특정_게시글을_상세_조회할_수_있다() throws IOException {
+            //given
+            Question question = new Question("title1", "content1", "writer1");
+            questionRepository.save(question);
+
+            con = createGetConnection("/questions/" + question.getQuestionId());
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("title1", "content1", "writer1");
+            });
+        }
+
+        @Nested
+        class 회원_정보를_수정한다 {
+
+            @Test
+            void 사용자는_회원_정보를_수정할_수_있다() throws IOException {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createPostConnection("/users/" + user.getUserId() + "/form");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                    assertThat(getResponse(con)).contains("update@example.com");
+                });
+            }
+
+            @Test
+            void 회원이_존재하지_않으면_404_에러를_반환한다() throws IOException {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createPostConnection("/users/no-user/form");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(404);
+                });
+            }
+
+            @Test
+            void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws IOException {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createPostConnection("/users/" + user.getUserId() + "/form");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "checkPassword=notMatchPass&password=newPass&nickname=updateNick&email=update@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(401);
+                });
+            }
         }
     }
 }

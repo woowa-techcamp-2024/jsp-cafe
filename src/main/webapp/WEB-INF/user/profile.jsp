@@ -1,8 +1,9 @@
-<%@ page import="org.example.cafe.domain.user.User" %>
+<%@ page import="org.example.cafe.domain.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="/base/head.jsp" %>
-<%@ include file="/base/header.jsp" %>
-<%@ include file="/base/nav.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="/WEB-INF/base/head.jsp" %>
+<%@ include file="/WEB-INF/base/header.jsp" %>
+<%@ include file="/WEB-INF/base/nav.jsp" %>
 
 
 <div class="container" id="main">
@@ -32,6 +33,7 @@
                                         class="glyphicon glyphicon-envelope"></span>&nbsp;<%= user.getEmail()%>
                                 </a>
                             </p>
+                            <a class="link-modify-article" href="/users/${user.userId}/form">수정</a>
                         </div>
                         <%
                             }
@@ -43,4 +45,4 @@
     </div>
 </div>
 
-<%@ include file="/base/footer.jsp" %>
+<%@ include file="/WEB-INF/base/footer.jsp" %>

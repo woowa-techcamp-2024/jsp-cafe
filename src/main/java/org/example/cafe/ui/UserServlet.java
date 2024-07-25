@@ -1,4 +1,4 @@
-package org.example.cafe.servlet;
+package org.example.cafe.ui;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
@@ -9,8 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import org.example.cafe.domain.user.User;
-import org.example.cafe.domain.user.UserRepository;
+import org.example.cafe.application.UserService;
+import org.example.cafe.application.dto.UserCreateDto;
+import org.example.cafe.domain.User;
 import org.slf4j.Logger;
 
 @WebServlet(name = "UserServlet", value = "/users")
@@ -18,30 +19,32 @@ public class UserServlet extends HttpServlet {
 
     private static final Logger log = getLogger(UserServlet.class);
 
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Override
     public void init() {
-        this.userRepository = (UserRepository) getServletContext().getAttribute("UserRepository");
+        this.userService = (UserService) getServletContext().getAttribute("UserService");
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
     /**
-     * 회원 목록 조회 페이지를 반환한다.
+     * 회원 목록을 반환한다.
+     * @param request an {@link HttpServletRequest} object that contains the request the client has made of the servlet
      *
-     * @param request
-     * @param response
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     *
      * @throws IOException
+     * @throws ServletException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
 
         request.setAttribute("users", users);
-        request.getRequestDispatcher("/user/list.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(request, response);
     }
 
     /**
@@ -60,8 +63,8 @@ public class UserServlet extends HttpServlet {
         String nickname = request.getParameter("nickname");
         String email = request.getParameter("email");
 
-        User user = new User(userId, password, nickname, email);
-        userRepository.save(user);
+        UserCreateDto userCreateDto = new UserCreateDto(userId, password, nickname, email);
+        userService.createUser(userCreateDto);
 
         response.sendRedirect("/users");
     }

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="/base/head.jsp" %>
-<%@ include file="/base/header.jsp" %>
-<%@ include file="/base/nav.jsp" %>
+<%@ include file="/WEB-INF/base/head.jsp" %>
+<%@ include file="/WEB-INF/base/header.jsp" %>
+<%@ include file="/WEB-INF/base/nav.jsp" %>
 
 
 <div class="container" id="main">
@@ -40,7 +40,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/index.jsp">목록</a>
+                              <a class="link-modify-article" href="/">목록</a>
                           </li>
                       </ul>
                   </div>
@@ -154,4 +154,4 @@
 	</article>
 </script>
 
-<%@ include file="/base/footer.jsp" %>
+<%@ include file="/WEB-INF/base/footer.jsp" %>

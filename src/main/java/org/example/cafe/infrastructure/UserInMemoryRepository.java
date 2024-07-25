@@ -1,11 +1,13 @@
-package org.example.cafe.domain.user;
+package org.example.cafe.infrastructure;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.example.cafe.domain.User;
+import org.example.cafe.domain.UserRepository;
 
-public class UserRepository {
+public class UserInMemoryRepository implements UserRepository {
 
     private static final Map<String, User> storage = new ConcurrentHashMap<>();
 

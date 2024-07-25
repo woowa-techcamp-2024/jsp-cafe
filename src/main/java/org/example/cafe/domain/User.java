@@ -1,4 +1,4 @@
-package org.example.cafe.domain.user;
+package org.example.cafe.domain;
 
 import java.util.Objects;
 
@@ -18,6 +18,13 @@ public class User {
         this.nickname = nickname;
         this.email = email;
     }
+
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    // ----------------------------------------------------------- Getter
 
     public String getUserId() {
         return userId;
