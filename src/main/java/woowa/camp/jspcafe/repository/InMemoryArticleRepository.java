@@ -41,4 +41,16 @@ public class InMemoryArticleRepository implements ArticleRepository {
         return Optional.ofNullable(articles.get(nextId));
     }
 
+    @Override
+    public List<Article> findByOffsetPagination(int offset, int limit) {
+        List<Article> orderedCreatedAtDesc = articles.values().stream()
+                .sorted(Comparator.comparing(Article::getCreatedAt).reversed()
+                        .thenComparing(Comparator.comparing(Article::getId).reversed()))
+                .toList();
+
+        int fromIdx = Math.min(offset, orderedCreatedAtDesc.size());    // idx = 0부터 시작하므로
+        int toIdx = Math.min(fromIdx + limit, orderedCreatedAtDesc.size());
+
+        return orderedCreatedAtDesc.subList(fromIdx, toIdx);
+    }
 }
