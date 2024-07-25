@@ -349,7 +349,7 @@ class MysqlMemberDaoTest {
             }
 
             private void compareMembers(List<Member> expected,List<Member> actual){
-                actual.stream().anyMatch(member->
+                actual.stream().allMatch(member->
                     expected.stream()
                             .anyMatch(expectedMember->member.getId().equals(expectedMember.getId())
                                     && member.getMemberId().equals(expectedMember.getMemberId())
