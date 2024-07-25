@@ -55,6 +55,10 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
                 new LoginServlet(beanFactory.getBean(LoginHandler.class)));
         loginServlet.addMapping("/login");
 
+        Dynamic logoutServlet = ctx.addServlet("logoutServlet",
+                new LogoutServlet(beanFactory.getBean(LoginHandler.class)));
+        logoutServlet.addMapping("/logout");
+
         Dynamic listQuestionServlet = ctx.addServlet("listQuestionServlet",
                 new ListQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
         listQuestionServlet.addMapping("/");
