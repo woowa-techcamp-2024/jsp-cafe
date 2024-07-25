@@ -1,5 +1,7 @@
 package com.hyeonuk.jspcafe.member.domain;
 
+import java.util.Objects;
+
 public class Member {
     private Long id;
     private String memberId;

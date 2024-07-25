@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -308,6 +309,50 @@ class InMemoryMemberDaoTest {
                 //then
                 assertTrue(memberDao.findById(member.getId()).isEmpty());
                 assertTrue(memberDao.findById(member2.getId()).isPresent());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("findAll 메서드는")
+    class FindAllTest{
+        @Nested
+        @DisplayName("유저가 존재하면")
+        class ExistsMember{
+            @Test
+            @DisplayName("모든 유저의 값을 가져온다.")
+            void getAllMembers(){
+                //given
+                Member member1 = new Member("id1","pw1","nick1","email1");
+                Member member2 = new Member("id2","pw2","nick2","email2");
+                Member member3 = new Member("id3","pw3","nick3","email3");
+                Member member4 = new Member("id4","pw4","nick4","email4");
+                Member member5 = new Member("id5","pw5","nick5","email5");
+                List<Member> memberList = List.of(member1,member2,member3,member4,member5);
+                memberList.forEach(memberDao::save);
+
+                //when
+                List<Member> all = memberDao.findAll();
+
+                //then
+                assertEquals(memberList.size(),all.size());
+                assertTrue(all.containsAll(memberList));
+            }
+        }
+
+        @Nested
+        @DisplayName("유저가 존재하지 않으면")
+        class NotExistsMember{
+            @Test
+            @DisplayName("빈 리스트를 반환한다.")
+            void getEmptyMember(){
+                //given
+
+                //when
+                List<Member> all = memberDao.findAll();
+
+                //then
+                assertTrue(all.isEmpty());
             }
         }
     }
