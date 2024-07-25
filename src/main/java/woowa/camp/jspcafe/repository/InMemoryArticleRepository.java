@@ -34,5 +34,11 @@ public class InMemoryArticleRepository implements ArticleRepository {
         long previousId = currentId - 1;
         return Optional.ofNullable(articles.get(previousId));
     }
-    
+
+    @Override
+    public Optional<Article> findNext(Long currentId) {
+        long nextId = currentId + 1;
+        return Optional.ofNullable(articles.get(nextId));
+    }
+
 }
