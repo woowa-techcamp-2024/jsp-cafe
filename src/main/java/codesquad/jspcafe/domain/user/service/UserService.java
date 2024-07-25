@@ -8,6 +8,7 @@ import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class UserService {
 
@@ -49,14 +50,14 @@ public class UserService {
     private User verifyUserPassword(String userId, String password) {
         User user = findUserById(userId);
         if (!user.verifyPassword(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다!");
+            throw new SecurityException("비밀번호가 일치하지 않습니다!");
         }
         return user;
     }
 
     private User findUserById(String userId) {
         return userRepository.findByUserId(userId)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다!"));
+            .orElseThrow(() -> new NoSuchElementException("유저를 찾을 수 없습니다!"));
     }
 
 }

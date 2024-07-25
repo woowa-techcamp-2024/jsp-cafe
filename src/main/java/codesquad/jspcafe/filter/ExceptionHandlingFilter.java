@@ -38,10 +38,12 @@ public class ExceptionHandlingFilter extends HttpFilter {
     private int verifyStatusCode(Exception e) {
         if (e instanceof IllegalArgumentException) {
             return HttpServletResponse.SC_BAD_REQUEST;
-        } else if (e instanceof NoSuchElementException) {
-            return HttpServletResponse.SC_NOT_FOUND;
+        } else if (e instanceof SecurityException) {
+            return HttpServletResponse.SC_UNAUTHORIZED;
         } else if (e instanceof AccessDeniedException) {
             return HttpServletResponse.SC_FORBIDDEN;
+        } else if (e instanceof NoSuchElementException) {
+            return HttpServletResponse.SC_NOT_FOUND;
         } else {
             return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         }

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 /**
  * UserLoginServlet은 /users/login URI 에 대한 요청을 처리하는 서블릿입니다. <br> GET, POST 메서드를 제공하여 GET 요청시 로그인
@@ -65,7 +66,7 @@ public class UserLoginServlet extends HttpServlet {
             }
             req.getSession(true).setAttribute("user", sessionResponse);
             resp.sendRedirect("/index.html");
-        } catch (IllegalArgumentException e) {
+        } catch (NoSuchElementException | SecurityException e) {
             req.setAttribute("loginException", e.getMessage());
             req.getRequestDispatcher("/WEB-INF/jsp/userLoginFailed.jsp").forward(req, resp);
         }
