@@ -17,7 +17,7 @@ public class MySqlUserDao implements UserDao {
     @Override
     public Long save(User user) throws DuplicateIdException {
         try (Connection connection = MySqlConnectionManager.getConnection()) {
-            String sql = "insert into users(userId,password,name,email) values(?,?,?,?)";
+            String sql = "insert into users(user_id,password,name,email) values(?,?,?,?)";
             PreparedStatement pstmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, user.getUserId());
             pstmt.setString(2, user.getPassword());
@@ -46,7 +46,7 @@ public class MySqlUserDao implements UserDao {
             pstmt.setLong(1, id);
             ResultSet resultSet = pstmt.executeQuery();
             if (resultSet.next()) {
-                String userId = resultSet.getString("userId");
+                String userId = resultSet.getString("user_id");
                 String password = resultSet.getString("password");
                 String name = resultSet.getString("name");
                 String email = resultSet.getString("email");
@@ -87,7 +87,7 @@ public class MySqlUserDao implements UserDao {
             List<User> users = new ArrayList<>();
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
-                String userId = resultSet.getString("userId");
+                String userId = resultSet.getString("user_id");
                 String password = resultSet.getString("password");
                 String name = resultSet.getString("name");
                 String email = resultSet.getString("email");
