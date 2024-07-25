@@ -21,7 +21,7 @@
                 <tr onclick="location.href='${pageContext.request.contextPath}/questions/${article.id}'"
                     style="cursor: pointer;">
                     <td>${article.title}</td>
-<%--                    <td>${article.author}</td>--%>
+                        <%--                    <td>${article.author}</td>--%>
                     <td>익명</td>
                     <td>${article.createdDate}</td>
                 </tr>

@@ -6,7 +6,7 @@
     <div class="col-md-8">
         <h2 class="mt-5">${article.title}</h2>
         <p class="text-muted">By
-<%--            ${article.author}--%>
+            <%--            ${article.author}--%>
             익명
             on ${article.createdDate}</p>
         <hr>

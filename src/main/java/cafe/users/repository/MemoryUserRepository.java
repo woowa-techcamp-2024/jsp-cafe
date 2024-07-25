@@ -12,8 +12,7 @@ public class MemoryUserRepository implements UserRepository {
     public User save(User user) {
         if (user.getId() != null) {
             users.set(Math.toIntExact(user.getId() - 1), user);
-        }
-        else {
+        } else {
             user = user.withId((long) (users.size() + 1));
             users.add(user);
         }
