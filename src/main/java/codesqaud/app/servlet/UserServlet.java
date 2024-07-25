@@ -62,6 +62,7 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        throw new HttpException(HttpServletResponse.SC_NOT_FOUND);
     }
 
     private void handleProfileForm(HttpServletRequest req, HttpServletResponse resp, long id) throws ServletException, IOException {
