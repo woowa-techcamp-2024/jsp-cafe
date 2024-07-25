@@ -17,6 +17,11 @@
                                 <strong class="subject">
                                     <a href="/users/${user.id}">${user.username}</a>
                                 </strong>
+                                <c:if test="${user.deleted}">
+                                    <strong class="subject" style="color:red">
+                                        탈퇴한 사용자
+                                    </strong>
+                                </c:if>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
                                     <span class="time">${user.createdAt}</span>
