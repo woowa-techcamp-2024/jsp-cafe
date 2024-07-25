@@ -17,8 +17,7 @@ public class UserService {
     }
 
     public void signup(final String userId, final String password, final String name, final String email) {
-        Long id = userRepository.generateId();
-        User user = new User(id, userId, password, name, email);
+        User user = new User(userId, password, name, email);
 
         log.info("signUpUser = {}", user);
 

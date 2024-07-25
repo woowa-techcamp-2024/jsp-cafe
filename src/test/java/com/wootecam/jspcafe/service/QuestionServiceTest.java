@@ -6,8 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.Question;
-import com.wootecam.jspcafe.domain.QuestionRepository;
-import com.wootecam.jspcafe.repository.InMemoryQuestionRepository;
+import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -19,14 +18,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class QuestionServiceTest {
+class QuestionServiceTest extends ServiceTest {
 
-    private QuestionRepository questionRepository;
     private QuestionService questionService;
 
     @BeforeEach
     void setUp() {
-        questionRepository = new InMemoryQuestionRepository();
         questionService = new QuestionService(questionRepository);
     }
 
@@ -97,7 +94,7 @@ class QuestionServiceTest {
             @Test
             void id에_해당하는_질문을_반환한다() {
                 // given
-                questionRepository.save(new Question(1L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
 
                 // when
                 Question question = questionService.read(1L);

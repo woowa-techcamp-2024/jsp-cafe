@@ -1,9 +1,10 @@
 package com.wootecam.jspcafe.listener;
 
+import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
 import com.wootecam.jspcafe.domain.UserRepository;
-import com.wootecam.jspcafe.repository.InMemoryQuestionRepository;
-import com.wootecam.jspcafe.repository.InMemoryUserRepository;
+import com.wootecam.jspcafe.repository.JdbcQuestionRepository;
+import com.wootecam.jspcafe.repository.JdbcUserRepository;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
@@ -24,9 +25,10 @@ public class ApplicationContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-        UserRepository userRepository = new InMemoryUserRepository();
-        QuestionRepository questionRepository = new InMemoryQuestionRepository();
+        UserRepository userRepository = new JdbcUserRepository(jdbcTemplate);
+        QuestionRepository questionRepository = new JdbcQuestionRepository(jdbcTemplate);
 
         UserService userService = new UserService(userRepository);
         QuestionService questionService = new QuestionService(questionRepository);

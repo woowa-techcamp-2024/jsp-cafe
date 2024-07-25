@@ -18,8 +18,7 @@ public class QuestionService {
     }
 
     public void append(final String writer, final String title, final String contents) {
-        Long id = questionRepository.generateId();
-        Question question = new Question(id, writer, title, contents, LocalDateTime.now());
+        Question question = new Question(writer, title, contents, LocalDateTime.now());
 
         log.info("write question = {}", question);
 

@@ -16,7 +16,7 @@ public class JdbcTemplate {
 
     private final DataSourceManager dataSourceManager = new DataSourceManager();
 
-    public void insert(final String query, final PreparedStatementSetter psSetter) {
+    public void update(final String query, final PreparedStatementSetter psSetter) {
         try (Connection conn = dataSourceManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
 
