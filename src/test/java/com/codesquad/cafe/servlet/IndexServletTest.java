@@ -1,5 +1,6 @@
 package com.codesquad.cafe.servlet;
 
+import static com.codesquad.cafe.TestUtil.assertErrorPageResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -43,10 +43,10 @@ class IndexServletTest extends E2ETestBase {
         postRepository = (PostRepository) context.getServletContext().getAttribute("postRepository");
         posts = new ArrayList<>();
         user = userRepository.save(User.of("woowa", "1234", "김수현", "woowa@gmail.com"));
-        posts.add(postRepository.save(new Post(user.getId(), "title1", "content1", null)));
-        posts.add(postRepository.save(new Post(user.getId(), "title2", "content2", null)));
-        posts.add(postRepository.save(new Post(user.getId(), "title3", "content3", null)));
-        posts.add(postRepository.save(new Post(user.getId(), "title4", "content4", null)));
+        posts.add(postRepository.save(Post.of(user.getId(), "title1", "content1", null)));
+        posts.add(postRepository.save(Post.of(user.getId(), "title2", "content2", null)));
+        posts.add(postRepository.save(Post.of(user.getId(), "title3", "content3", null)));
+        posts.add(postRepository.save(Post.of(user.getId(), "title4", "content4", null)));
     }
 
     @AfterAll
@@ -121,8 +121,6 @@ class IndexServletTest extends E2ETestBase {
         HttpResponse response = post(path, "");
 
         //then
-        assertEquals(405, response.getStatusLine().getStatusCode());
-        assertTrue(EntityUtils.toString(response.getEntity()).contains("405 Method Not Allowed"));
+        assertErrorPageResponse(response, 405);
     }
-
 }
