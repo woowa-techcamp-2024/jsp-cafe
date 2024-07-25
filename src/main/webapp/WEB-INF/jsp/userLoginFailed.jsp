@@ -23,12 +23,13 @@
                   action="${pageContext.request.contextPath}/users/login">
                 <div class="form-group">
                     <label for="userId">사용자 아이디</label>
-                    <input class="form-control" id="userId" name="userId" placeholder="User ID">
+                    <input class="form-control" id="userId" name="userId" placeholder="User ID"
+                           required>
                 </div>
                 <div class="form-group">
                     <label for="password">비밀번호</label>
                     <input type="password" class="form-control" id="password" name="password"
-                           placeholder="Password">
+                           placeholder="Password" required>
                 </div>
                 <button type="submit" class="btn btn-success clearfix pull-right">로그인</button>
                 <div class="clearfix"></div>
