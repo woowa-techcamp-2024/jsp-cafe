@@ -31,8 +31,8 @@ public class UserProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String uri = request.getRequestURI();
-            String userId = uri.substring(uri.lastIndexOf("/") + 1);
+            String pathInfo = request.getPathInfo();
+            String userId = pathInfo.substring(1);
             UserProfile profile = userService.getUserProfile(userId);
             request.setAttribute("profile", profile);
             request.getRequestDispatcher("/user/profile.jsp")
