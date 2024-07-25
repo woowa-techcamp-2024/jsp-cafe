@@ -36,7 +36,6 @@ public class YamlParser {
                     if (parts.length == 2) {
                         String key = parts[0].trim();
                         String value = parts[1].trim();
-                        System.out.println(key+" = "+value);
                         Map<String,Object> currentMap = mapStack.peekLast();
                         if (value.isEmpty()) {
                             // new nested map
