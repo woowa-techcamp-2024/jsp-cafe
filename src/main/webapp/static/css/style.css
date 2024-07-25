@@ -30,7 +30,7 @@ input {
 
 input::placeholder {
   color: #879298;
-  font-family: Pretendard, serif;
+  font-size: 1em;
 }
 
 textarea {
@@ -42,16 +42,17 @@ textarea {
   margin-left: 16px;
   margin-right: 16px;
 
-  font-size: 1em;
   resize: vertical;
   max-height: 700px;
   min-height: 300px;
 
   font-family: Pretendard, serif;
+  font-size: 1em;
 }
 
 textarea::placeholder {
   color: #879298;
+  font-size: 1em;
 }
 
 #container {
@@ -76,4 +77,9 @@ textarea::placeholder {
   font-size: 2em;
 
   color: white;
+}
+
+#back-button {
+  width: 28px;
+  height: 28px;
 }

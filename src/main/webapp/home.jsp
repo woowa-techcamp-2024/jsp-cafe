@@ -34,7 +34,7 @@
         </div>
       </div>
       <c:forEach var="post" items="${posts}">
-        <div class="post">
+        <a class="post" href="/posts/<c:out value="${post.id()}" />">
           <div class="left-post">
             <c:out value="${post.title()}" />
           </div>
@@ -43,7 +43,7 @@
             <div class="post-element"><c:out value="${post.writtenAt()}" /></div>
             <div class="post-element"><c:out value="${post.viewCount()}" /></div>
           </div>
-        </div>
+        </a>
       </c:forEach>
     </div>
   </div>
