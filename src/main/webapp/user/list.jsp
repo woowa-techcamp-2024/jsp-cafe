@@ -5,15 +5,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="../static/css/main.css">
   <title>찬우 카페</title>
 </head>
 <body>
 <div id="container">
   <div id="header">
     <a id="greeting" href="/">찬우 카페</a>
-    <a id="login-button" href="/user/login.html">로그인/회원가입</a>
+    <a id="login-button" href="/users/login">로그인/회원가입</a>
   </div>
   <div id="posts-container">
     <div id="info-card">
