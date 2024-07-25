@@ -43,10 +43,7 @@ public class UserMemoryRepository implements UserRepository {
      */
     @Override
     public Optional<User> findById(String id) {
-        if (users.containsKey(id)) {
-            return Optional.of(users.get(id));
-        }
-        return Optional.empty();
+        return Optional.ofNullable(users.get(id));
     }
 
     /**
