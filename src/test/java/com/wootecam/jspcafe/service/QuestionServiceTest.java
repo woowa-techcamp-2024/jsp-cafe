@@ -6,7 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.Question;
-import com.wootecam.jspcafe.repository.QuestionRepository;
+import com.wootecam.jspcafe.domain.QuestionRepository;
+import com.wootecam.jspcafe.repository.InMemoryQuestionRepository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +26,7 @@ class QuestionServiceTest {
 
     @BeforeEach
     void setUp() {
-        questionRepository = new QuestionRepository();
+        questionRepository = new InMemoryQuestionRepository();
         questionService = new QuestionService(questionRepository);
     }
 

@@ -1,7 +1,9 @@
 package com.wootecam.jspcafe.listener;
 
-import com.wootecam.jspcafe.repository.QuestionRepository;
-import com.wootecam.jspcafe.repository.UserRepository;
+import com.wootecam.jspcafe.domain.QuestionRepository;
+import com.wootecam.jspcafe.domain.UserRepository;
+import com.wootecam.jspcafe.repository.InMemoryQuestionRepository;
+import com.wootecam.jspcafe.repository.InMemoryUserRepository;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
@@ -23,8 +25,8 @@ public class ApplicationContextListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
 
-        UserRepository userRepository = new UserRepository();
-        QuestionRepository questionRepository = new QuestionRepository();
+        UserRepository userRepository = new InMemoryUserRepository();
+        QuestionRepository questionRepository = new InMemoryQuestionRepository();
 
         UserService userService = new UserService(userRepository);
         QuestionService questionService = new QuestionService(questionRepository);

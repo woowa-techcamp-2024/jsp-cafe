@@ -1,7 +1,7 @@
 package com.wootecam.jspcafe.service;
 
 import com.wootecam.jspcafe.domain.Question;
-import com.wootecam.jspcafe.repository.QuestionRepository;
+import com.wootecam.jspcafe.domain.QuestionRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;

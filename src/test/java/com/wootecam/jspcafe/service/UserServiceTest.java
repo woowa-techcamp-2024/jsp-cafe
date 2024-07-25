@@ -6,7 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.User;
-import com.wootecam.jspcafe.repository.UserRepository;
+import com.wootecam.jspcafe.domain.UserRepository;
+import com.wootecam.jspcafe.repository.InMemoryUserRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,7 +25,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userRepository = new UserRepository();
+        userRepository = new InMemoryUserRepository();
         userService = new UserService(userRepository);
     }
 
