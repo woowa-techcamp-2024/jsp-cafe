@@ -38,7 +38,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/user/list.html"><i
+                <li><a href="${pageContext.request.contextPath}/users"><i
                         class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>

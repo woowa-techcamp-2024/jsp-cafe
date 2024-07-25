@@ -30,7 +30,7 @@
                                 <c:out value="${user.username}" escapeXml="false"/>
                             </h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default">
+                                <a class="btn btn-xs btn-default" href="mailto:${user.email}">
                                     <span class="glyphicon glyphicon-envelope">
                                         <c:out value="${user.email}" escapeXml="false"/>
                                     </span>
