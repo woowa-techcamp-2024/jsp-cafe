@@ -40,4 +40,27 @@ public class ArticleService {
         return article;
     }
 
+    public ArticleDetailsResponse findArticleDetails(Long id) {
+        Article article = findArticle(id);
+
+        if (article.isAnonymousAuthor()) {
+            article.upHits();
+            return ArticleDetailsResponse.of(article, null, "익명");
+        }
+
+        User author = findAuthor(article.getAuthorId());
+        article.upHits();
+        return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
+    }
+
+    private Article findArticle(Long id) {
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new ArticleException("Article not found : " + id));
+    }
+
+    private User findAuthor(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException("User with id " + userId + " not found"));
+    }
+
 }
