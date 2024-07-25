@@ -18,6 +18,7 @@ java {
 ext {
     servletVersion = '6.1.0'
     junitVersion = '5.10.3'
+    jstlVersion = '3.0.0'
     tomcatVersion = '10.1.26'
     assertJVersion = '3.26.3'
     logbackVersion = '1.5.6'
@@ -31,7 +32,8 @@ tasks.withType(JavaCompile).configureEach {
 dependencies {
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     implementation("com.mysql:mysql-connector-j:${mysqlVersion}")
-    compileOnly("jakarta.servlet:jakarta.servlet-api:${servletVersion}")
+    implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:${jstlVersion}")
+    implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:${jstlVersion}")
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
