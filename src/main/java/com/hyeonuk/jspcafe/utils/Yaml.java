@@ -45,12 +45,4 @@ public class Yaml {
         }
         return v;
     }
-
-    public Integer getInteger(String key) {
-        Object value = get(key);
-        if (value instanceof String) {
-            return Integer.parseInt((String) value);
-        }
-        return null;
-    }
 }
