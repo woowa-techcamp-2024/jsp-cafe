@@ -7,7 +7,6 @@ import com.codesquad.cafe.model.Post;
 import com.codesquad.cafe.model.PostDetailsDto;
 import com.codesquad.cafe.model.User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("")
 public class IndexServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(IndexServlet.class);

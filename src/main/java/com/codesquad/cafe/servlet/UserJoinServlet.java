@@ -5,7 +5,6 @@ import com.codesquad.cafe.model.User;
 import com.codesquad.cafe.model.UserJoinRequest;
 import com.codesquad.cafe.util.RequestParamModelMapper;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +13,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("/users/join")
 public class UserJoinServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(UserJoinServlet.class);
