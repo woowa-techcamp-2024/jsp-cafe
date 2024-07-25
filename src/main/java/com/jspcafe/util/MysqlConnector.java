@@ -2,27 +2,37 @@ package com.jspcafe.util;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class MysqlConnector implements DatabaseConnector {
-    private static final String URL = "jdbc:mysql://mysql:3306/jspcafe?useSSL=false&allowPublicKeyRetrieval=true";
-    private static final String USER = "jspcafe";
-    private static final String PASSWORD = "jspcafe";
+    private static final String CONFIG_FILE = "config.properties";
 
     private static MysqlConnectionPoolDataSource dataSource;
 
     static {
         try {
+            Properties props = new Properties();
+            InputStream inputStream = MysqlConnector.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
+            if (inputStream == null) {
+                throw new IOException("Unable to find " + CONFIG_FILE);
+            }
+            props.load(inputStream);
+
             dataSource = new MysqlConnectionPoolDataSource();
-            dataSource.setURL(URL);
-            dataSource.setUser(USER);
-            dataSource.setPassword(PASSWORD);
+            dataSource.setURL(props.getProperty("db.url"));
+            dataSource.setUser(props.getProperty("db.user"));
+            dataSource.setPassword(props.getProperty("db.password"));
 
             dataSource.setMaxReconnects(5);
             dataSource.setInitialTimeout(2);
             dataSource.setAutoReconnect(true);
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
