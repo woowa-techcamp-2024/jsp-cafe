@@ -3,6 +3,7 @@ package codesquad.javacafe.member.dto.request;
 import codesquad.javacafe.member.entity.Member;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class MemberCreateRequestDto {
     private String userId;
@@ -13,6 +14,19 @@ public class MemberCreateRequestDto {
         this.userId = body.get("userId")[0];
         this.password = body.get("password")[0];
         this.name = body.get("name")[0];
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -28,4 +42,16 @@ public class MemberCreateRequestDto {
         return new Member(this.userId, this.password, this.name);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MemberCreateRequestDto that = (MemberCreateRequestDto) o;
+        return Objects.equals(userId, that.userId) && Objects.equals(password, that.password) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, password, name);
+    }
 }
