@@ -1,12 +1,13 @@
 package org.example.servlet.view;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.config.DataHandler;
 import org.example.data.UserDataHandler;
-import org.example.data.UserDataHandlerInMemory;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,9 @@ public class UserProfileUpdateFormView extends HttpServlet {
     private  UserDataHandler userDataHandler;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        userDataHandler = (UserDataHandlerInMemory) getServletContext().getAttribute("userDataHandlerInMemory");
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        userDataHandler = (UserDataHandler) config.getServletContext().getAttribute(DataHandler.USER.getValue());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.example.servlet.api;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -7,8 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
+import org.example.config.DataHandler;
 import org.example.data.UserDataHandler;
-import org.example.data.UserDataHandlerInMemory;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,9 @@ public class UserRegisterApi extends HttpServlet {
     private UserDataHandler userDataHandler;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        userDataHandler = (UserDataHandlerInMemory) getServletContext().getAttribute("userDataHandlerInMemory");
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        userDataHandler = (UserDataHandler) config.getServletContext().getAttribute(DataHandler.USER.getValue());
     }
 
     @Override
@@ -34,8 +35,8 @@ public class UserRegisterApi extends HttpServlet {
         String password = request.getParameter("password");
 
         User user = new User(email, nickname, password, LocalDateTime.now());
-        userDataHandler.save(user);
-        log.debug(user.toString());
+        User savedUser = userDataHandler.insert(user);
+        log.debug("[UserRegisterApi]" + savedUser.toString());
         response.sendRedirect("/users");
     }
 }

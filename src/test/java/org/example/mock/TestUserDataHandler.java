@@ -1,5 +1,6 @@
-package org.example.data;
+package org.example.mock;
 
+import org.example.data.UserDataHandler;
 import org.example.domain.User;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class UserDataHandlerInMemory implements UserDataHandler {
+public class TestUserDataHandler implements UserDataHandler {
     private Map<Long, User> db = new ConcurrentHashMap<>();
     private AtomicLong idGenerator = new AtomicLong(1);
 

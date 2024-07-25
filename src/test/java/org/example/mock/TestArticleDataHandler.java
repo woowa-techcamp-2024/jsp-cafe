@@ -1,5 +1,6 @@
-package org.example.data;
+package org.example.mock;
 
+import org.example.data.ArticleDataHandler;
 import org.example.domain.Article;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ArticleDataHandlerInMemory implements ArticleDataHandler{
+public class TestArticleDataHandler implements ArticleDataHandler {
     private Map<Long, Article> db = new ConcurrentHashMap<>();
     private AtomicLong idGenerator = new AtomicLong(1);
 

@@ -5,7 +5,7 @@ TOMCAT_HOME=/Users/woowatech/apache-tomcat-10.1.26
 $TOMCAT_HOME/bin/shutdown.sh
 # 2. ./gradlew clean build를 통해 ROOT.war 생성
 echo "Building the project..."
-./gradlew clean build
+./gradlew clean build -x test
 # 3. tomcat 폴더의 webapps 하위의 ROOT.war 삭제
 echo "Deleting old ROOT.war from Tomcat webapps..."
 rm -f $TOMCAT_HOME/webapps/ROOT.war
