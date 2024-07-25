@@ -6,9 +6,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.config.DataHandler;
 import org.example.data.ArticleDataHandler;
 import org.example.domain.Article;
+import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,9 @@ public class ArticleRegisterApi extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        String author = "";
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("user");
+        String author = user.getNickname();
         Article article = new Article(title, content, author, LocalDateTime.now());
         Article savedArticle = articleDataHandler.insert(article);
         log.debug("[ArticleRegisterApi]" + savedArticle.toString());
