@@ -18,10 +18,11 @@ public class SimpleDIContainer {
 
     private final Map<Class<?>, Object> instances = new HashMap<>();
     private final Set<Class<?>> currentlyCreating = new HashSet<>();
+    private Set<Class<?>> componentClasses = new HashSet<>();
     private static final Logger log = LoggerFactory.getLogger(SimpleDIContainer.class);
 
     public SimpleDIContainer(String basePackage) throws Exception {
-        Set<Class<?>> componentClasses = scan(basePackage);
+        componentClasses = scan(basePackage);
         createInstances(componentClasses);
     }
 
@@ -94,35 +95,104 @@ public class SimpleDIContainer {
 
         log.info("Creating instance of class: " + clazz.getName());
 
+        Class<?> originalClass = clazz;
         if (Modifier.isAbstract(clazz.getModifiers()) || clazz.isInterface()) {
             clazz = findImplementation(clazz);
         }
 
-        Constructor<?>[] constructors = clazz.getConstructors();
-        if (constructors.length == 0) {
-            throw new RuntimeException("No public constructor found for class: " + clazz.getName());
+        log.info("Using implementation class: " + clazz.getName());
+
+        Constructor<?> constructor = findSuitableConstructor(clazz);
+        if (constructor == null) {
+            throw new RuntimeException("No suitable constructor found for class: " + clazz.getName());
         }
 
-        Constructor<?> constructor = constructors[0];
         Class<?>[] parameterTypes = constructor.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
-            parameters[i] = createInstance(parameterTypes[i]);
+            parameters[i] = getOrCreateInstance(parameterTypes[i]);
         }
 
         Object instance = constructor.newInstance(parameters);
-        instances.put(clazz, instance);
+        instances.put(originalClass, instance); // Save the instance with the original class
+        if (!originalClass.equals(clazz)) {
+            instances.put(clazz, instance); // Also save with the implementation class if different
+        }
+        currentlyCreating.remove(originalClass); // Remove from currentlyCreating using the original class
+        return instance;
+    }
+
+    private Object getOrCreateInstance(Class<?> clazz) throws Exception {
+        if (instances.containsKey(clazz)) {
+            return instances.get(clazz);
+        }
+        if (currentlyCreating.contains(clazz)) {
+            throw new RuntimeException("Circular dependency detected: " + clazz);
+        }
+
+        Class<?> implementationClass = clazz;
+        if (Modifier.isAbstract(clazz.getModifiers()) || clazz.isInterface()) {
+            implementationClass = findImplementation(clazz);
+        }
+
+        Object instance = createInstance(implementationClass);
+        instances.put(clazz, instance); // Save the instance with the parent type
+        instances.put(implementationClass, instance); // Save the instance with the implementation type
         currentlyCreating.remove(clazz);
         return instance;
     }
 
+    private Constructor<?> findSuitableConstructor(Class<?> clazz) {
+        Constructor<?>[] constructors = clazz.getConstructors();
+        for (Constructor<?> constructor : constructors) {
+            if (isConstructorSuitable(constructor)) {
+                return constructor;
+            }
+        }
+        return null;
+    }
+
+    private boolean isConstructorSuitable(Constructor<?> constructor) {
+        for (Class<?> parameterType : constructor.getParameterTypes()) {
+            if (Modifier.isAbstract(parameterType.getModifiers()) || parameterType.isInterface()) {
+                try {
+                    findImplementation(parameterType);
+                } catch (ClassNotFoundException e) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private Class<?> findImplementation(Class<?> clazz) throws ClassNotFoundException {
-        for (Class<?> implClass : instances.keySet()) {
+        System.out.println("clazz = " + clazz);
+        log.info("Finding implementation for: " + clazz.getName());
+
+        for (Class<?> implClass : getAllClasses()) {
+            log.info("implClass = " + implClass);
+            System.out.println("implClass = " + implClass);
+            if (clazz.isAssignableFrom(implClass) && !implClass.isInterface() && !Modifier.isAbstract(implClass.getModifiers())) {
+                return implClass;
+            }
+        }
+        for (Class<?> implClass : componentClasses) {
             if (clazz.isAssignableFrom(implClass) && !implClass.isInterface() && !Modifier.isAbstract(implClass.getModifiers())) {
                 return implClass;
             }
         }
         throw new ClassNotFoundException("No implementation found for: " + clazz.getName());
+    }
+
+    private Set<Class<?>> getAllClasses() throws ClassNotFoundException {
+        Set<Class<?>> classes = new HashSet<>();
+        for (Class<?> clazz : instances.keySet()) {
+            classes.add(clazz);
+        }
+        for (Class<?> clazz : currentlyCreating) {
+            classes.add(clazz);
+        }
+        return classes;
     }
 
     public <T> T resolve(Class<T> clazz) {
