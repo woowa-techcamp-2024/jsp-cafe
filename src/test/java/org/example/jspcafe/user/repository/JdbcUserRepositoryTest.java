@@ -1,5 +1,7 @@
 package org.example.jspcafe.user.repository;
 
+import org.example.jspcafe.AbstractRepositoryTestSupport;
+import org.example.jspcafe.H2DatabaseConnectionManager;
 import org.example.jspcafe.user.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,17 +15,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class JdbcUserRepositoryTest {
+class JdbcUserRepositoryTest extends AbstractRepositoryTestSupport {
 
-    private UserRepository userRepository;
+    private UserRepository userRepository = new JdbcUserRepository(super.connectionManager);
 
-    @BeforeEach
-    void setUp() {
-        userRepository = new JdbcUserRepository();
-    }
-
-    @AfterEach
-    void tearDown() {
+    @Override
+    protected void deleteAllInBatch() {
         userRepository.deleteAllInBatch();
     }
 

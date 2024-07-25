@@ -1,5 +1,7 @@
 package org.example.jspcafe.user.service;
 
+import org.example.jspcafe.AbstractRepositoryTestSupport;
+import org.example.jspcafe.H2DatabaseConnectionManager;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.response.UserListResponse;
@@ -17,19 +19,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class UserServiceTest {
+class UserServiceTest extends AbstractRepositoryTestSupport {
 
-    private UserService userService;
-    private JdbcUserRepository userRepository;
+    private JdbcUserRepository userRepository = new JdbcUserRepository(super.connectionManager);
+    private UserService userService = new UserService(userRepository);
 
-     @BeforeEach
-     void setUp() {
-         userRepository = new JdbcUserRepository();
-         userService = new UserService(userRepository);
-     }
-
-    @AfterEach
-    void tearDown() {
+    @Override
+    protected void deleteAllInBatch() {
         userRepository.deleteAllInBatch();
     }
 

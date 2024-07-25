@@ -1,8 +1,7 @@
 package org.example.jspcafe.post.repository;
 
+import org.example.jspcafe.AbstractRepositoryTestSupport;
 import org.example.jspcafe.post.model.Post;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,17 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
-class JdbcPostRepositoryTest {
+class JdbcPostRepositoryTest extends AbstractRepositoryTestSupport {
 
-    private PostRepository postRepository;
+    private PostRepository postRepository = new JdbcPostRepository(super.connectionManager);
 
-    @BeforeEach
-    void setUp() {
-        postRepository = new JdbcPostRepository();
-    }
-
-    @AfterEach
-    void tearDown() {
+    @Override
+    protected void deleteAllInBatch() {
         postRepository.deleteAllInBatch();
     }
 
