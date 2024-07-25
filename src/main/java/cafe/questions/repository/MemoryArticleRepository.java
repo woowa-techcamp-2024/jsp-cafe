@@ -29,4 +29,9 @@ public class MemoryArticleRepository implements ArticleRepository {
     public Article findById(Long id) {
         return articles.get(Math.toIntExact(id - 1));
     }
+
+    @Override
+    public void deleteAll() {
+        articles.clear();
+    }
 }
