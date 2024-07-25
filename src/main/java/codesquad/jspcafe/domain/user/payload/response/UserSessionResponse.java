@@ -1,13 +1,18 @@
 package codesquad.jspcafe.domain.user.payload.response;
 
 import codesquad.jspcafe.domain.user.domain.User;
+import java.io.Serial;
+import java.io.Serializable;
 
-public class UserSessionResponse {
+public class UserSessionResponse implements Serializable {
 
-    private Long id;
-    private String userId;
-    private String username;
-    private String email;
+    @Serial
+    private static final long serialVersionUID = 230497820397842L;
+
+    private final Long id;
+    private final String userId;
+    private final String username;
+    private final String email;
 
     private UserSessionResponse(Long id, String userId, String username, String email) {
         this.id = id;
