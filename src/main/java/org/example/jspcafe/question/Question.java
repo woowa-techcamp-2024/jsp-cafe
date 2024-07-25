@@ -11,6 +11,15 @@ public class Question {
     private String title;
     private String contents;
     private String date;
+
+    public Question(Long id, String writer, String title, String contents, String date) {
+        this.id = id;
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.date = date;
+    }
+
     public Question(String writer, String title, String contents) {
         this.date = getCurrentDateTimeString();
         this.writer = writer;
