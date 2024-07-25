@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "usersServlet", urlPatterns = "/users/*")
-public class UsersServlet extends HttpServlet {
+public class UserServlet extends HttpServlet {
     private Router router;
 
     @Override
