@@ -42,6 +42,7 @@ public class UserController extends HttpServlet {
         }
         switch (path) {
             case "/sign" -> forward("signup", req, resp);
+            case "/login" -> forward("login", req, resp);
             default -> userProfile(req, resp);
         }
     }
