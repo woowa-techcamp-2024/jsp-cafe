@@ -21,6 +21,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UserServlet extends HttpServlet {
 
     private static final Logger log = getLogger(UserServlet.class);
+    public static final String SESSION_INFO = "memberId";
 
     private MemberService memberService;
 
@@ -40,6 +41,11 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        if (req.getPathInfo().endsWith("/login")) {
+            getLoginForm(req, resp);
+            return;
+        }
+
         String[] path = req.getPathInfo().split("/");
         String lastPath = path[path.length - 1];
 
@@ -48,6 +54,10 @@ public class UserServlet extends HttpServlet {
         }
 
         getProfile(req, resp, lastPath);
+    }
+
+    private void getLoginForm(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(req, resp);
     }
 
     private void getForm(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
@@ -76,6 +86,16 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        if (req.getPathInfo().endsWith("/login")) {
+            login(req, resp);
+            return;
+        }
+
+        if (req.getPathInfo().endsWith("/logout")) {
+            logout(req, resp);
+            return;
+        }
+
 
         String pathInfo = req.getPathInfo();
         String[] path = pathInfo.split("/");
@@ -84,13 +104,38 @@ public class UserServlet extends HttpServlet {
         updateMember(req, resp, memberId);
     }
 
+    private void login(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
+        Map<String, String> body = HttpMessageUtils.getBodyFormData(req);
+
+        try {
+            String loginId = memberService.login(body.get("userId").trim(), body.get("password").trim());
+            HttpSession session = req.getSession();
+            session.setAttribute(SESSION_INFO, loginId);
+
+            resp.sendRedirect("/users");
+        } catch (IllegalArgumentException e) {
+            req.setAttribute("loginFailed", true);
+            req.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(req, resp);
+            return;
+        }
+    }
+
+    private void logout(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null || session.getAttribute(SESSION_INFO) != null) {
+            session.invalidate();
+        }
+
+        resp.sendRedirect("/");
+    }
+
     private void saveMember(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         Map<String, String> body = HttpMessageUtils.getBodyFormData(req);
 
         String save = memberService.save(SaveMemberDto.from(body));
 
         HttpSession session = req.getSession();
-        session.setAttribute("memberId", save);
+        session.setAttribute(SESSION_INFO, save);
 
         resp.sendRedirect("/users");
     }
@@ -99,7 +144,7 @@ public class UserServlet extends HttpServlet {
         Map<String, String> body = HttpMessageUtils.getBodyFormData(req);
 
         HttpSession session = req.getSession();
-        String loginId = (String) session.getAttribute("memberId");
+        String loginId = (String) session.getAttribute(SESSION_INFO);
 
         // 로그인 페이지로 이동 처리
         if (loginId == null || !loginId.equals(memberId)) {
