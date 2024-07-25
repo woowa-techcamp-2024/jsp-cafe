@@ -9,6 +9,7 @@ import org.example.demo.HttpMethod;
 import org.example.demo.Router;
 import org.example.demo.db.UserDb;
 import org.example.demo.domain.User;
+import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.UserCreateDao;
 import org.example.demo.model.UserUpdateDao;
 
@@ -30,7 +31,7 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             if (!router.route(request, response)) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -47,14 +48,14 @@ public class UserServlet extends HttpServlet {
 
     private void handleUpdateForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = UserDb.getUser(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = UserDb.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/updateForm.jsp").forward(request, response);
     }
 
     private void handleUserProfile(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = UserDb.getUser(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = UserDb.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
     }
@@ -72,7 +73,7 @@ public class UserServlet extends HttpServlet {
 
     private void handleUserUpdate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = UserDb.getUser(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = UserDb.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
 
         if (!user.getPassword().equals(request.getParameter("passwordCheck"))) {
             throw new IllegalArgumentException("Password does not match");

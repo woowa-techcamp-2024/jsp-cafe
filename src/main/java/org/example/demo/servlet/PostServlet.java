@@ -9,6 +9,7 @@ import org.example.demo.HttpMethod;
 import org.example.demo.Router;
 import org.example.demo.db.PostDb;
 import org.example.demo.domain.Post;
+import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class PostServlet extends HttpServlet {
 
     private void handleGetPost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long postId = Long.parseLong(pathVariables.get(0));
-        Post post = PostDb.getPost(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = PostDb.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
 
         request.setAttribute("post", post);
         request.getRequestDispatcher("/post/show.jsp").forward(request, response);
