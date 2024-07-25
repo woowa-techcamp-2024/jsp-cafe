@@ -1,25 +1,27 @@
 package com.hyeonuk.jspcafe.article.dao;
 
 import com.hyeonuk.jspcafe.article.domain.Article;
+import com.hyeonuk.jspcafe.global.db.mysql.MysqlManager;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("InMemoryArticleDao 클래스")
-class InMemoryArticleDaoTest {
-
+class MysqlArticleDaoTest {
     private ArticleDao articleDao;
 
     @BeforeEach
-    void setUp() {
-        articleDao = new InMemoryArticleDao();
+    void setUp() throws SQLException, ClassNotFoundException {
+        MysqlManager manager = new MysqlManager();
+        articleDao = new MysqlArticleDao(manager);
     }
 
     @Nested
@@ -37,6 +39,7 @@ class InMemoryArticleDaoTest {
             assertEquals(article.getTitle(), savedArticle.getTitle());
             assertEquals(article.getContents(), savedArticle.getContents());
         }
+
 
         @Test
         @DisplayName("이미 존재하는 게시글을 저장하면 업데이트된다.")
