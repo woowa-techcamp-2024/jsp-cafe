@@ -23,7 +23,11 @@ public class MemberService {
     }
 
     public String save(final SaveMemberDto saveMember) {
-        return memberRepository.save(saveMember.toMember());
+        try {
+            return memberRepository.save(saveMember.toMember());
+        } catch (IllegalArgumentException e) {
+            throw new HttpException(BAD_REQUEST, "이미 존재하는 회원입니다.");
+        }
     }
 
     public Member findById(final String memberId) {

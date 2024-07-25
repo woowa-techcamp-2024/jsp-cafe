@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,8 @@ public class JdbcMemberRepository implements MemberRepository {
             pstmt.executeUpdate();
 
             return member.getMemberId();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
