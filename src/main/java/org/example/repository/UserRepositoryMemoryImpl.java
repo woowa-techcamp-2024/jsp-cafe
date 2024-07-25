@@ -43,6 +43,14 @@ public class UserRepositoryMemoryImpl implements UserRepository{
         return new ArrayList<>(users.values());
     }
 
+    public void updateUser(String userId, String nickname, String email) {
+        users.forEach((key, value) -> {
+            if (value != null && value.getUserId().equals(userId)) {
+                value.update(nickname, email);
+            }
+        });
+    }
+
     public static UserRepositoryMemoryImpl getInstance() {
         if (instance == null) {
             instance = new UserRepositoryMemoryImpl();

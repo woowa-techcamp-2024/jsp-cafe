@@ -32,4 +32,9 @@ public class User {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public void update(String nickname, String email) {
+        this.nickname = nickname;
+        this.email = email;
+    }
 }

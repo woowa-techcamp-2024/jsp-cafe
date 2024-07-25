@@ -27,8 +27,8 @@
             <input type="text" class="form-control" id="userId" name="userId" value="<%= userId %>" readonly>
         </div>
         <div class="form-group">
-            <label for="name">이름</label>
-            <input type="text" class="form-control" id="name" name="name" value="<%= nickname %>" required>
+            <label for="nickname">이름</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" value="<%= nickname %>" required>
         </div>
         <div class="form-group">
             <label for="email">이메일</label>
@@ -46,20 +46,19 @@
     const pathArray = window.location.pathname.split('/');
     return pathArray[pathArray.length - 2]; // Assuming userId is second last in the path
   }
+
   function submitForm() {
     const form = document.getElementById('profileForm');
     const formData = new FormData(form);
-    const object = Object.fromEntries(formData.entries());
-    const json = JSON.stringify(object);
-    const link = "/users/" + getUserIdFromUrl();
-    console.log(link)
+    const params = new URLSearchParams(formData);
+    const url = '/users/'+ getUserIdFromUrl() + "?" +params.toString();
+    console.log(url);
 
-    fetch(link, {
+    fetch(url, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-      },
-      body: json
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
     })
     .then(response => {
       if (response.ok) {

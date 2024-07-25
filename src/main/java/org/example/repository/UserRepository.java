@@ -10,4 +10,5 @@ public interface UserRepository {
     Optional<User> getUserByUserId(String userId);
     void clear();
     List<User> findAll();
+    void updateUser(String userId, String nickname, String email);
 }

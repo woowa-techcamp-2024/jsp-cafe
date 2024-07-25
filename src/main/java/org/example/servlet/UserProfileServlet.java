@@ -65,10 +65,10 @@ public class UserProfileServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String userId = getPathVariable(request);
         String password = request.getParameter("password");
-        String name = request.getParameter("name");
+        String nickname = request.getParameter("nickname");
         String email = request.getParameter("email");
+        logger.info("userId: {}, password: {}, nickname: {}, email: {}", userId, password, nickname, email);
 
-        //userService.updateUser(userId, password, name, email);
-        response.getWriter().println("사용자 정보를 수정했습니다.");
+        userService.updateUser(userId, password, nickname, email);
     }
 }
