@@ -6,9 +6,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../static/css/style.css">
-  <link rel="stylesheet" href="../static/css/main.css">
-  <link rel="stylesheet" href="../static/css/post-details.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/main.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/post-details.css">
   <title>찬우 카페</title>
 </head>
 <body>
@@ -19,7 +19,7 @@
   </div>
   <div id="post-container">
     <a id="back-button" style="margin-bottom: 20px" href="/">
-      <img src="../static/assets/arrow-left.svg" alt="">
+      <img src="${pageContext.request.contextPath}/static/assets/arrow-left.svg" alt="">
     </a>
     <div id="post-title"><c:out value="${post.title()}" /></div>
     <div id="post-header">

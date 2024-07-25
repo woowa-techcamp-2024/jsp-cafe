@@ -34,3 +34,24 @@
   font-size: 0.9em;
   color: #879298;
 }
+
+#profile-button {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 1em;
+  color: white;
+
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #62CBC6;
+  margin-top: 20px;
+
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+#profile-button:hover {
+  background-color: #51A9A5;
+}
