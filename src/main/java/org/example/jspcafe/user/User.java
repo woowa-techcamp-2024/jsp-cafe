@@ -7,6 +7,14 @@ public class User {
     private String nickname;
     private String email;
 
+    public User(Long id, String userId,String email, String nickname, String password) {
+        this.id = id;
+        this.userId = userId;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+    }
+
     public User(Long id, String email, String nickname, String password) {
         this.id = id;
         this.email = email;
@@ -55,5 +63,9 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

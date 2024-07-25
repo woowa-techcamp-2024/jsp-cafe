@@ -16,9 +16,9 @@
                     <tr>
                       <th scope="row">${user.id}</th>
                       <td>${user.userId}</td>
-                      <td> <a href="users/${user.id}"> ${user.nickname} </a></td>
+                      <td>${user.nickname} </a></td>
                       <td>${user.email}</td>
-                      <td><a href="editUser?id=${user.id}" class="btn btn-success" role="button">수정</a></td>
+                      <td><a href="users/${user.id}" class="btn btn-success" role="button">수정</a></td>
                   </tr>
                 </c:forEach>
               </tbody>
