@@ -5,72 +5,61 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.HttpMethod;
+import org.example.demo.Router;
 import org.example.demo.db.UserDb;
 import org.example.demo.domain.User;
 import org.example.demo.model.UserCreateDao;
 import org.example.demo.model.UserUpdateDao;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 @WebServlet(name = "usersServlet", urlPatterns = "/users/*")
 public class UsersServlet extends HttpServlet {
-
-    private static final Pattern LIST_PATTERN = Pattern.compile("^/users/?$");
-    private static final Pattern PROFILE_PATTERN = Pattern.compile("^/users/(\\d+)/?$");
-    private static final Pattern UPDATE_FORM_PATTERN = Pattern.compile("^/users/(\\d+)/form/?$");
+    private Router router;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-        if (pathInfo == null) pathInfo = "/";
-
-        if (LIST_PATTERN.matcher(request.getRequestURI()).matches()) {
-            handleUserList(request, response);
-        } else if (UPDATE_FORM_PATTERN.matcher(request.getRequestURI()).matches()) {
-            handleUpdateForm(request, response);
-        } else if (PROFILE_PATTERN.matcher(request.getRequestURI()).matches()) {
-            handleUserProfile(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
+    public void init() throws ServletException {
+        router = new Router();
+        router.addRoute(HttpMethod.GET, "^/users/?$", this::handleUserList);
+        router.addRoute(HttpMethod.GET, "^/users/(\\d+)/?$", this::handleUserProfile);
+        router.addRoute(HttpMethod.GET, "^/users/(\\d+)/form/?$", this::handleUpdateForm);
+        router.addRoute(HttpMethod.POST, "^/users/?$", this::handleUserCreate);
+        router.addRoute(HttpMethod.POST, "^/users/(\\d+)/?$", this::handleUserUpdate);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-        if (pathInfo == null) pathInfo = "/";
-
-        if (LIST_PATTERN.matcher(request.getRequestURI()).matches()) {
-            handleUserCreate(request, response);
-        } else if (PROFILE_PATTERN.matcher(request.getRequestURI()).matches()) {
-            handleUserUpdate(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            if (!router.route(request, response)) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            throw new ServletException(e);
         }
     }
 
-    private void handleUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void handleUserList(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         request.setAttribute("users", UserDb.getUsers());
         request.getRequestDispatcher("/user/list.jsp").forward(request, response);
     }
 
-    private void handleUpdateForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = extractIdFromUri(request.getRequestURI(), UPDATE_FORM_PATTERN);
+    private void handleUpdateForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
+        Long id = Long.parseLong(pathVariables.get(0));
         User user = UserDb.getUser(id).orElseThrow(() -> new RuntimeException("User not found"));
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/updateForm.jsp").forward(request, response);
     }
 
-    private void handleUserProfile(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = extractIdFromUri(request.getRequestURI(), PROFILE_PATTERN);
+    private void handleUserProfile(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
+        Long id = Long.parseLong(pathVariables.get(0));
         User user = UserDb.getUser(id).orElseThrow(() -> new RuntimeException("User not found"));
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
     }
 
-    private void handleUserCreate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleUserCreate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
         UserCreateDao dao = new UserCreateDao(
                 request.getParameter("userId"),
                 request.getParameter("password"),
@@ -81,8 +70,8 @@ public class UsersServlet extends HttpServlet {
         response.sendRedirect("/users");
     }
 
-    private void handleUserUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Long id = extractIdFromUri(request.getRequestURI(), PROFILE_PATTERN);
+    private void handleUserUpdate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
+        Long id = Long.parseLong(pathVariables.get(0));
         User user = UserDb.getUser(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!user.getPassword().equals(request.getParameter("passwordCheck"))) {
@@ -97,13 +86,5 @@ public class UsersServlet extends HttpServlet {
         ));
 
         response.sendRedirect("/users/" + id);
-    }
-
-    private Long extractIdFromUri(String uri, Pattern pattern) {
-        Matcher matcher = pattern.matcher(uri);
-        if (matcher.find()) {
-            return Long.parseLong(matcher.group(1));
-        }
-        throw new IllegalArgumentException("Invalid URI pattern");
     }
 }
