@@ -38,11 +38,6 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void removeByUserId(String userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Optional<User> findByUserId(String userId) {
         String query = """
                 SELECT
@@ -112,10 +107,5 @@ public class JdbcUserDao implements UserDao {
                     }
                 }
         );
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException();
     }
 }

@@ -9,7 +9,4 @@ public interface ArticleDao {
     void save(Article article);
     Optional<Article> findByArticleId(long articleId);
     List<Article> findAll();
-    void removeByArticleId(long articleId);
-    boolean existByArticleId(long articleId);
-    void clear();
 }

@@ -94,19 +94,4 @@ public class JdbcArticleDao implements ArticleDao {
                 }
         );
     }
-
-    @Override
-    public void removeByArticleId(long articleId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean existByArticleId(long articleId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException();
-    }
 }
