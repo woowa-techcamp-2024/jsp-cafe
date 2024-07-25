@@ -15,7 +15,6 @@ import java.io.IOException;
 
 public class MemberInfoController implements SubController {
     private static final Logger log = LoggerFactory.getLogger(MemberInfoController.class);
-    private static final MemberService memberService = MemberService.getInstance();
 
     @Override
     public void doProcess(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -31,7 +30,7 @@ public class MemberInfoController implements SubController {
             }
             case "POST" : {
                 updateMember(req);
-                var memberList = memberService.getMemberList();
+                var memberList = MemberService.getInstance().getMemberList();
                 for (MemberResponseDto memberResponseDto : memberList) {
                     System.out.println(memberResponseDto);
                 }
@@ -45,6 +44,6 @@ public class MemberInfoController implements SubController {
     private void updateMember(HttpServletRequest req) {
         var body = req.getParameterMap();
         var memberDto = new MemberUpdateRequestDto(body);
-        memberService.updateMember(memberDto);
+        MemberService.getInstance().updateMember(memberDto);
     }
 }

@@ -8,6 +8,7 @@ import codesquad.javacafe.member.controller.MemberController;
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.member.controller.MemberInfoController;
 import codesquad.javacafe.member.controller.MemberProfileController;
+import codesquad.javacafe.post.controller.PostController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,6 +29,7 @@ public class FrontController extends HttpServlet {
         subControllers.put("/users", new MemberController());
         subControllers.put("/users/profile", new MemberProfileController());
         subControllers.put("/users/info", new MemberInfoController());
+        subControllers.put("/post", new PostController());
     }
 
     @Override

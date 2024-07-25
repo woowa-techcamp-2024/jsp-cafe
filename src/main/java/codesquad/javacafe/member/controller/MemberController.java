@@ -16,7 +16,6 @@ import java.util.List;
 
 public class MemberController implements SubController {
     private static final Logger log = LoggerFactory.getLogger(MemberController.class);
-    private static final MemberService memberService = MemberService.getInstance();
 
     @Override
     public void doProcess(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -41,12 +40,12 @@ public class MemberController implements SubController {
     }
 
     private List<MemberResponseDto> getMemberList() {
-        return memberService.getMemberList();
+        return MemberService.getInstance().getMemberList();
     }
 
     private void createMember(HttpServletRequest req) {
         var body = req.getParameterMap();
         var memberDto = new MemberCreateRequestDto(body);
-        memberService.createMember(memberDto);
+        MemberService.getInstance().createMember(memberDto);
     }
 }

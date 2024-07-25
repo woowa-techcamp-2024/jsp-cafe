@@ -6,6 +6,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%
+    var contextPath = request.getContextPath();
+%>
 <div class="navbar navbar-default" id="subnav">
     <div class="col-md-12">
         <div class="navbar-header">
@@ -24,7 +28,8 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="#">Posts</a></li>
+                <li class="active"><a href="/">Posts</a></li>
+                <li><a href="<%=contextPath%>/qna/form.jsp">글쓰기</a></li>
                 <li><a href="/api/users">회원목록</a></li>
                 <li><a href="#" role="button">로그인</a></li>
                 <li><a href="/user/form.jsp" role="button">회원가입</a></li>
