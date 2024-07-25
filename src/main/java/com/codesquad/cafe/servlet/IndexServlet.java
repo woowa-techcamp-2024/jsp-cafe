@@ -33,14 +33,37 @@ public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("IndexServlet doGet : {}", req.getRequestURL());
+
+        int pageNum = getRequestedPageNum(req);
+        int pageSize = getRequestedPageSize(req);
+
+        Page<Post> posts;
+        try {
+            posts = postRepository.findByPage(pageNum, pageSize);
+        } catch (IllegalArgumentException e) {
+            resp.sendError(400);
+            return;
+        }
+
+        Page<PostDetailsDto> page = getPostDetailListFrom(posts);
+
+        req.setAttribute("page", page);
+        req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
+    }
+
+    private int getRequestedPageNum(HttpServletRequest req) {
         String pageNumParam = req.getParameter("pageNum");
+        return (pageNumParam == null || pageNumParam.isEmpty()) ? 1 : Integer.parseInt(pageNumParam);
+    }
+
+    private int getRequestedPageSize(HttpServletRequest req) {
         String pageSizeParam = req.getParameter("pageSize");
-        int pageNum = (pageNumParam == null || pageNumParam.isEmpty()) ? 1 : Integer.parseInt(pageNumParam);
-        int pageSize = (pageSizeParam == null || pageSizeParam.isEmpty()) ? 5 : Integer.parseInt(pageSizeParam);
+        return (pageSizeParam == null || pageSizeParam.isEmpty()) ? 5 : Integer.parseInt(pageSizeParam);
+    }
 
-        Page<Post> posts = postRepository.findByPage(pageNum, pageSize);
-
-        List<PostDetailsDto> postsWithDetail = posts.getContent().stream()
+    private Page<PostDetailsDto> getPostDetailListFrom(Page<Post> posts) {
+        List<PostDetailsDto> list = posts.getContent().stream()
                 .map(post -> {
                     User user = userRepository.findById(post.getUserId()).orElseThrow(()
                             -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -50,16 +73,13 @@ public class IndexServlet extends HttpServlet {
                 })
                 .toList();
 
-        Page<PostDetailsDto> page = Page.of(
-                postsWithDetail,
+        return Page.of(
+                list,
                 posts.getPageNumber(),
                 posts.getPageSize(),
                 posts.getActualSize(),
                 posts.getTotalElements(),
                 posts.getTotalPages()
         );
-
-        req.setAttribute("page", page);
-        req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }
 }
