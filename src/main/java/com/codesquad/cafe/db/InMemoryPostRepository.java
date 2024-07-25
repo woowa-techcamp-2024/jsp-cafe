@@ -2,16 +2,11 @@ package com.codesquad.cafe.db;
 
 import com.codesquad.cafe.model.Post;
 import com.codesquad.cafe.model.PostDetailsDto;
-import com.codesquad.cafe.model.User;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +55,7 @@ public class InMemoryPostRepository implements PostRepository {
 
         int start = (pageNum - 1) * pageSize;
         List<Post> result = posts.values().stream()
+                .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
                 .skip(start)
                 .limit(pageSize)
                 .toList();
