@@ -14,6 +14,7 @@ import woopaca.jspcafe.service.UserService;
 import woopaca.jspcafe.servlet.dto.SignUpRequest;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet("/users/signup")
 public class SignUpServlet extends HttpServlet {
@@ -41,7 +42,8 @@ public class SignUpServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            SignUpRequest signUpRequest = RequestParametersResolver.resolve(request, SignUpRequest.class);
+            Map<String, String[]> parameters = request.getParameterMap();
+            SignUpRequest signUpRequest = RequestParametersResolver.resolve(parameters, SignUpRequest.class);
             userService.signUp(signUpRequest);
             response.sendRedirect("/users");
         } catch (IllegalArgumentException e) {

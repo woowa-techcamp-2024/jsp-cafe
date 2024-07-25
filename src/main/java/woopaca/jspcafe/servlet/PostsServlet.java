@@ -12,6 +12,7 @@ import woopaca.jspcafe.service.PostService;
 import woopaca.jspcafe.servlet.dto.WritePostRequest;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet("/posts")
 public class PostsServlet extends HttpServlet {
@@ -33,7 +34,8 @@ public class PostsServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        WritePostRequest writePostRequest = RequestParametersResolver.resolve(request, WritePostRequest.class);
+        Map<String, String[]> parameters = request.getParameterMap();
+        WritePostRequest writePostRequest = RequestParametersResolver.resolve(parameters, WritePostRequest.class);
         String userId = (String) request.getSession()
                 .getAttribute("userId");
         postService.writePost(writePostRequest, userId);
