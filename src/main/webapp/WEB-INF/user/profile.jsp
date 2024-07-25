@@ -4,21 +4,11 @@
 
 <!DOCTYPE html>
 <html lang="kr">
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>SLiPP Java Web Programming</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="../../css/styles.css" rel="stylesheet">
-</head>
-<body>
 
-<%@include file="/common/topbar.jsp"%>
-<%@include file="/common/navbar.jsp"%>
+<jsp:include page="/common/header.jsp" />
+<body>
+<jsp:include page="/common/topbar.jsp" />
+<jsp:include page="/common/navbar.jsp" />
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
