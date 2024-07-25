@@ -1,8 +1,8 @@
 package cafe;
 
-import cafe.questions.QuestionServlet;
-import cafe.questions.QuestionWriteServlet;
-import cafe.questions.QuestionsServlet;
+import cafe.questions.servlet.QuestionServlet;
+import cafe.questions.servlet.QuestionWriteServlet;
+import cafe.questions.servlet.QuestionsServlet;
 import cafe.users.servlet.UserEditServlet;
 import cafe.users.servlet.UserRegisterServlet;
 import cafe.users.servlet.UsersProfileServlet;

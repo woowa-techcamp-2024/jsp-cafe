@@ -1,4 +1,6 @@
-package cafe.questions;
+package cafe.questions.repository;
+
+import cafe.questions.Article;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
