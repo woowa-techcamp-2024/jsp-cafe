@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
@@ -101,6 +103,50 @@ public class EndToEndTest {
     private static String getResponse(HttpURLConnection con) throws IOException {
         InputStream inputStream = con.getInputStream();
         return new String(inputStream.readAllBytes());
+    }
+
+    private static HttpURLConnection createGetLoginedConnection(String path, User user) throws Exception {
+        String cookie = login(user);
+
+        HttpURLConnection con = createGetConnection(path);
+        con.setRequestProperty("Cookie", cookie);
+        return con;
+    }
+
+    private static String login(User user) throws Exception {
+        HttpURLConnection con = createPostConnection("/login");
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+        String urlParameters = "userId=" + user.getUserId() + "&password=" + user.getPassword();
+        byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+        try (OutputStream os = con.getOutputStream()) {
+            os.write(postData);
+        }
+
+        String cookie = extractCookies(con);
+        con.disconnect();
+
+        return cookie;
+    }
+
+
+    private static String extractCookies(HttpURLConnection con) {
+        Map<String, List<String>> headerFields = con.getHeaderFields();
+        List<String> cookiesHeader = headerFields.get("Set-Cookie");
+
+        if (cookiesHeader != null) {
+            StringBuilder cookieBuilder = new StringBuilder();
+            for (String cookie : cookiesHeader) {
+                if (cookieBuilder.length() > 0) {
+                    cookieBuilder.append("; ");
+                }
+                String cookieValue = cookie.split(";", 2)[0];
+                cookieBuilder.append(cookieValue);
+            }
+            return cookieBuilder.toString();
+        }
+        return "";
     }
 
     @AfterEach
@@ -342,6 +388,7 @@ public class EndToEndTest {
             assertAll(() -> {
                 assertThat(con.getResponseCode()).isEqualTo(302);
                 assertThat(con.getHeaderField("Location")).isEqualTo("/");
+                assertThat(extractCookies(con)).contains("SESSION");
             });
         }
 
@@ -364,6 +411,42 @@ public class EndToEndTest {
             //then
             assertAll(() -> {
                 assertThat(getResponse(con)).contains("아이디 또는 비밀번호가 틀립니다.");
+            });
+        }
+
+        @Test
+        void 로그인한_사용자는_로그아웃할_수_있다() throws Exception {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createGetLoginedConnection("/logout", user);
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/");
+            });
+        }
+
+        @Test
+        void 로그인하지_않았다면_로그인_페이지로_이동한다() throws Exception {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createGetConnection("/logout");
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/login");
             });
         }
     }
