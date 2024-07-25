@@ -2,6 +2,8 @@ package woopaca.jspcafe.repository;
 
 import woopaca.jspcafe.model.Post;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,5 +26,13 @@ public class PostMemoryRepository implements PostRepository {
             }
             return post;
         });
+    }
+
+    @Override
+    public List<Post> findAll() {
+        return posts.values()
+                .stream()
+                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
+                .toList();
     }
 }
