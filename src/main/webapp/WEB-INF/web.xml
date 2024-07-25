@@ -5,6 +5,16 @@
   version="6.0">
   <!-- 기본 서블릿에 대한 URL 매핑 설정 -->
   <!-- 기본 서블릿 설정 -->
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+    <jsp-property-group>
+      <url-pattern>*.jspf</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+  </jsp-config>
 
   <filter>
     <filter-name>staticResourceFilter</filter-name>

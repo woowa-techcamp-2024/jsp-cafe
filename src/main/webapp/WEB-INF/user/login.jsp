@@ -1,6 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="common.jspf" %>
+
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -64,15 +63,7 @@
             	<span class="icon-bar"></span>
             </button>            
         </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse2">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../../static/index.html">Posts</a></li>
-                <li><a href="./login.jsp" role="button">로그인</a></li>
-                <li><a href="../../static/user/form.html" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
-            </ul>
-        </div>
+        <%@ include file="navbar.jspf" %>
     </div>
 </div>
 

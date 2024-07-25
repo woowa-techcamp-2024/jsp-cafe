@@ -1,0 +1,22 @@
+<div class="collapse navbar-collapse" id="navbar-collapse2">
+    <ul class="nav navbar-nav navbar-right">
+        <li class="active"><a href="../../static/index.html">Posts</a></li>
+        <c:choose>
+            <c:when test="${not empty sessionScope.userId}">
+                <li>
+                    <form action="logout" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-link"
+                                style="padding: 0; border: none; background: none;">로그아웃
+                        </button>
+                    </form>
+                </li>
+                <li><a href="<c:url value="/WEB-INF/user/profile.jsp"/>" role="button">개인정보수정</a>
+                </li>
+            </c:when>
+            <c:otherwise>
+                <li><a href="./login" role="button">로그인</a></li>
+                <li><a href="../../static/user/form.html" role="button">회원가입</a></li>
+            </c:otherwise>
+        </c:choose>
+    </ul>
+</div>
