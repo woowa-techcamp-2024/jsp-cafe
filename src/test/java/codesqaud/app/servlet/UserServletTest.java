@@ -1,6 +1,7 @@
 package codesqaud.app.servlet;
 
 import codesqaud.app.dao.UserDao;
+import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
 import codesqaud.mock.MockHttpServletRequest;
 import codesqaud.mock.MockHttpServletResponse;
@@ -8,7 +9,6 @@ import codesqaud.mock.MockRequestDispatcher;
 import codesqaud.mock.MockServletConfig;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -38,24 +38,18 @@ public class UserServletTest {
         userServlet.init(config);
     }
 
-
     @Nested
-    @DisplayName("회원가입 할 때")
     class SignUpTest {
-
         @Test
-        @DisplayName("회원가입이 성공하면 DB에 저장되고 Redirect 한다")
         void 회원가입_성공() throws ServletException, IOException {
-            // Given
+            request.setRequestURI("/users");
             request.setParameter("userId", "testUser");
             request.setParameter("password", "password");
             request.setParameter("name", "Test Name");
             request.setParameter("email", "test@example.com");
 
-            // When
             userServlet.doPost(request, response);
 
-            // Then
             User savedUser = userDao.findByUserId("testUser").orElse(null);
             assertThat(savedUser).isNotNull();
             assertThat(response.getRedirectedUrl()).isEqualTo("/users");
@@ -63,64 +57,146 @@ public class UserServletTest {
     }
 
     @Nested
-    @DisplayName("사용자 목록을 조회할 때")
     class 사용자목록_조회_테스트 {
 
         @Test
-        @DisplayName("저장된 사용자 목록을 attribute에 세팅하고 dispatcher를 설정한다")
         void 사용자목록_조회() throws ServletException, IOException {
-            // Given
             request.setRequestURI("/users");
             userDao.save(new User("user1", "pass1", "User 1", "user1@example.com"));
             userDao.save(new User("user2", "pass2", "User 2", "user2@example.com"));
 
-            // When
             userServlet.doGet(request, response);
 
-            // Then
             List<User> users = (List<User>) request.getAttribute("users");
             assertThat(users).isNotNull();
             assertThat(users.size()).isEqualTo(2);
 
             MockRequestDispatcher dispatcher = request.getRequestDispatcher();
-            assertThat(dispatcher.getForwardedPath()).isEqualTo("/user/list.jsp");
+            assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/user/list.jsp");
             assertThat(dispatcher.getForwardCount()).isEqualTo(1);
         }
     }
 
     @Nested
-    @DisplayName("사용자 프로필을 조회할 때")
-    class userProfile {
-
+    class UserProfileTest {
         @Test
-        @DisplayName("해당하는 사용자가 없으면 예외가 발생한다")
         void 존재하지_않는_사용자_프로필_조회() {
-            // Given
             request.setRequestURI("/users/999");
 
-            // When & Then
             assertThatThrownBy(() -> userServlet.doGet(request, response))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(HttpException.class)
+                    .hasMessage("해당 아이디를 가진 사용자는 찾을 수 없습니다.");
         }
 
         @Test
-        @DisplayName("해당하는 사용자가 있으면 attribute에 등록되고 dispatcher가 설정된다")
         void 존재하는_사용자_프로필_조회() throws ServletException, IOException {
-            // Given
             userDao.save(user);
             User savedUser = userDao.findByUserId(user.getUserId()).orElse(null);
             request.setRequestURI("/users/" + savedUser.getId());
 
-            // When
             userServlet.doGet(request, response);
 
-            // Then
-            User profileUser = (User) request.getAttribute("userProfile");
+            User profileUser = (User) request.getAttribute("user");
             assertThat(profileUser).isNotNull();
-            assertThat(profileUser.getId()).isEqualTo(user.getId());
+            assertThat(profileUser.getId()).isEqualTo(savedUser.getId());
 
-            assertThat(request.getRequestDispatcher().getForwardedPath()).isEqualTo("/user/profile.jsp");
-            assertThat(request.getRequestDispatcher().getForwardCount()).isEqualTo(1);
+            MockRequestDispatcher dispatcher = request.getRequestDispatcher();
+            assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/user/profile.jsp");
+            assertThat(dispatcher.getForwardCount()).isEqualTo(1);
+        }
+    }
+
+    @Nested
+    class ProfileFormTest {
+        @Test
+        void 프로필_수정_폼_조회_성공() throws ServletException, IOException {
+            userDao.save(user);
+            User savedUser = userDao.findByUserId(user.getUserId()).orElse(null);
+            request.setRequestURI("/users/profile/" + savedUser.getId());
+
+            userServlet.doGet(request, response);
+
+            User profileUser = (User) request.getAttribute("user");
+            assertThat(profileUser).isNotNull();
+            assertThat(profileUser.getId()).isEqualTo(savedUser.getId());
+
+            MockRequestDispatcher dispatcher = request.getRequestDispatcher();
+            assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/user/profile_form.jsp");
+            assertThat(dispatcher.getForwardCount()).isEqualTo(1);
+        }
+
+        @Test
+        void 존재하지_않는_사용자_프로필_수정_폼_조회() {
+            request.setRequestURI("/users/profile/999");
+
+            assertThatThrownBy(() -> userServlet.doGet(request, response))
+                    .isInstanceOf(HttpException.class);
+        }
+    }
+
+    @Nested
+    class LoginFormTest {
+
+        @Test
+        void 로그인_폼_조회_성공() throws ServletException, IOException {
+            request.setRequestURI("/users/login");
+
+            userServlet.doGet(request, response);
+
+            MockRequestDispatcher dispatcher = request.getRequestDispatcher();
+            assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/user/login.jsp");
+            assertThat(dispatcher.getForwardCount()).isEqualTo(1);
+        }
+    }
+
+    @Nested
+    class SignUpFormTest {
+
+        @Test
+        void 회원가입_폼_조회_성공() throws ServletException, IOException {
+            request.setRequestURI("/users/form");
+
+            userServlet.doGet(request, response);
+
+            MockRequestDispatcher dispatcher = request.getRequestDispatcher();
+            assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/user/form.jsp");
+            assertThat(dispatcher.getForwardCount()).isEqualTo(1);
+        }
+    }
+
+    @Nested
+    class ProfileUpdateTest {
+
+        @Test
+        void 프로필_수정_성공() throws ServletException, IOException {
+            userDao.save(user);
+            User savedUser = userDao.findByUserId(user.getUserId()).orElse(null);
+            request.setRequestURI("/users/" + savedUser.getId());
+            request.setParameter("name", "Updated Name");
+            request.setParameter("email", "updated@example.com");
+            request.setParameter("password", "newpassword");
+
+            userServlet.doPost(request, response);
+
+            User updatedUser = userDao.findById(savedUser.getId()).orElse(null);
+            assertThat(updatedUser).isNotNull();
+            assert updatedUser != null;
+            assertThat(updatedUser.getName()).isEqualTo("Updated Name");
+            assertThat(updatedUser.getEmail()).isEqualTo("updated@example.com");
+            assertThat(updatedUser.getPassword()).isEqualTo("newpassword");
+
+            assertThat(response.getRedirectedUrl()).isEqualTo("/users/" + savedUser.getId());
+        }
+
+        @Test
+        void 존재하지_않는_사용자_프로필_수정() throws IOException {
+            request.setRequestURI("/users/999");
+            request.setParameter("name", "Updated Name");
+            request.setParameter("email", "updated@example.com");
+            request.setParameter("password", "newpassword");
+
+            assertThatThrownBy(() -> userServlet.doPost(request, response))
+                    .isInstanceOf(HttpException.class);
         }
     }
 }
