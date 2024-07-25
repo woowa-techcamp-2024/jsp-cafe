@@ -56,8 +56,7 @@ public class UsersServlet extends HttpServlet {
             } catch (ServletException | IOException e) {
                 log(e.getMessage());
             }
-            // POST /users/{id} 필터링
-        } else if (pathInfo.split("/").length == 2) {
+        } else if (pathInfo.split("/").length == 2) { // POST /users/{id} 필터링
             try {
                 User user = userService.findById(Long.parseLong(pathInfo.substring(1)));
                 req.setAttribute("user", user);
