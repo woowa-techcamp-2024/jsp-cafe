@@ -9,7 +9,9 @@ import com.woowa.handler.UserHandler;
 import com.woowa.servlet.FindQuestionServlet;
 import com.woowa.servlet.ListQuestionServlet;
 import com.woowa.servlet.LoginServlet;
+import com.woowa.servlet.LogoutServlet;
 import com.woowa.servlet.QuestionServlet;
+import com.woowa.servlet.SignupServlet;
 import com.woowa.servlet.UserProfileServlet;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -36,6 +38,9 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         Dynamic helloServlet = ctx.addServlet("helloServlet", dispatcherServlet);
         helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/font/*", "/favicon.ico", "/user/*",
                 "/qna/*");
+
+        Dynamic signupServlet = ctx.addServlet("signupServlet", new SignupServlet());
+        signupServlet.addMapping("/signup");
 
         Dynamic userProfileServlet = ctx.addServlet("userProfileServlet", new UserProfileServlet(
                 beanFactory.getBean(UserHandler.class),

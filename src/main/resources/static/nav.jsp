@@ -21,7 +21,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.jsp">Posts</a></li>
                 <li><a href="${pageContext.request.contextPath}/login" role="button">로그인</a></li>
-                <li><a href="form.jsp" role="button">회원가입</a></li>
+                <li><a href="${pageContext.request.contextPath}/signup" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
