@@ -1,8 +1,10 @@
 package codesquad.javacafe.post.entity;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Post {
+    private static AtomicInteger ai = new AtomicInteger(0);
     private long id;
     private String writer;
     private String title;
@@ -11,6 +13,7 @@ public class Post {
 
 
     public Post(String writer, String title, String contents) {
+        this.id = ai.incrementAndGet();
         this.writer = writer;
         this.title = title;
         this.contents = contents;

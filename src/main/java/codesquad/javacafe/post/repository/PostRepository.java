@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PostRepository {
     private static final Logger log = LoggerFactory.getLogger(PostRepository.class);
-    private static final Map<String, Post> map = new ConcurrentHashMap<>();
+    private static final Map<Long, Post> map = new ConcurrentHashMap<>();
     private static final PostRepository instance = new PostRepository();
     private PostRepository() {}
 
@@ -22,11 +22,15 @@ public class PostRepository {
 
     public void save(PostCreateRequestDto postDto) {
         Post post = postDto.toEntity();
-        map.put(post.getWriter(), post);
+        map.put(post.getId(), post);
         log.debug("[PostRepository] created post: {}", post);
     }
 
     public List<Post> findAll() {
         return map.values().stream().toList();
+    }
+
+    public Post findById(long id) {
+        return map.get(id);
     }
 }

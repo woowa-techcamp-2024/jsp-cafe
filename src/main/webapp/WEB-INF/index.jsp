@@ -26,7 +26,7 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="#"><%=post.getTitle()%></a>
+                              <a href="/api/post?postId=<%=post.getId()%>"><%=post.getTitle()%></a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>

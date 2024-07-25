@@ -25,6 +25,7 @@ public class MainController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("[MainController] GET request");
         var postList = PostService.getInstance().getAllPosts();
         req.setAttribute("postList",postList);
         var dispatcher = req.getRequestDispatcher("/WEB-INF/index.jsp");

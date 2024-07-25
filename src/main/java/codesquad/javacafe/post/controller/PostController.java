@@ -2,6 +2,7 @@ package codesquad.javacafe.post.controller;
 
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
+import codesquad.javacafe.post.dto.response.PostResponseDto;
 import codesquad.javacafe.post.repository.PostRepository;
 import codesquad.javacafe.post.service.PostService;
 import jakarta.servlet.ServletException;
@@ -21,11 +22,22 @@ public class PostController implements SubController {
         var method = req.getMethod();
         log.info("[PostController doProcess] method: {}", method);
         switch (method) {
+            case "GET":{
+                var body = Long.parseLong(req.getParameterMap().get("postId")[0]);
+                log.debug("[PostController doProcess] body: {}", body);
+                var post = PostService.getInstance().getPost(body);
+                log.debug("[PostController doProcess] post: {}", post);
+                req.setAttribute("post", post);
+                var dispatcher = req.getRequestDispatcher("/qna/show.jsp");
+                dispatcher.forward(req, res);
+                return;
+            }
             case "POST" :{
                 createPost(req);
                 res.sendRedirect("/");
             }
         }
+
     }
 
     private void createPost(HttpServletRequest req) {
