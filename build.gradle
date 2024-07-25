@@ -1,36 +1,39 @@
 plugins {
-  id 'java'
-  id 'war'
+    id 'java'
+    id 'war'
 }
 
 group 'com.woowa'
 version '1.0-SNAPSHOT'
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 ext {
-  junitVersion = '5.10.0'
+    junitVersion = '5.10.0'
 }
 
 sourceCompatibility = '17'
 targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
-  options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 dependencies {
-  implementation 'ch.qos.logback:logback-classic:1.5.6'
+    implementation 'ch.qos.logback:logback-classic:1.5.6'
 
-  compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+    implementation 'mysql:mysql-connector-java:8.0.29'
 
-  testImplementation 'org.assertj:assertj-core:3.26.0'
-  testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
+
+    testImplementation 'org.assertj:assertj-core:3.26.0'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
 test {
-useJUnitPlatform()
+    useJUnitPlatform()
 }

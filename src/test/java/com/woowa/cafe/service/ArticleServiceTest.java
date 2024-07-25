@@ -2,6 +2,7 @@ package com.woowa.cafe.service;
 
 import com.woowa.cafe.domain.Article;
 import com.woowa.cafe.domain.Member;
+import com.woowa.cafe.dto.article.ArticleDto;
 import com.woowa.cafe.dto.article.SaveArticleDto;
 import com.woowa.cafe.repository.qna.ArticleRepository;
 import com.woowa.cafe.repository.qna.InMemoryArticleRepository;
@@ -59,11 +60,19 @@ class ArticleServiceTest {
         Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
         Long articleId1 = articleService.save(new SaveArticleDto(title + "1", content + "1"), writerId);
 
-        List<Article> articles = articleService.findAll();
+        List<ArticleDto> articles = articleService.findAll();
+
+        for (ArticleDto article : articles) {
+            System.out.println(article);
+        }
 
         assertAll(() -> assertThat(articles.size()).isEqualTo(2),
-                () -> assertThat(articles.get(0).getId()).isEqualTo(articleId),
-                () -> assertThat(articles.get(1).getId()).isEqualTo(articleId1)
+                () -> assertThat(articles.get(0).articleId()).isEqualTo(articleId),
+                () -> assertThat(articles.get(1).articleId()).isEqualTo(articleId1),
+                () -> assertThat(articles.get(0).title()).isEqualTo(title),
+                () -> assertThat(articles.get(1).title()).isEqualTo(title + "1"),
+                () -> assertThat(articles.get(0).contents()).isEqualTo(content),
+                () -> assertThat(articles.get(1).contents()).isEqualTo(content + "1")
         );
     }
 
@@ -78,11 +87,13 @@ class ArticleServiceTest {
 
         Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
 
-        Article article = articleService.findById(articleId);
+        ArticleDto article = articleService.findById(articleId);
 
-        assertAll(() -> assertThat(article.getId()).isEqualTo(articleId),
-                () -> assertThat(article.getTitle()).isEqualTo(title),
-                () -> assertThat(article.getContents()).isEqualTo(content)
+        assertAll(() -> assertThat(article.articleId()).isEqualTo(articleId),
+                () -> assertThat(article.title()).isEqualTo(title),
+                () -> assertThat(article.contents()).isEqualTo(content),
+                () -> assertThat(article.writerId()).isEqualTo(writerId),
+                () -> assertThat(article.writerName()).isEqualTo(member.getName())
         );
     }
 

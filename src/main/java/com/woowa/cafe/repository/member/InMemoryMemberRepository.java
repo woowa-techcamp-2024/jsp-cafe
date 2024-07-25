@@ -28,6 +28,14 @@ public class InMemoryMemberRepository implements MemberRepository {
     }
 
     @Override
+    public List<Member> findMembersByIds(final List<String> memberIds) {
+        return memberIds.stream()
+                .map(members::get)
+                .distinct()
+                .toList();
+    }
+
+    @Override
     public List<Member> findAll() {
         return members.values()
                 .stream()

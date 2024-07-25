@@ -1,5 +1,6 @@
 <%@ page import="com.woowa.cafe.domain.Article" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -12,22 +13,22 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    List<Article> articles = (List<Article>) request.getAttribute("articles");
-                    if (articles != null) {
-                        for (Article article : articles) {
+                    List<ArticleDto> articleDtos = (List<ArticleDto>) request.getAttribute("articleDtos");
+                    if (articleDtos != null) {
+                        for (ArticleDto article : articleDtos) {
                 %>
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="<%= "/question/" + article.getId() %>"><%= article.getTitle() %>
+                                <a href="<%= "/question/" + article.articleId() %>"><%= article.title() %>
                                 </a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time"><%= article.getFormattedCreatedAt()%></span>
-                                <a href="<%= "/user/" + memberRepository.findById(article.getWriterId()).get().getMemberId()%>"
-                                   class="author"><%= memberRepository.findById(article.getWriterId()).get().getName()%>
+                                <span class="time"><%= article.createdAt()%></span>
+                                <a href="<%= "/user/" + article.writerId()%>"
+                                   class="author"><%= article.writerName()%>
                                 </a>
                             </div>
                             <div class="reply" title="댓글">
@@ -37,9 +38,9 @@
                         </div>
                     </div>
                 </li>
+                <% }
+                }%>
             </ul>
-            <% }
-            }%>
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
