@@ -3,6 +3,7 @@ package org.example.jspcafe.config;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.annotation.WebListener;
+import org.example.jspcafe.question.repository.MemoryQuestionRepository;
 import org.example.jspcafe.user.repository.MemoryUserRepository;
 import org.example.jspcafe.user.service.UserService;
 
@@ -13,8 +14,11 @@ public class ServletContextListener implements jakarta.servlet.ServletContextLis
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         MemoryUserRepository memoryUserRepository = new MemoryUserRepository();
+
+        MemoryQuestionRepository questionRepository = new MemoryQuestionRepository();
         context.setAttribute("UserRepository", memoryUserRepository);
         context.setAttribute("UserService",new UserService(memoryUserRepository));
+        context.setAttribute("QuestionRepository",questionRepository);
     }
 
     @Override
