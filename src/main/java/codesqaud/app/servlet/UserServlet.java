@@ -82,7 +82,7 @@ public class UserServlet extends HttpServlet {
 
     private void handleUserProfile(HttpServletRequest req, HttpServletResponse resp, long id) throws ServletException, IOException {
         User user = userDao.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디를 가진 사용자는 찾을 수 없습니다.")
+                () -> new HttpException(SC_NOT_FOUND, "해당 아이디를 가진 사용자는 찾을 수 없습니다.")
         );
 
         req.setAttribute("user", user);
@@ -135,7 +135,7 @@ public class UserServlet extends HttpServlet {
         user.setName(req.getParameter("name"));
         user.setPassword(req.getParameter("password"));
 
-        userDao.save(user);
+        userDao.update(user);
 
         resp.sendRedirect("/users/" + id);
     }
