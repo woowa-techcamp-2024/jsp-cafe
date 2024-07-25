@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
-<%@ include file="/header.jsp" %>
-<%@ include file="/navbar.jsp" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ include file="../header.jsp" %>
+<%@ include file="../navbar.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -17,12 +18,12 @@
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
                                     <span class="time">${question.date}</span>
-                                    <a href="user/profile.jsp" class="author">${question.author}</a>
+                                    <a href="user/profile.jsp" class="author">${question.writer}</a>
                                 </div>
-                                <div class="reply" title="댓글">
-                                    <i class="icon-reply"></i>
-                                    <span class="point">${question.replies}</span>
-                                </div>
+<%--                                <div class="reply" title="댓글">--%>
+<%--                                    <i class="icon-reply"></i>--%>
+<%--                                    <span class="point">${question.replies}</span>--%>
+<%--                                </div>--%>
                             </div>
                         </div>
                     </li>
@@ -42,7 +43,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -120,4 +121,4 @@
   </div>
 </div>
 
-<%@ include file="/footer.jsp" %>
+<%@ include file="../footer.jsp" %>

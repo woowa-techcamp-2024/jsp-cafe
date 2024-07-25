@@ -12,14 +12,17 @@ public class MemoryUserRepository implements UserRepository{
     public static ConcurrentHashMap<Long, User> users = new ConcurrentHashMap<>();
     static AtomicLong counter = new AtomicLong();
 
-    public static MemoryUserRepository memoryUserRepository = new MemoryUserRepository();
-
     @Override
     public Long save(User user) {
         long id = counter.incrementAndGet();
         user.setId(id);
         users.put(id, user);
         return id;
+    }
+
+    @Override
+    public void update(User user) {
+        users.put(user.getId(), user);
     }
 
     @Override
