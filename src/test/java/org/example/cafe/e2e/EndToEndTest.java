@@ -318,4 +318,53 @@ public class EndToEndTest {
             }
         }
     }
+
+    @Nested
+    class STEP_4 {
+
+        @Test
+        void 올바른_아이디와_비밀번호를_입력하면_로그인할_수_있다() throws IOException {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createPostConnection("/login");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "userId=testUser1&password=testPass";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/");
+            });
+        }
+
+        @Test
+        void 아이디와_비밀번호_중_하나라도_틀리다면_로그인_실패_페이지를_반환한다() throws IOException {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createPostConnection("/login");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "userId=testUser1&password=wrongPass";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(getResponse(con)).contains("아이디 또는 비밀번호가 틀립니다.");
+            });
+        }
+    }
 }

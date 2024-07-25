@@ -7,6 +7,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import java.util.function.Supplier;
+import org.example.cafe.application.AuthService;
 import org.example.cafe.application.QuestionService;
 import org.example.cafe.application.UserService;
 import org.example.cafe.domain.QuestionRepository;
@@ -38,6 +39,8 @@ public class ServletContextInitializer implements ServletContextListener {
                     new UserJdbcRepository(getBean("DbConnector", DbConnector.class)));
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));
+            setContext("AuthService", () ->
+                    new AuthService(getBean("UserRepository", UserRepository.class)));
 
             setContext("QuestionRepository", () ->
                     new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
