@@ -3,12 +3,14 @@ package org.example.servlet.api;
 import jakarta.servlet.ServletException;
 import org.example.config.DataHandler;
 import org.example.domain.Article;
+import org.example.domain.User;
 import org.example.mock.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,20 +21,27 @@ public class ArticleRegisterApiTest {
     private static TestArticleDataHandler articleDataHandler;
     private static TestHttpServletRequest request;
     private static TestHttpServletResponse response;
+    private static TestHttpSession session;
     private static TestServletContext servletContext;
     private static TestServletConfig servletConfig;
+
 
     @BeforeAll
     public static void setUp() throws ServletException {
         articleDataHandler = new TestArticleDataHandler();
         request = new TestHttpServletRequest();
         response = new TestHttpServletResponse();
+        session = new TestHttpSession();
         servletContext = new TestServletContext();
 
         servletContext.setAttribute(DataHandler.ARTICLE.getValue(), articleDataHandler);
         servletConfig = new TestServletConfig(servletContext);
         servlet = new ArticleRegisterApi();
         servlet.init(servletConfig);
+
+        User user = new User(1L, "a@a.com", "b", "c", LocalDateTime.now());
+        session.setAttribute("user", user);
+        request.setSession(session);
     }
 
     @Test
@@ -48,6 +57,7 @@ public class ArticleRegisterApiTest {
         Article article = articleDataHandler.findAll().get(0);
         assertEquals("Test Title", article.getTitle());
         assertEquals("Test Content", article.getContent());
-        assertEquals("/articles", response.getRedirectLocation());
+        assertEquals("b", article.getAuthor());
+        assertEquals("/", response.getRedirectLocation());
     }
 }

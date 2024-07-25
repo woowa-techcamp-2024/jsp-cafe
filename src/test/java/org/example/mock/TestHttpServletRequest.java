@@ -13,6 +13,7 @@ public class TestHttpServletRequest implements HttpServletRequest {
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, Object> attributes = new HashMap<>();
     private RequestDispatcher requestDispatcher;
+    private HttpSession session;
 
     public void setRequestDispatcher(RequestDispatcher dispatcher){
         this.requestDispatcher = dispatcher;
@@ -25,6 +26,10 @@ public class TestHttpServletRequest implements HttpServletRequest {
     @Override
     public void setAttribute(String s, Object o) {
         attributes.put(s, o);
+    }
+
+    public void setSession(HttpSession session){
+        this.session = session;
     }
 
     @Override
@@ -47,6 +52,18 @@ public class TestHttpServletRequest implements HttpServletRequest {
         return attributes.get(s);
     }
 
+    @Override
+    public HttpSession getSession(boolean b) {
+        if(b){
+            return getSession();
+        }
+        return session;
+    }
+
+    @Override
+    public HttpSession getSession() {
+        return session == null ? new TestHttpSession() : session;
+    }
 
     // not impl
     @Override
@@ -144,15 +161,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
         return "";
     }
 
-    @Override
-    public HttpSession getSession(boolean b) {
-        return null;
-    }
-
-    @Override
-    public HttpSession getSession() {
-        return null;
-    }
 
     @Override
     public String changeSessionId() {
