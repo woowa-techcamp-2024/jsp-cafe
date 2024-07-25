@@ -4,19 +4,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 public class Database {
 
 	private static final String url = "jdbc:mysql://localhost:3306/jsp_cafe";
 	private static final String user = "user";
 	private static final String password = "1234";
+	private static final MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
 
 	static {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
+			ds.setDatabaseName("jsp_cafe");
+			ds.setUser(user);
+			ds.setPassword(password);
+			ds.setUrl(url);
 			try (Connection connection = getConnection();
 				 Statement statement = connection.createStatement()) {
 				executeSqlFile(statement, "schema.sql");
@@ -29,7 +35,7 @@ public class Database {
 	}
 
 	public static Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(url, user, password);
+		return ds.getConnection();
 	}
 
 	private static void executeSqlFile(Statement statement, String fileName) throws SQLException, IOException {
