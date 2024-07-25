@@ -1,9 +1,10 @@
 package com.woowa.hyeonsik.server.config;
 
-import com.woowa.hyeonsik.application.dao.InMemoryArticleDao;
-import com.woowa.hyeonsik.application.dao.InMemoryUserDao;
+import com.woowa.hyeonsik.application.dao.*;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.application.service.UserService;
+import com.woowa.hyeonsik.server.database.DatabaseConnector;
+import com.woowa.hyeonsik.server.database.property.MysqlProperty;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -18,9 +19,10 @@ public class ApplicationContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         logger.debug("Context 초기화를 진행합니다.");
 
-        InMemoryUserDao userDao = new InMemoryUserDao();
+        DatabaseConnector connector = new DatabaseConnector(new MysqlProperty());
+        UserDao userDao = new JdbcUserDao(connector);
         UserService userService = new UserService(userDao);
-        InMemoryArticleDao articleDao = new InMemoryArticleDao();
+        ArticleDao articleDao = new JdbcArticleDao(connector);
         ArticleService articleService = new ArticleService(articleDao);
 
         sce.getServletContext().setAttribute("userDao", userDao);

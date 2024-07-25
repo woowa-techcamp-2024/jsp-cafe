@@ -22,6 +22,15 @@ public final class Article {
         validate();
     }
 
+    public Article(Long id, String writer, String title, String contents, LocalDateTime localDateTime) {
+        this.id = id;
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.createdAt = localDateTime;
+        validate();
+    }
+
     private void validate() {
         if (writer == null || writer.trim().isEmpty()) {
             throw new IllegalArgumentException("작성자는 필수 입력 항목입니다.");
@@ -85,10 +94,12 @@ public final class Article {
 
     @Override
     public String toString() {
-        return "Article[" +
-                "id=" + id + ", " +
-                "writer=" + writer + ", " +
-                "title=" + title + ", " +
-                "contents=" + contents + ']';
+        return "Article{" +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
