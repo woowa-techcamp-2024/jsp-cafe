@@ -1,5 +1,7 @@
-package codesqaud.app.dao;
+package codesqaud.app.dao.article;
 
+import codesqaud.app.dao.JdbcTemplate;
+import codesqaud.app.dao.RowMapper;
 import codesqaud.app.model.Article;
 
 import java.util.List;

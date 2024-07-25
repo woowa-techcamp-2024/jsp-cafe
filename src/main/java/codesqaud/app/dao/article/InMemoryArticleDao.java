@@ -1,4 +1,4 @@
-package codesqaud.app.dao;
+package codesqaud.app.dao.article;
 
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;

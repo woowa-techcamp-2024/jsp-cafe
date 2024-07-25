@@ -1,6 +1,6 @@
 package codesqaud.app.servlet;
 
-import codesqaud.app.dao.ArticleDao;
+import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import codesqaud.mock.MockHttpServletRequest;

@@ -1,6 +1,6 @@
 package codesqaud.app.servlet;
 
-import codesqaud.app.dao.UserDao;
+import codesqaud.app.dao.user.UserDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
 import jakarta.servlet.RequestDispatcher;
