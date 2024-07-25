@@ -12,25 +12,23 @@ import org.example.jspcafe.user.User;
 import org.example.jspcafe.user.repository.MemoryUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "UsersServlet", value = "/users")
 public class UsersServlet extends HttpServlet {
-
     private UserService userService;
     private UserRepository userRepository;
-
+    private Logger logger = LoggerFactory.getLogger(UserServlet.class);
     @Override
     public void init(ServletConfig config){
         ServletContext context = config.getServletContext();
         this.userRepository = (UserRepository) context.getAttribute("UserRepository");
         this.userService = (UserService) context.getAttribute("UserService");
-    }
-
-    public void destroy() {
-
+        logger.info("UserServlet init");
     }
 
     public UsersServlet() {

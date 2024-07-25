@@ -7,36 +7,65 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
+import static org.example.jspcafe.common.StringUtils.isNumeric;
 
 @WebServlet(name = "UserServlet", value = "/users/*")
 public class UserServlet extends HttpServlet {
     private UserService userService;
 
+    private Logger logger = LoggerFactory.getLogger(UserServlet.class);
+
     @Override
-    public void init(ServletConfig config){
+    public void init(ServletConfig config) {
         ServletContext context = config.getServletContext();
         this.userService = (UserService) context.getAttribute("UserService");
+        logger.info("UserServlet init");
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        Long id = extractPathVariable(req);
+        req.setAttribute("user", userService.findById(id));
+        req.getRequestDispatcher("/user/edit.jsp").forward(req, res);
+    }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws IOException, ServletException {
-        String pathInfo = req.getPathInfo(); // /123 형태로 반환됨
+    protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        Long id = extractPathVariable(req);
 
-        if (pathInfo == null && pathInfo.length() <= 1) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID");
-            return;
+        String userId = req.getParameter("userId");
+        String nickname = req.getParameter("nickname");
+        String password = req.getParameter("password");
+        String email = req.getParameter("email");
+
+        userService.updateUser(id, userId, nickname, password, email);
+
+        res.setStatus(HttpServletResponse.SC_OK);
+        res.addHeader("Location", "/users/" + id);
+    }
+
+    private static Long extractPathVariable(HttpServletRequest req) throws IOException {
+        String pathInfo = getPathInfo(req);
+
+        String substring = pathInfo.substring(1);
+        if (!isNumeric(substring)) {
+            throw new IllegalArgumentException("Invalid pathInfo");
         }
 
-        Long id = Long.valueOf(pathInfo.substring(1)); // 앞의 '/' 제거
-        // userId를 사용하여 필요한 로직 수행
+        return Long.valueOf(substring);
+    }
 
-        req.setAttribute("user", userService.findById(id));
-        req.getRequestDispatcher("/user/profile.jsp").forward(req, res);
+    private static String getPathInfo(HttpServletRequest req) {
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.length() <= 1) {
+            throw new IllegalArgumentException("Invalid pathInfo");
+        }
+        return pathInfo;
     }
 }

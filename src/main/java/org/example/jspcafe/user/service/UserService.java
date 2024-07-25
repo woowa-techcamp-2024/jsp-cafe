@@ -2,7 +2,6 @@ package org.example.jspcafe.user.service;
 
 
 import org.example.jspcafe.user.User;
-import org.example.jspcafe.user.repository.MemoryUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 
 public class UserService {
@@ -18,5 +17,15 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void updateUser(Long id, String userId, String nickname, String password, String email) {
+        User user = findById(id);
+        user.setUserId(userId);
+        user.setNickname(nickname);
+        user.setPassword(password);
+        user.setEmail(email);
+
+        userRepository.update(user);
     }
 }
