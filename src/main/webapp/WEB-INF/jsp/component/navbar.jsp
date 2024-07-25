@@ -74,14 +74,14 @@
                 <li class="active"><a href="${pageContext.request.contextPath}/index.html">Posts</a>
                 </li>
                 <c:if test="${empty sessionScope.user}">
-                    <li><a href="${pageContext.request.contextPath}/user/login"
+                    <li><a href="${pageContext.request.contextPath}/users/login"
                            role="button">로그인</a></li>
                     <li><a href="${pageContext.request.contextPath}/user/form.html"
                            role="button">회원가입</a></li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">
                     <li>
-                        <a href="${pageContext.request.contextPath}/user/logout"
+                        <a href="${pageContext.request.contextPath}/users/logout"
                            role="button">로그아웃</a>
                     <li>
                         <a href="${pageContext.request.contextPath}/users/${sessionScope.user.userId}/form"

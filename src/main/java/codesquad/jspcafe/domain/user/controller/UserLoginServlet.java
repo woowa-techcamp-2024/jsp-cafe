@@ -12,10 +12,10 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * UserLoginServlet은 /user/login URI 에 대한 요청을 처리하는 서블릿입니다. <br> GET, POST 메서드를 제공하여 GET 요청시 로그인 페이지로
- * 이동합니다. POST 요청시 로그인을 수행합니다.
+ * UserLoginServlet은 /users/login URI 에 대한 요청을 처리하는 서블릿입니다. <br> GET, POST 메서드를 제공하여 GET 요청시 로그인
+ * 페이지로 이동합니다. POST 요청시 로그인을 수행합니다.
  */
-@WebServlet("/user/login")
+@WebServlet("/users/login")
 public class UserLoginServlet extends HttpServlet {
 
     private transient UserService userService;
