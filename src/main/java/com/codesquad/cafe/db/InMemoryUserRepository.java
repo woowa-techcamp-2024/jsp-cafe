@@ -24,11 +24,29 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
+        if (user.getId() != null) {
+            return update(user);
+        } else {
+            return create(user);
+        }
+    }
+
+    private User update(User user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("존재하지 않는 user 입니다.");
+        }
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    private User create(User user) {
+        if (user.getId() != null) {
+            throw new IllegalArgumentException("이미 존재하는 user 입니다.");
+        }
         findByUsername(user.getUsername()).ifPresent(existUser -> {
             log.debug("unique constraint violated: {}", user.getUsername());
             throw new IllegalArgumentException("이미 존재하는 username 입니다.");
         });
-
         user.setId(seq.getAndIncrement());
         users.put(user.getId(), user);
         return user;
