@@ -26,8 +26,12 @@
                     <input class="form-control" disabled id="userId" name="userId" placeholder="User ID" value="${user.userId}">
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
+                    <label for="password">현재 비밀번호</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">새로운 비밀번호</label>
+                    <input type="password" class="form-control" id="new-password" name="new-password" placeholder="Password">
                 </div>
                 <div class="form-group">
                     <label for="name">이름</label>

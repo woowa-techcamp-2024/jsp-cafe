@@ -40,11 +40,19 @@ public class UserUpdateServlet extends HttpServlet {
 		String[] pathParts = req.getPathInfo().split("/");
 		long userSeq = Long.parseLong(pathParts[1]);
 		String password = req.getParameter("password");
+		String newPassword = req.getParameter("new-password");
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
-		User user = new User();
-		user.setUserSeq(userSeq);
-		user.setPassword(password);
+		User user = userRepository.findByUserSeq(userSeq);
+		if (user == null) {
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found.");
+			return;
+		}
+		if (!user.getPassword().equals(password)) {
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Wrong password.");
+			return;
+		}
+		user.setPassword(newPassword);
 		user.setName(name);
 		user.setEmail(email);
 		userRepository.save(user);
