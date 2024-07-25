@@ -25,4 +25,12 @@ public class UserService {
     public Optional<User> findUserById(String userId) {
         return userRepository.getUserByUserId(userId);
     }
+
+    public boolean login(
+        String userId,
+        String password
+    ) {
+        Optional<User> user = userRepository.getUserByUserId(userId);
+        return user.isPresent() && user.get().getPassword().equals(password);
+    }
 }

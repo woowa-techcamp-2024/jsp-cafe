@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.example.entity.User;
 import org.example.service.UserService;
 
-//@WebServlet("/users/*")
+@WebServlet("/users/*")
 public class UserProfileServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
