@@ -20,7 +20,7 @@ public class InMemoryMemberDao implements MemberDao{
             throw new DataIntegrityViolationException("can't persist null or empty value");
         }
 
-        if(findByMemberId(member.getMemberId()).isPresent()){
+        if(member.getId() == null && findByMemberId(member.getMemberId()).isPresent()){
             throw new DataIntegrityViolationException("id is a unique column");
         }
 
