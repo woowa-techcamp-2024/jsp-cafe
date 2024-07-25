@@ -83,6 +83,7 @@ class UserControllerTest {
         request.setParameter("email", "newuser@example.com");
         request.setParameter("nickname", "새사용자");
         request.setParameter("password", "password123");
+        request.setPathInfo("/sign");
 
         // When
         userController.doPost(request, response);
@@ -114,5 +115,53 @@ class UserControllerTest {
         assertEquals("업데이트된사용자", updatedUser.nickname());
         assertEquals(HttpServletResponse.SC_SEE_OTHER, response.getStatus());
         assertEquals("/users/" + user.id(), response.getHeader("Location"));
+    }
+
+    @Test
+    void 사용자가_로그인폼_을_요청할_수_있다() throws ServletException, IOException {
+        // Given
+        request.setPathInfo("/login");
+
+        // When
+        userController.doGet(request, response);
+
+        // Then
+        assertEquals("/WEB-INF/views/user/login.jsp", request.getForwardedPath());
+    }
+
+    @Test
+    void 사용자가_로그인_할_수_있다() throws ServletException, IOException {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        request.setPathInfo("/login");
+        request.setParameter("email", "user1@example.com");
+        request.setParameter("password", "password1");
+
+        // When
+        userController.doPost(request, response);
+
+        //Then
+        assertEquals(user, request.getSession().getAttribute("userInfo"));
+        assertEquals("/", response.getRedirectLocation());
+    }
+
+    @Test
+    void 잘못된_비밀번호로_로그인할_경우_불일치정보를_request에_넣어준다() throws ServletException, IOException {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        request.setPathInfo("/login");
+        request.setParameter("email", "user1@example.com");
+        request.setParameter("password", "wrongpassword");
+
+        // When
+        userController.doPost(request, response);
+
+        //Then
+        assertEquals("/WEB-INF/views/user/login.jsp", request.getForwardedPath());
+        assertTrue((Boolean) request.getAttribute("loginFailed"));
     }
 }

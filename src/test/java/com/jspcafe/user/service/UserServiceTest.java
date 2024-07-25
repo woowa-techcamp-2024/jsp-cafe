@@ -87,4 +87,17 @@ class UserServiceTest {
         assertEquals("이쿠팡", updateUser.nickname());
         assertTrue(updateUser.verifyPassword("4321"));
     }
+
+    @Test
+    void 이메일과_비밀번호를_올바르게_입력하면_유저정보를_반환한다() {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        // When
+        User loginUser = userService.login(user.email(), "password1");
+
+        // Then
+        assertEquals(user, loginUser);
+    }
 }
