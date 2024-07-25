@@ -54,10 +54,10 @@
       </div>
     </form>
     <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
-      <a class="<c:out value='${hasPrevious ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:out value="${hasPrevious ? '/posts/' + previousPostId : 'javascript:void(0)'}" />">⬅ 이전 글</a>
-      <a class="<c:out value='${hasNext ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:out value="${hasNext ? '/posts/' + nextPostId : 'javascript:void(0)'}" />">다음 글 ➡</a>
+      <a class="<c:out value='${post.hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
+         href="<c:out value="${post.hasPrevious() ? '/posts/' + post.previousPostId() : 'javascript:void(0)'}" />">⬅ 이전 글</a>
+      <a class="<c:out value='${post.hasNext() ? "move-post" : "move-post-disabled"}'/>"
+         href="<c:out value="${post.hasNext() ? '/posts/' + post.nextPostId() : 'javascript:void(0)'}" />">다음 글 ➡</a>
     </div>--%>
     <div id="comments-count">댓글 3개</div>
     <div id="comments-container">
@@ -87,7 +87,7 @@
       </div>
     </form>
     <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
-      <a class="move-post-disabled" href="">⬅ 이전 글</a>
+      <a class="move-post-disabled" href="/">⬅ 이전 글</a>
       <a class="move-post" href="/">다음 글 ➡</a>
     </div>
   </div>

@@ -37,7 +37,14 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다. postId: " + postId));
         updateViewCount(post);
-        return PostDetailsResponse.from(post);
+        List<Post> posts = postRepository.findAll();
+        int postsSize = posts.size();
+        int postIndex = posts.indexOf(post);
+        boolean hasNext = postIndex < postsSize - 1;
+        boolean hasPrevious = postIndex > 0;
+        Long previousPostId = hasPrevious ? posts.get(postIndex - 1).getId() : null;
+        Long nextPostId = hasNext ? posts.get(postIndex + 1).getId() : null;
+        return PostDetailsResponse.of(post, hasNext, hasPrevious, nextPostId, previousPostId);
     }
 
     private void updateViewCount(Post post) {
