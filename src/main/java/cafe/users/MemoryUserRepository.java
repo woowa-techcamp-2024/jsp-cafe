@@ -8,9 +8,14 @@ public class MemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        User newUser = user.withId((long) (users.size() + 1));
-        users.add(newUser);
-        return newUser;
+        if (user.getId() != null) {
+            users.set(Math.toIntExact(user.getId() - 1), user);
+        }
+        else {
+            user = user.withId((long) (users.size() + 1));
+            users.add(user);
+        }
+        return user;
     }
 
     @Override

@@ -2,7 +2,6 @@ package cafe.users;
 
 import cafe.MappingHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -15,7 +14,9 @@ public class UsersServlet extends MappingHttpServlet {
     private final UserRepository userRepository;
 
     @Override
-    public List<String> mappings() { return List.of("/users"); }
+    public List<String> mappings() {
+        return List.of("/users");
+    }
 
     public UsersServlet(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -29,13 +30,15 @@ public class UsersServlet extends MappingHttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username");
+        String userId = request.getParameter("userId");
         String email = request.getParameter("email");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
-        log.info("username: " + username);
+        log.info("userId: " + userId);
         log.info("email: " + email);
+        log.info("username: " + username);
         log.info("password: " + password);
         log.info("confirmPassword: " + confirmPassword);
 
@@ -47,7 +50,7 @@ public class UsersServlet extends MappingHttpServlet {
         // 간단한 회원가입 처리 로직 (예: 유효성 검사, 사용자 저장 등)
         if (password.equals(confirmPassword)) {
             // 회원가입 성공 로직
-            User user = new User(email, username, password);
+            User user = new User(userId, email, username, password);
             userRepository.save(user);
             response.sendRedirect("/users");
         } else {
@@ -55,7 +58,7 @@ public class UsersServlet extends MappingHttpServlet {
             request.setAttribute("errorMessage", "Passwords do not match");
             request.setAttribute("username", username);
             request.setAttribute("email", email);
-            request.getRequestDispatcher("/WEB-INF/views/users.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/users/userList.jsp").forward(request, response);
         }
     }
 }

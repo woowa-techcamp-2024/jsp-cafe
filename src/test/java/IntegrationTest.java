@@ -80,8 +80,9 @@ public class IntegrationTest {
 
     @Test
     void testUserRegisterServlet() throws IOException, InterruptedException, URISyntaxException {
-        String username = "test" + System.currentTimeMillis();
+        String userId = "test" + System.currentTimeMillis();
         String email = "test@mail.com" + System.currentTimeMillis();
+        String username = "test" + System.currentTimeMillis();
         String password = "password" + System.currentTimeMillis();
         String confirmPassword = password;
         var client = HttpClient.newHttpClient();
@@ -89,7 +90,11 @@ public class IntegrationTest {
                 .uri(new URI("http://localhost:" + port + "/users"))
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
                 .POST(HttpRequest.BodyPublishers.ofString(
-                        String.format("username=%s&email=%s&password=%s&confirmPassword=%s", username, email, password, confirmPassword)
+                        String.format("userId=%s&" +
+                                "email=%s&" +
+                                "username=%s&" +
+                                "password=%s&" +
+                                "confirmPassword=%s", userId, email, username, password, confirmPassword)
                 ))
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -99,18 +104,22 @@ public class IntegrationTest {
         UserRepository userRepository = factory.userRepository();
 
         assertTrue(userRepository.findAll().stream().anyMatch(user ->
-                user.username().equals(username) && user.userId().equals(email) && user.password().equals(password)
+                user.getUsername().equals(username) &&
+                        user.getUserId().equals(userId) &&
+                        user.getEmail().equals(email) &&
+                        user.getPassword().equals(password)
         ));
     }
 
     @Test
     void 회원Profile_페이지_테스트() throws IOException, InterruptedException, URISyntaxException {
-        String username = "test" + System.currentTimeMillis();
+        String userId = "test" + System.currentTimeMillis();
         String email = "test" + System.currentTimeMillis() + "@mail.com";
+        String username = "test" + System.currentTimeMillis();
         String password = "password" + System.currentTimeMillis();
 
-        User user = factory.userRepository().save(new User(email, username, password));
-        Long id = user.id();
+        User user = factory.userRepository().save(new User(userId, email, username, password));
+        Long id = user.getId();
 
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder()
@@ -122,6 +131,79 @@ public class IntegrationTest {
         assertEquals(200, response.statusCode());
         assertTrue(response.body().contains(username));
         assertTrue(response.body().contains(email));
+    }
+
+    @Test
+    void 질문등록_테스트() throws IOException, InterruptedException, URISyntaxException {
+        String title = "질문 제목" + System.currentTimeMillis();
+        String content = "질문 내용" + System.currentTimeMillis();
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:" + port + "/question/write"))
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("title=%s&content=%s", title, content)
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(302, response.statusCode());
+        assertEquals("/questions", response.headers().firstValue("Location").orElse(null));
+    }
+
+    @Test
+    void 질문내용부족_실패테스트() throws IOException, InterruptedException {
+        String title = "질문 제목" + System.currentTimeMillis();
+        String content = "";
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/question/write"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("title=%s&content=%s", title, content)
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("제목과 내용을 모두 입력해주세요."));
+    }
+
+    @Test
+    void 회원수정_테스트() throws IOException, InterruptedException {
+        String userId = "test" + System.currentTimeMillis();
+        String email = "test" + System.currentTimeMillis() + "@mail.com";
+        String username = "test" + System.currentTimeMillis();
+        String password = "password" + System.currentTimeMillis();
+        User user = factory.userRepository().save(new User(userId, email, username, password));
+
+        String newEmail = "new" + email;
+        String newUsername = "new" + username;
+        String newPassword = "new" + password;
+        String newConfirmPassword = newPassword;
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/users/edit/" + user.getId()))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("userId=%s&" +
+                                "email=%s&" +
+                                "username=%s&" +
+                                "password=%s&" +
+                                "confirmPassword=%s", userId, newEmail, newUsername, newPassword, newConfirmPassword)
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(302, response.statusCode());
+
+        User updatedUser = factory.userRepository().findById(user.getId());
+        assertEquals(newEmail, updatedUser.getEmail());
+        assertEquals(newUsername, updatedUser.getUsername());
+        assertEquals(newPassword, updatedUser.getPassword());
     }
 
 }

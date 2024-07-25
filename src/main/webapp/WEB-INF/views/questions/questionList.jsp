@@ -4,20 +4,26 @@
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <h2 class="mt-5">User List</h2>
+        <h2 class="mt-5">Post List</h2>
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger">${errorMessage}</div>
+        </c:if>
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Username</th>
-                <th>Email</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Date</th>
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="user" items="${userList}">
-                <tr onclick="location.href='${pageContext.request.contextPath}/users/${user.id}'"
+            <c:forEach var="article" items="${articleList}">
+                <tr onclick="location.href='${pageContext.request.contextPath}/questions/${article.id}'"
                     style="cursor: pointer;">
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
+                    <td>${article.title}</td>
+<%--                    <td>${article.author}</td>--%>
+                    <td>익명</td>
+                    <td>${article.createdDate}</td>
                 </tr>
             </c:forEach>
             </tbody>
