@@ -35,6 +35,7 @@ public class UserJdbcRepository implements UserRepository {
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getUsername());
             preparedStatement.setString(4, user.getEmail());
+            preparedStatement.executeUpdate();
             ResultSet generatedKey = preparedStatement.getGeneratedKeys();
             if (generatedKey.next()) {
                 Long generatedId = generatedKey.getLong(1);

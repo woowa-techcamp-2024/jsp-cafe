@@ -4,7 +4,7 @@ import codesquad.jspcafe.common.ApplicationProperties;
 import codesquad.jspcafe.common.database.MySQLConnectionManager;
 import codesquad.jspcafe.domain.article.repository.ArticleJdbcRepository;
 import codesquad.jspcafe.domain.article.service.ArticleService;
-import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
+import codesquad.jspcafe.domain.user.repository.UserJdbcRepository;
 import codesquad.jspcafe.domain.user.service.UserService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -24,7 +24,8 @@ public class DefaultServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         jdbcDriverInit();
-        sce.getServletContext().setAttribute("userService", new UserService(new UserMemoryRepository()));
+        sce.getServletContext().setAttribute("userService",
+            new UserService(new UserJdbcRepository(connectionManager)));
         sce.getServletContext().setAttribute("articleService",
             new ArticleService(new ArticleJdbcRepository(connectionManager)));
     }
