@@ -1,24 +1,25 @@
 package cafe.questions;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Article {
     private final Long id;
     private final Long userId;
     private final String title;
     private final String content;
-    private final String createdDate;
-    private final String updatedDate;
+    private final Timestamp createdDate;
+    private final Timestamp updatedDate;
 
-    public Article(Long userId, String content, String title) {
-        this(null, userId, title, content);
+    public Article(Long userId, String title, String content) {
+        this(null, userId, title, content, null, null);
     }
 
     public Article(Long id, Long userId, String title, String content) {
-        this(id, userId, title, content, new Date().toString(), new Date().toString());
+        this(id, userId, title, content, null, null);
     }
 
-    private Article(Long id, Long userId, String title, String content, String createdDate, String updatedDate) {
+    public Article(Long id, Long userId, String title, String content, Timestamp createdDate, Timestamp updatedDate) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -28,11 +29,23 @@ public class Article {
     }
 
     public Article withId(Long id) {
-        return new Article(id, userId, title, content, createdDate, new Date().toString());
+        return new Article(id, userId, title, content, createdDate, updatedDate);
     }
 
-    public Article withContents(String contents) {
-        return new Article(id, userId, title, contents, createdDate, new Date().toString());
+    public Article withTitle(String title) {
+        return new Article(id, userId, title, content, createdDate, updatedDate);
+    }
+
+    public Article withContents(String content) {
+        return new Article(id, userId, title, content, createdDate, updatedDate);
+    }
+
+    public Article withCreatedDate(Timestamp createdDate) {
+        return new Article(id, userId, title, content, createdDate, updatedDate);
+    }
+
+    public Article withUpdatedDate(Timestamp updatedDate) {
+        return new Article(id, userId, title, content, createdDate, updatedDate);
     }
 
     public Long getId() {
@@ -51,23 +64,11 @@ public class Article {
         return content;
     }
 
-    public String getCreatedDate() {
-        return createdDate;
+    public Date getCreatedDate() {
+        return new Date(createdDate.getTime());
     }
 
-    public String getUpdatedDate() {
+    public Timestamp getUpdatedDate() {
         return updatedDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Article{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", title='" + title + '\'' +
-                ", contents='" + content + '\'' +
-                ", createdDate='" + createdDate + '\'' +
-                ", updatedDate='" + updatedDate + '\'' +
-                '}';
     }
 }
