@@ -53,6 +53,24 @@ public class ArticleService {
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
 
+    public List<ArticleResponse> findArticleList(int page) {
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize;
+        List<Article> articles = articleRepository.findByOffsetPagination(offset, pageSize);
+
+        List<ArticleResponse> articleResponses = new ArrayList<>();
+        for (Article article : articles) {
+            if (article.isAnonymousAuthor()) {
+                articleResponses.add(ArticleResponse.of(article, null, "익명"));
+                continue;
+            }
+            User author = findAuthor(article.getAuthorId());
+            articleResponses.add(ArticleResponse.of(article, author.getId(), author.getNickname()));
+        }
+
+        return articleResponses;
+    }
+
     private Article findArticle(Long id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new ArticleException("Article not found : " + id));
