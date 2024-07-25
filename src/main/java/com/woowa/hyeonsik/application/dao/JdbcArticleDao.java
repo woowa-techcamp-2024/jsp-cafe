@@ -1,19 +1,18 @@
 package com.woowa.hyeonsik.application.dao;
 
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.util.LocalDateTimeUtil;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
 
 import com.woowa.hyeonsik.server.database.JdbcException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class JdbcArticleDao implements ArticleDao {
     private final DatabaseConnector databaseConnector;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSSSSS]");
 
     public JdbcArticleDao(DatabaseConnector databaseConnector) {
         this.databaseConnector = databaseConnector;
@@ -50,7 +49,7 @@ public class JdbcArticleDao implements ArticleDao {
                             String writerId = resultSet.getString("writer_id");
                             String title = resultSet.getString("title");
                             String contents = resultSet.getString("contents");
-                            LocalDateTime createAt = LocalDateTime.parse(resultSet.getString("create_at"), formatter);
+                            LocalDateTime createAt = LocalDateTimeUtil.from(resultSet.getString("create_at"));
                             return Optional.of(new Article(id, writerId, title, contents, createAt));
                         }
                         return Optional.empty();
@@ -84,7 +83,7 @@ public class JdbcArticleDao implements ArticleDao {
                             String writerId = resultSet.getString("writer_id");
                             String title = resultSet.getString("title");
                             String contents = resultSet.getString("contents");
-                            LocalDateTime createAt = LocalDateTime.parse(resultSet.getString("create_at"), formatter);
+                            LocalDateTime createAt = LocalDateTimeUtil.from(resultSet.getString("create_at"));
                             list.add(new Article(id, writerId, title, contents, createAt));
                         }
                         return list;
