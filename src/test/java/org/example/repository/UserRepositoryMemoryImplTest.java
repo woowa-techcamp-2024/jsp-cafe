@@ -23,7 +23,7 @@ class UserRepositoryMemoryImplTest {
     @Test
     void testAddUser() {
         User newUser = new User("123","123", "testUser@naver.com", "testUser");
-        userRepository.saveUser(newUser);
+        userRepository.save(newUser);
         Optional<User> retrievedUser = userRepository.getUserByUserId("123");
         assertTrue(retrievedUser.isPresent());
         assertEquals("testUser", retrievedUser.get().getNickname());
@@ -32,7 +32,7 @@ class UserRepositoryMemoryImplTest {
     @Test
     void testFindUser() {
         User newUser = new User("123","2", "findUser", "findUser");
-        userRepository.saveUser(newUser);
+        userRepository.save(newUser);
         Optional<User> foundUser = userRepository.getUserByUserId("123");
         assertTrue(foundUser.isPresent());
         assertEquals("findUser", foundUser.get().getNickname());
@@ -41,7 +41,7 @@ class UserRepositoryMemoryImplTest {
     @Test
     void testRemoveUser() {
         User newUser = new User("123", "3", "removeUser", "removeUser");
-        userRepository.saveUser(newUser);
+        userRepository.save(newUser);
         userRepository.deleteUser("123");
         Optional<User> userAfterRemoval = userRepository.getUserByUserId("123");
         assertFalse(userAfterRemoval.isPresent());

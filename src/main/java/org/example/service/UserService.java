@@ -5,17 +5,17 @@ import java.util.Optional;
 import org.example.dto.UserCreateReqDto;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
-import org.example.repository.UserRepositoryMemoryImpl;
+import org.example.repository.UserRepositoryDBImpl;
 
 public class UserService {
 
-    private final UserRepository userRepository = UserRepositoryMemoryImpl.getInstance();
+    private final UserRepository userRepository = UserRepositoryDBImpl.getInstance();
 
     public void createUser(
         UserCreateReqDto userCreateReqDto
     ) {
 
-        userRepository.saveUser(userCreateReqDto.toEntity());
+        userRepository.save(userCreateReqDto.toEntity());
     }
 
     public List<User> getAllUsers() {
