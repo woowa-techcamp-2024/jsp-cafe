@@ -21,4 +21,12 @@ public class InMemoryArticleRepository implements ArticleRepository {
         return currentId;
     }
 
+    @Override
+    public Optional<Article> findById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(articles.get(id));
+    }
+
 }
