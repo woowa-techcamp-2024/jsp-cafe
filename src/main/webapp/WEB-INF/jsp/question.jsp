@@ -1,10 +1,11 @@
-<%@ page import="codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
   Date: 24. 7. 23.
   Time: 오후 01:00
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE>
 <html lang="ko">
@@ -15,13 +16,9 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
-            <%
-                ArticleCommonResponse articleCommonResponse = (ArticleCommonResponse) request.getAttribute(
-                        "article");
-            %>
+            <c:set var="articleCommonResponse" value="${requestScope.article}"/>
             <header class="qna-header">
-                <h2 class="qna-title"><%=articleCommonResponse.getTitle()%>
-                </h2>
+                <h2 class="qna-title">${articleCommonResponse.title}</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -31,37 +28,37 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/<%=articleCommonResponse.getWriter()%>"
-                               class="article-author-name"><%=articleCommonResponse.getWriter()%>
+                            <a href="/users/${articleCommonResponse.writer}"
+                               class="article-author-name"><c:out
+                                    value="${articleCommonResponse.writer}" escapeXml="false"/>
                             </a>
-                            <a href="/questions/<%=articleCommonResponse.getId()%>"
+                            <a href="/questions/${articleCommonResponse.id}"
                                class="article-header-time" title="퍼머링크">
-                                <%=articleCommonResponse.getCreatedAt()%>
+                                ${articleCommonResponse.createdAt}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="article-doc"><%
-                        String contents = articleCommonResponse.getContents().replace("\n", "<br>");
-                    %>
-                        <%=contents%>
+                    <div class="article-doc">
+                        <c:out value="${articleCommonResponse.contents}" escapeXml="false"/>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
                                 <a class="link-modify-article"
-                                   href="/questions/<%=articleCommonResponse.getId()%>/form">수정</a>
+                                   href="/questions/${articleCommonResponse.id}/form">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete"
-                                      action="/questions/<%=articleCommonResponse.getId()%>"
+                                      action="/questions/${articleCommonResponse.id}"
                                       method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/index.html">목록</a>
+                                <a class="link-modify-article"
+                                   href="${pageContext.request.contextPath}/index.html">목록</a>
                             </li>
                         </ul>
                     </div>

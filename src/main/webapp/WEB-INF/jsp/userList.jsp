@@ -1,11 +1,11 @@
-<%@ page import="codesquad.jspcafe.domain.user.payload.response.UserCommonResponse" %>
-<%@ page import="java.util.List" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
   Date: 24. 7. 22.
   Time: 오후 8:20
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE>
 <html lang="ko">
@@ -26,32 +26,30 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%
-                    @SuppressWarnings("unchecked")
-                    List<UserCommonResponse> userCommonResponses = (List<UserCommonResponse>) request.getAttribute(
-                            "userList");
-                    int idx = 1;
-                    for (UserCommonResponse commonResponse : userCommonResponses) {
-                %>
-                <tr>
-                    <th scope="row"><%=idx++%>
-                    </th>
-                    <td>
-                        <a href="/users/<%=commonResponse.getUserId()%>"><%=commonResponse.getUserId()%>
-                        </a>
-                    </td>
-                    <td><%=commonResponse.getUsername()%>
-                    </td>
-                    <td><%=commonResponse.getEmail()%>
-                    </td>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/users/<%=commonResponse.getUserId()%>/form"
-                           class="btn btn-success"
-                           role="button">수정</a></td>
-                </tr>
-                <%
-                    }
-                %>
+                <c:set var="idx" value="1" scope="page"/>
+                <c:forEach var="userCommonResponse" items="${requestScope.userList}">
+                    <tr>
+                        <th scope="row">${idx}</th>
+                        <c:set var="idx" value="${idx + 1}" scope="page"/>
+                        <td>
+                            <a href="/users/${userCommonResponse.userId}">
+                                <c:out value="${userCommonResponse.userId}" escapeXml="false"/>
+                            </a>
+                        </td>
+                        <td>
+                            <c:out value="${userCommonResponse.username}" escapeXml="false"/>
+                        </td>
+                        <td>
+                            <c:out value="${userCommonResponse.email}" escapeXml="false"/>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-success"
+                                    onclick="location.href='${pageContext.request.contextPath}/users/${userCommonResponse.userId}/form'">
+                                수정
+                            </button>
+                        </td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
