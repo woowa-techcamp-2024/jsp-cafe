@@ -20,7 +20,7 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     // db
-    implementation 'com.mysql:mysql-connector-j:8.0.33'
+    implementation 'com.mysql:mysql-connector-j:8.2.0'
     implementation 'com.h2database:h2:2.2.224'
     implementation 'com.zaxxer:HikariCP:5.1.0'
 
