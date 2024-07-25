@@ -13,8 +13,8 @@
     <link href="../css/styles.css" rel="stylesheet">
 </head>
 <body>
-<%@include file="/WEB-INF/navbar-fixed-top.jsp"%>
-<%@include file="/WEB-INF/navbar-default.jsp"%>
+<%@include file="/WEB-INF/includes/navbar-fixed-top.jsp"%>
+<%@include file="/WEB-INF/includes/navbar-default.jsp"%>
 <div class="container" id="main">
    <div class="col-md-10 col-md-offset-1">
       <div class="panel panel-default">
@@ -31,7 +31,7 @@
                       <td>${user.userId}</td>
                       <td>${user.name}</td>
                       <td>${user.email}</td>
-                      <td><a href="/users/${user.userId}" class="btn btn-success" role="button">수정</a></td>
+                      <td><a href="/users/update/${user.userSeq}" class="btn btn-success" role="button">수정</a></td>
                   </tr>
               </c:forEach>
               </tbody>
@@ -41,6 +41,6 @@
 </div>
 
 <!-- script references -->
-<%@include file="/WEB-INF/script-references.jsp"%>
+<%@include file="/WEB-INF/includes/script-references.jsp"%>
 </body>
 </html>

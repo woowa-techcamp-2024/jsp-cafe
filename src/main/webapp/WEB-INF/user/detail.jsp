@@ -15,8 +15,8 @@
 </head>
 <body>
 
-<%@include file="/WEB-INF/navbar-fixed-top.jsp"%>
-<%@include file="/WEB-INF/navbar-default.jsp"%>
+<%@include file="/WEB-INF/includes/navbar-fixed-top.jsp"%>
+<%@include file="/WEB-INF/includes/navbar-default.jsp"%>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -45,6 +45,6 @@
 </div>
 
 <!-- script references -->
-<%@include file="/WEB-INF/script-references.jsp"%>
+<%@include file="/WEB-INF/includes/script-references.jsp"%>
 </body>
 </html>

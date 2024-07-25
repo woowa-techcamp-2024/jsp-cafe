@@ -10,4 +10,6 @@ public interface UserRepository {
 	List<User> findAll(); // Read all
 
 	void deleteByUserId(String userId); // Delete by ID
+
+	User findByUserSeq(long userId);
 }

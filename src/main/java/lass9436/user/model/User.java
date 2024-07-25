@@ -1,6 +1,7 @@
 package lass9436.user.model;
 
 public class User {
+	private long userSeq;
 	private String userId;
 	private String password;
 	private String name;
@@ -18,6 +19,10 @@ public class User {
 	}
 
 	// Getters and Setters
+	public long getUserSeq() { return userSeq; }
+
+	public void setUserSeq(long userSeq) { this.userSeq = userSeq; }
+
 	public String getUserId() {
 		return userId;
 	}
@@ -53,7 +58,8 @@ public class User {
 	@Override
 	public String toString() {
 		return "User{" +
-			"userId='" + userId + '\'' +
+			"userSeq=" + userSeq +
+			", userId='" + userId + '\'' +
 			", password='" + password + '\'' +
 			", name='" + name + '\'' +
 			", email='" + email + '\'' +
