@@ -6,9 +6,10 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
-import woowa.camp.jspcafe.repository.article.InMemoryArticleRepository;
-import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
+import woowa.camp.jspcafe.repository.article.DBArticleRepository;
+import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.UserService;
@@ -20,18 +21,21 @@ public class AppContextListener implements ServletContextListener {
 
     private static final Logger log = LoggerFactory.getLogger(AppContextListener.class);
 
-    private static final DateTimeProvider dateTimeProvider = new LocalDateTimeProvider();
-
-    private static final UserRepository userRepository = new InMemoryUserRepository();
-    private static final UserService userService = new UserService(userRepository, dateTimeProvider);
-
-    private static final ArticleRepository articleRepository = new InMemoryArticleRepository();
-    private static final ArticleService articleService = new ArticleService(articleRepository, userRepository, dateTimeProvider);
-
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.debug("AppContextListener - contextInitialized start");
         ServletContext context = sce.getServletContext();
+
+        DateTimeProvider dateTimeProvider = new LocalDateTimeProvider();
+
+        DatabaseConnector connector = new DatabaseConnector(context);
+
+        UserRepository userRepository = new DBUserRepository(connector);
+        UserService userService = new UserService(userRepository, dateTimeProvider);
+
+        ArticleRepository articleRepository = new DBArticleRepository(connector);
+        ArticleService articleService = new ArticleService(articleRepository, userRepository, dateTimeProvider);
+
         context.setAttribute("userRepository", userRepository);
         context.setAttribute("userService", userService);
 

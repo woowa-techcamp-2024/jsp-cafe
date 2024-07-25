@@ -9,9 +9,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DatabaseConnector {
 
+    private static final Logger log = LoggerFactory.getLogger(DatabaseConnector.class);
     private static final String CONFIG_FILE_PATH = "/configuration/datasource.properties";
     private DataSource dataSource;
 
@@ -24,6 +27,7 @@ public class DatabaseConnector {
     }
 
     private void loadConfig(ServletContext servletContext) {
+        log.debug("Database Connecting start");
         Properties prop = new Properties();
         try (InputStream inputStream = getConfigInputStream(servletContext)) {
             if (inputStream == null) {
@@ -38,6 +42,7 @@ public class DatabaseConnector {
             hikariConfig.setDriverClassName(prop.getProperty("datasource.driver-class-name"));
 
             this.dataSource = new HikariDataSource(hikariConfig);
+            log.debug("Database Connecting success");
         } catch (IOException e) {
             throw new RuntimeException("Database configuration could not be loaded", e);
         }
