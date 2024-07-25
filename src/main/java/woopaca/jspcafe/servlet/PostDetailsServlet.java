@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import woopaca.jspcafe.service.PostService;
-import woopaca.jspcafe.servlet.dto.PostDetailsResponse;
+import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
 
 import java.io.IOException;
 

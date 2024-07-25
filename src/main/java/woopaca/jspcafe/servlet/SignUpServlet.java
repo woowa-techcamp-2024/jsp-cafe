@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.UserService;
-import woopaca.jspcafe.servlet.dto.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
 
 import java.io.IOException;
 import java.util.Map;

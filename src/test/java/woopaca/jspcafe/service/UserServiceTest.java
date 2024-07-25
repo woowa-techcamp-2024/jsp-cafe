@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import woopaca.jspcafe.fixture.TestRepositoryFixture;
-import woopaca.jspcafe.servlet.dto.MembersResponse;
-import woopaca.jspcafe.servlet.dto.SignUpRequest;
-import woopaca.jspcafe.servlet.dto.UserProfile;
+import woopaca.jspcafe.servlet.dto.response.MembersResponse;
+import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
 import java.util.List;
 

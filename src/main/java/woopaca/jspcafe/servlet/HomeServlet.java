@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woopaca.jspcafe.service.PostService;
-import woopaca.jspcafe.servlet.dto.PostsResponse;
+import woopaca.jspcafe.servlet.dto.response.PostsResponse;
 
 import java.io.IOException;
 import java.util.List;

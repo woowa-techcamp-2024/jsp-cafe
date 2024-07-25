@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woopaca.jspcafe.service.UserService;
-import woopaca.jspcafe.servlet.dto.UserProfile;
+import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
 import java.io.IOException;
 

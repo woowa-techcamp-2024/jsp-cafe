@@ -2,9 +2,9 @@ package woopaca.jspcafe.service;
 
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
-import woopaca.jspcafe.servlet.dto.MembersResponse;
-import woopaca.jspcafe.servlet.dto.SignUpRequest;
-import woopaca.jspcafe.servlet.dto.UserProfile;
+import woopaca.jspcafe.servlet.dto.response.MembersResponse;
+import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
 import java.util.Comparator;
 import java.util.List;

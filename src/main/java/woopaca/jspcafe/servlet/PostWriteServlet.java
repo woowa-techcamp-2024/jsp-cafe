@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.PostService;
-import woopaca.jspcafe.servlet.dto.WritePostRequest;
+import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
 
 import java.io.IOException;
 import java.util.Map;

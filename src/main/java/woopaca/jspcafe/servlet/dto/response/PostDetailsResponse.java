@@ -1,4 +1,4 @@
-package woopaca.jspcafe.servlet.dto;
+package woopaca.jspcafe.servlet.dto.response;
 
 import woopaca.jspcafe.model.Post;
 
