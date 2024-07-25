@@ -24,7 +24,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.jsp">Posts</a></li>
                 <c:choose>
-                    <c:when test="${not empty sessionScope.userId}">
+                    <c:when test="${empty sessionScope.userId}">
                         <li><a href="${pageContext.request.contextPath}/login" role="button">로그인</a></li>
                         <li><a href="${pageContext.request.contextPath}/signup" role="button">회원가입</a></li>
                     </c:when>
