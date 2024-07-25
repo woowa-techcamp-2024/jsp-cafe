@@ -72,6 +72,22 @@ abstract class UserRepositoryTest {
     }
 
     @Test
+    void testFindUserByUserId() {
+        String userId = "user1";
+        String email = "user1@example.com";
+        String username = "UserOne";
+        String password = "password";
+        User user = new User(userId, email, username, password);
+        User savedUser = userRepository.save(user);
+
+        User foundUser = userRepository.findByUserId(userId);
+        assertEquals(userId, foundUser.getUserId());
+        assertEquals(email, foundUser.getEmail());
+        assertEquals(username, foundUser.getUsername());
+        assertEquals(password, foundUser.getPassword());
+    }
+
+    @Test
     public void testDeleteAllUsers() {
         User user1 = new User("user1", "user1@example.com", "User One", "password");
         User user2 = new User("user2", "user2@example.com", "User Two", "password");
