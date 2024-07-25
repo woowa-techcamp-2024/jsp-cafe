@@ -23,6 +23,7 @@ ext {
     assertJVersion = '3.26.3'
     logbackVersion = '1.5.6'
     mysqlVersion = '8.4.0'
+    hikariVersion = '5.1.0'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -30,15 +31,23 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
+    // LogBack
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+    // MySQL Connector
     implementation("com.mysql:mysql-connector-j:${mysqlVersion}")
+    // JSTL
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:${jstlVersion}")
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:${jstlVersion}")
+    // HikariCP
+    implementation("com.zaxxer:HikariCP:${hikariVersion}")
 
+
+    // Junit5
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
+    // AssertJ
     testImplementation("org.assertj:assertj-core:${assertJVersion}")
-    testImplementation("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
+    // testImplementation("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
 }
 
 test {

@@ -1,7 +1,8 @@
 package codesquad.jspcafe.common.database;
 
 import codesquad.jspcafe.common.ApplicationProperties;
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.pool.HikariPool;
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 public class JDBCConnectionManager {
 
     private static final Logger log = LoggerFactory.getLogger(JDBCConnectionManager.class);
+    
+    private static final int DEFAULT_MAX_CONNECTIONS = 10;
 
     static {
         try {
@@ -19,17 +22,19 @@ public class JDBCConnectionManager {
         }
     }
 
-    private final MysqlConnectionPoolDataSource connectionPoolDataSource;
+    private final HikariPool connectionPool;
 
     public JDBCConnectionManager(ApplicationProperties properties) {
-        this.connectionPoolDataSource = new MysqlConnectionPoolDataSource();
-        connectionPoolDataSource.setUrl(properties.getJdbcUrl());
-        connectionPoolDataSource.setUser(properties.getJdbcUsername());
-        connectionPoolDataSource.setPassword(properties.getJdbcPassword());
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(properties.getJdbcUrl());
+        config.setUsername(properties.getJdbcUsername());
+        config.setPassword(properties.getJdbcPassword());
+        config.setMaximumPoolSize(DEFAULT_MAX_CONNECTIONS);
+        connectionPool = new HikariPool(config);
     }
 
     public Connection getConnection() throws SQLException {
-        return connectionPoolDataSource.getPooledConnection().getConnection();
+        return connectionPool.getConnection();
     }
 
 }
