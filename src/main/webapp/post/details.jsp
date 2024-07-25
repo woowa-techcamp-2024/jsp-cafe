@@ -87,8 +87,13 @@
       </div>
     </form>
     <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
-      <a class="move-post-disabled" href="/">⬅ 이전 글</a>
-      <a class="move-post" href="/">다음 글 ➡</a>
+      <a class="<c:out value='${post.hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
+         href="<c:url value='/posts/${post.previousPostId()}'/>"
+      >⬅ 이전
+        글</a>
+      <a class="<c:out value='${post.hasNext() ? "move-post" : "move-post-disabled"}'/>"
+         href="<c:url value='/posts/${post.nextPostId()}'/>"
+      >다음 글 ➡</a>
     </div>
   </div>
 </div>
@@ -100,6 +105,13 @@
     textarea.addEventListener('input', function () {
       submitButton.disabled = textarea.value.trim() === '';
     });
+
+    document.querySelectorAll('.move-post-disabled')
+      .forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+        });
+      });
   });
 </script>
 </body>
