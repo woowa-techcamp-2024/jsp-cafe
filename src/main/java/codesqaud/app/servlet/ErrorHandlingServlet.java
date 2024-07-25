@@ -31,6 +31,7 @@ public class ErrorHandlingServlet extends HttpServlet {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (throwable instanceof HttpException httpException) {
+            httpStatus = HttpStatus.valueOf(httpException.getStatusCode());
             statusCode = httpException.getStatusCode();
             errorMessage = httpException.getMessage();
         } else if (statusCode != null) {
