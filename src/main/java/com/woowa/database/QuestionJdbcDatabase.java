@@ -1,11 +1,8 @@
 package com.woowa.database;
 
-import com.woowa.DBConnectionUtils;
 import com.woowa.model.Author;
 import com.woowa.model.Question;
-import com.woowa.model.User;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

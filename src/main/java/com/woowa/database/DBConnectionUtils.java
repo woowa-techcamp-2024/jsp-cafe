@@ -1,4 +1,4 @@
-package com.woowa;
+package com.woowa.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
