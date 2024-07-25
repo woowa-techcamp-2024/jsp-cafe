@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,13 @@ public class DBArticleRepository implements ArticleRepository {
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setLong(1, article.getAuthorId());
+
+            // 익명게시판은 작성자 id가 null 이다.
+            if (article.getAuthorId() == null) {
+                pstmt.setNull(1, Types.BIGINT);
+            } else {
+                pstmt.setLong(1, article.getAuthorId());
+            }
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContent());
             pstmt.setInt(4, article.getHits());
@@ -147,8 +154,12 @@ public class DBArticleRepository implements ArticleRepository {
 
 
     private Article mapRowToArticle(ResultSet resultSet) throws SQLException {
+        Long authorId = resultSet.getLong("author_id");
+        boolean wasNull = resultSet.wasNull();
+        authorId = wasNull ? null : authorId; // resultSet.getLong == null 이면, 기본값으로 0을 세팅한다.
+
         Article article = new Article(
-                resultSet.getLong("author_id"),
+                authorId,
                 resultSet.getString("title"),
                 resultSet.getString("content"),
                 resultSet.getInt("hits"),
