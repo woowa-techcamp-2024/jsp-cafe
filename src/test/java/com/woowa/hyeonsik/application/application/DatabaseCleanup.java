@@ -1,0 +1,20 @@
+package com.woowa.hyeonsik.application.application;
+
+import com.woowa.hyeonsik.server.database.DatabaseConnector;
+import java.util.List;
+
+public class DatabaseCleanup {
+    private final DatabaseConnector databaseConnector;
+
+    public DatabaseCleanup(final DatabaseConnector databaseConnector) {
+        this.databaseConnector = databaseConnector;
+    }
+
+    public void clean() {
+        List.of(
+            "TRUNCATE TABLE member",
+            "TRUNCATE TABLE article",
+            "ALTER TABLE article ALTER COLUMN article_id RESTART WITH 1"
+        ).forEach(databaseConnector::execute);
+    }
+}

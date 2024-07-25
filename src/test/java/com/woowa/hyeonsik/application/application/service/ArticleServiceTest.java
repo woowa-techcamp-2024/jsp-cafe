@@ -1,7 +1,11 @@
-package com.woowa.hyeonsik.application.service;
+package com.woowa.hyeonsik.application.application.service;
 
-import com.woowa.hyeonsik.application.dao.InMemoryArticleDao;
+import com.woowa.hyeonsik.application.application.MemoryDbTest;
+import com.woowa.hyeonsik.application.dao.JdbcArticleDao;
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.service.ArticleService;
+import com.woowa.hyeonsik.server.database.DatabaseConnector;
+import com.woowa.hyeonsik.server.database.property.H2Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,14 +14,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-class ArticleServiceTest {
+class ArticleServiceTest extends MemoryDbTest {
     private ArticleService articleService;
 
     @BeforeEach
     void setUp() {
-        InMemoryArticleDao articleDao = new InMemoryArticleDao();
+        JdbcArticleDao articleDao = new JdbcArticleDao(new DatabaseConnector(new H2Property()));
         articleService = new ArticleService(articleDao);
-        articleDao.clear();
     }
 
     @Test

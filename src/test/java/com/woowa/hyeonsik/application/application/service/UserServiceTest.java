@@ -1,13 +1,17 @@
-package com.woowa.hyeonsik.application.service;
+package com.woowa.hyeonsik.application.application.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.woowa.hyeonsik.application.dao.InMemoryUserDao;
+import com.woowa.hyeonsik.application.application.MemoryDbTest;
+import com.woowa.hyeonsik.application.dao.JdbcUserDao;
 import com.woowa.hyeonsik.application.domain.User;
+import com.woowa.hyeonsik.application.service.UserService;
+import com.woowa.hyeonsik.server.database.property.H2Property;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.woowa.hyeonsik.server.database.DatabaseConnector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,15 +19,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class UserServiceTest {
+class UserServiceTest extends MemoryDbTest {
     private UserService userService;
-    private InMemoryUserDao userDao;
+    private JdbcUserDao userDao;
 
     @BeforeEach
     void setUp() {
-        userDao = new InMemoryUserDao();
+        userDao = new JdbcUserDao(new DatabaseConnector(new H2Property()));
         userService = new UserService(userDao);
-        userDao.clear();
     }
 
     @Test
