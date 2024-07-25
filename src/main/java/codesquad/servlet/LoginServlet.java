@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
         boolean matches = user.matches(password);
         if (matches) {
             HttpSession session = req.getSession(true);
-            session.setAttribute("user", user);
+            session.setAttribute("loginUser", user);
             String newSessionId = req.changeSessionId();
             resp.sendRedirect(req.getContextPath() + "/");
             return;

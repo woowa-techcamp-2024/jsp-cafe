@@ -3,9 +3,9 @@
 <div class="navbar navbar-default" id="subnav">
     <div class="col-md-12">
         <%
-            User user = null;
+            User loginUser = null;
             if (session != null) {
-                user = (User) session.getAttribute("user");
+                loginUser = (User) session.getAttribute("loginUser");
             }
         %>
         <div class="navbar-header">
@@ -14,7 +14,7 @@
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
                 <li>
-                    <a href="${pageContext.request.contextPath}/users/<%=user!=null?user.getId():0%>">
+                    <a href="${pageContext.request.contextPath}/users/<%=loginUser!=null?loginUser.getId():0%>">
                         <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
                         Profile
                     </a>
@@ -33,7 +33,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
                 <%
-                    if (user == null) {
+                    if (loginUser == null) {
                 %>
                 <li><a href="${pageContext.request.contextPath}/login" role="button">로그인</a>
                 </li>
@@ -41,8 +41,8 @@
                 <%
                 } else {
                 %>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li><a href="${pageContext.request.contextPath}/logout" role="button">로그아웃</a></li>
+                <li><a href="/users/<%=loginUser.getId()%>/update-form" role="button">개인정보수정</a></li>
                 <%
                     }
                 %>
