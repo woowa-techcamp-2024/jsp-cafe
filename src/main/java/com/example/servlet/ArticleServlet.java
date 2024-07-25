@@ -23,7 +23,7 @@ public class ArticleServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		articleService = (ArticleService)getServletContext().getAttribute("articleService");
+		articleService = (ArticleService)config.getServletContext().getAttribute("articleService");
 	}
 
 	@Override
@@ -35,7 +35,9 @@ public class ArticleServlet extends HttpServlet {
 		}
 
 		String userId = (String)session.getAttribute("id");
-		articleService.savePost(userId, DtoCreationUtil.createDto(SaveArticleRequest.class, req));
+		SaveArticleRequest dto = DtoCreationUtil.createDto(SaveArticleRequest.class, req);
+		dto.validate();
+		articleService.savePost(userId, dto);
 		resp.sendRedirect("/");
 	}
 
