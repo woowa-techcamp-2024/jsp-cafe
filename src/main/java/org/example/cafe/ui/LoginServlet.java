@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession();
         session.setAttribute("userId", userId);
         Cookie cookie = new Cookie("SESSION", session.getId());
         response.addCookie(cookie);
