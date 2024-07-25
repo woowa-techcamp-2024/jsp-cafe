@@ -11,8 +11,9 @@ import org.example.cafe.application.QuestionService;
 import org.example.cafe.application.UserService;
 import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.UserRepository;
-import org.example.cafe.infrastructure.QuestionInMemoryRepository;
-import org.example.cafe.infrastructure.UserInMemoryRepository;
+import org.example.cafe.infrastructure.QuestionJdbcRepository;
+import org.example.cafe.infrastructure.UserJdbcRepository;
+import org.example.cafe.infrastructure.database.DbConnector;
 import org.slf4j.Logger;
 
 @WebListener
@@ -27,13 +28,22 @@ public class ServletContextInitializer implements ServletContextListener {
 
     // todo: 생성자 필요한 빈들 등록 과정 리팩토링
     private void registerBean(ServletContext servletContext) {
-        setContext(servletContext, "UserRepository", UserInMemoryRepository::new);
-        setContext(servletContext, "UserService", () ->
-                new UserService((UserRepository) servletContext.getAttribute("UserRepository")));
+        try {
+            setContext(servletContext, "DbConnector", () -> new DbConnector().init());
 
-        setContext(servletContext, "QuestionRepository", QuestionInMemoryRepository::new);
-        setContext(servletContext, "QuestionService", () ->
-                new QuestionService((QuestionRepository) servletContext.getAttribute("QuestionRepository")));
+            setContext(servletContext, "UserRepository", () ->
+                    new UserJdbcRepository((DbConnector) servletContext.getAttribute("DbConnector")));
+            setContext(servletContext, "UserService", () ->
+                    new UserService((UserRepository) servletContext.getAttribute("UserRepository")));
+
+            setContext(servletContext, "QuestionRepository", () ->
+                    new QuestionJdbcRepository((DbConnector) servletContext.getAttribute("DbConnector")));
+            setContext(servletContext, "QuestionService", () ->
+                    new QuestionService((QuestionRepository) servletContext.getAttribute("QuestionRepository")));
+        } catch (Exception e) {
+            log.error("Failed to register beans", e);
+            System.exit(-1);
+        }
     }
 
     public void setContext(ServletContext servletContext, String name, Supplier<Object> supplier) {

@@ -4,19 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.QuestionRepository;
 
 public class QuestionInMemoryRepository implements QuestionRepository {
 
-    private static final Map<String, Question> storage = new ConcurrentHashMap<>();
+    private static final Map<Long, Question> storage = new ConcurrentHashMap<>();
+    private static final AtomicLong sequence = new AtomicLong(1);
 
     @Override
-    public void save(Question question) {
+    public Long save(Question question) {
         storage.put(question.getQuestionId(), question);
+        sequence.addAndGet(1);
+
+        return sequence.get();
     }
 
-    public Question findById(String id) {
+    public Question findById(Long id) {
         return storage.get(id);
     }
 

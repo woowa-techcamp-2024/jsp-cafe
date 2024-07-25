@@ -233,9 +233,9 @@ public class EndToEndTest {
         void 사용자는_특정_게시글을_상세_조회할_수_있다() throws IOException {
             //given
             Question question = new Question("title1", "content1", "writer1");
-            questionRepository.save(question);
+            Long questionId = questionRepository.save(question);
 
-            con = createGetConnection("/questions/" + question.getQuestionId());
+            con = createGetConnection("/questions/" + questionId);
 
             //when
             con.connect();

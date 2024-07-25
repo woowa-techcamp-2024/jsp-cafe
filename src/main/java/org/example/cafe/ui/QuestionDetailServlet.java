@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import org.example.cafe.application.QuestionService;
 import org.example.cafe.domain.Question;
 import org.slf4j.Logger;
@@ -33,7 +31,7 @@ public class QuestionDetailServlet extends HttpServlet {
 
         String path = request.getRequestURI();
         String[] pathParts = path.split("/");
-        String questionId = URLDecoder.decode(pathParts[2], StandardCharsets.UTF_8);
+        Long questionId = Long.valueOf(pathParts[2]);
 
         Question question = questionService.findById(questionId);
         if (question == null) {

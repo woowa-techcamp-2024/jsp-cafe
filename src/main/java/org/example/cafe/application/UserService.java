@@ -33,7 +33,7 @@ public class UserService {
         }
 
         User updatedUser = userUpdateDto.toUser(userId);
-        userRepository.save(updatedUser);
+        userRepository.update(updatedUser);
 
         return updatedUser;
     }
