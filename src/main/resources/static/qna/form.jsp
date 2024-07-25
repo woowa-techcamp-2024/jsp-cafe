@@ -18,24 +18,20 @@
 <%@ include file="../nav.jsp" %>
 
 <div class="container" id="main">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h4>Profiles</h4></div>
-            <div class="panel-body">
-                <div class="well well-sm">
-                    <div class="media">
-                        <a class="thumbnail pull-left" href="#">
-                            <img class="media-object" src="../images/80-text.png">
-                        </a>
-                        <div class="media-body">
-                            <h4 class="media-heading">${user.nickname}</h4>
-                            <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>${user.email}</a>
-                            </p>
-                        </div>
-                    </div>
+    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+        <div class="panel panel-default content-main">
+            <form name="question" method="post" action="/questions">
+                <div class="form-group">
+                    <label for="title">제목</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="content">내용</label>
+                    <textarea name="content" id="content" rows="5" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success clearfix pull-right">질문하기</button>
+                <div class="clearfix"/>
+            </form>
         </div>
     </div>
 </div>
@@ -44,5 +40,5 @@
 <script src="../js/jquery-2.2.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/scripts.js"></script>
-	</body>
+</body>
 </html>
