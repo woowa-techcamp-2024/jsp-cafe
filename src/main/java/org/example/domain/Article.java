@@ -1,6 +1,7 @@
 package org.example.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Article {
     private Long articleId;
@@ -42,5 +43,18 @@ public class Article {
 
     public LocalDateTime getCreatedDt() {
         return createdDt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return Objects.equals(articleId, article.articleId) && Objects.equals(title, article.title) && Objects.equals(content, article.content) && Objects.equals(author, article.author) && Objects.equals(createdDt, article.createdDt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(articleId, title, content, author, createdDt);
     }
 }
