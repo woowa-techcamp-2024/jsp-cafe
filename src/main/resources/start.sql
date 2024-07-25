@@ -20,5 +20,6 @@ DROP TABLE IF EXISTS articles;
 CREATE TABLE articles(
     article_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title      VARCHAR(255) NOT NULL,
-    content    TEXT NOT NULL
+    content    TEXT NOT NULL,
+    author     VARCHAR(255) NOT NULL
 );

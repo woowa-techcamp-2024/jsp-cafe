@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.example.entity.Article;
 
 public class ArticleRepositoryMemoryImpl implements ArticleRepository {
-    private static ArticleRepositoryMemoryImpl instance;
+    private static ArticleRepository instance;
 
     private final Map<Integer, Article> articles = new ConcurrentHashMap<>();
     private final AtomicInteger index = new AtomicInteger(0);
@@ -18,7 +18,7 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
         // Private constructor to prevent instantiation
     }
 
-    public static ArticleRepositoryMemoryImpl getInstance() {
+    public static ArticleRepository getInstance() {
         if (instance == null) {
             instance = new ArticleRepositoryMemoryImpl();
         }
@@ -28,7 +28,7 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     @Override
     public Article save(Article article) {
         int id = index.incrementAndGet();
-        article.setId(id);
+        article.setArticleId(id);
         articles.put(id, article);
         return article;
     }

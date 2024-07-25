@@ -7,6 +7,13 @@ public class Article {
     private final String content;
     private final String author;
 
+    public Article(Integer articleId, String title, String content, String author) {
+        this.articleId = articleId;
+        this.title = title;
+        this.content = content;
+        this.author = author;
+    }
+
     public Article(String title, String content, String author) {
         this.title = title;
         this.content = content;
@@ -21,11 +28,11 @@ public class Article {
         return content;
     }
 
-    public Integer getId() {
+    public Integer getArticleId() {
         return articleId;
     }
 
-    public void setId(Integer id) {
+    public void setArticleId(Integer id) {
         this.articleId = id;
     }
 

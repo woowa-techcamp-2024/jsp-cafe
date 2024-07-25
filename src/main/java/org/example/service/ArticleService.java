@@ -5,11 +5,12 @@ import java.util.Optional;
 import org.example.dto.ArticleCreateReqDto;
 import org.example.entity.Article;
 import org.example.repository.ArticleRepository;
+import org.example.repository.ArticleRepositoryDBImpl;
 import org.example.repository.ArticleRepositoryMemoryImpl;
 
 public class ArticleService {
 
-    private final ArticleRepository articleRepository = ArticleRepositoryMemoryImpl.getInstance();
+    private final ArticleRepository articleRepository = ArticleRepositoryDBImpl.getInstance();
 
     public void save(ArticleCreateReqDto article) {
         // 게시글 저장
