@@ -1,8 +1,8 @@
 package codesquad.jspcafe.common.database;
 
 import codesquad.jspcafe.common.ApplicationProperties;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +19,17 @@ public class JDBCConnectionManager {
         }
     }
 
-    private final String url;
-    private final String username;
-    private final String password;
+    private final MysqlConnectionPoolDataSource connectionPoolDataSource;
 
     public JDBCConnectionManager(ApplicationProperties properties) {
-        url = properties.getJdbcUrl();
-        username = properties.getJdbcUsername();
-        password = properties.getJdbcPassword();
+        this.connectionPoolDataSource = new MysqlConnectionPoolDataSource();
+        connectionPoolDataSource.setUrl(properties.getJdbcUrl());
+        connectionPoolDataSource.setUser(properties.getJdbcUsername());
+        connectionPoolDataSource.setPassword(properties.getJdbcPassword());
     }
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        return connectionPoolDataSource.getPooledConnection().getConnection();
     }
 
 }
