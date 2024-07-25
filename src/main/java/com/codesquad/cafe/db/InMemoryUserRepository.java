@@ -24,7 +24,6 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-
         findByUsername(user.getUsername()).ifPresent(existUser -> {
             log.debug("unique constraint violated: {}", user.getUsername());
             throw new IllegalArgumentException("이미 존재하는 username 입니다.");
@@ -37,7 +36,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.ofNullable(users.get(id));
+        return Optional.ofNullable(users.getOrDefault(id, null));
     }
 
     @Override
