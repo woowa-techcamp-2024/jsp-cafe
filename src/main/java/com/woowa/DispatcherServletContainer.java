@@ -36,7 +36,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         dispatcherServlet.init(beanFactory);
 
         Dynamic helloServlet = ctx.addServlet("helloServlet", dispatcherServlet);
-        helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/font/*", "/favicon.ico", "/user/*",
+        helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/fonts/*", "/favicon.ico", "/user/*",
                 "/qna/*");
 
         Dynamic signupServlet = ctx.addServlet("signupServlet", new SignupServlet());
