@@ -20,9 +20,16 @@ public class UserMemoryRepository implements UserRepository {
     public void save(User user) {
         String uniqueId = user.generateUniqueId();
         if (users.containsKey(uniqueId)) {
-            throw new IllegalArgumentException("[ERROR] duplicate key!: " + uniqueId);
+            users.put(user.getId(), user);
+            return;
         }
-        users.put(uniqueId, user);
+
+        users.compute(user.getId(), (key, value) -> {
+            if (value != null) {
+                throw new IllegalArgumentException("[ERROR] duplicate key: " + key);
+            }
+            return user;
+        });
     }
 
     /**

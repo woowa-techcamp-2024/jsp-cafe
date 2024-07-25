@@ -74,4 +74,15 @@ public class User {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public boolean matchPassword(String password) {
+        return Objects.equals(this.password, password);
+    }
+
+    public void updateNickname(String nickname) {
+        if (nickname.isBlank()) {
+            throw new IllegalArgumentException("[ERROR] 닉네임은 비어있을 수 없습니다.");
+        }
+        this.nickname = nickname;
+    }
 }

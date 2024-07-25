@@ -2,12 +2,14 @@ package woopaca.jspcafe.service;
 
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
-import woopaca.jspcafe.servlet.dto.response.MembersResponse;
 import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.request.UpdateProfileRequest;
+import woopaca.jspcafe.servlet.dto.response.MembersResponse;
 import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class UserService {
 
@@ -19,7 +21,8 @@ public class UserService {
 
     public void signUp(SignUpRequest signUpRequest) {
         validateSignUpRequest(signUpRequest);
-        validateDuplicateUser(signUpRequest);
+        validateDuplicateUsername(signUpRequest.username());
+        validateDuplicateNickname(signUpRequest.nickname());
         User user = new User(signUpRequest.username(), signUpRequest.nickname(), signUpRequest.password());
         userRepository.save(user);
     }
@@ -36,20 +39,6 @@ public class UserService {
         }
     }
 
-    private void validateDuplicateUser(SignUpRequest signUpRequest) {
-        String username = signUpRequest.username();
-        userRepository.findByUsername(username)
-                .ifPresent(user -> {
-                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 이메일입니다.");
-                });
-
-        String nickname = signUpRequest.nickname();
-        userRepository.findByNickname(nickname)
-                .ifPresent(user -> {
-                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 닉네임입니다.");
-                });
-    }
-
     public List<MembersResponse> getAllMembers() {
         return userRepository.findAll()
                 .stream()
@@ -62,5 +51,36 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));
         return UserProfile.from(user);
+    }
+
+    public void updateUserProfile(String userId, UpdateProfileRequest updateProfileRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));
+        if (!user.matchPassword(updateProfileRequest.password())) {
+            throw new IllegalArgumentException("[ERROR] 비밀번호가 일치하지 않습니다.");
+        }
+
+        String newNickname = updateProfileRequest.nickname().trim();
+        if (Objects.equals(user.getNickname(), newNickname)) {
+            return;
+        }
+
+        validateDuplicateNickname(newNickname);
+        user.updateNickname(newNickname);
+        userRepository.save(user);
+    }
+
+    private void validateDuplicateUsername(String username) {
+        userRepository.findByUsername(username)
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 이메일입니다.");
+                });
+    }
+
+    private void validateDuplicateNickname(String nickname) {
+        userRepository.findByNickname(nickname)
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 닉네임입니다. nickname: " + nickname);
+                });
     }
 }
