@@ -16,25 +16,30 @@
 <body>
 <%@ include file="navbar.jspf" %>
 <div class="container" id="main">
-   <div class="col-md-10 col-md-offset-1">
-      <div class="panel panel-default">
-          <table class="table table-hover">
-              <thead>
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>#</th>
+                    <th>사용자 아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th></th>
                 </tr>
-              </thead>
-              <tbody>
-              <c:forEach var="user" items="${users}" varStatus="status">
-                  <tr>
-                      <td>${status.index + 1}</td>
-                      <td><a href="/users/${user.userId}">${user.userId}</a></td>
-                      <td>${user.nickname}</td>
-                      <td>${user.email}</td>
-                  </tr>
-              </c:forEach>
-              </tbody>
-          </table>
+                </thead>
+                <tbody>
+                <c:forEach var="user" items="${users}" varStatus="status">
+                    <tr>
+                        <td>${status.index + 1}</td>
+                        <td><a href="/users/${user.userId}">${user.userId}</a></td>
+                        <td>${user.nickname}</td>
+                        <td>${user.email}</td>
+                        <td><a href="/users/${user.userId}/form">수정</a></td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -43,5 +48,5 @@
 <script src="../../static/js/jquery-2.2.0.min.js"></script>
 <script src="../../static/js/bootstrap.min.js"></script>
 <script src="../../static/js/scripts.js"></script>
-	</body>
+</body>
 </html>
