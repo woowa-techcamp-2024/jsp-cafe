@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class YamlParser {
-    public Map<String, Object> parse(String filename) {
+    public Yaml parse(String filename) {
         Map<String, Object> result = new HashMap<>();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(filename);
              BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
@@ -56,7 +56,7 @@ public class YamlParser {
         } catch (Exception e) {
             throw new IllegalArgumentException(filename+" 이 존재하지 않습니다.");
         }
-        return result;
+        return new Yaml(result,filename);
     }
 
     private int countLeadingSpaces(String line) {
