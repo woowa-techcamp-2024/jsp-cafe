@@ -7,10 +7,6 @@
         <servlet-name>articleListServlet</servlet-name>
         <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleListServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>articleListServlet</servlet-name>
-        <url-pattern></url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>memberRegistServlet</servlet-name>
@@ -55,7 +51,27 @@
         <servlet-name>articleRegisterServlet</servlet-name>
         <url-pattern>/questions</url-pattern>
     </servlet-mapping>
-
+    
+    <servlet>
+        <servlet-name>memberLoginServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberLoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>memberLoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>memberLogoutServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberLogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>memberLogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>articleListServlet</servlet-name>
+        <url-pattern></url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>xssFilter</filter-name>
