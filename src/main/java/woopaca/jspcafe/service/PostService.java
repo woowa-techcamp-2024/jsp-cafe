@@ -3,6 +3,7 @@ package woopaca.jspcafe.service;
 import woopaca.jspcafe.model.Post;
 import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.UserRepository;
+import woopaca.jspcafe.servlet.dto.PostDetailsResponse;
 import woopaca.jspcafe.servlet.dto.PostsResponse;
 import woopaca.jspcafe.servlet.dto.WritePostRequest;
 
@@ -30,5 +31,17 @@ public class PostService {
                 .stream()
                 .map(PostsResponse::from)
                 .toList();
+    }
+
+    public PostDetailsResponse getPostDetails(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다. postId: " + postId));
+        updateViewCount(post);
+        return PostDetailsResponse.from(post);
+    }
+
+    private void updateViewCount(Post post) {
+        post.increaseViewCount();
+        postRepository.save(post);
     }
 }
