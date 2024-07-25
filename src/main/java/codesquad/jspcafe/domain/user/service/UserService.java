@@ -1,8 +1,10 @@
 package codesquad.jspcafe.domain.user.service;
 
 import codesquad.jspcafe.domain.user.domain.User;
+import codesquad.jspcafe.domain.user.payload.request.UserLoginRequest;
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
+import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,7 @@ public class UserService {
     }
 
     public UserCommonResponse updateUserInfo(UserUpdateRequest updateRequest) {
-        verifyUserPassword(updateRequest.getUserId(), updateRequest.getPassword());
-        User user = findUserById(updateRequest.getUserId());
+        User user = verifyUserPassword(updateRequest.getUserId(), updateRequest.getPassword());
         user.updateValues(updateRequest.getUsername(), updateRequest.getEmail());
         return UserCommonResponse.from(userRepository.update(user));
     }
@@ -40,11 +41,17 @@ public class UserService {
         return userRepository.findAll().stream().map(UserCommonResponse::from).toList();
     }
 
-    private void verifyUserPassword(String userId, String password) {
+    public UserSessionResponse loginUser(UserLoginRequest loginRequest) {
+        User user = verifyUserPassword(loginRequest.getUserId(), loginRequest.getPassword());
+        return UserSessionResponse.from(user);
+    }
+
+    private User verifyUserPassword(String userId, String password) {
         User user = findUserById(userId);
         if (!user.verifyPassword(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다!");
         }
+        return user;
     }
 
     private User findUserById(String userId) {
