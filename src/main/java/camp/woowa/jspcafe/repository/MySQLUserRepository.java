@@ -72,6 +72,9 @@ public class MySQLUserRepository implements UserRepository{
             pstmt.setString(2, updatedName);
             pstmt.setString(3, updatedEmail);
             pstmt.setLong(4, id);
+
+            pstmt.executeUpdate();
+
             return id;
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
