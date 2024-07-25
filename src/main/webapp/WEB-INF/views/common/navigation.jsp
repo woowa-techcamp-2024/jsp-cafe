@@ -55,7 +55,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="${pageContext.request.contextPath}">Posts</a></li>
+                <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
                 <li><a href="${pageContext.request.contextPath}/users" role="button">멤버리스트</a></li>
                 <li><a href="${pageContext.request.contextPath}/user/login.html" role="button">로그인</a></li>
                 <li><a href="${pageContext.request.contextPath}/users/registration" role="button">회원가입</a></li>
