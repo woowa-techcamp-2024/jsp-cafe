@@ -2,29 +2,17 @@ package repository;
 
 import domain.User;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
-public class UserRepository {
+public interface UserRepository {
 
-    private final Map<Long, User> userMap;
+    void saveUser(User user);
 
-    public UserRepository(Map<Long,User> map) {
-        this.userMap = map;
-    }
+    Optional<User> findById(Long id);
 
-    public void saveUser(User user) {
-        if(user.getUserId().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty() || user.getEmail().isEmpty()) {
-            return;
-        }
-        userMap.put(user.getId(), user);
-    }
+    Optional<User> findByUserId(String password);
 
-    public List<User> findAll() {
-        return new ArrayList<>(userMap.values());
-    }
-
-    public Optional<User> findById(Long id) {
-        return Optional.ofNullable(userMap.get(id));
-    }
+    List<User> findAll();
 
 }
