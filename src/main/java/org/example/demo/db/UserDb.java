@@ -1,5 +1,6 @@
-package org.example.demo;
+package org.example.demo.db;
 
+import org.example.demo.domain.User;
 import org.example.demo.model.UserCreateDao;
 import org.example.demo.model.UserUpdateDao;
 

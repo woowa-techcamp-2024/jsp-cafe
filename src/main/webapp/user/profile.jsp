@@ -1,4 +1,4 @@
-<%@ page import="org.example.demo.User" %>
+<%@ page import="org.example.demo.domain.User" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page pageEncoding="UTF-8" %>
 <!DOCTYPE html>

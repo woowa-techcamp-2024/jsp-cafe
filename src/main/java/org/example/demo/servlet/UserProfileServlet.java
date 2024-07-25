@@ -1,11 +1,12 @@
-package org.example.demo;
+package org.example.demo.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.demo.model.UserCreateDao;
+import org.example.demo.db.UserDb;
+import org.example.demo.domain.User;
 import org.example.demo.model.UserUpdateDao;
 
 import java.io.IOException;

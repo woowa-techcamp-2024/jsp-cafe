@@ -1,10 +1,11 @@
-package org.example.demo;
+package org.example.demo.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.db.PostDb;
 
 import java.io.IOException;
 

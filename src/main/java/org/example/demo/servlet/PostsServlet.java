@@ -1,14 +1,13 @@
-package org.example.demo;
+package org.example.demo.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.db.PostDb;
 import org.example.demo.model.PostCreateDao;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @WebServlet(name = "postsServlet", urlPatterns = "/posts")
 public class PostsServlet extends HttpServlet {

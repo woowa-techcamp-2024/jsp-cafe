@@ -1,4 +1,4 @@
-<%@ page import="org.example.demo.Post" %>
+<%@ page import="org.example.demo.domain.Post" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>

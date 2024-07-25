@@ -1,4 +1,4 @@
-<%@ page import="org.example.demo.User" %>
+<%@ page import="org.example.demo.domain.User" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr" xmlns:jsp="http://java.sun.com/JSP/Page">

@@ -1,5 +1,7 @@
-package org.example.demo;
+package org.example.demo.db;
 
+import org.example.demo.domain.Post;
+import org.example.demo.domain.User;
 import org.example.demo.model.PostCreateDao;
 
 import java.time.LocalDateTime;
