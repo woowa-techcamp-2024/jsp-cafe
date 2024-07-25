@@ -72,7 +72,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="${pageContext.request.contextPath}/index.html">Posts</a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/user/login.html"
+                <li><a href="${pageContext.request.contextPath}/user/login"
                        role="button">로그인</a></li>
                 <li><a href="${pageContext.request.contextPath}/user/form.html"
                        role="button">회원가입</a></li>
