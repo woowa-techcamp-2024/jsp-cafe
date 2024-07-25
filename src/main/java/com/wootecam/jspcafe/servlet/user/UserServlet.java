@@ -1,4 +1,4 @@
-package com.wootecam.jspcafe.servlet;
+package com.wootecam.jspcafe.servlet.user;
 
 import com.wootecam.jspcafe.model.User;
 import com.wootecam.jspcafe.service.UserService;

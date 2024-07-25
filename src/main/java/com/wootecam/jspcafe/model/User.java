@@ -1,5 +1,7 @@
 package com.wootecam.jspcafe.model;
 
+import java.util.Objects;
+
 public class User {
 
     private Long id;
@@ -22,9 +24,32 @@ public class User {
     }
 
     private void validate(final String userId, final String password, final String name, final String email) {
-        if (userId == null || password == null || name == null || email == null
+        if (Objects.isNull(userId) || Objects.isNull(password) || Objects.isNull(name) || Objects.isNull(email)
                 || userId.isEmpty() || password.isEmpty() || name.isEmpty() || email.isEmpty()) {
             throw new IllegalArgumentException("회원가입 시 모든 정보를 입력해야 합니다.");
+        }
+    }
+
+    public User edit(final String originalPassword, final String newPassword, final String name,
+                     final String email) {
+        validateUpdateInfo(originalPassword, newPassword, name, email);
+        validatePassword(originalPassword);
+
+        return new User(id, userId, newPassword, name, email);
+    }
+
+    private void validateUpdateInfo(final String originalPassword, final String newPassword, final String name,
+                                    final String email) {
+        if (Objects.isNull(originalPassword) || Objects.isNull(newPassword) || Objects.isNull(email) || Objects.isNull(
+                name)
+                || originalPassword.isEmpty() || newPassword.isEmpty() || email.isEmpty() || name.isEmpty()) {
+            throw new IllegalArgumentException("회원 수정 시 모든 정보를 입력해야 합니다.");
+        }
+    }
+
+    private void validatePassword(final String originalPassword) {
+        if (!originalPassword.equals(password)) {
+            throw new IllegalArgumentException("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
         }
     }
 

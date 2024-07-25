@@ -1,16 +1,21 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
 <!DOCTYPE html>
 <html lang="kr">
-<jsp:include page="../snippet/meta-header.jsp"/>
+<jsp:include page="../snippet/meta_header.jsp"/>
 <body>
 <jsp:include page="../snippet/navigation.jsp"/>
 <jsp:include page="../snippet/header.jsp"/>
 
+
 <div class="container" id="main">
+    <c:set var="currentQuestion" value="${requestScope.question}"/>
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title">InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.</h2>
+                <h2 class="qna-title">${currentQuestion.title}</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -20,18 +25,17 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>
+                            <a href="/users/92/kimmunsu" class="article-author-name">${currentQuestion.writer}</a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                2015-12-30 01:47
+                                <fmt:parseDate value="${currentQuestion.createdTime}" pattern="yyyy-MM-dd'T'HH:mm"
+                                               var="createdTime" type="both"/>
+                                <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${createdTime}"/>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
                     <div class="article-doc">
-                        <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p>
-                        <p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                            서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p>
-                        <p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                        ${question.contents}
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">

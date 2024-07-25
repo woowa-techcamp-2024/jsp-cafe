@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="kr">
-<jsp:include page="../snippet/meta-header.jsp"/>
+<jsp:include page="../snippet/meta_header.jsp"/>
 <body>
 <jsp:include page="../snippet/navigation.jsp"/>
 <jsp:include page="../snippet/header.jsp"/>
@@ -27,7 +27,7 @@
                         <td>${user.userId}</td>
                         <td>${user.name}</td>
                         <td>${user.email}</td>
-                        <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <td><a href="/users/edit/${user.id}" class="btn btn-success" role="button">수정</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
