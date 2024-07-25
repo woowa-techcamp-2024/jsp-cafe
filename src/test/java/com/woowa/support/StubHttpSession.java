@@ -62,7 +62,7 @@ public class StubHttpSession implements HttpSession {
 
     @Override
     public void invalidate() {
-
+        attributes.clear();
     }
 
     @Override
