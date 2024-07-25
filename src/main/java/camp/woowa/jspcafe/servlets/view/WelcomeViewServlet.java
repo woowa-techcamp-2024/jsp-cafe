@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.servlets.view;
 
+import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.services.QuestionService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -10,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(value = "/")
+@WebServlet(value = "")
 public class WelcomeViewServlet extends HttpServlet {
     private QuestionService questionService;
 
@@ -23,11 +25,16 @@ public class WelcomeViewServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            req.setAttribute("questions", questionService.findAll());
-            req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
-        } catch (ServletException | IOException e) {
-            log("Error", e);
+        String pathInfo = req.getPathInfo();
+        if (("".equalsIgnoreCase(pathInfo) || "/".equalsIgnoreCase(pathInfo))) {
+            try {
+                req.setAttribute("questions", questionService.findAll());
+                req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
+            } catch (ServletException | IOException e) {
+                log("Error", e);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND);
         }
     }
 }
