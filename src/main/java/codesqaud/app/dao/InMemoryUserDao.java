@@ -2,7 +2,8 @@ package codesqaud.app.dao;
 
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
-import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,12 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+
 public class InMemoryUserDao implements UserDao {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryUserDao.class);
+
     private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
     private final Map<String, Long> userIdIndex = new ConcurrentHashMap<>();
@@ -19,19 +25,25 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public void save(User user) {
-        //업데이트
-        if (user.getId() != null) {
-            users.put(user.getId(), user);
-            return;
-        }
-
-        //생성
         user.setId(ID_GENERATOR.incrementAndGet());
         users.compute(user.getId(), (id, existingUser) -> {
-            if (existingUser != null) {
-                throw new HttpException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
             userIdIndex.put(user.getUserId(), user.getId());
+            return user;
+        });
+    }
+
+    @Override
+    public void update(User user) {
+        if (user.getId() == null) {
+            log.error("업데이트할 모델에 id를 지정하지 않았습니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR);
+        }
+
+        users.compute(user.getId(), (id, existingUser) -> {
+            if (existingUser == null) {
+                log.info("업데이트 할 모델을 찾지 못했습니다.");
+                throw new HttpException(SC_NOT_FOUND, "업데이트 할 사용자를 찾지 못했습니다.");
+            }
             return user;
         });
     }
@@ -48,8 +60,13 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public void delete(User user) {
+        if(user.getId() == null) {
+            log.error("삭제 할 모델에 id를 지정하지 않았습니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR);
+        }
+
         if (!userIdIndex.containsKey(user.getUserId())) {
-            throw new IllegalArgumentException("해당 사용자는 존재하지 않습니다.");
+            throw new HttpException(SC_NOT_FOUND, "해당 사용자는 존재하지 않습니다.");
         }
         userIdIndex.remove(user.getUserId());
         users.remove(user.getId());
