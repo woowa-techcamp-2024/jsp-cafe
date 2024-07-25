@@ -1,8 +1,7 @@
 package com.woowa.hyeonsik.application.service;
 
-import com.woowa.hyeonsik.application.dao.ArticleDao;
+import com.woowa.hyeonsik.application.dao.InMemoryArticleDao;
 import com.woowa.hyeonsik.application.domain.Article;
-import com.woowa.hyeonsik.application.service.ArticleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ class ArticleServiceTest {
 
     @BeforeEach
     void setUp() {
-        ArticleDao articleDao = new ArticleDao();
+        InMemoryArticleDao articleDao = new InMemoryArticleDao();
         articleService = new ArticleService(articleDao);
         articleDao.clear();
     }

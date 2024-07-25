@@ -1,4 +1,4 @@
-package com.woowa.hyeonsik.filter;
+package com.woowa.hyeonsik.server.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;

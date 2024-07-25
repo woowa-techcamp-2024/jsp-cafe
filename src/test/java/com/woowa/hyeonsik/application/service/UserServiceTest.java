@@ -3,12 +3,11 @@ package com.woowa.hyeonsik.application.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.woowa.hyeonsik.application.dao.UserDao;
+import com.woowa.hyeonsik.application.dao.InMemoryUserDao;
 import com.woowa.hyeonsik.application.domain.User;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.woowa.hyeonsik.application.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +17,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class UserServiceTest {
     private UserService userService;
-    private UserDao userDao;
+    private InMemoryUserDao userDao;
 
     @BeforeEach
     void setUp() {
-        userDao = new UserDao();
+        userDao = new InMemoryUserDao();
         userService = new UserService(userDao);
         userDao.clear();
     }

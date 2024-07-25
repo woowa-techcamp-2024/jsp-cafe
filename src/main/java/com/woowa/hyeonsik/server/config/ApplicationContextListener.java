@@ -1,7 +1,7 @@
 package com.woowa.hyeonsik.server.config;
 
-import com.woowa.hyeonsik.application.dao.ArticleDao;
-import com.woowa.hyeonsik.application.dao.UserDao;
+import com.woowa.hyeonsik.application.dao.InMemoryArticleDao;
+import com.woowa.hyeonsik.application.dao.InMemoryUserDao;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.application.service.UserService;
 import jakarta.servlet.ServletContextEvent;
@@ -18,9 +18,9 @@ public class ApplicationContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         logger.debug("Context 초기화를 진행합니다.");
 
-        UserDao userDao = new UserDao();
+        InMemoryUserDao userDao = new InMemoryUserDao();
         UserService userService = new UserService(userDao);
-        ArticleDao articleDao = new ArticleDao();
+        InMemoryArticleDao articleDao = new InMemoryArticleDao();
         ArticleService articleService = new ArticleService(articleDao);
 
         sce.getServletContext().setAttribute("userDao", userDao);
