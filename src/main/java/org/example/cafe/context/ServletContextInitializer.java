@@ -21,33 +21,40 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private static final Logger log = getLogger(ServletContextInitializer.class);
 
+    private ServletContext servletContext;
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        registerBean(sce.getServletContext());
+        this.servletContext = sce.getServletContext();
+
+        registerBean();
     }
 
-    // todo: 생성자 필요한 빈들 등록 과정 리팩토링
-    private void registerBean(ServletContext servletContext) {
+    private void registerBean() {
         try {
-            setContext(servletContext, "DbConnector", () -> new DbConnector().init());
+            setContext("DbConnector", () -> new DbConnector().init());
 
-            setContext(servletContext, "UserRepository", () ->
-                    new UserJdbcRepository((DbConnector) servletContext.getAttribute("DbConnector")));
-            setContext(servletContext, "UserService", () ->
-                    new UserService((UserRepository) servletContext.getAttribute("UserRepository")));
+            setContext("UserRepository", () ->
+                    new UserJdbcRepository(getBean("DbConnector", DbConnector.class)));
+            setContext("UserService", () ->
+                    new UserService(getBean("UserRepository", UserRepository.class)));
 
-            setContext(servletContext, "QuestionRepository", () ->
-                    new QuestionJdbcRepository((DbConnector) servletContext.getAttribute("DbConnector")));
-            setContext(servletContext, "QuestionService", () ->
-                    new QuestionService((QuestionRepository) servletContext.getAttribute("QuestionRepository")));
+            setContext("QuestionRepository", () ->
+                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
+            setContext("QuestionService", () ->
+                    new QuestionService(getBean("QuestionRepository", QuestionRepository.class)));
         } catch (Exception e) {
             log.error("Failed to register beans", e);
             System.exit(-1);
         }
     }
 
-    public void setContext(ServletContext servletContext, String name, Supplier<Object> supplier) {
+    private void setContext(String name, Supplier<Object> supplier) {
         servletContext.setAttribute(name, supplier.get());
         log.debug("Register bean: {}", name);
+    }
+
+    private <T> T getBean(String name, Class<T> clazz) {
+        return clazz.cast(servletContext.getAttribute(name));
     }
 }
