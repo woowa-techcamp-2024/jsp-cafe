@@ -34,7 +34,6 @@ public class UserServlet extends HttpServlet {
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         String requestURI = req.getRequestURI();
-        log.info("requestURI: {}", requestURI);
 
         if (requestURI.endsWith("/user")) {
             getForm(req, resp);
