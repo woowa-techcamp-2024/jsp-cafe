@@ -16,13 +16,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/users/profile/*")
 public class UserProfileServlet extends HttpServlet {
 
-	private UserDatabase userDatabase;
 	private UserService userService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		userDatabase = (UserDatabase)config.getServletContext().getAttribute("userDatabase");
 		userService = (UserService)config.getServletContext().getAttribute("userService");
 	}
 
