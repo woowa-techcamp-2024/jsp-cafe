@@ -14,6 +14,7 @@ public class TestHttpServletRequest implements HttpServletRequest {
     private final Map<String, Object> attributes = new HashMap<>();
     private RequestDispatcher requestDispatcher;
     private HttpSession session;
+    private String path;
 
     public void setRequestDispatcher(RequestDispatcher dispatcher){
         this.requestDispatcher = dispatcher;
@@ -32,6 +33,11 @@ public class TestHttpServletRequest implements HttpServletRequest {
         this.session = session;
     }
 
+    public void setPathInfo(String path){
+        this.path = path;
+    }
+
+
     @Override
     public String getParameter(String s) {
         return parameters.get(s);
@@ -40,11 +46,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
     @Override
     public String getCharacterEncoding() {
         return "UTF-8";
-    }
-
-    @Override
-    public RequestDispatcher getRequestDispatcher(String s) {
-        return requestDispatcher;
     }
 
     @Override
@@ -64,6 +65,17 @@ public class TestHttpServletRequest implements HttpServletRequest {
     public HttpSession getSession() {
         return session == null ? new TestHttpSession() : session;
     }
+
+    @Override
+    public String getPathInfo() {
+        return path;
+    }
+
+    @Override
+    public RequestDispatcher getRequestDispatcher(String s) {
+        return requestDispatcher;
+    }
+
 
     // not impl
     @Override
@@ -106,10 +118,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
         return "";
     }
 
-    @Override
-    public String getPathInfo() {
-        return "";
-    }
 
     @Override
     public String getPathTranslated() {
