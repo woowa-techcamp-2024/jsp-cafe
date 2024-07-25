@@ -14,7 +14,6 @@ public class ErrorHandlingFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         // 필터 초기화 시 초기화 매개변수 가져오기
         paramName = filterConfig.getInitParameter("paramName");
-        System.out.println("Initialized with paramName = " + paramName);
     }
 
     @Override

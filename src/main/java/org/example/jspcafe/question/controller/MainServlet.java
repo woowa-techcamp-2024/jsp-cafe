@@ -26,7 +26,6 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("안녕");
         List<Question> all = questionRepository.getAll();
         req.setAttribute("questions", all);
         req.getRequestDispatcher("/qna/list.jsp").forward(req, resp);
