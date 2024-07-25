@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-public class MemberProfileServlet extends HttpServlet {
+public class MemberControlServlet extends HttpServlet {
     private MemberDao memberDao;
     @Override
     public void init(ServletConfig config) throws ServletException {

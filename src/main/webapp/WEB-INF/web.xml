@@ -31,11 +31,11 @@
     </servlet-mapping>
     
     <servlet>
-        <servlet-name>memberProfileServlet</servlet-name>
-        <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberProfileServlet</servlet-class>
+        <servlet-name>memberControlServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberControlServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>memberProfileServlet</servlet-name>
+        <servlet-name>memberControlServlet</servlet-name>
         <url-pattern>/members/*</url-pattern>
     </servlet-mapping>
     

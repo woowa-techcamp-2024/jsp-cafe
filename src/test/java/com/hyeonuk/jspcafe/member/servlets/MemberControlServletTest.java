@@ -23,16 +23,16 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("MemberProfileServlet 클래스")
-public class MemberProfileServletTest {
+public class MemberControlServletTest {
     private MemberDao memberDao;
-    private MemberProfileServlet servlet;
+    private MemberControlServlet servlet;
     @BeforeEach
     void servletSetUp() throws ServletException {
         memberDao = new InMemoryMemberDao();
         ServletContext context = new MockServletContext();
         context.setAttribute("memberDao",memberDao);
         ServletConfig servletConfig = new BaseServletConfig(context);
-        servlet = new MemberProfileServlet();
+        servlet = new MemberControlServlet();
         servlet.init(servletConfig);
     }
 
