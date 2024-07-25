@@ -1,10 +1,10 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import com.example.db.UserDatabase;
-import com.example.entity.User;
+import com.example.dto.UserUpdateRequest;
+import com.example.dto.util.DtoCreationUtil;
+import com.example.service.UserService;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -17,12 +17,12 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/users/edit/*")
 public class UserUpdateServlet extends HttpServlet {
 
-	private UserDatabase userDatabase;
+	private UserService userService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		userDatabase = (UserDatabase)config.getServletContext().getAttribute("userDatabase");
+		userService = (UserService)config.getServletContext().getAttribute("userService");
 	}
 
 	@Override
@@ -38,28 +38,10 @@ public class UserUpdateServlet extends HttpServlet {
 			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
-		String userId = req.getPathInfo().substring(1);
-
-		Optional<User> userOptional = userDatabase.findById(userId);
-		if (userOptional.isEmpty()) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-		User user = userOptional.get();
-		if (!session.getAttribute("id").equals(user.id())) {
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-			return;
-		}
-		String password = req.getParameter("password");
-		String email = req.getParameter("email");
-		String name = req.getParameter("name");
-
-		if (!user.password().equals(password)) {
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		userDatabase.update(userId, new User(null, null, name, email));
+		String id = req.getPathInfo().substring(1);
+		UserUpdateRequest dto = DtoCreationUtil.createDto(UserUpdateRequest.class, req);
+		dto.validate();
+		userService.updateUser(id, dto);
 		resp.sendRedirect("/users");
 	}
 }

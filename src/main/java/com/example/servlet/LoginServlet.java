@@ -1,10 +1,12 @@
 package com.example.servlet;
 
-import java.io.IOException;
-import java.util.Optional;
+import static com.example.dto.util.DtoCreationUtil.*;
 
-import com.example.db.UserDatabase;
+import java.io.IOException;
+
+import com.example.dto.LoginRequest;
 import com.example.entity.User;
+import com.example.service.UserService;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -17,12 +19,12 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/users/login")
 public class LoginServlet extends HttpServlet {
 
-	private UserDatabase userDatabase;
+	private UserService userService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		userDatabase = (UserDatabase)config.getServletContext().getAttribute("userDatabase");
+		userService = (UserService)config.getServletContext().getAttribute("userService");
 	}
 
 	@Override
@@ -32,21 +34,7 @@ public class LoginServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String id = req.getParameter("id");
-		String password = req.getParameter("password");
-
-		Optional<User> userOptional = userDatabase.findById(id);
-		if (userOptional.isEmpty()) {
-			req.getRequestDispatcher("/user/login_failed.jsp").forward(req, resp);
-			return;
-		}
-
-		User user = userOptional.get();
-		if (!user.password().equals(password)) {
-			req.getRequestDispatcher("/user/login_failed.jsp").forward(req, resp);
-			return;
-		}
-
+		User user = userService.login(createDto(LoginRequest.class, req));
 		HttpSession session = req.getSession();
 		session.setAttribute("login", true);
 		session.setAttribute("name", user.name());
