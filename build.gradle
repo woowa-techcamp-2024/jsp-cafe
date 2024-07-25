@@ -19,6 +19,11 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
+    // db
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+    implementation 'com.h2database:h2:2.2.224'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+
     // jstl
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
