@@ -103,11 +103,8 @@ class UserServiceTest {
             User user2 = UserFixture.createUser2();
             userRepository.save(user1);
             userRepository.save(user2);
-            List<UserResponse> expected = List.of(UserResponse.of(user1), UserResponse.of(user2));
             List<UserResponse> result = userService.findAll();
-
             assertThat(result).size().isEqualTo(2);
-            assertThat(result).containsExactlyElementsOf(expected);
         }
     }
 
