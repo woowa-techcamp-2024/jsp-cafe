@@ -74,6 +74,16 @@
     </servlet-mapping>
 
     <filter>
+        <filter-name>sessionFilter</filter-name>
+        <filter-class>com.hyeonuk.jspcafe.global.servlet.filter.SessionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>sessionFilter</filter-name>
+        <url-pattern>/members/*/form</url-pattern>
+        <url-pattern>/questions</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>xssFilter</filter-name>
         <filter-class>com.hyeonuk.jspcafe.global.servlet.filter.xss.XssFilter</filter-class>
     </filter>
