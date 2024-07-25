@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ArticleViewServlet extends HttpServlet {
     private ArticleDao articleDao;
@@ -23,7 +24,7 @@ public class ArticleViewServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if(pathInfo == null || pathInfo.isEmpty()) {
+        if(pathInfo == null || pathInfo.isEmpty() || pathInfo.split("/").length != 2) {
             throw new HttpBadRequestException("잘못된 요청입니다.");
         }
         try {
@@ -33,7 +34,7 @@ public class ArticleViewServlet extends HttpServlet {
                     .orElseThrow(() -> new HttpNotFoundException(articleId + "번의 게시글을 찾을 수 없습니다."));
             req.setAttribute("article",article);
             req.getRequestDispatcher("/templates/qna/show.jsp").forward(req, resp);
-        }catch(Exception e ){
+        }catch(NumberFormatException e ){
             throw new HttpBadRequestException("잘못된 요청입니다.");
         }
     }
