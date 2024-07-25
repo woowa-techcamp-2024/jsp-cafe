@@ -13,8 +13,11 @@ import java.util.Optional;
 @Component
 public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> implements PostRepository {
 
-    public JdbcPostRepository() {
+    private final DatabaseConnectionManager connectionManager;
+
+    public JdbcPostRepository(DatabaseConnectionManager connectionManager) {
         super(Post.class);
+        this.connectionManager = connectionManager;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
         }
         String sql = "INSERT INTO posts (user_id, title, content, created_at) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setLong(1, post.getUserId());
@@ -55,7 +58,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
     public Optional<Post> findById(Long id) {
         String sql = "SELECT * FROM posts WHERE post_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setLong(1, id);
@@ -80,7 +83,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
         }
         String sql = "DELETE FROM posts WHERE post_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setLong(1, post.getPostId());
@@ -95,7 +98,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
     public void update(Post post) {
         String sql = "UPDATE posts SET title = ?, content = ? WHERE post_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, post.getTitle().getValue());
@@ -115,7 +118,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
     public List<Post> findAll() {
         String sql = "SELECT * FROM posts";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
@@ -139,7 +142,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
                 "ORDER BY created_at DESC " +
                 "LIMIT ? OFFSET ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, limit);
@@ -161,7 +164,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
     public int count() {
         String sql = "SELECT COUNT(*) FROM posts";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
@@ -180,7 +183,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
     public void deleteAllInBatch() {
         String sql = "DELETE FROM posts";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.executeUpdate();

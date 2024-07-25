@@ -5,15 +5,17 @@ import org.example.jspcafe.DatabaseConnectionManager;
 import org.example.jspcafe.ReflectionIdFieldExtractor;
 import org.example.jspcafe.user.model.User;
 
-
 import java.sql.*;
 import java.util.*;
 
 @Component
 public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> implements UserRepository {
 
-    public JdbcUserRepository() {
+    private final DatabaseConnectionManager connectionManger;
+
+    public JdbcUserRepository(DatabaseConnectionManager connectionManger) {
         super(User.class);
+        this.connectionManger = connectionManger;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
         }
         String sql = "INSERT INTO users (nickname, email, password, created_at) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, user.getNickname().getValue());
@@ -46,7 +48,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("user 저장 중 오류 발생", e);
+            throw new RuntimeException("user 저장 중 오류 발생 "+e.getMessage(), e);
         }
     }
 
@@ -54,7 +56,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
     public Optional<User> findById(Long id) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setLong(1, id);
@@ -79,7 +81,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
         }
         String sql = "DELETE FROM users WHERE user_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setLong(1, user.getUserId());
@@ -94,7 +96,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
     public void update(User user) {
         String sql = "UPDATE users SET nickname = ?, email = ?, password = ? WHERE user_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, user.getNickname().getValue());
@@ -115,7 +117,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, email);
@@ -137,7 +139,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
     public Optional<User> findByNickname(String nickname) {
         String sql = "SELECT * FROM users WHERE nickname = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, nickname);
@@ -159,7 +161,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
@@ -182,7 +184,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
         String placeholders = String.join(",", "?".repeat(userIds.size()).split(""));
         String sql = "SELECT * FROM users WHERE user_id IN (" + placeholders + ")";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             int index = 1;
@@ -208,7 +210,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
     public void deleteAllInBatch() {
         String sql = "DELETE FROM users";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
+        try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.executeUpdate();
