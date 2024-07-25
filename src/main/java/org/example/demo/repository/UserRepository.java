@@ -11,10 +11,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserRepository {
+    private static UserRepository instance;
     private DbConfig dbConfig;
 
-    public UserRepository(DbConfig dbConfig) {
+    private UserRepository(DbConfig dbConfig) {
         this.dbConfig = dbConfig;
+    }
+
+    public static UserRepository getInstance() {
+        return instance;
+    }
+
+    public static void init(DbConfig dbConfig) {
+        instance = new UserRepository(dbConfig);
     }
 
     public Optional<User> getUser(Long id) {

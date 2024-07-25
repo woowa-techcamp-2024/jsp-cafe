@@ -28,7 +28,7 @@ public class PostServlet extends HttpServlet {
         router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/?$", this::handleGetPost);
         router.addRoute(HttpMethod.POST, "^/posts/?$", this::handleCreatePost);
         DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/test", "root", "");
-        postRepository = new PostRepository(dbConfig, new UserRepository(dbConfig));
+        postRepository = PostRepository.getInstance();
     }
 
     @Override

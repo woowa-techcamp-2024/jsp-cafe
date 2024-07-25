@@ -31,7 +31,7 @@ public class UserServlet extends HttpServlet {
         router.addRoute(HttpMethod.POST, "^/users/?$", this::handleUserCreate);
         router.addRoute(HttpMethod.POST, "^/users/(\\d+)/?$", this::handleUserUpdate);
 
-        userRepository = new UserRepository(new DbConfig("jdbc:mysql://localhost/test", "root", ""));
+        userRepository = UserRepository.getInstance();
     }
 
     @Override

@@ -12,12 +12,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class PostRepository {
+    private static PostRepository instance;
     private DbConfig dbConfig;
     private UserRepository userRepository;
 
-    public PostRepository(DbConfig dbConfig, UserRepository userRepository) {
+    private PostRepository(DbConfig dbConfig, UserRepository userRepository) {
         this.dbConfig = dbConfig;
         this.userRepository = userRepository;
+    }
+
+    public static PostRepository getInstance() {
+        return instance;
+    }
+
+    public static void init(DbConfig dbConfig, UserRepository userRepository) {
+        instance = new PostRepository(dbConfig, userRepository);
     }
 
     public Optional<Post> getPost(Long postId) {

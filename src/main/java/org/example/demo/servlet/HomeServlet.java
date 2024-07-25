@@ -19,10 +19,7 @@ public class HomeServlet extends HttpServlet {
     @Override
     public void init() throws ServletException{
         System.out.println("init home servlet!");
-        DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/test", "root", "");
-        UserRepository userRepository = new UserRepository(dbConfig);
-        this.postRepository = new PostRepository(dbConfig, userRepository);
-        System.out.println("userRepository = " + userRepository);
+        this.postRepository = PostRepository.getInstance();
     }
 
     // 홈 화면
