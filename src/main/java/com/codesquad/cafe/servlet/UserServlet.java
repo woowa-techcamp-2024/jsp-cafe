@@ -29,7 +29,7 @@ public class UserServlet extends HttpServlet {
         log.warn("pathInfo: {}", id);
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
-            req.getRequestDispatcher("/static/error/404.html").forward(req, resp);
+            resp.sendError(404);
             return;
         }
         req.setAttribute("user", user.get());
