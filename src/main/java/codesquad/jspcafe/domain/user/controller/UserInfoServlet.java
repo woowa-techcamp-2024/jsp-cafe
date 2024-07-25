@@ -2,6 +2,7 @@ package codesquad.jspcafe.domain.user.controller;
 
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
+import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import codesquad.jspcafe.domain.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -78,11 +79,18 @@ public class UserInfoServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (!pathInfo.endsWith("/form")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Invalid request");
+            return;
         }
         Map<String, String[]> parameterMap = req.getParameterMap();
+        UserSessionResponse userSessionResponse = (UserSessionResponse) req.getSession()
+            .getAttribute("user");
+        if (userSessionResponse == null || !(userSessionResponse.getUserId()
+            .equals(parameterMap.get("userId")[0]))) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+            return;
+        }
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.from(parameterMap);
         userService.updateUserInfo(userUpdateRequest);
         resp.sendRedirect("/users/" + parameterMap.get("userId")[0]);
-
     }
 }
