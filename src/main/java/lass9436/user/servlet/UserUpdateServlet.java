@@ -2,6 +2,7 @@ package lass9436.user.servlet;
 
 import java.io.IOException;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +17,9 @@ public class UserUpdateServlet extends HttpServlet {
 	private UserRepository userRepository;
 
 	@Override
-	public void init() throws ServletException {
-		// 서블릿 초기화 시 컨텍스트에서 UserRepository 인스턴스를 가져옴
-		userRepository = (UserRepository) getServletContext().getAttribute("userRepository");
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
 	}
 
 	@Override

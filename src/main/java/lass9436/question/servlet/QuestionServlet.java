@@ -2,6 +2,7 @@ package lass9436.question.servlet;
 
 import java.io.IOException;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,9 +20,10 @@ public class QuestionServlet extends HttpServlet {
 	private QuestionRepository questionRepository;
 
 	@Override
-	public void init() throws ServletException {
-		questionRepository = (QuestionRepository) getServletContext().getAttribute("questionRepository");
-		userRepository = (UserRepository) getServletContext().getAttribute("userRepository");
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		questionRepository = (QuestionRepository)config.getServletContext().getAttribute("questionRepository");
+		userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
 	}
 
 	@Override
