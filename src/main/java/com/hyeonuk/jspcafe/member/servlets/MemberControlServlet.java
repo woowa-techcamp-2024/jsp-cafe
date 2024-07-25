@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -51,6 +52,13 @@ public class MemberControlServlet extends HttpServlet {
             throw new HttpBadRequestException("잘못된 요청입니다.");
         }
 
+        HttpSession session = req.getSession();
+        if(session==null || session.getAttribute("member")==null){
+            resp.sendRedirect("/login");
+            return;
+        }
+
+
         String[] pathParts = pathInfo.split("/");
         if(pathParts.length < 2 || pathParts.length > 3){
             throw new HttpBadRequestException("잘못된 요청입니다.");
@@ -60,6 +68,11 @@ public class MemberControlServlet extends HttpServlet {
                 .orElseThrow(() -> new HttpNotFoundException("해당 유저를 찾을 수 없습니다."));
         String passwordCheck = req.getParameter("passwordCheck");
         if(!passwordEncoder.match(passwordCheck,origin.getPassword())) throw new HttpBadRequestException("비밀번호가 일치하지 않습니다.");
+        Member member = (Member) session.getAttribute("member");
+        if(!member.getMemberId().equals(memberId)) {
+            resp.sendRedirect("/login");
+            return;
+        }
 
         //update 로직
         String newPassword = req.getParameter("password");
