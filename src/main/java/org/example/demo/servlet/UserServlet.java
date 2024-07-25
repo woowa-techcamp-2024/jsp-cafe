@@ -7,11 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
 import org.example.demo.Router;
-import org.example.demo.db.UserDb;
+import org.example.demo.db.DbConfig;
 import org.example.demo.domain.User;
 import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.UserCreateDao;
 import org.example.demo.model.UserUpdateDao;
+import org.example.demo.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @WebServlet(name = "usersServlet", urlPatterns = "/users/*")
 public class UserServlet extends HttpServlet {
     private Router router;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
@@ -28,6 +30,8 @@ public class UserServlet extends HttpServlet {
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/form/?$", this::handleUpdateForm);
         router.addRoute(HttpMethod.POST, "^/users/?$", this::handleUserCreate);
         router.addRoute(HttpMethod.POST, "^/users/(\\d+)/?$", this::handleUserUpdate);
+
+        userRepository = new UserRepository(new DbConfig("jdbc:mysql://localhost/test", "root", ""));
     }
 
     @Override
@@ -42,20 +46,20 @@ public class UserServlet extends HttpServlet {
     }
 
     private void handleUserList(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
-        request.setAttribute("users", UserDb.getUsers());
+        request.setAttribute("users", userRepository.getUsers());
         request.getRequestDispatcher("/user/list.jsp").forward(request, response);
     }
 
     private void handleUpdateForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = UserDb.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
+        User user = userRepository.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/updateForm.jsp").forward(request, response);
     }
 
     private void handleUserProfile(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = UserDb.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
+        User user = userRepository.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
         request.setAttribute("user", user);
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
     }
@@ -67,19 +71,19 @@ public class UserServlet extends HttpServlet {
                 request.getParameter("name"),
                 request.getParameter("email")
         );
-        UserDb.addUser(dao);
+        userRepository.addUser(dao);
         response.sendRedirect("/users");
     }
 
     private void handleUserUpdate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = UserDb.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
+        User user = userRepository.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
 
         if (!user.getPassword().equals(request.getParameter("passwordCheck"))) {
-            throw new IllegalArgumentException("Password does not match");
+            throw new IllegalArgumentException("패스워드가 안 맞아요~ 다시 확인해보세용");
         }
 
-        UserDb.updateUser(new UserUpdateDao(
+        userRepository.updateUser(new UserUpdateDao(
                 id,
                 request.getParameter("password"),
                 request.getParameter("name"),

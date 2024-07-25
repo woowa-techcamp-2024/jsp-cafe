@@ -5,17 +5,33 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.db.DbConfig;
 import org.example.demo.db.PostDb;
+import org.example.demo.repository.PostRepository;
+import org.example.demo.repository.UserRepository;
 
 import java.io.IOException;
 
 @WebServlet(name = "homeServlet", urlPatterns = "/")
 public class HomeServlet extends HttpServlet {
+    private PostRepository postRepository;
+
+    @Override
+    public void init() throws ServletException{
+        System.out.println("init home servlet!");
+        DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/test", "root", "");
+        UserRepository userRepository = new UserRepository(dbConfig);
+        this.postRepository = new PostRepository(dbConfig, userRepository);
+        System.out.println("userRepository = " + userRepository);
+    }
+
     // 홈 화면
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("home servlet!");
-        request.setAttribute("posts", PostDb.getPosts());
+        System.out.println("home servlet!!!");
+        System.out.println("postRepository = " + postRepository.getPosts());
+
+        request.setAttribute("posts", postRepository.getPosts());
 
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
