@@ -23,7 +23,7 @@ public record UserUpdateRequest(
 				throw new RuntimeException("Invalid email pattern");
 			}
 		}
-		if (name.length() > 100) {
+		if (name != null && name.length() > 100) {
 			throw new RuntimeException("name is too long");
 		}
 	}
