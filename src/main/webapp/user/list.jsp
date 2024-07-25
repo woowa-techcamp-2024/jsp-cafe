@@ -15,7 +15,6 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>사용자 아이디</th>
                     <th>이름</th>
                     <th>이메일</th>
                     <th></th>
@@ -27,10 +26,8 @@
                     for (User user : userList) {
                 %>
                 <tr>
-                    <th scope="row"><%= user.id() %>
+                    <th scope="row"><a href="/users/profile/<%= user.id() %>"><%= user.id() %></a>
                     </th>
-                    <td><a href="/users/profile/<%= user.id() %>"><%= user.id() %>
-                    </a></td>
                     <td><%= user.name() %>
                     </td>
                     <td><%= user.email() %>

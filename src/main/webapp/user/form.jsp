@@ -11,11 +11,11 @@
         <div class="panel panel-default content-main">
             <form name="question" method="POST" action="/users">
                 <div class="form-group">
-                    <label for="userId">사용자 아이디</label>
-                    <input class="form-control" id="userId" name="userId" placeholder="User ID">
+                    <label for="id">사용자 아이디</label>
+                    <input class="form-control" id="id" name="id" placeholder="User ID">
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
+                    <label for="password">비밀번호 (영문 + 숫자, 8자 이상 16자 이하)</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                 </div>
                 <div class="form-group">
