@@ -111,6 +111,30 @@ public class UserJdbcDatabase implements UserDatabase {
             return Optional.empty();
         } catch (SQLException e) {
             throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
+        }
+    }
+
+    @Override
+    public void update(User user) {
+        String sql = "update user set user_id = ?, email = ?, password = ?, nickname = ? where user_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, user.getUserId());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getPassword());
+            pstmt.setString(4, user.getNickname());
+            pstmt.setString(5, user.getUserId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, null);
         }
     }
 }

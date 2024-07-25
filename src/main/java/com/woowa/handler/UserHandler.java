@@ -55,6 +55,7 @@ public class UserHandler {
             @RequestParameter("nickname") String nickname) {
         User user = getUser(userId);
         user.update(nickname);
+        userDatabase.update(user);
         return ResponseEntity.builder()
                 .found("/users/" + userId);
     }

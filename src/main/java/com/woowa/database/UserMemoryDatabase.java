@@ -31,4 +31,9 @@ public class UserMemoryDatabase implements UserDatabase{
     public Optional<User> findById(String userId) {
         return Optional.ofNullable(users.get(userId));
     }
+
+    @Override
+    public void update(User user) {
+
+    }
 }
