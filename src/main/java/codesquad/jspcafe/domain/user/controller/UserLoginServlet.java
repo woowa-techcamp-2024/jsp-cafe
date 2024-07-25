@@ -45,7 +45,8 @@ public class UserLoginServlet extends HttpServlet {
     }
 
     /**
-     * POST 요청을 처리하여 로그인을 수행합니다.
+     * POST 요청을 처리하여 로그인을 수행합니다. <br> 사용자가 존재하지 않거나 비밀번호가 잘못된 경우 로그인 실패 페이지로 포워딩됩니다. <br> 로그인에 성공할
+     * 경우 /index.html로 리다이렉트됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -55,13 +56,18 @@ public class UserLoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        UserSessionResponse sessionResponse = userService.loginUser(
-            UserLoginRequest.from(req.getParameterMap()));
-        HttpSession oldSession = req.getSession(false);
-        if (oldSession != null) {
-            oldSession.invalidate();
+        try {
+            UserSessionResponse sessionResponse = userService.loginUser(
+                UserLoginRequest.from(req.getParameterMap()));
+            HttpSession oldSession = req.getSession(false);
+            if (oldSession != null) {
+                oldSession.invalidate();
+            }
+            req.getSession(true).setAttribute("user", sessionResponse);
+            resp.sendRedirect("/index.html");
+        } catch (IllegalArgumentException e) {
+            req.setAttribute("loginException", e.getMessage());
+            req.getRequestDispatcher("/WEB-INF/jsp/userLoginFailed.jsp").forward(req, resp);
         }
-        req.getSession(true).setAttribute("user", sessionResponse);
-        resp.sendRedirect("/index.html");
     }
 }
