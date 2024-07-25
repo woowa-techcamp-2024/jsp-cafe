@@ -41,7 +41,7 @@ public class MemberLoginServlet extends HttpServlet {
 
         if(!passwordEncoder.match(password,member.getPassword())) throw new HttpBadRequestException("비밀번호가 일치하지 않습니다.");
 
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(true);
 
         session.setAttribute("member",member);
 
