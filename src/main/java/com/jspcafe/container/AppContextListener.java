@@ -36,7 +36,7 @@ public class AppContextListener implements ServletContextListener {
     }
 
     private void initArticleDao(ServletContext ctx) {
-        ctx.setAttribute("userDao", new UserDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
+        ctx.setAttribute("articleDao", new ArticleDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
     }
 
     private void initArticleService(ServletContext ctx) {
