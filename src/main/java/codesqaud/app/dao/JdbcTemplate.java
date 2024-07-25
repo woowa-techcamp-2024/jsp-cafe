@@ -81,7 +81,7 @@ public class JdbcTemplate {
         }
     }
 
-    public void update(String sql, Object... values) {
+    public int update(String sql, Object... values) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -89,7 +89,7 @@ public class JdbcTemplate {
                 preparedStatement.setObject(i, values[i - 1]);
             }
 
-            preparedStatement.executeUpdate();
+            return preparedStatement.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DbConstraintException();
         } catch (SQLException e) {

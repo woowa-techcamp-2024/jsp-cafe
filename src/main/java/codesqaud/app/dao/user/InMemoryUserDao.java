@@ -25,6 +25,11 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public void save(User user) {
+        if(user.getId() != null) {
+            log.error("새로운 모델을 저장할 때 id를 명시적으로 지정하면 안됩니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR);
+        }
+
         user.setId(ID_GENERATOR.incrementAndGet());
         users.compute(user.getId(), (id, existingUser) -> {
             userIdIndex.put(user.getUserId(), user.getId());
