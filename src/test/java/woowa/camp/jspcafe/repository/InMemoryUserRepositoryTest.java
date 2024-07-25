@@ -90,8 +90,7 @@ class InMemoryUserRepositoryTest {
             UserUpdateRequest updateDto = new UserUpdateRequest(newPassword, testUser.getNickname());
 
             // when
-            userRepository.update(testUser.getId(), updateDto);
-            User updatedUser = userRepository.findById(testUser.getId()).get();
+            User updatedUser = userRepository.update(testUser, updateDto);
 
             // then
             assertThat(updatedUser.getPassword()).isEqualTo(newPassword);
@@ -106,8 +105,7 @@ class InMemoryUserRepositoryTest {
             UserUpdateRequest updateRequest = new UserUpdateRequest(testUser.getPassword(), newNickname);
 
             // when
-            userRepository.update(testUser.getId(), updateRequest);
-            User updatedUser = userRepository.findById(testUser.getId()).get();
+            User updatedUser = userRepository.update(testUser, updateRequest);
 
             // then
             assertThat(updatedUser.getNickname()).isEqualTo(newNickname);
@@ -123,8 +121,7 @@ class InMemoryUserRepositoryTest {
             UserUpdateRequest updateDto = new UserUpdateRequest(newPassword, newNickname);
 
             // when
-            userRepository.update(testUser.getId(), updateDto);
-            User updatedUser = userRepository.findById(testUser.getId()).get();
+            User updatedUser = userRepository.update(testUser, updateDto);
 
             // then
             assertThat(updatedUser.getPassword()).isEqualTo(newPassword);
@@ -137,8 +134,10 @@ class InMemoryUserRepositoryTest {
             String newPassword = "newPassword";
             String newNickname = "newNickname";
             UserUpdateRequest updateDto = new UserUpdateRequest(newPassword, newNickname);
+            User user = UserFixture.createUser1();
+            user.setId(12345L);
 
-            assertThatCode(() -> userRepository.update(12345L, updateDto))
+            assertThatCode(() -> userRepository.update(user, updateDto))
                     .doesNotThrowAnyException();
         }
 
