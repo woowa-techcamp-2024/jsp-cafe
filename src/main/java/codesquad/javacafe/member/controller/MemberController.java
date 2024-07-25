@@ -32,7 +32,7 @@ public class MemberController implements SubController {
                     System.out.println(memberResponseDto);
                 }
                 req.setAttribute("memberList", memberList);
-                var dispatcher = req.getRequestDispatcher("/user/list.jsp");
+                var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
                 dispatcher.forward(req,res);
             }
             case "POST" : {

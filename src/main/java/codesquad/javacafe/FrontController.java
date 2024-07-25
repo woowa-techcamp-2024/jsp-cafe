@@ -32,6 +32,7 @@ public class FrontController extends HttpServlet {
         var uri = req.getRequestURI().replace("/api","");
         log.debug("[FrontController] uri = {}", uri);
         var subController = subControllers.get(uri);
+        // TODO 없는 요청 404 처리
         log.debug(subController.toString());
         try {
             subController.doProcess(req, res);
