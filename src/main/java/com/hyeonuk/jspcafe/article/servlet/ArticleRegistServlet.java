@@ -32,8 +32,8 @@ public class ArticleRegistServlet extends HttpServlet {
 
         String writer = req.getParameter("writer");
         String title = req.getParameter("title");
-        String content = req.getParameter("content");
-        Article article = new Article(writer, title, content);
+        String contents = req.getParameter("contents");
+        Article article = new Article(writer, title, contents);
 
         if(!article.validation()) throw new InvalidArticleRegistRequest("빈값이 존재하면 안됩니다.");
 
