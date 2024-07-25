@@ -1,18 +1,18 @@
 package repository;
 
-import domain.User;
+import domain.Users;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
 
-    void saveUser(User user);
+    void saveUser(Users user);
 
-    Optional<User> findById(Long id);
+    Optional<Users> findById(Long id);
 
-    Optional<User> findByUserId(String password);
+    Optional<Users> findByUserId(String password);
 
-    List<User> findAll();
+    List<Users> findAll();
 
 }

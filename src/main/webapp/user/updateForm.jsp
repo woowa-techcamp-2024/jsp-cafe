@@ -1,11 +1,11 @@
-<%@ page import="domain.User" %>
+<%@ page import="domain.Users" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="kr">
 <%@ include file="../header.jsp" %>
 <body>
 <%@ include file="../navigationbar.jsp" %>
-<% User user = (User) request.getAttribute("user"); %>
+<% Users user = (Users) request.getAttribute("user"); %>
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">

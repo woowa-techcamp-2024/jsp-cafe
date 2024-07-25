@@ -1,6 +1,6 @@
 package service;
 
-import domain.User;
+import domain.Users;
 import exception.TomcatException;
 import repository.UserRepository;
 
@@ -31,15 +31,15 @@ public class UserService {
                         });
     }
 
-    public List<User> findAll() {
+    public List<Users> findAll() {
         return userRepository.findAll();
     }
 
-    public void saveUser(User user) {
+    public void saveUser(Users user) {
         userRepository.saveUser(user);
     }
 
-    public User findById(Long id) {
+    public Users findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new TomcatException("User not found"));
     }

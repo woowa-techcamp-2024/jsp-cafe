@@ -1,4 +1,4 @@
-<%@ page import="domain.User" %>
+<%@ page import="domain.Users" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="kr">
@@ -87,7 +87,7 @@
                         </a>
                         <div class="media-body">
                             <%
-                                User user = (User) request.getAttribute("user");
+                                Users user = (Users) request.getAttribute("user");
                             %>
                             <h4 class="media-heading"><%= user.getName() %></h4>
                             <p>

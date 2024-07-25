@@ -2,7 +2,7 @@ package domain;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class User {
+public class Users {
 
     private final Long id;
     private String userId;
@@ -11,7 +11,7 @@ public class User {
     private String email;
     private static final AtomicLong sequence = new AtomicLong();
 
-    public User(String userId, String password, String name, String email) {
+    public Users(String userId, String password, String name, String email) {
         this.id = sequence.getAndIncrement();
         this.userId = userId;
         this.password = password;
@@ -57,10 +57,10 @@ public class User {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof User)) {
+        if (!(obj instanceof Users)) {
             return false;
         }
-        User user = (User) obj;
+        Users user = (Users) obj;
         return id.equals(user.id);
     }
 
