@@ -1,7 +1,7 @@
 import cafe.AppContextListener;
 import cafe.Factory;
 import cafe.users.User;
-import cafe.users.UserRepository;
+import cafe.users.repository.UserRepository;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.AfterAll;

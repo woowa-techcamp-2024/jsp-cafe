@@ -1,4 +1,6 @@
-package cafe.users;
+package cafe.users.repository;
+
+import cafe.users.User;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,5 +28,10 @@ public class MemoryUserRepository implements UserRepository {
     @Override
     public User findById(Long id) {
         return users.get(Math.toIntExact(id) - 1);
+    }
+
+    @Override
+    public void deleteAll() {
+        users.clear();
     }
 }
