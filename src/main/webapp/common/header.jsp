@@ -2,7 +2,9 @@
 <%@ page import="org.example.domain.User" %>
 
 <header>
-    <h1>HELLO, WEB!</h1>
+    <a href="/">
+        <h1>HELLO, WEB!</h1>
+    </a>
     <div class="buttons">
     <a href="/">
         <button class="btn">글 목록</button>
