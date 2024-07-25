@@ -3,6 +3,7 @@ package cafe;
 import cafe.database.ConnectionPool;
 import cafe.database.RealJdbcConnectionPool;
 import cafe.questions.repository.ArticleRepository;
+import cafe.questions.repository.JdbcArticleRepository;
 import cafe.questions.repository.MemoryArticleRepository;
 import cafe.users.repository.JdbcUserRepository;
 import cafe.users.repository.UserRepository;
@@ -25,7 +26,7 @@ public class Factory {
     }
 
     public ArticleRepository articleRepository() {
-        return getOrCreate(ArticleRepository.class, MemoryArticleRepository::new);
+        return getOrCreate(ArticleRepository.class, () -> new JdbcArticleRepository(connectionPool()));
     }
 
     public ConnectionPool connectionPool() {
