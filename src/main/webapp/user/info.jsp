@@ -5,9 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../static/css/style.css">
-  <link rel="stylesheet" href="../static/css/main.css">
-  <link rel="stylesheet" href="../static/css/profile.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/main.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/profile.css">
   <title>찬우 카페</title>
 </head>
 <body>
@@ -18,7 +18,7 @@
   </div>
   <div id="back-header">
     <a id="back-button" href="/users">
-      <img src="../static/assets/arrow-left.svg" alt="">
+      <img src="${pageContext.request.contextPath}/static/assets/arrow-left.svg" alt="">
     </a>
   </div>
   <div
@@ -28,6 +28,7 @@
   <div id="nickname"><c:out value="${profile.nickname()}" /></div>
   <div id="email"><c:out value="${profile.email()}" /></div>
   <div id="sign-up-date"><c:out value="${profile.signUpAt()}" /></div>
+  <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
 </div>
 </body>
 </html>

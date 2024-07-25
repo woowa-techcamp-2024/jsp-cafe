@@ -15,9 +15,9 @@ import woopaca.jspcafe.servlet.dto.UserProfile;
 import java.io.IOException;
 
 @WebServlet("/users/*")
-public class UserProfileServlet extends HttpServlet {
+public class UserInfoServlet extends HttpServlet {
 
-    private final Logger log = LoggerFactory.getLogger(UserProfileServlet.class);
+    private final Logger log = LoggerFactory.getLogger(UserInfoServlet.class);
 
     private UserService userService;
 
@@ -35,7 +35,7 @@ public class UserProfileServlet extends HttpServlet {
             String userId = pathInfo.substring(1);
             UserProfile profile = userService.getUserProfile(userId);
             request.setAttribute("profile", profile);
-            request.getRequestDispatcher("/user/profile.jsp")
+            request.getRequestDispatcher("/user/info.jsp")
                     .forward(request, response);
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
