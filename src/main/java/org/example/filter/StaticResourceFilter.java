@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.example.service.ArticleService;
 import org.example.util.LoggerUtil;
 import org.slf4j.Logger;
 
@@ -37,6 +38,11 @@ public class StaticResourceFilter implements Filter {
             res.sendRedirect("/static/user/form.html");
         } else if (req.getRequestURI().equals("/qna/form.html")) {
             res.sendRedirect("/static/qna/form.html");
+        } else if (req.getRequestURI().equals("/")) {
+            ArticleService articleService = new ArticleService();
+            logger.info("articles {}", articleService.findAll());
+            request.setAttribute("articles", articleService.findAll());
+            request.getRequestDispatcher("/WEB-INF/main.jsp").forward(request, response);
         } else {
             chain.doFilter(request, response);
         }

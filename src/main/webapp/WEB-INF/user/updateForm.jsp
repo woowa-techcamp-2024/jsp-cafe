@@ -1,6 +1,6 @@
 <%@ page import="org.example.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="common.jspf" %>
+<%@ include file="../common.jspf" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -9,7 +9,7 @@
     <title>User Profile</title>
     <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
 </head>
-<%@ include file="navbar.jspf" %>
+<%@ include file="../navbar.jspf" %>
 <body>
 <%
     User user = (User) request.getAttribute("user");

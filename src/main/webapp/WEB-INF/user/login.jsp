@@ -1,4 +1,4 @@
-<%@ include file="common.jspf" %>
+<%@ include file="../common.jspf" %>
 
 <!DOCTYPE html>
 <html lang="kr">
@@ -14,7 +14,7 @@
     <link href="../../static/css/styles.css" rel="stylesheet">
 </head>
 <body>
-<%@ include file="navbar.jspf" %>
+<%@ include file="../navbar.jspf" %>
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">

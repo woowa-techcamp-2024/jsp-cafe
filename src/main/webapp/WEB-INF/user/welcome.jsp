@@ -1,4 +1,4 @@
-<%@ include file="common.jspf" %>
+<%@ include file="../common.jspf" %>
 
 <!DOCTYPE html>
 <html lang="kr">
