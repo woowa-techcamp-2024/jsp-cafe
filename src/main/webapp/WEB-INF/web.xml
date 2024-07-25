@@ -29,6 +29,15 @@
         <servlet-name>memberProfileServlet</servlet-name>
         <url-pattern>/members/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>articleRegisterServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleRegistServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>articleRegisterServlet</servlet-name>
+        <url-pattern>/questions</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>xssFilter</filter-name>
