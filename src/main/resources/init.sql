@@ -15,5 +15,5 @@ CREATE TABLE Question (
                           writer VARCHAR(50) NOT NULL,
                           title VARCHAR(200) NOT NULL,
                           contents TEXT NOT NULL,
-                          date DATETIME DEFAULT CURRENT_TIMESTAMP
+                          date VARCHAR(20) NOT NULL
 );
