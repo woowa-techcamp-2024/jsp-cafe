@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="codesquad.user.User" %>
+<%@ page import="codesquad.domain.user.User" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -8,15 +8,15 @@
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="../css/styles.css" rel="stylesheet">
+    <link href="/static/css/styles.css" rel="stylesheet">
 </head>
 <body>
-<%@include file="../component/header/header.jsp" %>
-<%@include file="../component/navigation/navigation.jsp" %>
+<%@include file="/WEB-INF/component/header/header.jsp" %>
+<%@include file="/WEB-INF/component/navigation/navigation.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
@@ -46,7 +46,7 @@
                     </td>
                     <td><%= user.getEmail() %>
                     </td>
-                    <td><a href="/users/<%= user.getId() %>" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/<%= user.getId() %>/update-form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
                         }
@@ -59,8 +59,8 @@
 </div>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<script src="/static/js/jquery-2.2.0.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/scripts.js"></script>
 </body>
 </html>

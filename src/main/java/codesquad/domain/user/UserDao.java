@@ -1,4 +1,4 @@
-package codesquad.user;
+package codesquad.domain.user;
 
 import codesquad.exception.DuplicateIdException;
 
@@ -13,4 +13,6 @@ public interface UserDao {
     Optional<User> findByUserId(String userId);
 
     List<User> findAll();
+
+    void update(User user);
 }

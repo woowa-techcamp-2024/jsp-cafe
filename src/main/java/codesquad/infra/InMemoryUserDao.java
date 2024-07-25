@@ -1,5 +1,7 @@
-package codesquad.user;
+package codesquad.infra;
 
+import codesquad.domain.user.User;
+import codesquad.domain.user.UserDao;
 import codesquad.exception.DuplicateIdException;
 
 import java.util.List;
@@ -42,5 +44,17 @@ public class InMemoryUserDao implements UserDao {
     @Override
     public List<User> findAll() {
         return users.values().stream().toList();
+    }
+
+    @Override
+    public void update(User user) {
+        Long id = user.getId();
+        User oldUser = users.get(id);
+        if(oldUser != null) {
+            String oldUserId = oldUser.getUserId();
+            userIdToIdMap.remove(oldUserId);
+        }
+        users.put(id, user);
+        userIdToIdMap.put(user.getUserId(), id);
     }
 }

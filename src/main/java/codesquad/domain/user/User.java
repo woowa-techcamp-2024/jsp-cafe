@@ -1,4 +1,6 @@
-package codesquad.user;
+package codesquad.domain.user;
+
+import codesquad.exception.IncorrectPasswordException;
 
 public class User {
     private Long id;
@@ -30,11 +32,23 @@ public class User {
         return userId;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public void update(String password, String name, String email) throws IncorrectPasswordException {
+        if (!this.password.equals(password)) {
+            throw new IncorrectPasswordException();
+        }
+        this.name = name;
+        this.email = email;
     }
 }
