@@ -13,10 +13,13 @@ repositories {
 }
 
 dependencies {
+    // 서블릿
     implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-
+    // jstl
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    // mysql
+    implementation 'mysql:mysql-connector-java:8.0.29'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
