@@ -1,6 +1,7 @@
 package org.example.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.example.dto.ArticleCreateReqDto;
 import org.example.entity.Article;
 import org.example.repository.ArticleRepository;
@@ -19,5 +20,12 @@ public class ArticleService {
     public List<Article> findAll() {
         // 게시글 목록 조회
         return articleRepository.findAll();
+    }
+
+    public Article findById(int i) {
+        // 게시글 상세 조회
+        return articleRepository.findById(i).orElseThrow(
+            () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+        );
     }
 }

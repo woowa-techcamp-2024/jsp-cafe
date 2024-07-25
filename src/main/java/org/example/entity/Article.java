@@ -2,6 +2,7 @@ package org.example.entity;
 
 public class Article {
 
+    private Integer id;
     private final String title;
     private final String content;
     private final String author;
@@ -18,6 +19,14 @@ public class Article {
 
     public String getContent() {
         return content;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getAuthor() {

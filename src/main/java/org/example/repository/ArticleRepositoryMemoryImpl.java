@@ -3,6 +3,7 @@ package org.example.repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.example.entity.Article;
@@ -27,6 +28,7 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     @Override
     public Article save(Article article) {
         int id = index.incrementAndGet();
+        article.setId(id);
         articles.put(id, article);
         return article;
     }
@@ -34,5 +36,10 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     @Override
     public List<Article> findAll() {
         return new ArrayList<>(articles.values());
+    }
+
+    @Override
+    public Optional<Article> findById(int id) {
+        return Optional.ofNullable(articles.get(id));
     }
 }

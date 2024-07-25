@@ -17,11 +17,12 @@
     <c:forEach var="article" items="${articles}">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">${article.title}</h3>
+                <h3 class="panel-title">
+                    <a href="/question/${article.id}">${article.title}</a>
+                </h3>
             </div>
             <div class="panel-body">
                 <p><strong>Author:</strong> ${article.author}</p>
-                <p>${article.content}</p>
             </div>
         </div>
     </c:forEach>
