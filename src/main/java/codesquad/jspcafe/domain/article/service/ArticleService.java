@@ -12,8 +12,8 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
 
-    public ArticleService() {
-        articleRepository = new ArticleRepository();
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
     }
 
     public ArticleCommonResponse createArticle(Map<String, String[]> parameterMap) {

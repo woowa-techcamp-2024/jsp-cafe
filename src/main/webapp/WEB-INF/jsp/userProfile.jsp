@@ -1,4 +1,4 @@
-<%@ page import="codesquad.jspcafe.domain.user.payload.response.UserCommonResponse" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: KyungMin Lee
   Date: 24. 7. 23.
@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE>
 <html lang="ko">
 <jsp:include page="/WEB-INF/jsp/component/headers.jsp"/>
@@ -24,15 +25,15 @@
                                  src="${pageContext.request.contextPath}/resources/images/80-text.png">
                         </a>
                         <div class="media-body">
-                            <%
-                                UserCommonResponse commonResponse = (UserCommonResponse) request.getAttribute(
-                                        "user");
-                            %>
-                            <h4 class="media-heading"><%=commonResponse.getUsername()%>
+                            <c:set var="user" value="${requestScope.user}"/>
+                            <h4 class="media-heading">
+                                <c:out value="${user.username}" escapeXml="false"/>
                             </h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default"><span
-                                        class="glyphicon glyphicon-envelope"></span>&nbsp;<%=commonResponse.getEmail()%>
+                                <a href="#" class="btn btn-xs btn-default">
+                                    <span class="glyphicon glyphicon-envelope">
+                                        <c:out value="${user.email}" escapeXml="false"/>
+                                    </span>
                                 </a>
                             </p>
                         </div>

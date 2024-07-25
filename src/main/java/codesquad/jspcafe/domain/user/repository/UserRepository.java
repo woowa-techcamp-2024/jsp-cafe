@@ -2,28 +2,15 @@ package codesquad.jspcafe.domain.user.repository;
 
 import codesquad.jspcafe.domain.user.domain.User;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class UserRepository {
+public interface UserRepository {
 
-    private final Map<String, User> map;
+    User save(User user);
 
-    public UserRepository() {
-        map = new ConcurrentHashMap<>();
-    }
+    User update(User user);
 
-    public User save(User user) {
-        map.put(user.getUserId(), user);
-        return user;
-    }
+    Optional<User> findByUserId(String userId);
 
-    public Optional<User> findById(String userId) {
-        return Optional.ofNullable(map.get(userId));
-    }
-
-    public List<User> findAll() {
-        return map.values().stream().toList();
-    }
+    List<User> findAll();
 }

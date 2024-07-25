@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
+import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -19,8 +20,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("UserService는")
 class UserServiceTest {
 
-    private final UserService userService = new UserService();
-    private UserRepository userRepository;
+    private UserRepository userRepository = new UserMemoryRepository();
+    private final UserService userService = new UserService(userRepository);
 
     private final String expectedUserId = "test";
     private final String expectedPassword = "test";
@@ -29,7 +30,7 @@ class UserServiceTest {
 
     @BeforeEach
     void clear() {
-        userRepository = new UserRepository();
+        userRepository = new UserMemoryRepository();
         for (Field field : userService.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             try {
@@ -55,6 +56,24 @@ class UserServiceTest {
         assertThat(actualResult)
             .extracting("userId", "username", "email")
             .containsExactly(expectedUserId, expectedName, expectedEmail);
+    }
+
+    @Test
+    @DisplayName("동일한 아이디의 유저는 생성시 오류를 발생시킨다.")
+    void createUserFailed() {
+        // Arrange
+        userRepository.save(
+            new User(expectedUserId, expectedPassword, expectedName, expectedEmail));
+        Map<String, String[]> expectedValues = Map.of(
+            "userId", new String[]{expectedUserId},
+            "password", new String[]{expectedPassword},
+            "name", new String[]{expectedName},
+            "email", new String[]{expectedEmail}
+        );
+        // Act & Assert
+        assertThatThrownBy(() -> userService.createUser(expectedValues))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("이미 존재하는 유저입니다.");
     }
 
     @Nested
@@ -118,7 +137,7 @@ class UserServiceTest {
             UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
                 "userId", new String[]{expectedUserId},
                 "password", new String[]{"wrongPassword"},
-                "name", new String[]{expectedName},
+                "username", new String[]{expectedName},
                 "email", new String[]{expectedEmail}
             ));
             // Act & Assert
@@ -139,7 +158,7 @@ class UserServiceTest {
             UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
                 "userId", new String[]{expectedUserId},
                 "password", new String[]{expectedPassword},
-                "name", new String[]{expectedUpdatedUsername},
+                "username", new String[]{expectedUpdatedUsername},
                 "email", new String[]{expectedUpdatedEmail}
             ));
             // Act
@@ -148,6 +167,23 @@ class UserServiceTest {
             assertThat(actualResult)
                 .extracting("userId", "username", "email")
                 .containsExactly(expectedUserId, expectedUpdatedUsername, expectedUpdatedEmail);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 유저를 수정할 수 없다.")
+        void updateUserInfoFailedByNotExistUser() {
+            // Arrange
+            UserUpdateRequest expectedDto = UserUpdateRequest.from(Map.of(
+                "userId", new String[]{expectedUserId},
+                "password", new String[]{expectedPassword},
+                "username", new String[]{expectedName},
+                "email", new String[]{expectedEmail}
+            ));
+            // Act & Assert
+            assertThatThrownBy(
+                () -> userService.updateUserInfo(expectedDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유저를 찾을 수 없습니다!");
         }
     }
 

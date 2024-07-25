@@ -8,6 +8,7 @@ import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.article.domain.Article;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
+import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -21,8 +22,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("ArticleService는")
 class ArticleServiceTest {
 
-    private final ArticleService articleService = new ArticleService();
-    private ArticleRepository articleRepository;
+    private ArticleRepository articleRepository = new ArticleMemoryRepository();
+    private final ArticleService articleService = new ArticleService(articleRepository);
 
     private final String expectedTitle = "title";
     private final String expectedWriter = "writer";
@@ -33,7 +34,7 @@ class ArticleServiceTest {
 
     @BeforeEach
     void clear() {
-        articleRepository = new ArticleRepository();
+        articleRepository = new ArticleMemoryRepository();
         for (Field field : articleService.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             try {

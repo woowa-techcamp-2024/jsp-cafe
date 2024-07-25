@@ -11,8 +11,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService() {
-        userRepository = new UserRepository();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public UserCommonResponse createUser(Map<String, String[]> parameterMap) {
@@ -28,7 +28,7 @@ public class UserService {
         verifyUserPassword(updateRequest.getUserId(), updateRequest.getPassword());
         User user = findUserById(updateRequest.getUserId());
         user.updateValues(updateRequest.getUsername(), updateRequest.getEmail());
-        return UserCommonResponse.from(userRepository.save(user));
+        return UserCommonResponse.from(userRepository.update(user));
     }
 
     public UserCommonResponse getUserById(String userId) {
@@ -48,7 +48,7 @@ public class UserService {
     }
 
     private User findUserById(String userId) {
-        return userRepository.findById(userId)
+        return userRepository.findByUserId(userId)
             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다!"));
     }
 
