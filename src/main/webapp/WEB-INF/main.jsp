@@ -18,7 +18,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <a href="/question/${article.id}">${article.title}</a>
+                    <a href="/question/${article.articleId}">${article.title}</a>
                 </h3>
             </div>
             <div class="panel-body">

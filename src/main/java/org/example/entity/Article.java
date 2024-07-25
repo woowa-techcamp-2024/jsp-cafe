@@ -2,7 +2,7 @@ package org.example.entity;
 
 public class Article {
 
-    private Integer id;
+    private Integer articleId;
     private final String title;
     private final String content;
     private final String author;
@@ -22,11 +22,11 @@ public class Article {
     }
 
     public Integer getId() {
-        return id;
+        return articleId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.articleId = id;
     }
 
     public String getAuthor() {
