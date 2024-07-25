@@ -81,8 +81,12 @@
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">
                     <li>
-                        <a href="${pageContext.request.contextPath}/users/logout"
-                           role="button">로그아웃</a>
+                        <form id="logoutForm" method="post"
+                              action="${pageContext.request.contextPath}/users/logout"
+                              style="display: none;">
+                        </form>
+                        <a href="#" role="button"
+                           onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
                     <li>
                         <a href="${pageContext.request.contextPath}/users/${sessionScope.user.userId}/form"
                            role="button">개인정보수정</a>
