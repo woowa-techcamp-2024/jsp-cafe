@@ -1,6 +1,6 @@
 package codesquad.jspcafe.domain.user.repository;
 
-import codesquad.jspcafe.common.database.MySQLConnectionManager;
+import codesquad.jspcafe.common.database.JDBCConnectionManager;
 import codesquad.jspcafe.domain.user.domain.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,16 +19,16 @@ public class UserJdbcRepository implements UserRepository {
 
     private static final Logger log = LoggerFactory.getLogger(UserJdbcRepository.class);
 
-    private final MySQLConnectionManager mySQLConnectionManager;
+    private final JDBCConnectionManager connectionManager;
 
-    public UserJdbcRepository(MySQLConnectionManager mySQLConnectionManager) {
-        this.mySQLConnectionManager = mySQLConnectionManager;
+    public UserJdbcRepository(JDBCConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
     @Override
     public User save(User user) {
         String insertQuery = "INSERT INTO users (user_id, password, username, email) VALUES (?, ?, ?, ?)";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery,
                 Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, user.getUserId());
@@ -52,7 +52,7 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     public User update(User user) {
         String updateQuery = "UPDATE users SET username = ?, email = ? WHERE id = ?";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getEmail());
@@ -67,7 +67,7 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     public Optional<User> findByUserId(String userId) {
         String findByUserIdQuery = "SELECT id, user_id, password, username, email FROM users WHERE user_id = ?";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByUserIdQuery)) {
             preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -91,7 +91,7 @@ public class UserJdbcRepository implements UserRepository {
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String findAllQuery = "SELECT id, user_id, password, username, email FROM users";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findAllQuery)) {
             while (resultSet.next()) {

@@ -11,15 +11,15 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MySQLConnectionManager {
+public class JDBCConnectionManager {
 
-    private static final Logger log = LoggerFactory.getLogger(MySQLConnectionManager.class);
+    private static final Logger log = LoggerFactory.getLogger(JDBCConnectionManager.class);
 
     private final String url;
     private final String username;
     private final String password;
 
-    public MySQLConnectionManager(ApplicationProperties properties) {
+    public JDBCConnectionManager(ApplicationProperties properties) {
         url = properties.getJdbcUrl();
         username = properties.getJdbcUsername();
         password = properties.getJdbcPassword();

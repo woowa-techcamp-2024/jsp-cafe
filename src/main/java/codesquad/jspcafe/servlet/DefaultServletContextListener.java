@@ -1,7 +1,7 @@
 package codesquad.jspcafe.servlet;
 
 import codesquad.jspcafe.common.ApplicationProperties;
-import codesquad.jspcafe.common.database.MySQLConnectionManager;
+import codesquad.jspcafe.common.database.JDBCConnectionManager;
 import codesquad.jspcafe.domain.article.repository.ArticleJdbcRepository;
 import codesquad.jspcafe.domain.article.service.ArticleService;
 import codesquad.jspcafe.domain.user.repository.UserJdbcRepository;
@@ -18,7 +18,7 @@ public class DefaultServletContextListener implements ServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(DefaultServletContextListener.class);
 
     private final ApplicationProperties applicationProperties = new ApplicationProperties();
-    private final MySQLConnectionManager connectionManager = new MySQLConnectionManager(
+    private final JDBCConnectionManager connectionManager = new JDBCConnectionManager(
         applicationProperties);
 
     @Override

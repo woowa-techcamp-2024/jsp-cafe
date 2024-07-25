@@ -1,6 +1,6 @@
 package codesquad.jspcafe.domain.article.repository;
 
-import codesquad.jspcafe.common.database.MySQLConnectionManager;
+import codesquad.jspcafe.common.database.JDBCConnectionManager;
 import codesquad.jspcafe.domain.article.domain.Article;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,16 +19,16 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     private static final Logger log = LoggerFactory.getLogger(ArticleJdbcRepository.class);
 
-    private final MySQLConnectionManager mySQLConnectionManager;
+    private final JDBCConnectionManager connectionManager;
 
-    public ArticleJdbcRepository(MySQLConnectionManager mySQLConnectionManager) {
-        this.mySQLConnectionManager = mySQLConnectionManager;
+    public ArticleJdbcRepository(JDBCConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
     @Override
     public Article save(Article article) {
         String insertQuery = "INSERT INTO articles (title, writer, contents, createdAt) VALUES ( ?, ?, ?, ? )";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery,
                 Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, article.getTitle());
@@ -50,7 +50,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
     @Override
     public Optional<Article> findById(Long id) {
         String findByIdQuery = "SELECT id, title, writer, contents, createdAt FROM articles WHERE id = ?";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -74,7 +74,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
     public List<Article> findAll() {
         List<Article> articles = new ArrayList<>();
         String findAllQuery = "SELECT id, title, writer, contents, createdAt FROM articles";
-        try (Connection connection = mySQLConnectionManager.getConnection();
+        try (Connection connection = connectionManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findAllQuery)) {
             while (resultSet.next()) {
