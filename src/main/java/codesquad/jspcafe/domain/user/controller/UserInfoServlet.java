@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public class UserInfoServlet extends HttpServlet {
      * GET 요청을 처리하여 여러 .jsp 페이지로 포워딩합니다.<br> 클라이언트가 /users/{userId}로 GET 요청을 보낼 때,
      * /users/{userId}/form으로 GET 요청을 보낼 때 이 메서드가 호출됩니다. <br><br> /users/{userId}: 사용자 정보를
      * 페이지(userProfile.jsp)로 포워딩합니다. <br> /users/{userId}/form: 사용자 정보 갱신 페이지(userUpdateForm.jsp)로
-     * 포워딩합니다. <br>
+     * 포워딩합니다. <br> 요청 URI가 잘못된 경우 IllegalArgumentException{@link IllegalArgumentException}을 던집니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -46,10 +47,7 @@ public class UserInfoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid userId");
-            return;
-        }
+        verifyPathInfo(pathInfo);
         // Case for /users/*/form
         if (pathInfo.endsWith("/form")) {
             String userId = pathInfo.substring(1, pathInfo.length() - "/form".length());
@@ -66,7 +64,9 @@ public class UserInfoServlet extends HttpServlet {
 
     /**
      * POST 요청을 처리하여 사용자 정보를 갱신한 후 /users/{userId} 페이지로 리디렉션합니다.<br> 클라이언트가 /users/{userId}/form으로
-     * POST 요청을 보낼 때 이 메서드가 호출됩니다.
+     * POST 요청을 보낼 때 이 메서드가 호출됩니다. <br> 요청 형식이 잘못된 경우 IllegalArgumentException
+     * {@link IllegalArgumentException}을 사용자 자신이 수정 요청을 보낸 경우가 아니라면
+     * AccessDeniedException{@link AccessDeniedException}을 던집니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -78,19 +78,23 @@ public class UserInfoServlet extends HttpServlet {
         throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (!pathInfo.endsWith("/form")) {
-            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Invalid request");
-            return;
+            throw new IllegalArgumentException("잘못된 요청입니다.");
         }
         Map<String, String[]> parameterMap = req.getParameterMap();
         UserSessionResponse userSessionResponse = (UserSessionResponse) req.getSession()
             .getAttribute("user");
         if (userSessionResponse == null || !(userSessionResponse.getUserId()
             .equals(parameterMap.get("userId")[0]))) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
-            return;
+            throw new AccessDeniedException("본인의 요청만 수정할 수 있습니다.");
         }
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.from(parameterMap);
         userService.updateUserInfo(userUpdateRequest);
         resp.sendRedirect("/users/" + parameterMap.get("userId")[0]);
+    }
+
+    private void verifyPathInfo(String pathInfo) {
+        if (pathInfo == null || pathInfo.isBlank()) {
+            throw new IllegalArgumentException("잘못된 요청입니다.");
+        }
     }
 }

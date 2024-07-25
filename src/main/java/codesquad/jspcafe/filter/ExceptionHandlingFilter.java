@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,10 @@ public class ExceptionHandlingFilter extends HttpFilter {
     private int verifyStatusCode(Exception e) {
         if (e instanceof IllegalArgumentException) {
             return HttpServletResponse.SC_BAD_REQUEST;
+        } else if (e instanceof NoSuchElementException) {
+            return HttpServletResponse.SC_NOT_FOUND;
+        } else if (e instanceof AccessDeniedException) {
+            return HttpServletResponse.SC_FORBIDDEN;
         } else {
             return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         }

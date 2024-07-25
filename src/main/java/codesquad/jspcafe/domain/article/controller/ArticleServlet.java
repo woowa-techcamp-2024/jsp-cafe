@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -30,8 +31,9 @@ public class ArticleServlet extends HttpServlet {
 
 
     /**
-     * GET 요청을 처리하여 question.jsp 페이지로 포워딩합니다. 클라이언트가 /questions/{articleId}로 GET 요청을 보낼 때 이 메서드가
-     * 호출됩니다.
+     * GET 요청을 처리하여 question.jsp 페이지로 포워딩합니다. <br> 클라이언트가 /questions/{articleId}로 GET 요청을 보낼 때 이
+     * 메서드가 호출됩니다. <br> articleId가 존재하지 않는 경우 NoSuchElementException{@link NoSuchElementException}
+     * 예외를 던집니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -42,14 +44,17 @@ public class ArticleServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "아티클을 찾을 수 없습니다.");
-            return;
-        }
+        verifyPathInfo(pathInfo);
         String articleId = pathInfo.substring(1);
         ArticleCommonResponse articleCommonResponse = articleService.getArticleById(
             articleId);
         req.setAttribute("article", articleCommonResponse);
         req.getRequestDispatcher("/WEB-INF/jsp/question.jsp").forward(req, resp);
+    }
+
+    private void verifyPathInfo(String pathInfo) {
+        if (pathInfo == null || pathInfo.isBlank()) {
+            throw new NoSuchElementException("아티클을 찾을 수 없습니다.");
+        }
     }
 }
