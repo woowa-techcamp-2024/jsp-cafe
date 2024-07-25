@@ -3,6 +3,8 @@ package woowa.camp.jspcafe.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_게시글을 저장하는 기능은")
-    @ExtendWith(DatabaseSetupExtension.class)
+    @ExtendWith(ArticleDBSetupExtension.class)
     class SaveTest {
 
         DatabaseConnector connector = new DatabaseConnector();
@@ -61,11 +63,30 @@ class ArticleRepositoryTest {
             assertThat(savedId2).isEqualTo(savedId1 + 1);
         }
 
+        @Test
+        @DisplayName("[Success] 게시글 작성자 id가 null 이면 익명게시판으로서 게시판 저장에 성공한다.")
+        void test3() {
+            Article anonymousArticle = Article.create(null, "title", "content", fixedDateTime.getNow());
+
+            Long savedId = repository.save(anonymousArticle);
+
+            Optional<Article> foundArticleOpt = repository.findById(savedId);
+            Assertions.assertThat(foundArticleOpt).isPresent();
+            Article foundArticle = foundArticleOpt.get();
+
+            assertThat(foundArticle.getId()).isEqualTo(savedId);
+            assertThat(foundArticle.getAuthorId()).isNull();
+            assertThat(foundArticle.getTitle()).isEqualTo(anonymousArticle.getTitle());
+            assertThat(foundArticle.getContent()).isEqualTo(anonymousArticle.getContent());
+            assertThat(foundArticle.getHits()).isEqualTo(anonymousArticle.getHits());
+            assertThat(foundArticle.getCreatedAt()).isEqualTo(anonymousArticle.getCreatedAt());
+        }
+
     }
 
     @Nested
     @DisplayName("Describe_게시글을 id 기준으로 조회하는 기능은")
-    @ExtendWith(DatabaseSetupExtension.class)
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindByIdTest {
 
         DatabaseConnector connector = new DatabaseConnector();
@@ -120,7 +141,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_이전 게시글을 조회하는 기능은")
-    @ExtendWith(DatabaseSetupExtension.class)
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindPreviousTest {
 
         DatabaseConnector connector = new DatabaseConnector();
@@ -160,7 +181,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_다음 게시글을 조회하는 기능은")
-    @ExtendWith(DatabaseSetupExtension.class)
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindNextTest {
 
         DatabaseConnector connector = new DatabaseConnector();
@@ -200,7 +221,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_오프셋 기반으로 게시글을 조회하는 기능은")
-    @ExtendWith(DatabaseSetupExtension.class)
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindByOffsetPaginationTest {
 
         DatabaseConnector connector = new DatabaseConnector();
