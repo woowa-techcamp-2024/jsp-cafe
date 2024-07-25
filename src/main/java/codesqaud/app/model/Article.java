@@ -10,6 +10,12 @@ public class Article {
     private String contents;
     private String authorId;
 
+    public Article(Long id, String title, String contents, String authorId) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.authorId = authorId;
+    }
 
     public Article(String title, String contents, String authorId) {
         validateTitle(title);
