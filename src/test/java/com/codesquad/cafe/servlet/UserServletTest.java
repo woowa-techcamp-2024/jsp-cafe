@@ -29,7 +29,7 @@ class UserServletTest extends E2ETestBase {
 
     @BeforeEach
     void setUp() {
-        user = userRepository.save(User.of("woowa", "1234", "김수현", "woowa@gmail.com"));
+        user = userRepository.save(User.of("woowa", "1234", "박재성", "woowa@gmail.com"));
     }
 
     @AfterEach
