@@ -11,7 +11,7 @@ import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.ArticleRepository;
 import woowa.camp.jspcafe.repository.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
-import woowa.camp.jspcafe.service.dto.ArticleResponse;
+import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
@@ -53,22 +53,22 @@ public class ArticleService {
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
 
-    public List<ArticleResponse> findArticleList(int page) {
+    public List<ArticlePreviewResponse> findArticleList(int page) {
         int pageSize = 10;
         int offset = (page - 1) * pageSize;
         List<Article> articles = articleRepository.findByOffsetPagination(offset, pageSize);
 
-        List<ArticleResponse> articleResponses = new ArrayList<>();
+        List<ArticlePreviewResponse> articlePreviewRespons = new ArrayList<>();
         for (Article article : articles) {
             if (article.isAnonymousAuthor()) {
-                articleResponses.add(ArticleResponse.of(article, null, "익명"));
+                articlePreviewRespons.add(ArticlePreviewResponse.of(article, null, "익명"));
                 continue;
             }
             User author = findAuthor(article.getAuthorId());
-            articleResponses.add(ArticleResponse.of(article, author.getId(), author.getNickname()));
+            articlePreviewRespons.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
         }
 
-        return articleResponses;
+        return articlePreviewRespons;
     }
 
     private Article findArticle(Long id) {

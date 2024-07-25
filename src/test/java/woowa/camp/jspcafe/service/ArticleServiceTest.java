@@ -19,7 +19,7 @@ import woowa.camp.jspcafe.repository.InMemoryArticleRepository;
 import woowa.camp.jspcafe.repository.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
-import woowa.camp.jspcafe.service.dto.ArticleResponse;
+import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
@@ -181,8 +181,8 @@ class ArticleServiceTest {
             ArticleFixture.createMultipleArticleWriteRequests(count, fixedDateTime.getNow())
                     .forEach(articleWriteRequest -> articleService.writeArticle(articleWriteRequest));
             // when
-            List<ArticleResponse> page1 = articleService.findArticleList(1);
-            List<ArticleResponse> page2 = articleService.findArticleList(2);
+            List<ArticlePreviewResponse> page1 = articleService.findArticleList(1);
+            List<ArticlePreviewResponse> page2 = articleService.findArticleList(2);
             // then
             assertThat(page1).hasSize(10);
             assertThat(page2).hasSize(5);
@@ -202,14 +202,14 @@ class ArticleServiceTest {
             Article article1 = articleService.writeArticle(new ArticleWriteRequest(1L, "일반 제목", "일반 내용"));
             Article article2 = articleService.writeArticle(new ArticleWriteRequest(null, "익명 제목", "익명 내용"));
             // when
-            List<ArticleResponse> responses = articleService.findArticleList(1);
+            List<ArticlePreviewResponse> responses = articleService.findArticleList(1);
             // then
             assertThat(responses).hasSize(2);
             assertArticleResponse(responses.get(0), "익명", null, article2);
             assertArticleResponse(responses.get(1), user1.getNickname(), user1.getId(), article1);
         }
 
-        private void assertArticleResponse(ArticleResponse response,
+        private void assertArticleResponse(ArticlePreviewResponse response,
                                            String expectedAuthorNickname,
                                            Long expectedAuthorId,
                                            Article expectedArticle
