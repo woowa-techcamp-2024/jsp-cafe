@@ -13,5 +13,5 @@ public interface UserRepository {
 
     Optional<User> findById(Long id);
 
-    void update(Long userId, UserUpdateRequest userUpdateRequest);
+    User update(User user, UserUpdateRequest userUpdateRequest);
 }

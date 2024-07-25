@@ -34,18 +34,14 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public void update(Long userId, UserUpdateRequest updateRequest) {
-        String password = updateRequest.password();
+    public User update(User user, UserUpdateRequest updateRequest) {
         String nickname = updateRequest.nickname();
+        String password = updateRequest.password();
 
-        Optional<User> findUser = findById(userId);
-        if (findUser.isPresent()) {
-            User user = findUser.get();
-            User updateUser = new User(user.getEmail(), nickname, password, user.getRegisterAt());
-            updateUser.setId(user.getId());
-
-            users.remove(userId);
-            users.put(updateUser.getId(), updateUser);
-        }
+        User updateUser = new User(user.getEmail(), nickname, password, user.getRegisterAt());
+        updateUser.setId(user.getId());
+        users.remove(user.getId());
+        users.put(updateUser.getId(), updateUser);
+        return updateUser;
     }
 }
