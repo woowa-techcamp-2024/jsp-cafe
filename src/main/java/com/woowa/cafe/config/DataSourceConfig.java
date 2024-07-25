@@ -9,7 +9,6 @@ public class DataSourceConfig {
 
     private static final String URL = "jdbc:mysql://localhost:3306/woowa";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "";
 
     private final DataSource dataSource;
 
@@ -18,7 +17,6 @@ public class DataSourceConfig {
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
         config.setJdbcUrl(URL);
         config.setUsername(USERNAME);
-        config.setPassword(PASSWORD);
         config.setMinimumIdle(5);
         config.setMaximumPoolSize(5);
 
@@ -29,15 +27,15 @@ public class DataSourceConfig {
 
     public static void createTable(final DataSource dataSource) {
         new Thread(() -> {
-            String dropMemberTable = "DROP TABLE IF EXISTS member";
-            String createMemberTable = "CREATE TABLE member (" +
+            String dropMemberTable = "DROP TABLE IF EXISTS members";
+            String createMemberTable = "CREATE TABLE members (" +
                     "member_id VARCHAR(255) PRIMARY KEY, " +
                     "password VARCHAR(255), " +
                     "name VARCHAR(255), " +
                     "email VARCHAR(255))";
 
-            String dropArticleTable = "DROP TABLE IF EXISTS article";
-            String createArticleTable = "CREATE TABLE article (" +
+            String dropArticleTable = "DROP TABLE IF EXISTS articles";
+            String createArticleTable = "CREATE TABLE articles (" +
                     "article_id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                     "writer_id VARCHAR(255), " +
                     "title VARCHAR(255), " +
