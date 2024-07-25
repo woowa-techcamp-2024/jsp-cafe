@@ -1,5 +1,6 @@
 package com.hyeonuk.jspcafe.global.db.mysql;
 
+import com.hyeonuk.jspcafe.global.db.DBManager;
 import com.hyeonuk.jspcafe.utils.Yaml;
 import com.hyeonuk.jspcafe.utils.YamlParser;
 
@@ -8,7 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
 
-public class MysqlManager {
+public class MysqlManager implements DBManager {
     private final String url;
     private final String username;
     private final String password;
