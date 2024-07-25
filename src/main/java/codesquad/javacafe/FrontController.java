@@ -6,6 +6,7 @@ import java.util.Map;
 
 import codesquad.javacafe.member.controller.MemberController;
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.member.controller.MemberInfoController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,6 +25,7 @@ public class FrontController extends HttpServlet {
     public void init() {
         log.info("[Initializing FrontController]");
         subControllers.put("/users", new MemberController());
+        subControllers.put("/users/profile", new MemberInfoController());
     }
 
     @Override

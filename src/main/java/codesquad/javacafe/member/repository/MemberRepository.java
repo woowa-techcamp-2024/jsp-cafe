@@ -23,4 +23,8 @@ public class MemberRepository {
     public List<Member> findAll() {
         return map.values().stream().toList();
     }
+
+    public Member findByUserId(String userId) {
+        return map.get(userId);
+    }
 }

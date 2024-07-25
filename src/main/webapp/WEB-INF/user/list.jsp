@@ -32,13 +32,13 @@
               </thead>
               <tbody>
                 <%
-                    List<MemberResponseDto> members = (List<MemberResponseDto>) request.getAttribute("memberList");
+                    var members = (List<MemberResponseDto>) request.getAttribute("memberList");
                     if (Objects.nonNull(members)) {
                         int row = 1;
                         for(MemberResponseDto memberResponseDto : members) {
                 %>
                     <tr>
-                        <th scope="row"><%= row++%></th> <td><%=memberResponseDto.getUserId()%></td> <td><%=memberResponseDto.getName()%></td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <th scope="row"><%= row++%></th> <td><a href = "/api/users/profile?userId=<%=memberResponseDto.getUserId()%>"><%=memberResponseDto.getUserId()%></a></td><td><%=memberResponseDto.getName()%></td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
                     </tr>
               <%
                     }

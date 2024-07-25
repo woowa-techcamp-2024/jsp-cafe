@@ -26,4 +26,8 @@ public class MemberService {
                 .map(member -> new MemberResponseDto(member))
                 .collect(Collectors.toList());
     }
+
+    public MemberResponseDto getMemberInfo(String userId) {
+        return new MemberResponseDto(memberRepository.findByUserId(userId));
+    }
 }
