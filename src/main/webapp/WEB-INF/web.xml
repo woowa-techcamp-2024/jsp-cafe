@@ -38,7 +38,15 @@
         <servlet-name>memberControlServlet</servlet-name>
         <url-pattern>/members/*</url-pattern>
     </servlet-mapping>
-    
+
+    <servlet>
+        <servlet-name>articleViewServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleViewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>articleViewServlet</servlet-name>
+        <url-pattern>/questions/*</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>articleRegisterServlet</servlet-name>
         <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleRegistServlet</servlet-class>
