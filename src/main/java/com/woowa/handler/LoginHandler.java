@@ -33,7 +33,7 @@ public class LoginHandler {
                 .found("/");
     }
 
-    @RequestMapping(path = "/logout", method = HttpMethod.POST)
+    @RequestMapping(path = "/logout", method = HttpMethod.GET)
     public ResponseEntity logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if(session != null) {
