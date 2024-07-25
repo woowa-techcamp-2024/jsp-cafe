@@ -24,6 +24,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>user_edit</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.UserEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>user_edit</servlet-name>
+        <url-pattern>/users/edit/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>user</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.UserServlet</servlet-class>
     </servlet>
