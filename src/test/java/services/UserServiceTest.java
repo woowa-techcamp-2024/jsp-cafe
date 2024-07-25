@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
     UserRepository userRepository;
@@ -19,6 +19,8 @@ class UserServiceTest {
     void setUp() {
         userRepository = new InMemUserRepository();
         userService = new UserService(userRepository);
+
+        userRepository.deleteAll();
     }
 
     @Test
@@ -28,24 +30,32 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        // when
-        String id = userService.createUser(userId, password, name, email);
 
+        // when
+        Long id = userService.createUser(userId, password, name, email);
+
+        User user = userService.findById(id);
         // then
-        assertEquals(id, userId);
+        assertEquals(userId, user.getUserId());
     }
 
     @Test
     void testFindAll() {
         // given
-        testCreateUser();
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+
+        userService.createUser(userId, password, name, email);
+
         int expected_size = 1;
 
         // when
         List<User> users = userService.findAll();
 
         // then
-        assertEquals(users.size(), expected_size);
+        assertEquals(expected_size, users.size());
     }
 
     @Test
@@ -55,12 +65,71 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(userId, password, name, email);
+
 
         // when
-        User user = userService.findById(userId);
+        User user = userService.findById(id);
 
         // then
         assertEquals(user.getUserId(), userId);
+    }
+
+    @Test
+    void testUpdate() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        Long id = userRepository.save(userId, password, name, email);
+        String updatedUserId = "updatedUserId";
+        String updatedName = "updatedName";
+        String updatedEmail = "updatedEmail";
+
+        // when
+        Long updated_id = userService.update(id, password, updatedUserId, updatedName, updatedEmail);
+
+        // then
+        User user = userService.findById(id);
+        User updated = userRepository.findById(updated_id);
+
+        assertEquals(user, updated);
+        assertEquals(user.getUserId(), updatedUserId);
+        assertEquals(user.getName(), updatedName);
+        assertEquals(user.getEmail(), updatedEmail);
+    }
+
+    @Test
+    void testFailUpdateByIncorrectPassword() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        Long id = userRepository.save(userId, password, name, email);
+        String updatedUserId = "updatedUserId";
+        String updatedName = "updatedName";
+        String updatedEmail = "updatedEmail";
+
+        // when
+        // then
+        assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedUserId, updatedName, updatedEmail));
+    }
+
+    @Test
+    void testIsExistedByUserId() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        userRepository.save(userId, password, name, email);
+
+        // when
+        boolean isExisted = userService.isExistedByUserId(userId);
+
+        // then
+        assertTrue(isExisted);
     }
 }

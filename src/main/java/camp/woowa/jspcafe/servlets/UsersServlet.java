@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlets;
 
+import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.services.UserService;
 import jakarta.servlet.RequestDispatcher;
@@ -37,10 +38,33 @@ public class UsersServlet extends HttpServlet {
             } catch (ServletException | IOException e) {
                 log(e.getMessage());
             }
-        } else {
-            User user = userService.findById(pathInfo.substring(1));
+        } else if (pathInfo.endsWith("/form")) { // POST /users/{id}/form 필터링
+            String[] split = pathInfo.split("/");
+            long id = 0;
+            try { // id 가 long인지 확인
+                id = Long.parseLong(split[1]);
+            } catch (NumberFormatException e) {
+                log(e.getMessage());
+            }
+            User user = userService.findById(id);
             req.setAttribute("user", user);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/updateForm.jsp");
+
+            try {
+                dispatcher.forward(req, resp);
+            } catch (ServletException | IOException e) {
+                log(e.getMessage());
+            }
+        } else {
+            try {
+                User user = userService.findById(Long.parseLong(pathInfo.substring(1)));
+                req.setAttribute("user", user);
+            } catch (NumberFormatException e) {
+                log(e.getMessage());
+            }
+
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/profile.jsp");
+
             try {
                 dispatcher.forward(req, resp);
             } catch (ServletException | IOException e) {
@@ -51,14 +75,38 @@ public class UsersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        userService.createUser( req.getParameter("userId"),
-                req.getParameter("password"),
-                req.getParameter("name"),
-                req.getParameter("email"));
-        try {
-            res.sendRedirect("/users");
-        } catch (IOException e) {
-            log(e.getMessage());
+        String pathInfo = req.getPathInfo();
+
+        if (pathInfo == null || "/".equalsIgnoreCase(pathInfo) || "".equalsIgnoreCase(pathInfo)) { // POST /users 필터링
+            userService.createUser(req.getParameter("userId"),
+                    req.getParameter("password"),
+                    req.getParameter("name"),
+                    req.getParameter("email"));
+            try {
+                res.sendRedirect("/users");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
+        } else if (pathInfo.endsWith("/form")) { // POST /users/{id}/form 필터링
+            String[] split = pathInfo.split("/");
+            long id = 0;
+            try { // id 가 long인지 확인
+                id = Long.parseLong(split[1]);
+            } catch (NumberFormatException e) {
+                log(e.getMessage());
+            }
+
+            userService.update(id,
+                    req.getParameter("password"),
+                    req.getParameter("userId"),
+                    req.getParameter("name"),
+                    req.getParameter("email"));
+
+            try {
+                res.sendRedirect("/users/" + id + "/form");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
         }
     }
 }

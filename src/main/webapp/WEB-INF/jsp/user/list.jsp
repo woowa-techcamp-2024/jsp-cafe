@@ -12,9 +12,9 @@
                 </tr>
               </thead>
               <tbody>
-                <c:forEach var="user" items="${users}">
+                <c:forEach var="user" items="${users}" varStatus="loop">
                     <tr>
-                        <th scope="row">1</th> <td>${user.userId}</td> <td><a href="/users/${user.userId}">${user.name}</a></td> <td>${user.email}</td><td><a href="#" class="btn btn-success" role="button">수정</a></td></a>
+                        <th scope="row">${loop.count}</th> <td>${user.userId}</td> <td><a href="/users/${user.id}">${user.name}</a></td> <td>${user.email}</td><td><a href="/users/${user.id}/form" class="btn btn-success" role="button">수정</a></td></a>
                     </tr>
                 </c:forEach>
               </tbody>

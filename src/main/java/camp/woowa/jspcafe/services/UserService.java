@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.services;
 
+import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.repository.UserRepository;
 
@@ -12,7 +14,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public String createUser(String userId, String password, String name, String email) {
+    public Long createUser(String userId, String password, String name, String email) {
         return userRepository.save(userId, password, name, email);
     }
 
@@ -20,7 +22,23 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(String userId) {
-        return userRepository.findById(userId);
+    public User findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public Long update(Long id, String password, String updatedUserId, String updatedName, String updatedEmail) {
+        User targetUser = findById(id);
+        if (targetUser.validatePassword(password))
+            return userRepository.update(id, updatedUserId, updatedName, updatedEmail);
+        else
+            throw new CustomException(HttpStatus.INVALID_PASSWORD);
+    }
+
+    public boolean isExistedByUserId(String userId) {
+        return userRepository.isExistedByUserId(userId);
+    }
+
+    public User findByUserId(String w) {
+        return userRepository.findByUserId(w);
     }
 }
