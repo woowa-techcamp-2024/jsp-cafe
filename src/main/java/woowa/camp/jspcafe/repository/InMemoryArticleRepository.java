@@ -29,4 +29,10 @@ public class InMemoryArticleRepository implements ArticleRepository {
         return Optional.ofNullable(articles.get(id));
     }
 
+    @Override
+    public Optional<Article> findPrevious(Long currentId) {
+        long previousId = currentId - 1;
+        return Optional.ofNullable(articles.get(previousId));
+    }
+    
 }
