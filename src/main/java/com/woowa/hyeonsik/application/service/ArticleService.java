@@ -1,7 +1,7 @@
-package com.woowa.hyeonsik.service;
+package com.woowa.hyeonsik.application.service;
 
-import com.woowa.hyeonsik.dao.ArticleDao;
-import com.woowa.hyeonsik.domain.Article;
+import com.woowa.hyeonsik.application.dao.ArticleDao;
+import com.woowa.hyeonsik.application.domain.Article;
 
 import java.util.List;
 

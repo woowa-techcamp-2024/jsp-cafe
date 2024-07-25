@@ -1,4 +1,4 @@
-package com.woowa.hyeonsik.domain;
+package com.woowa.hyeonsik.application.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

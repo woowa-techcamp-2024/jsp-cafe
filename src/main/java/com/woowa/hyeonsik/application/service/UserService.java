@@ -1,7 +1,8 @@
-package com.woowa.hyeonsik.service;
+package com.woowa.hyeonsik.application.service;
 
-import com.woowa.hyeonsik.dao.UserDao;
-import com.woowa.hyeonsik.domain.User;
+import com.woowa.hyeonsik.application.dao.UserDao;
+import com.woowa.hyeonsik.application.domain.User;
+
 import java.util.List;
 
 public class UserService {

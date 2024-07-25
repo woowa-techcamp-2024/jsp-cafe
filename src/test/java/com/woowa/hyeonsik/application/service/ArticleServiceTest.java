@@ -1,7 +1,8 @@
-package com.woowa.hyeonsik.service;
+package com.woowa.hyeonsik.application.service;
 
-import com.woowa.hyeonsik.dao.ArticleDao;
-import com.woowa.hyeonsik.domain.Article;
+import com.woowa.hyeonsik.application.dao.ArticleDao;
+import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.service.ArticleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

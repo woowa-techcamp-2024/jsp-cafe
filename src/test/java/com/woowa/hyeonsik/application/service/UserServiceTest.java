@@ -1,12 +1,14 @@
-package com.woowa.hyeonsik.service;
+package com.woowa.hyeonsik.application.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.woowa.hyeonsik.dao.UserDao;
-import com.woowa.hyeonsik.domain.User;
+import com.woowa.hyeonsik.application.dao.UserDao;
+import com.woowa.hyeonsik.application.domain.User;
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.woowa.hyeonsik.application.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +18,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class UserServiceTest {
     private UserService userService;
+    private UserDao userDao;
 
     @BeforeEach
     void setUp() {
-        UserDao userDao = new UserDao();
+        userDao = new UserDao();
         userService = new UserService(userDao);
         userDao.clear();
     }
@@ -92,4 +95,27 @@ class UserServiceTest {
         assertThrows(IllegalArgumentException.class, () -> userService.findByUserId("test"));
     }
 
+    @Test
+    @DisplayName("비밀번호 값이 동일하면 회원 정보 수정을 정상적으로 완료한다.")
+    void put_user_success() {
+        User user = new User("test", "test", "test", "test@test.test");
+        User newUser = new User("test", "test", "hey", "hello@hi.bye");
+        userDao.save(user);
+
+        userService.updateUser(newUser);
+        User foundUser = userDao.findByUserId("test").get();
+
+        assertThat(foundUser.getName()).isEqualTo("hey");
+        assertThat(foundUser.getEmail()).isEqualTo("hello@hi.bye");
+    }
+
+    @Test
+    @DisplayName("비밀번호 값이 일치하지않으면 회원 수정에서 예외가 발생한다.")
+    void put_user_exception_wrong_password() {
+        User user = new User("test", "test", "test", "test@test.test");
+        User newUser = new User("test", "wrong_password", "hey", "hello@hi.bye");
+        userDao.save(user);
+
+        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(newUser));
+    }
 }

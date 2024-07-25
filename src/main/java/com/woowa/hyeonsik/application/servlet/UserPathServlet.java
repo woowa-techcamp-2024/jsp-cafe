@@ -1,8 +1,8 @@
-package com.woowa.hyeonsik.servlet;
+package com.woowa.hyeonsik.application.servlet;
 
-import com.woowa.hyeonsik.domain.User;
-import com.woowa.hyeonsik.service.UserService;
-import com.woowa.hyeonsik.util.SendPageUtil;
+import com.woowa.hyeonsik.application.domain.User;
+import com.woowa.hyeonsik.application.service.UserService;
+import com.woowa.hyeonsik.application.util.SendPageUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;

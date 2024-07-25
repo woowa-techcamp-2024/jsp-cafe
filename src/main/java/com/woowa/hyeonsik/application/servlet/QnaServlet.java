@@ -1,8 +1,8 @@
-package com.woowa.hyeonsik.servlet;
+package com.woowa.hyeonsik.application.servlet;
 
-import com.woowa.hyeonsik.domain.Article;
-import com.woowa.hyeonsik.service.ArticleService;
-import com.woowa.hyeonsik.util.SendPageUtil;
+import com.woowa.hyeonsik.application.service.ArticleService;
+import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.util.SendPageUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;

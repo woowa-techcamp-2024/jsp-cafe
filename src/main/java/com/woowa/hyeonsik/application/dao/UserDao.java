@@ -1,6 +1,6 @@
-package com.woowa.hyeonsik.dao;
+package com.woowa.hyeonsik.application.dao;
 
-import com.woowa.hyeonsik.domain.User;
+import com.woowa.hyeonsik.application.domain.User;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.woowa.hyeonsik.util;
+package com.woowa.hyeonsik.application.util;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;

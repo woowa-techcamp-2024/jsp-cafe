@@ -1,9 +1,9 @@
-package com.woowa.hyeonsik.config;
+package com.woowa.hyeonsik.server.config;
 
-import com.woowa.hyeonsik.dao.ArticleDao;
-import com.woowa.hyeonsik.dao.UserDao;
-import com.woowa.hyeonsik.service.ArticleService;
-import com.woowa.hyeonsik.service.UserService;
+import com.woowa.hyeonsik.application.dao.ArticleDao;
+import com.woowa.hyeonsik.application.dao.UserDao;
+import com.woowa.hyeonsik.application.service.ArticleService;
+import com.woowa.hyeonsik.application.service.UserService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebListener
-public class AppContextListener implements ServletContextListener {
-    private static final Logger logger = LoggerFactory.getLogger(AppContextListener.class);
+public class ApplicationContextListener implements ServletContextListener {
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationContextListener.class);
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

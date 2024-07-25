@@ -1,9 +1,11 @@
-package com.woowa.hyeonsik.domain;
+package com.woowa.hyeonsik.application.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
+
+import com.woowa.hyeonsik.application.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
