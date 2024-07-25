@@ -1,5 +1,6 @@
 <%@ page import="codesquad.javacafe.member.dto.response.MemberResponseDto" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Objects" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 
@@ -90,13 +91,15 @@
               <tbody>
                 <%
                     List<MemberResponseDto> members = (List<MemberResponseDto>) request.getAttribute("memberList");
-                    int row = 1;
-                    for(MemberResponseDto memberResponseDto : members) {
+                    if (Objects.nonNull(members)) {
+                        int row = 1;
+                        for(MemberResponseDto memberResponseDto : members) {
                 %>
                     <tr>
                         <th scope="row"><%= row++%></th> <td><%=memberResponseDto.getUserId()%></td> <td><%=memberResponseDto.getName()%></td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
                     </tr>
               <%
+                    }
                   }
               %>
               </tbody>
