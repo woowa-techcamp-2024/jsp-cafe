@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 public class UserCreateTest {
 
     private Map<Long,User> store = new HashMap<>();
-    private UserRepository userRepository = new UserRepository(store);
+    private UserRepository userRepository = new MemoryUserRepository(store);
 
     @BeforeEach
     void clearStore(){
