@@ -20,11 +20,13 @@ public class DataSourceManager {
         if (dataSource == null) {
             Properties props = new Properties();
             loadProperties(props);
+            String driverClassName = props.getProperty("datasource.driverClassName");
             String url = props.getProperty("datasource.url");
             String user = props.getProperty("datasource.user");
             String password = props.getProperty("datasource.password");
 
             HikariConfig hikariConfig = new HikariConfig();
+            hikariConfig.setDriverClassName(driverClassName);
             hikariConfig.setJdbcUrl(url);
             hikariConfig.setUsername(user);
             hikariConfig.setPassword(password);
