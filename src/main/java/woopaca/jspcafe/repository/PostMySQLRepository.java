@@ -16,8 +16,18 @@ public class PostMySQLRepository implements PostRepository {
 
     @Override
     public void save(Post post) {
+        if (post.getId() != null) {
+            update(post);
+            return;
+        }
+
         String sql = "INSERT INTO post (title, content, written_at, writer) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getWrittenAt(), post.getWriter());
+    }
+
+    private void update(Post post) {
+        String sql = "UPDATE post SET title = ?, content = ?, view_count = ?, writer = ? WHERE id = ?";
+        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getViewCount(), post.getWriter(), post.getId());
     }
 
     @Override
