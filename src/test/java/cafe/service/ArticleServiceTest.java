@@ -2,89 +2,73 @@ package cafe.service;
 
 import cafe.domain.db.ArticleDatabase;
 import cafe.domain.entity.Article;
-import cafe.servlet.TestHttpServletRequest;
-import cafe.servlet.TestHttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class ArticleServiceTest {
-    private ArticleService articleService;
     private ArticleDatabase articleDatabase;
-    private TestHttpServletRequest req;
-    private TestHttpServletResponse resp;
+    private ArticleService articleService;
 
     @BeforeEach
-    public void setUp() {
-        articleDatabase = new ArticleDatabase();
+    void setUp() {
+        articleDatabase = Mockito.mock(ArticleDatabase.class);
         articleService = new ArticleService(articleDatabase);
-        req = new TestHttpServletRequest();
-        resp = new TestHttpServletResponse();
     }
 
     @Test
-    @DisplayName("Article 객체를 데이터베이스에 저장하는 기능 테스트")
-    public void testSave() {
-        req.setParameter("writer", "author1");
-        req.setParameter("title", "Test Title");
-        req.setParameter("contents", "Test Contents");
+    @DisplayName("기사 저장")
+    void save() {
+        articleService.save("작성자", "제목", "내용");
 
-        articleService.save(req, resp);
-
-        Map<String, Article> allArticles = articleDatabase.findAll();
-        assertEquals(1, allArticles.size());
-        Article savedArticle = allArticles.values().iterator().next();
-        assertEquals("author1", savedArticle.getWriter());
-        assertEquals("Test Title", savedArticle.getTitle());
-        assertEquals("Test Contents", savedArticle.getContents());
-        assertNotNull(savedArticle.getCreated());
+        verify(articleDatabase, times(1)).insert(any(Article.class));
     }
 
     @Test
-    @DisplayName("ID로 Article 객체를 조회하는 기능 테스트")
-    public void testFind() {
-        Article article = Article.of("author1", "Test Title", "Test Contents");
-        articleDatabase.save(article);
+    @DisplayName("ID로 기사 조회")
+    void find() {
+        Article article = Article.of("작성자", "제목", "내용");
+        when(articleDatabase.selectById("1")).thenReturn(article);
 
-        String articleId = articleDatabase.findAll().keySet().iterator().next();
-        req.setRequestURI("/articles/" + articleId);
-
-        Article foundArticle = articleService.find(req, resp);
+        Article foundArticle = articleService.find("/articles/1");
 
         assertNotNull(foundArticle);
-        assertEquals("author1", foundArticle.getWriter());
-        assertEquals("Test Title", foundArticle.getTitle());
-        assertEquals("Test Contents", foundArticle.getContents());
+        assertEquals("작성자", foundArticle.getWriter());
+        assertEquals("제목", foundArticle.getTitle());
+        assertEquals("내용", foundArticle.getContents());
     }
 
     @Test
-    @DisplayName("존재하지 않는 ID로 Article을 조회할 때 예외 발생 여부 테스트")
-    public void testFindByIdNotFound() {
-        req.setRequestURI("/articles/nonexistent-id");
+    @DisplayName("모든 기사 조회")
+    void findAll() {
+        Map<String, Article> articles = new HashMap<>();
+        articles.put("1", Article.of("작성자1", "제목1", "내용1"));
+        articles.put("2", Article.of("작성자2", "제목2", "내용2"));
+        when(articleDatabase.selectAll()).thenReturn(articles);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            articleService.find(req, resp);
+        Map<String, Article> foundArticles = articleService.findAll();
+
+        assertNotNull(foundArticles);
+        assertEquals(2, foundArticles.size());
+        assertEquals("제목1", foundArticles.get("1").getTitle());
+        assertEquals("제목2", foundArticles.get("2").getTitle());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 ID로 기사 조회시 예외 발생")
+    void findNonExistent() {
+        when(articleDatabase.selectById("1")).thenReturn(null);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            articleService.find("/articles/1");
         });
-
-        assertEquals("Question not found!", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("모든 Article 객체를 조회하는 기능 테스트")
-    public void testFindAll() {
-        Article article1 = Article.of("author1", "Test Title 1", "Test Contents 1");
-        Article article2 = Article.of("author2", "Test Title 2", "Test Contents 2");
-        articleDatabase.save(article1);
-        articleDatabase.save(article2);
-
-        Map<String, Article> allArticles = articleService.findAll(req, resp);
-
-        assertEquals(2, allArticles.size());
-        assertTrue(allArticles.containsValue(article1));
-        assertTrue(allArticles.containsValue(article2));
     }
 }
