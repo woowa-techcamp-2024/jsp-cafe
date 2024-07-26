@@ -1,30 +1,35 @@
 package woowa.camp.jspcafe.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.fixture.UserFixture;
+import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
+import woowa.camp.jspcafe.repository.user.DBUserRepository;
+import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
-class InMemoryUserRepositoryTest {
+@ExtendWith(UserDBSetupExtension.class)
+class UserRepositoryTest {
 
+    DatabaseConnector connector = new DatabaseConnector();
     DateTimeProvider fixedDateTime = new FixedDateTimeProvider(2024, 7, 25);
-    UserRepository userRepository = new InMemoryUserRepository();
+    UserRepository userRepository = new DBUserRepository(connector);
 
     @Test
     @DisplayName("[Success]회원가입을 성공하면, 사용자 ID로 조회할 수 있다")
     void test() {
-        User user = UserFixture.createUser1();
+        User user = UserFixture.createUser(1, fixedDateTime.getNow());
         Long saveUserId = userRepository.save(user);
         Optional<User> findUserOpt = userRepository.findById(saveUserId);
         assertThat(findUserOpt.isPresent()).isTrue();
@@ -43,8 +48,8 @@ class InMemoryUserRepositoryTest {
     @Test
     @DisplayName("[Success] 회원가입을 성공할 때마다 id가 1씩 증가한다.")
     void test2() {
-        User user1 = UserFixture.createUser1();
-        User user2 = UserFixture.createUser2();
+        User user1 = UserFixture.createUser(1, fixedDateTime.getNow());
+        User user2 = UserFixture.createUser(2, fixedDateTime.getNow());
 
         Long saveUserId1 = userRepository.save(user1);
         Long saveUserId2 = userRepository.save(user2);
@@ -57,8 +62,8 @@ class InMemoryUserRepositoryTest {
     @Test
     @DisplayName("회원목록 전체를 조회한다")
     void test3() {
-        User user1 = UserFixture.createUser1();
-        User user2 = UserFixture.createUser2();
+        User user1 = UserFixture.createUser(1, fixedDateTime.getNow());
+        User user2 = UserFixture.createUser(2, fixedDateTime.getNow());
 
         userRepository.save(user1);
         userRepository.save(user2);
@@ -71,12 +76,11 @@ class InMemoryUserRepositoryTest {
     @DisplayName("Describe_회원정보를 갱신하는 기능은")
     class UpdateTest {
 
-        private UserRepository userRepository;
+        private UserRepository userRepository = new DBUserRepository(connector);
         private User testUser;
 
         @BeforeEach
         void setUp() {
-            userRepository = new InMemoryUserRepository();
             testUser = new User("test@email.com", "oldNickname", "oldPassword", fixedDateTime.getNow());
             Long userId = userRepository.save(testUser);
             testUser.setId(userId);
@@ -129,7 +133,7 @@ class InMemoryUserRepositoryTest {
         }
 
         @Test
-        @DisplayName("[Success] 존재하지 않는 사용자 ID면 아무일도 발생하지 않는다")
+        @DisplayName("[Success] 존재하지 않는 사용자 ID면 예외가 발생한다")
         void notExistUser() {
             String newPassword = "newPassword";
             String newNickname = "newNickname";
@@ -137,8 +141,8 @@ class InMemoryUserRepositoryTest {
             User user = UserFixture.createUser1();
             user.setId(12345L);
 
-            assertThatCode(() -> userRepository.update(user, updateDto))
-                    .doesNotThrowAnyException();
+            assertThatThrownBy(() -> userRepository.update(user, updateDto))
+                    .isInstanceOf(RuntimeException.class);
         }
 
     }

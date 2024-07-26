@@ -3,23 +3,31 @@ package woowa.camp.jspcafe.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.fixture.ArticleFixture;
+import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.repository.article.ArticleRepository;
+import woowa.camp.jspcafe.repository.article.DBArticleRepository;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
-class InMemoryArticleRepositoryTest {
+class ArticleRepositoryTest {
 
     DateTimeProvider fixedDateTime = new FixedDateTimeProvider(2024, 7, 23);
 
     @Nested
     @DisplayName("Describe_게시글을 저장하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class SaveTest {
 
-        ArticleRepository repository = new InMemoryArticleRepository();
+        DatabaseConnector connector = new DatabaseConnector();
+        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 게시글을 저장하면, 게시글 ID로 조회할 수 있다")
@@ -55,13 +63,34 @@ class InMemoryArticleRepositoryTest {
             assertThat(savedId2).isEqualTo(savedId1 + 1);
         }
 
+        @Test
+        @DisplayName("[Success] 게시글 작성자 id가 null 이면 익명게시판으로서 게시판 저장에 성공한다.")
+        void test3() {
+            Article anonymousArticle = Article.create(null, "title", "content", fixedDateTime.getNow());
+
+            Long savedId = repository.save(anonymousArticle);
+
+            Optional<Article> foundArticleOpt = repository.findById(savedId);
+            Assertions.assertThat(foundArticleOpt).isPresent();
+            Article foundArticle = foundArticleOpt.get();
+
+            assertThat(foundArticle.getId()).isEqualTo(savedId);
+            assertThat(foundArticle.getAuthorId()).isNull();
+            assertThat(foundArticle.getTitle()).isEqualTo(anonymousArticle.getTitle());
+            assertThat(foundArticle.getContent()).isEqualTo(anonymousArticle.getContent());
+            assertThat(foundArticle.getHits()).isEqualTo(anonymousArticle.getHits());
+            assertThat(foundArticle.getCreatedAt()).isEqualTo(anonymousArticle.getCreatedAt());
+        }
+
     }
 
     @Nested
     @DisplayName("Describe_게시글을 id 기준으로 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindByIdTest {
 
-        ArticleRepository repository = new InMemoryArticleRepository();
+        DatabaseConnector connector = new DatabaseConnector();
+        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 특정 게시글을 조회할 수 있다")
@@ -112,9 +141,11 @@ class InMemoryArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_이전 게시글을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindPreviousTest {
 
-        ArticleRepository repository = new InMemoryArticleRepository();
+        DatabaseConnector connector = new DatabaseConnector();
+        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 이전 게시글을 조회할 수 있다")
@@ -150,9 +181,11 @@ class InMemoryArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_다음 게시글을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindNextTest {
 
-        ArticleRepository repository = new InMemoryArticleRepository();
+        DatabaseConnector connector = new DatabaseConnector();
+        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 다음 게시글을 조회할 수 있다")
@@ -188,9 +221,11 @@ class InMemoryArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_오프셋 기반으로 게시글을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindByOffsetPaginationTest {
 
-        ArticleRepository repository = new InMemoryArticleRepository();
+        DatabaseConnector connector = new DatabaseConnector();
+        ArticleRepository repository = new DBArticleRepository(connector);
         private static final int PAGE_SIZE = 10;
 
         @Test
@@ -277,7 +312,9 @@ class InMemoryArticleRepositoryTest {
             repository.save(article2);
 
             List<Article> orderedResults = repository.findByOffsetPagination(0, 10);
-            assertThat(orderedResults).containsExactly(article3, article2, article1);
+            assertThat(orderedResults)
+                    .usingRecursiveFieldByFieldElementComparator()
+                    .containsExactly(article3, article2, article1);
         }
 
     }

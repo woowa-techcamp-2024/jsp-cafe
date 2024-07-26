@@ -13,7 +13,7 @@ public class Article {
 
     private final LocalDate createdAt;
 
-    private Article(Long authorId, String title, String content, Integer hits, LocalDate createdAt) {
+    public Article(Long authorId, String title, String content, Integer hits, LocalDate createdAt) {
         this.authorId = authorId;
         this.title = title;
         this.content = content;

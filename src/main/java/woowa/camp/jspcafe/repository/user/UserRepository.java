@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.repository;
+package woowa.camp.jspcafe.repository.user;
 
 import java.util.List;
 import java.util.Optional;

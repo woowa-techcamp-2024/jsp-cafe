@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.repository;
+package woowa.camp.jspcafe.repository.article;
 
 import java.util.Comparator;
 import java.util.List;

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.UserException;
-import woowa.camp.jspcafe.repository.UserRepository;
+import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 import woowa.camp.jspcafe.service.dto.UserResponse;
