@@ -12,6 +12,13 @@ public class Article {
         this.content = content;
     }
 
+    public Article(Long id, String title, String writer, String content) {
+        this.id = id;
+        this.title = title;
+        this.writer = writer;
+        this.content = content;
+    }
+
     public Article(Long id, Article article) {
         this.id = id;
         this.title = article.title;
