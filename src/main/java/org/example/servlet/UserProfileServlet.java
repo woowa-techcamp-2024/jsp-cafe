@@ -9,14 +9,24 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.example.entity.User;
 import org.example.service.UserService;
+import org.example.util.LoggerUtil;
+import org.slf4j.Logger;
 
-//@WebServlet("/users/*")
+@WebServlet("/users/*")
 public class UserProfileServlet extends HttpServlet {
+
+    private static final Logger logger =LoggerUtil.getLogger();
 
     private final UserService userService = new UserService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        if (request.getPathInfo().endsWith("/form")) {
+            form(request, response);
+            return;
+        }
+
         String userId = getPathVariable(request);
         User user = userService.findUserById(userId).orElseThrow(
             () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
@@ -27,9 +37,38 @@ public class UserProfileServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+    private void form(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        String userIdPath = getUserIdPath(request);
+
+        User user = userService.findUserById(userIdPath)
+            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/user/updateForm.jsp");
+        request.setAttribute("user", user);
+        dispatcher.forward(request, response);
+    }
+
     private String getPathVariable(HttpServletRequest request) {
         String pathInfo = request.getPathInfo();
         String[] pathParts = pathInfo.split("/");
         return pathParts[1];
+    }
+
+    private String getUserIdPath(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String[] uriArr = uri.split("/");
+        return uriArr[uriArr.length - 2];
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String userId = getPathVariable(request);
+        String password = request.getParameter("password");
+        String nickname = request.getParameter("nickname");
+        String email = request.getParameter("email");
+        logger.info("userId: {}, password: {}, nickname: {}, email: {}", userId, password, nickname, email);
+
+        userService.updateUser(userId, password, nickname, email);
     }
 }

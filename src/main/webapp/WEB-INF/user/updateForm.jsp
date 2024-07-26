@@ -1,109 +1,94 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="org.example.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-
+<%@ include file="../common.jspf" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>SLiPP Java Web Programming</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="../../static/css/styles.css" rel="stylesheet">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
 </head>
+<%@ include file="../navbar.jspf" %>
 <body>
-<nav class="navbar navbar-fixed-top header">
-    <div class="col-md-12">
-        <div class="navbar-header">
-
-            <a href="../../static/index.html" class="navbar-brand">SLiPP</a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
-                <i class="glyphicon glyphicon-search"></i>
-            </button>
-
+<%
+    User user = (User) request.getAttribute("user");
+    if (user != null) {
+        String userId = user.getUserId();
+        if (userId != null) {
+            String nickname = user.getNickname();
+            String email = user.getEmail();
+%>
+<div class="container">
+    <h1>개인정보 수정</h1>
+    <form id="profileForm">
+        <div class="form-group">
+            <label for="userId">사용자 아이디</label>
+            <input type="text" class="form-control" id="userId" name="userId" value="<%= userId %>" readonly>
         </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse1">
-            <form class="navbar-form pull-left">
-                <div class="input-group" style="max-width:470px;">
-                    <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                    </div>
-                </div>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="https://slipp.net" target="_blank">SLiPP</a></li>
-                        <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
-                    </ul>
-                </li>
-                <li><a href="list.jsp"><i class="glyphicon glyphicon-user"></i></a></li>
-            </ul>
+        <div class="form-group">
+            <label for="nickname">이름</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" value="<%= nickname %>" required>
         </div>
-    </div>
-</nav>
-<div class="navbar navbar-default" id="subnav">
-    <div class="col-md-12">
-        <div class="navbar-header">
-            <a href="#" style="margin-left:15px;" class="navbar-btn btn btn-default btn-plus dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i class="glyphicon glyphicon-chevron-down"></i></small></a>
-            <ul class="nav dropdown-menu">
-                <li><a href="../user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
-                <li class="nav-divider"></li>
-                <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
-            </ul>
-
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" class="form-control" id="email" name="email" value="<%= email %>" required>
         </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse2">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../../static/index.html">Posts</a></li>>
-                <li><a href="../../static/user/login.html" role="button">로그인</a></li>
-                <li><a href="../../static/user/form.html" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
-            </ul>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" id="password" name="password" required>
         </div>
-    </div>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">수정</button>
+    </form>
 </div>
+<script>
+  function getUserIdFromUrl() {
+    const pathArray = window.location.pathname.split('/');
+    return pathArray[pathArray.length - 2]; // Assuming userId is second last in the path
+  }
 
+  function submitForm() {
+    const form = document.getElementById('profileForm');
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    const url = '/users/'+ getUserIdFromUrl() + "?" +params.toString();
+    console.log(url);
+
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('개인정보가 성공적으로 수정되었습니다.');
+        window.location.reload();
+      } else {
+        alert('개인정보 수정에 실패했습니다. 비밀번호를 확인해주세요.');
+      }
+    });
+  }
+</script>
+<%
+} else {
+%>
 <div class="container" id="main">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h4>Profiles</h4></div>
-            <div class="panel-body">
-                <div class="well well-sm">
-                    <div class="media">
-                        <a class="thumbnail pull-left" href="#">
-                            <img class="media-object" src="../../static/images/80-text.png">
-                        </a>
-                        <div class="media-body">
-                            <h4 class="media-heading">${user.email}</h4>
-                            <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;${user.email}</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="col-md-10 col-md-offset-1">
+        <h1>유효하지 않은 사용자입니다. <a href="<c:url value='/login' />">로그인</a>하십시오.</h1>
     </div>
 </div>
-
-<!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
+<%
+    }
+} else {
+%>
+<div class="container" id="main">
+    <div class="col-md-10 col-md-offset-1">
+        <h1>로그인이 필요합니다. <a href="<c:url value='/login' />">로그인</a></h1>
+    </div>
+</div>
+<%
+    }
+%>
 </body>
 </html>

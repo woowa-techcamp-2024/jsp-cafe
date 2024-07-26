@@ -17,23 +17,20 @@
 <%@ include file="../navbar.jspf" %>
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h4>Profiles</h4></div>
-            <div class="panel-body">
-                <div class="well well-sm">
-                    <div class="media">
-                        <a class="thumbnail pull-left" href="#">
-                            <img class="media-object" src="../../static/images/80-text.png">
-                        </a>
-                        <div class="media-body">
-                            <h4 class="media-heading">${user.userId}</h4>
-                            <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;${user.email}</a>
-                            </p>
-                        </div>
-                    </div>
+        <div class="panel panel-default content-main">
+            <form name="question" method="post" action="<c:url value="/login"/>">
+                <div class="form-group">
+                    <label for="userId">사용자 아이디</label>
+                    <input class="form-control" id="userId" name="userId" placeholder="User ID">
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password"
+                           placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-success clearfix pull-right">로그인</button>
+                <div class="clearfix"/>
+            </form>
         </div>
     </div>
 </div>
@@ -42,5 +39,5 @@
 <script src="../../static/js/jquery-2.2.0.min.js"></script>
 <script src="../../static/js/bootstrap.min.js"></script>
 <script src="../../static/js/scripts.js"></script>
-	</body>
+</body>
 </html>

@@ -5,6 +5,16 @@
   version="6.0">
   <!-- 기본 서블릿에 대한 URL 매핑 설정 -->
   <!-- 기본 서블릿 설정 -->
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+    <jsp-property-group>
+      <url-pattern>*.jspf</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+  </jsp-config>
 
   <filter>
     <filter-name>staticResourceFilter</filter-name>
@@ -14,26 +24,5 @@
     <filter-name>staticResourceFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
-  <servlet>
-    <servlet-name>UserFormServlet</servlet-name>
-    <servlet-class>org.example.servlet.UserEditServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>UserFormServlet</servlet-name>
-    <url-pattern>/users/*/form</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>UserServlet</servlet-name>
-    <servlet-class>org.example.servlet.UserProfileServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>UserServlet</servlet-name>
-    <url-pattern>/users/*</url-pattern>
-  </servlet-mapping>
-
 </web-app>
 
