@@ -14,6 +14,7 @@ import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -87,7 +88,7 @@ class UserServiceTest {
         void getUserByIdFailed() {
             // Act & Assert
             assertThatThrownBy(() -> userService.getUserById(expectedUserId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("유저를 찾을 수 없습니다!");
         }
 
@@ -145,7 +146,7 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(
                 () -> userService.updateUserInfo(expectedDto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SecurityException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다!");
         }
 
@@ -184,7 +185,7 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(
                 () -> userService.updateUserInfo(expectedDto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("유저를 찾을 수 없습니다!");
         }
     }
@@ -206,7 +207,7 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(
                 () -> userService.loginUser(loginRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SecurityException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다!");
         }
 
@@ -241,7 +242,7 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(
                 () -> userService.loginUser(loginRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("유저를 찾을 수 없습니다!");
         }
     }
