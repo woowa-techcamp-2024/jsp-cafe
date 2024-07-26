@@ -133,4 +133,20 @@ class UserServiceTest {
         // then
         assertTrue(isExisted);
     }
+
+    @Test
+    void testLogin() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        Long id = userRepository.save(userId, password, name, email);
+
+        // when
+        User user = userService.login(userId, password);
+
+        // then
+        assertEquals(user.getUserId(), userId);
+    }
 }
