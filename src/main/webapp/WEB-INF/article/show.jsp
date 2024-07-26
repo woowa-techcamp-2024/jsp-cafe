@@ -41,7 +41,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/board.jsp">목록</a>
+                              <a class="link-modify-article" href="/WEB-INF/qna/list.jsp">목록</a>
                           </li>
                       </ul>
                   </div>

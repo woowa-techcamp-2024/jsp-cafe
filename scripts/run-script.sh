@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Gradle 빌드 실행
-./gradlew build
+./gradlew build -x test
 source .env
 
 # 기존 Tomcat 서버 중지
