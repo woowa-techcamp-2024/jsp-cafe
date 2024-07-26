@@ -12,4 +12,6 @@ public interface UserDatabase {
     List<User> findAll();
 
     Optional<User> findById(String userId);
+
+    void update(User user);
 }
