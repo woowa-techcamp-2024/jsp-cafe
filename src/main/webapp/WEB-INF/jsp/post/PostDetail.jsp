@@ -10,7 +10,7 @@
     <link href="../css/styles.css" rel="stylesheet">
 </head>
 <body>
-<%@ include file="../header.jsp"%>
+<%@ include file="../Header.jsp"%>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
