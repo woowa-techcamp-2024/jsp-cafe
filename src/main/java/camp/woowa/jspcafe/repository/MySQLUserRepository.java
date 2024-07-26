@@ -72,7 +72,7 @@ public class MySQLUserRepository implements UserRepository{
             pstmt.setString(2, updatedName);
             pstmt.setString(3, updatedEmail);
             pstmt.setString(4, updatePassword);
-            pstmt.setLong(4, id);
+            pstmt.setLong(5, id);
 
             pstmt.executeUpdate();
 
