@@ -9,6 +9,7 @@
 <%
   var contextPath = request.getContextPath();
 %>
+<html lang="kr">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">

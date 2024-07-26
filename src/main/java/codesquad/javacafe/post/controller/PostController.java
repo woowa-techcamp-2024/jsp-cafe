@@ -30,11 +30,12 @@ public class PostController implements SubController {
                 req.setAttribute("post", post);
                 var dispatcher = req.getRequestDispatcher("/qna/show.jsp");
                 dispatcher.forward(req, res);
-                return;
+                break;
             }
             case "POST" :{
                 createPost(req);
                 res.sendRedirect("/");
+                break;
             }
         }
 

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * root 요청은 여기에서 핸들링
  */
-@WebServlet("/")
+@WebServlet("")
 public class MainController extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
 

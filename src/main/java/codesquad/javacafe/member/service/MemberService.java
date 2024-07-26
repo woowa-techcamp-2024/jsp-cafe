@@ -29,11 +29,11 @@ public class MemberService {
         try {
             connection = MySqlConnection.getConnection();
             connection.setAutoCommit(false);
-            var findMember = MemberRepository.getInstance().findByUserId(connection,memberDto.getUserId());
-            if (findMember != null) {
-                // TODO error 처리
-                log.error("[MemberService] duplicated Member, memberId = {}",findMember.getId());
-            }
+//            var findMember = MemberRepository.getInstance().findByUserId(connection,memberDto.getUserId());
+//            if (findMember != null) {
+//                // TODO error 처리
+//                log.error("[MemberService] duplicated Member, memberId = {}",findMember.getId());
+//            }
             MemberRepository.getInstance().save(connection,memberDto);
             connection.commit();
 

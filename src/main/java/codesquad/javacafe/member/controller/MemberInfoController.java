@@ -27,6 +27,7 @@ public class MemberInfoController implements SubController {
                 req.setAttribute("userId", userId);
                 var dispatcher = req.getRequestDispatcher("/user/memberInfo.jsp");
                 dispatcher.forward(req, res);
+                break;
             }
             case "POST" : {
                 updateMember(req);
@@ -37,6 +38,7 @@ public class MemberInfoController implements SubController {
                 req.setAttribute("memberList", memberList);
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
                 dispatcher.forward(req, res);
+                break;
             }
         }
     }

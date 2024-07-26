@@ -31,10 +31,12 @@ public class MemberController implements SubController {
                 req.setAttribute("memberList", memberList);
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
                 dispatcher.forward(req,res);
+                break;
             }
             case "POST" :{
                 createMember(req);
                 res.sendRedirect("/api/users");
+                break;
             }
         }
     }
