@@ -1,6 +1,5 @@
 package cafe.handler.users;
 
-import cafe.domain.entity.User;
 import cafe.handler.Handler;
 import cafe.service.SessionService;
 import jakarta.servlet.RequestDispatcher;

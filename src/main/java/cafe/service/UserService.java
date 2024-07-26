@@ -4,8 +4,6 @@ import cafe.domain.db.SessionDatabase;
 import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
 import cafe.dto.UserDto;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 

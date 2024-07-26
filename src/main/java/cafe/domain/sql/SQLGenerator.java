@@ -31,13 +31,11 @@ public class SQLGenerator {
     }
 
     public String generateSelectByIdSQL(String className) {
-        StringBuilder stringBuilder = new StringBuilder("SELECT * FROM `").append(className).append("s` WHERE `id` = ?;");
-        return stringBuilder.toString();
+        return "SELECT * FROM `" + className + "s` WHERE `id` = ?;";
     }
 
     public String generateSelectAllSQL(String className) {
-        StringBuilder stringBuilder = new StringBuilder("SELECT * FROM `").append(className).append("s`;");
-        return stringBuilder.toString();
+        return "SELECT * FROM `" + className + "s`;";
     }
 
     public String generateUpdateSQL(String className, Field[] fields) {

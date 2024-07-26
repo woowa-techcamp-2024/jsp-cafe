@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class UserInfoEditHandler implements Handler {
-    private UserService userService;
+    private final UserService userService;
 
     public UserInfoEditHandler(ServletContext context) {
         userService = (UserService) context.getAttribute("userService");

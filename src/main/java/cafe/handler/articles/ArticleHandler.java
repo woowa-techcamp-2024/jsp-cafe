@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ArticleHandler implements Handler {
-    private ArticleService articleService;
+    private final ArticleService articleService;
 
     public ArticleHandler(ServletContext context) {
         articleService = (ArticleService) context.getAttribute("articleService");

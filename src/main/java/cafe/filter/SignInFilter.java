@@ -1,6 +1,5 @@
 package cafe.filter;
 
-import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
 import cafe.service.SessionService;
 import cafe.service.UserService;

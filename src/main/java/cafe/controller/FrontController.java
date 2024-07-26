@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FrontController extends HttpServlet {
-    private Map<String, Handler> handlers = new HashMap<>();
+    private final Map<String, Handler> handlers = new HashMap<>();
 
     @Override
     public void init(ServletConfig config) {

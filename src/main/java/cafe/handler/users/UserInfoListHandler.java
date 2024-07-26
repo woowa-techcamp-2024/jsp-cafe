@@ -1,6 +1,5 @@
 package cafe.handler.users;
 
-import cafe.domain.entity.User;
 import cafe.handler.Handler;
 import cafe.service.UserService;
 import jakarta.servlet.RequestDispatcher;
@@ -12,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class UserInfoListHandler implements Handler {
-    private UserService userService;
+    private final UserService userService;
 
     public UserInfoListHandler(ServletContext context) {
         userService = (UserService) context.getAttribute("userService");

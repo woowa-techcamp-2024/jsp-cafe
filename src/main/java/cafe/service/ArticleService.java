@@ -2,8 +2,6 @@ package cafe.service;
 
 import cafe.domain.db.ArticleDatabase;
 import cafe.domain.entity.Article;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 
