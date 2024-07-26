@@ -44,8 +44,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public List<Question> findAll() {
-        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question";
+    public List<Question> findAllOrderByCreatedTimeDesc() {
+        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question ORDER BY created_time DESC";
 
         return jdbcTemplate.selectAll(
                 query,

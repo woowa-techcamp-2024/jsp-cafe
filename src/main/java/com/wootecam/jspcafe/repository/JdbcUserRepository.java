@@ -41,8 +41,8 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
-        String query = "SELECT id, user_id, password, name, email FROM users";
+    public List<User> findAllOrderByIdDesc() {
+        String query = "SELECT id, user_id, password, name, email FROM users ORDER BY id DESC";
 
         return jdbcTemplate.selectAll(
                 query,

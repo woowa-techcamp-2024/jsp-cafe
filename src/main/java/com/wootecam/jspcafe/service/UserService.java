@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public List<User> readAll() {
-        return userRepository.findAll();
+        return userRepository.findAllOrderByIdDesc();
     }
 
     public User read(final Long id) {

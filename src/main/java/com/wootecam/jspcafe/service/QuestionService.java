@@ -26,7 +26,7 @@ public class QuestionService {
     }
 
     public List<Question> readAll() {
-        return questionRepository.findAll();
+        return questionRepository.findAllOrderByCreatedTimeDesc();
     }
 
     public Question read(final Long id) {
