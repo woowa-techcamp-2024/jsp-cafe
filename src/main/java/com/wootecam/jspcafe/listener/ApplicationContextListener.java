@@ -1,12 +1,16 @@
 package com.wootecam.jspcafe.listener;
 
-import com.wootecam.jspcafe.repository.QuestionRepository;
-import com.wootecam.jspcafe.repository.UserRepository;
+import com.wootecam.jspcafe.config.JdbcTemplate;
+import com.wootecam.jspcafe.domain.QuestionRepository;
+import com.wootecam.jspcafe.domain.UserRepository;
+import com.wootecam.jspcafe.repository.JdbcQuestionRepository;
+import com.wootecam.jspcafe.repository.JdbcUserRepository;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionServlet;
+import com.wootecam.jspcafe.servlet.user.SignInFormServlet;
 import com.wootecam.jspcafe.servlet.user.SignupFormServlet;
 import com.wootecam.jspcafe.servlet.user.UserEditServlet;
 import com.wootecam.jspcafe.servlet.user.UserProfileServlet;
@@ -22,9 +26,10 @@ public class ApplicationContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-        UserRepository userRepository = new UserRepository();
-        QuestionRepository questionRepository = new QuestionRepository();
+        UserRepository userRepository = new JdbcUserRepository(jdbcTemplate);
+        QuestionRepository questionRepository = new JdbcQuestionRepository(jdbcTemplate);
 
         UserService userService = new UserService(userRepository);
         QuestionService questionService = new QuestionService(questionRepository);
@@ -39,6 +44,8 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/users/*");
         servletContext.addServlet("userEditServlet", new UserEditServlet(userService))
                 .addMapping("/users/edit/*");
+        servletContext.addServlet("signInFormServlet", new SignInFormServlet(userService))
+                .addMapping("/users/sign-in");
 
         servletContext.addServlet("questionServlet", new QuestionServlet(questionService))
                 .addMapping("/questions");

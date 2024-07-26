@@ -1,4 +1,4 @@
-package com.wootecam.jspcafe.model;
+package com.wootecam.jspcafe.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

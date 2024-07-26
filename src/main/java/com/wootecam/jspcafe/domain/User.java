@@ -1,4 +1,4 @@
-package com.wootecam.jspcafe.model;
+package com.wootecam.jspcafe.domain;
 
 import java.util.Objects;
 
@@ -51,6 +51,10 @@ public class User {
         if (!originalPassword.equals(password)) {
             throw new IllegalArgumentException("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
         }
+    }
+
+    public boolean confirmPassword(final String password) {
+        return this.password.equals(password);
     }
 
     public Long getId() {
