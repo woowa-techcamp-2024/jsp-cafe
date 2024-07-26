@@ -17,6 +17,11 @@ public class UserService {
     }
 
     public void createUser(UserCreateDto userCreateDto) {
+        String userId = userCreateDto.userId();
+        if (userRepository.findById(userId) != null) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
         User user = userCreateDto.toUser();
         userRepository.save(user);
     }

@@ -138,7 +138,6 @@ public class EndToEndTest {
         return cookie;
     }
 
-
     private static String extractCookies(HttpURLConnection con) {
         Map<String, List<String>> headerFields = con.getHeaderFields();
         List<String> cookiesHeader = headerFields.get("Set-Cookie");
@@ -169,24 +168,49 @@ public class EndToEndTest {
     @Nested
     class STEP_1 {
 
-        @Test
-        void 사용자는_회원가입할_수_있다() throws Exception {
-            //given
-            con = createPostConnection("/users");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String urlParameters = "userId=testUser&password=testPass&nickname=testNick&email=test@example.com";
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+        @Nested
+        class 회원가입한다 {
 
-            //when
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(postData);
+            @Test
+            void 사용자는_회원가입할_수_있다() throws Exception {
+                //given
+                con = createPostConnection("/users");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "userId=testUser&password=testPass&nickname=testNick&email=test@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/users");
+                });
             }
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/users");
-            });
+            @Test
+            void 이미_사용자id가_존재한다면_400_에러를_반환한다() throws Exception {
+                //given
+                userRepository.save(new User("testUser1", "testPass", "testUser1", "testEmail1@test.com"));
+
+                con = createPostConnection("/users");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "userId=testUser1&password=testPass&nickname=testNick&email=test@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(400);
+                });
+            }
         }
 
         @Test

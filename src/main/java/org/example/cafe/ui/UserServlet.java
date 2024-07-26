@@ -64,7 +64,14 @@ public class UserServlet extends HttpServlet {
         String email = request.getParameter("email");
 
         UserCreateDto userCreateDto = new UserCreateDto(userId, password, nickname, email);
-        userService.createUser(userCreateDto);
+
+        try {
+            userService.createUser(userCreateDto);
+        } catch (IllegalArgumentException e) {
+            log.error("User creation failed", e);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
 
         response.sendRedirect("/users");
     }
