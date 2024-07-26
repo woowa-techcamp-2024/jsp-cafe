@@ -48,4 +48,24 @@ public class UserLoginServlet extends HttpServlet {
         log.debug("userLoginServlet doGet end");
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("userLoginServlet doPost start");
+
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+        try {
+            User user = userService.authenticateUser(email, password);
+            HttpSession session = req.getSession();
+            session.setAttribute("loggedInUser", user);
+
+            Cookie loginCookie = new Cookie("WOOWA_SESSIONID", user.getEmail());
+            loginCookie.setPath("/");
+            resp.addCookie(loginCookie);
+            resp.sendRedirect(req.getContextPath() + "/");
+            log.debug("userLoginServlet doPost end");
+        } catch (UserException e) {
+            resp.sendRedirect(req.getContextPath() + "/users/login/fail");
+        }
+    }
 }
