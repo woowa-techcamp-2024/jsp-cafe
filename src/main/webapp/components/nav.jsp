@@ -2,7 +2,7 @@
 <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
-            <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand">SLiPP</a>
+            <a href="${pageContext.request.contextPath}/" class="navbar-brand">SLiPP</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -47,7 +47,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="${pageContext.request.contextPath}/index.jsp">Posts</a></li>
+                <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
                 <li><a href="${pageContext.request.contextPath}/user/login.jsp" role="button">로그인</a></li>
                 <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
