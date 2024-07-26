@@ -24,7 +24,7 @@
                                     <i class="icon-add-comment"></i>
                                     <span class="time">
                                         <fmt:parseDate value="${question.createdTime}" pattern="yyyy-MM-dd'T'HH:mm"
-                                                       var="createdTime" type="both"/>
+                                                       var="createdTime" type="both" parseLocale="ko"/>
                                         <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${createdTime}"/>
                                     </span>
                                     <a href="user/profile.jsp" class="author">${question.writer}</a>
