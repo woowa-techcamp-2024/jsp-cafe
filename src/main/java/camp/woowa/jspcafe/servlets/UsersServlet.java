@@ -46,6 +46,7 @@ public class UsersServlet extends HttpServlet {
                 id = Long.parseLong(split[1]);
             } catch (NumberFormatException e) {
                 log(e.getMessage());
+                throw new CustomException(HttpStatus.BAD_REQUEST, "Invalide User Id");
             }
             User user = userService.findById(id);
             req.setAttribute("user", user);
