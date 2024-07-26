@@ -47,13 +47,13 @@ public class UserService {
                 .toList();
     }
 
-    public UserProfile getUserProfile(String userId) {
+    public UserProfile getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));
         return UserProfile.from(user);
     }
 
-    public void updateUserProfile(String userId, UpdateProfileRequest updateProfileRequest) {
+    public void updateUserProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));
         if (!user.matchPassword(updateProfileRequest.password())) {
