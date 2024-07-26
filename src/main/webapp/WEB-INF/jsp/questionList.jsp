@@ -23,15 +23,14 @@
                         <div class="main">
                             <strong class="subject">
                                 <a href="/questions/${contentResponse.id}"><c:out
-                                        value="${contentResponse.title}" escapeXml="false"/>
+                                        value="${contentResponse.title}"/>
                                 </a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">${contentResponse.createdAt}</span>
                                 <a href="/users/${contentResponse.writer}"
-                                   class="author"><c:out value="${contentResponse.writer}"
-                                                         escapeXml="false"/>
+                                   class="author"><c:out value="${contentResponse.writer}"/>
                                 </a>
 
                             </div>

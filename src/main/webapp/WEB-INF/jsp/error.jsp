@@ -16,9 +16,9 @@
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
-            <h2><c:out value="${requestScope.statusCode}" escapeXml="false"/></h2>
+            <h2><c:out value="${requestScope.statusCode}"/></h2>
             <div class="alert alert-danger" role="alert">
-                <c:out value="${requestScope.message}" escapeXml="false"/></div>
+                <c:out value="${requestScope.message}"/></div>
             <button onclick="history.back()" class="btn btn-success">뒤로가기</button>
         </div>
     </div>

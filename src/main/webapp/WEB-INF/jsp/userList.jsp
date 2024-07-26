@@ -33,14 +33,14 @@
                         <c:set var="idx" value="${idx + 1}" scope="page"/>
                         <td>
                             <a href="/users/${userCommonResponse.userId}">
-                                <c:out value="${userCommonResponse.userId}" escapeXml="false"/>
+                                <c:out value="${userCommonResponse.userId}"/>
                             </a>
                         </td>
                         <td>
-                            <c:out value="${userCommonResponse.username}" escapeXml="false"/>
+                            <c:out value="${userCommonResponse.username}"/>
                         </td>
                         <td>
-                            <c:out value="${userCommonResponse.email}" escapeXml="false"/>
+                            <c:out value="${userCommonResponse.email}"/>
                         </td>
                         <td>
                             <button type="submit" class="btn btn-success"

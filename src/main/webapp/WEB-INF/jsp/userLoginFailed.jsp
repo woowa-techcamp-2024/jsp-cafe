@@ -18,7 +18,7 @@
         <div class="panel panel-default content-main">
             <c:set var="message" value="${requestScope.loginException}"/>
             <div class="alert alert-danger" role="alert">
-                <c:out value="${message} 다시 로그인 해주세요." escapeXml="false"/></div>
+                <c:out value="${message} 다시 로그인 해주세요."/></div>
             <form name="question" method="post"
                   action="${pageContext.request.contextPath}/users/login">
                 <div class="form-group">
