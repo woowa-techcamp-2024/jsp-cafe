@@ -1,6 +1,6 @@
 package repository;
 
-import domain.User;
+import domain.Users;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class UserCreateTest {
 
-    private Map<Long,User> store = new HashMap<>();
+    private Map<Long, Users> store = new HashMap<>();
     private UserRepository userRepository = new MemoryUserRepository(store);
 
     @BeforeEach
@@ -26,7 +26,7 @@ public class UserCreateTest {
     public void testSaveUser() {
 
         // given
-        User user = new User("test", "test", "test", "test@test");
+        Users user = new Users("test", "test", "test", "test@test");
 
         // when
         userRepository.saveUser(user);
@@ -40,7 +40,7 @@ public class UserCreateTest {
     public void testSaveUserWithEmpty() {
 
         // given
-        User user = new User("", "", "", "");
+        Users user = new Users("", "", "", "");
 
         // when
         userRepository.saveUser(user);
@@ -54,9 +54,9 @@ public class UserCreateTest {
     public void testSaveMultipleUsers() {
 
             // given
-            User user1 = new User("test1", "test1", "test1", "test1@test");
-            User user2 = new User("test2", "test2", "test2", "test2@test");
-            User user3 = new User("test3", "test3", "test3", "test3@test");
+            Users user1 = new Users("test1", "test1", "test1", "test1@test");
+            Users user2 = new Users("test2", "test2", "test2", "test2@test");
+            Users user3 = new Users("test3", "test3", "test3", "test3@test");
 
             // when
             userRepository.saveUser(user1);

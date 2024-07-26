@@ -1,4 +1,4 @@
-<%@ page import="domain.User" %>
+<%@ page import="domain.Users" %>
 <%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -18,12 +18,12 @@
               </thead>
               <tbody>
                   <%
-                      List<User> users = (List<User>) request.getAttribute("users");
+                      List<Users> users = (List<Users>) request.getAttribute("users");
                       for (int i = 0; i < users.size(); i++){
-                          User user = users.get(i);
+                          Users user = users.get(i);
                   %>
                   <tr>
-                    <th scope="row"><%=i + 1%></th>
+                    <th scope="row"><%= user.getId() %></th>
                       <td> <c:out value="<%= user.getUserId() %>"/></td>
                       <td>
                           <span onclick="location.href='<%= request.getContextPath() %>/users/<%= user.getId() %>'" style="cursor:pointer;">

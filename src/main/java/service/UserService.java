@@ -1,8 +1,9 @@
 package service;
 
-import domain.User;
+import domain.Users;
+import dto.UsersDao;
 import exception.TomcatException;
-import repository.UserRepository;
+import repository.users.UserRepository;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class UserService {
                                 u.setPassword(newPassword);
                                 u.setName(name);
                                 u.setEmail(email);
+                                userRepository.updateUser(u);
                                 return;
                             }
                             throw new TomcatException("Password is incorrect");
@@ -31,15 +33,16 @@ public class UserService {
                         });
     }
 
-    public List<User> findAll() {
+    public List<Users> findAll() {
         return userRepository.findAll();
     }
 
-    public void saveUser(User user) {
+    public void saveUser(UsersDao userDao) {
+        Users user = new Users(null, userDao.getUserId(), userDao.getPassword(), userDao.getName(), userDao.getEmail());
         userRepository.saveUser(user);
     }
 
-    public User findById(Long id) {
+    public Users findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new TomcatException("User not found"));
     }

@@ -1,6 +1,7 @@
 package servlet;
 
 import domain.Article;
+import dto.ArticleDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -45,7 +46,7 @@ public class QuestionServlet extends HttpServlet {
         String title = req.getParameter("title");
         String content = req.getParameter("content");
         log.info("{} {} {}" , writer, title, content);
-        articleService.saveArticle(new Article(writer, title, content));
+        articleService.saveArticle(new ArticleDao(writer, title, content));
         resp.sendRedirect("/");
     }
 }

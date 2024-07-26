@@ -26,7 +26,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%= article.getCreated() %></span>
-                                <a href="users/" class="author"><%= article.getWriter() %></a>
+                                <a href="users/<%= article.getWriter().getId() %>" class="author"><%= article.getWriter().getName() %></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
