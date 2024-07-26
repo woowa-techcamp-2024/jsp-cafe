@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 @WebServlet(urlPatterns = {"/qna/*", ""})
 public class QnaServlet extends HttpServlet {
-    private static final Pattern pattern = Pattern.compile("/qna/([1-9][\\d]{0,9})");
+    private static final Pattern pattern = Pattern.compile("^/qna/([1-9][\\d]{0,9})$");
     private ArticleDao articleDao;
 
     @Override
@@ -43,10 +43,12 @@ public class QnaServlet extends HttpServlet {
         if (matcher.matches()) {
             Long id = Long.parseLong(matcher.group(1));
             handleArticleDetails(req, resp, id);
+            return;
         }
 
         throw new HttpException(HttpServletResponse.SC_NOT_FOUND);
     }
+
     private void handleArticleList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Article> articles = articleDao.findAll();
 
@@ -77,6 +79,4 @@ public class QnaServlet extends HttpServlet {
 
         resp.sendRedirect("/");
     }
-
-
 }

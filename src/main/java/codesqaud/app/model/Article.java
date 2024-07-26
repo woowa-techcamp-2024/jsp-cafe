@@ -10,6 +10,12 @@ public class Article {
     private String contents;
     private String authorId;
 
+    public Article(Long id, String title, String contents, String authorId) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.authorId = authorId;
+    }
 
     public Article(String title, String contents, String authorId) {
         validateTitle(title);
@@ -57,5 +63,20 @@ public class Article {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        validateTitle(title);
+        this.title = title;
+    }
+
+    public void setContents(String contents) {
+        validateContent(contents);
+        this.contents = contents;
+    }
+
+    public void setAuthorId(String authorId) {
+        validateAuthorId(authorId);
+        this.authorId = authorId;
     }
 }
