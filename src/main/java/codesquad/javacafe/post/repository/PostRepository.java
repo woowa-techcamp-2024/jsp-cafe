@@ -36,13 +36,16 @@ public class PostRepository {
 
         try {
             con = getConnection();
-            ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, post.getWriter());
             ps.setString(2, post.getTitle());
             ps.setString(3, post.getContents());
             ps.setTimestamp(4, Timestamp.valueOf(post.getCreatedAt()));
-            ps.executeUpdate();
-
+            Integer pk = ps.executeUpdate();
+            if (pk != null) {
+                log.debug("[Post PK] {}", pk);
+                post.setId(pk);
+            }
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
@@ -92,6 +95,7 @@ public class PostRepository {
     }
 
     public Post findById(long id) {
+        log.debug("[Post Find] pk = {}", id);
         var sql = " select * from post where id = ?";
 
         Connection con = null;
