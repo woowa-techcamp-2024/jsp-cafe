@@ -57,7 +57,7 @@
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="#" role="button">로그아웃</a></li>
-                    <li><a href="#" role="button">개인정보수정</a></li>
+                    <li><a href="${pageContext.request.contextPath}/users/${sessionScope.user.id}/form" role="button">개인정보수정</a></li>
                 </c:if>
             </ul>
         </div>
