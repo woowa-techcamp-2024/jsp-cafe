@@ -1,8 +1,9 @@
 package service;
 
 import domain.Users;
+import dto.UsersDao;
 import exception.TomcatException;
-import repository.UserRepository;
+import repository.users.UserRepository;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class UserService {
                                 u.setPassword(newPassword);
                                 u.setName(name);
                                 u.setEmail(email);
+                                userRepository.updateUser(u);
                                 return;
                             }
                             throw new TomcatException("Password is incorrect");
@@ -35,7 +37,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void saveUser(Users user) {
+    public void saveUser(UsersDao userDao) {
+        Users user = new Users(null, userDao.getUserId(), userDao.getPassword(), userDao.getName(), userDao.getEmail());
         userRepository.saveUser(user);
     }
 
