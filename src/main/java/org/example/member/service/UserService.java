@@ -1,17 +1,21 @@
 package org.example.member.service;
 
 import java.sql.SQLException;
+import org.example.config.annotation.Autowired;
+import org.example.config.annotation.Component;
 import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserResponseDto;
 import org.example.member.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -28,8 +32,8 @@ public class UserService {
         return userRepository.existsByUserId(userId);
     }
 
-    public void editUser(User request) throws SQLException, IllegalArgumentException {
-        User user = userRepository.findUserByUserId(request.getUserId());
+    public void editUser(String userId, User request) throws SQLException, IllegalArgumentException {
+        User user = userRepository.findUserByUserId(userId);
         logger.info("request password: {} / current password: {}", request.getPassword(), user.getPassword());
         if (!user.getPassword().equals(request.getPassword())) {
             throw new IllegalArgumentException("password does not match");

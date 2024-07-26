@@ -7,16 +7,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.rowset.serial.SerialException;
+import org.example.config.annotation.Autowired;
+import org.example.config.annotation.Component;
 import org.example.post.model.dao.Post;
 import org.example.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class PostRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
     private DataUtil dataUtil;
 
+    @Autowired
     public PostRepository(DataUtil dataUtil) {
         this.dataUtil = dataUtil;
     }
