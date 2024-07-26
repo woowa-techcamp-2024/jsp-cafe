@@ -1,6 +1,6 @@
 package woopaca.jspcafe.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class User {
@@ -9,9 +9,9 @@ public class User {
     private String username;
     private String nickname;
     private String password;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    public User(Long id, String username, String nickname, String password, LocalDate createdAt) {
+    public User(Long id, String username, String nickname, String password, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
@@ -20,7 +20,7 @@ public class User {
     }
 
     public User(String username, String nickname, String password) {
-        this(null, username, nickname, password, LocalDate.now());
+        this(null, username, nickname, password, LocalDateTime.now());
     }
 
     public Long getId() {
@@ -39,7 +39,7 @@ public class User {
         return password;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 

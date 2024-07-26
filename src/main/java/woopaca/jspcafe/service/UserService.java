@@ -42,8 +42,8 @@ public class UserService {
     public List<MembersResponse> getAllMembers() {
         return userRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(User::getCreatedAt).reversed())
                 .map(MembersResponse::from)
-                .sorted(Comparator.comparing(MembersResponse::createdAt).reversed())
                 .toList();
     }
 
