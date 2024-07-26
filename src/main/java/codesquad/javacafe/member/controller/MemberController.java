@@ -25,9 +25,6 @@ public class MemberController implements SubController {
         switch (method) {
             case "GET" :{
                 var memberList = getMemberList();
-                for (MemberResponseDto memberResponseDto : memberList) {
-                    System.out.println(memberResponseDto);
-                }
                 req.setAttribute("memberList", memberList);
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
                 dispatcher.forward(req,res);

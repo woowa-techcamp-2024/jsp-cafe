@@ -12,10 +12,6 @@ public class MemberUpdateRequestDto {
     private String name;
 
     public MemberUpdateRequestDto(Map<String, String[]> body) {
-        for(Map.Entry<String, String[]> entry : body.entrySet()) {
-            System.out.println(entry.getKey());
-            System.out.println(entry.getValue()[0]);
-        }
         this.userId = body.get("userId")[0];
         this.oldPassword = body.get("oldPassword")[0];
         this.password = body.get("password")[0];

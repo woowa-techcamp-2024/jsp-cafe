@@ -1,6 +1,7 @@
 package codesquad.javacafe.post.controller;
 
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.post.cache.PostCache;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 import codesquad.javacafe.post.repository.PostRepository;
@@ -25,9 +26,17 @@ public class PostController implements SubController {
             case "GET":{
                 var body = Long.parseLong(req.getParameterMap().get("postId")[0]);
                 log.debug("[PostController doProcess] body: {}", body);
-                var post = PostService.getInstance().getPost(body);
-                log.debug("[PostController doProcess] post: {}", post);
-                req.setAttribute("post", post);
+
+                var postCache = PostCache.getInstance().get(body);
+                if (postCache != null) {
+                    log.debug("[PostController] Cache Hit: {}", postCache);
+                    req.setAttribute("post", postCache);
+                } else {
+                    var post = PostService.getInstance().getPost(body);
+                    PostCache.getInstance().set(body, post);
+                    log.debug("[PostController doProcess] post: {}", post);
+                    req.setAttribute("post", post);
+                }
                 var dispatcher = req.getRequestDispatcher("/qna/show.jsp");
                 dispatcher.forward(req, res);
                 break;
@@ -38,7 +47,6 @@ public class PostController implements SubController {
                 break;
             }
         }
-
     }
 
     private void createPost(HttpServletRequest req) {
