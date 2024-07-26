@@ -14,6 +14,10 @@
                   <input type="password" class="form-control" id="password" name="password" placeholder="Password">
               </div>
               <div class="form-group">
+                  <label for="updatePassword">변경할 비밀번호</label>
+                  <input type="password" class="form-control" id="updatePassword" name="password" placeholder="Password">
+              </div>
+              <div class="form-group">
                   <label for="name">이름</label>
                   <input class="form-control" id="name" name="name" placeholder="Name" value="${user.name}">
               </div>
