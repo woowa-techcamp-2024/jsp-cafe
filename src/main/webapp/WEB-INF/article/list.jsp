@@ -1,10 +1,10 @@
 <%@ page import="cafe.domain.entity.Article" %>
 <%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="WEB-INF/components/head.jsp" %>
+<%@ include file="../components/head.jsp" %>
 <body>
-<%@ include file="/WEB-INF/components/header.jsp"%>
-<%@ include file="/WEB-INF/components/navigation.jsp"%>
+<%@ include file="../components/header.jsp"%>
+<%@ include file="../components/navigation.jsp"%>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -24,7 +24,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%=article.getContents()%></span>
-                                <a href="user/profile.jsp" class="author"><%=article.getWriter()%></a>
+                                <a href="/WEB-INF/user/profile.jsp" class="author"><%=article.getWriter()%></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -51,7 +51,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/articles/create" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>

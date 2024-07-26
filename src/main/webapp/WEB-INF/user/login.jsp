@@ -7,10 +7,10 @@
 <div class="container" id="main">
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
-          <form name="article" method="post" action="/user/login.jsp">
+          <form name="article" method="post" action="/users/sign-in">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
-                  <input class="form-control" id="userId" name="userId" placeholder="User ID">
+                  <input class="form-control" id="userid" name="userid" placeholder="User ID">
               </div>
               <div class="form-group">
                   <label for="password">비밀번호</label>

@@ -18,17 +18,18 @@
               <tbody>
                 <%
                     Map<String, User> users = (Map<String, User>) request.getAttribute("users");
-                    for (int i = 0; i < users.size(); i++) {
-                        String key = (String) users.keySet().toArray()[i];
+                    int i = 0;
+                    for (String key : users.keySet()) {
+                        i++;
                         User user = users.get(key);
                 %>
                 <tr>
-                    <th scope="row"><%=i+1%></th>
-                    <td><%=user.getId()%></td>
+                    <th scope="row"><%=i%></th>
+                    <td><%=user.getUserid()%></td>
                     <td><%=user.getName()%></td>
                     <td><%=user.getEmail()%></td>
                     <td><a href="/users/<%=key%>" class="btn btn-success" role="button">조회</a></td>
-                    <td><a href="/users/<%=key%>/form" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/<%=key%>/edit" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
                     }

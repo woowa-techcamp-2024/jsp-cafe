@@ -1,4 +1,5 @@
 <%@ page import="cafe.domain.entity.User" %>
+<%@ page import="cafe.dto.UserDto" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/components/head.jsp" %>
 <body>
@@ -6,13 +7,14 @@
 <%@ include file="/WEB-INF/components/navigation.jsp"%>
 
 <%
-    User user = (User) request.getAttribute("user");
-    String id = (String) request.getAttribute("id");
+    UserDto userDto = (UserDto) request.getAttribute("user");
+    User user = userDto.getUser();
+    String id = userDto.getId();
 %>>
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
-            <form name="article" method="post" action="/users/<%=id%>">
+            <form name="article" method="post" action="/users/<%=id%>/edit">
                 <div class="form-group">
                     <label for="before-password">이전 비밀번호</label>
                     <input class="form-control" id="before-password" name="before-password" placeholder="">
