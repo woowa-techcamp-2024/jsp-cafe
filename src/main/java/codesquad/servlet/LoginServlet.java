@@ -18,6 +18,10 @@ import java.util.Optional;
 public class LoginServlet extends HttpServlet {
     private UserDao userDao;
 
+    public LoginServlet(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
