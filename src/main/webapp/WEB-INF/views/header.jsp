@@ -30,9 +30,28 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/users">Users</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/user/register">Register</a>
-                </li>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <li class="nav-item">
+                            <form action="${pageContext.request.contextPath}/user/logout" method="post">
+                                <button type="submit" class="nav-link btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="${pageContext.request.contextPath}/users/edit/${sessionScope.user.id}">Edit
+                                Profile</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/register">Register</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </div>
     </nav>
