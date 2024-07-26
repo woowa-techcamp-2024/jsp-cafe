@@ -69,7 +69,7 @@ public class UserUpdateApiTest {
 
         TestRequestDispatcher dispatcher = new TestRequestDispatcher();
         request.setRequestDispatcher(dispatcher);
-        request.setAttribute("message", "기존 비밀번호와 맞지 않습니다");
+        request.setAttribute("message", "비밀번호가 맞지 않습니다");
         response.setStatus(400, "BadRequest");
 
         // 서블릿 메소드 호출
@@ -77,6 +77,6 @@ public class UserUpdateApiTest {
 
         // 검증
         assertEquals(400, response.getStatus());
-        assertEquals("기존 비밀번호와 맞지 않습니다", request.getAttribute("message"));
+        assertEquals("비밀번호가 맞지 않습니다", request.getAttribute("message"));
     }
 }

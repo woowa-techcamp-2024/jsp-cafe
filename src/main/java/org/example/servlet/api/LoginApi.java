@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.config.DataHandler;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
@@ -14,9 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet("/api/users/update/*")
-public class UserUpdateApi extends HttpServlet {
-    private final Logger log = LoggerFactory.getLogger(UserUpdateApi.class);
+@WebServlet("/api/login")
+public class LoginApi extends HttpServlet {
+    private final Logger log = LoggerFactory.getLogger(LoginApi.class);
     private UserDataHandler userDataHandler;
 
     @Override
@@ -28,17 +29,14 @@ public class UserUpdateApi extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
-        Long userId = Long.valueOf(request.getParameter("userId"));
         String email = request.getParameter("email");
-        String nickname = request.getParameter("nickname");
         String password = request.getParameter("password");
-        User user = userDataHandler.findByUserId(userId);
+        User user = userDataHandler.findByEmail(email);
         if (isUserNull(request, response, user)) return;
         if (isInvalidPassword(request, response, user.getPassword(), password)) return;
-        User updateUser = new User(user.getUserId(), email, nickname, password, user.getCreatedDt());
-        log.debug("[UserUpdateApi] user" + updateUser.toString());
-        userDataHandler.update(updateUser);
-        response.sendRedirect("/users/" +user.getUserId());
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
+        response.sendRedirect("/");
     }
 
     private boolean isUserNull(HttpServletRequest request, HttpServletResponse response, User user) throws ServletException, IOException {
@@ -62,6 +60,4 @@ public class UserUpdateApi extends HttpServlet {
         }
         return false;
     }
-
-
 }

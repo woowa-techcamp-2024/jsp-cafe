@@ -13,6 +13,8 @@ public class TestHttpServletRequest implements HttpServletRequest {
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, Object> attributes = new HashMap<>();
     private RequestDispatcher requestDispatcher;
+    private HttpSession session;
+    private String path;
 
     public void setRequestDispatcher(RequestDispatcher dispatcher){
         this.requestDispatcher = dispatcher;
@@ -27,6 +29,15 @@ public class TestHttpServletRequest implements HttpServletRequest {
         attributes.put(s, o);
     }
 
+    public void setSession(HttpSession session){
+        this.session = session;
+    }
+
+    public void setPathInfo(String path){
+        this.path = path;
+    }
+
+
     @Override
     public String getParameter(String s) {
         return parameters.get(s);
@@ -38,13 +49,31 @@ public class TestHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public RequestDispatcher getRequestDispatcher(String s) {
-        return requestDispatcher;
+    public Object getAttribute(String s) {
+        return attributes.get(s);
     }
 
     @Override
-    public Object getAttribute(String s) {
-        return attributes.get(s);
+    public HttpSession getSession(boolean b) {
+        if(b){
+            return getSession();
+        }
+        return session;
+    }
+
+    @Override
+    public HttpSession getSession() {
+        return session == null ? new TestHttpSession() : session;
+    }
+
+    @Override
+    public String getPathInfo() {
+        return path;
+    }
+
+    @Override
+    public RequestDispatcher getRequestDispatcher(String s) {
+        return requestDispatcher;
     }
 
 
@@ -89,10 +118,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
         return "";
     }
 
-    @Override
-    public String getPathInfo() {
-        return "";
-    }
 
     @Override
     public String getPathTranslated() {
@@ -144,15 +169,6 @@ public class TestHttpServletRequest implements HttpServletRequest {
         return "";
     }
 
-    @Override
-    public HttpSession getSession(boolean b) {
-        return null;
-    }
-
-    @Override
-    public HttpSession getSession() {
-        return null;
-    }
 
     @Override
     public String changeSessionId() {

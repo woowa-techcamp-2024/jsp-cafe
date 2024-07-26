@@ -35,11 +35,6 @@
                 <td><%= user.getCreatedDt().format(formatter) %></td>
             </tr>
         </table>
-        <div class="action-buttons">
-            <a href="/users/update-form/${user.userId}">
-                <button class="btn">수정 하기</button>
-            </a>
-        </div>
     </div>
 </body>
 </html>
