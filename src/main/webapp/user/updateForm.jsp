@@ -12,23 +12,23 @@
             <div class="panel-heading"><h4>프로필 수정</h4></div>
             <div class="panel-body">
                 <%
-                    String userId = (String)request.getAttribute("userId");
+                    String id = (String)request.getAttribute("id");
                 %>
-                <form action="/users/edit/<%= userId %>" method="post">
+                <form action="/users/edit/<%= id %>" method="post">
                     <div class="form-group">
                         <label for="name">이름</label>
                         <input type="text" class="form-control" id="name" name="name" value=""
-                               placeholder="Enter your name" required>
+                               placeholder="변경할 이름을 입력하세요">
                     </div>
                     <div class="form-group">
                         <label for="email">이메일</label>
                         <input type="email" class="form-control" id="email" name="email" value=""
-                               placeholder="Enter your email" required>
+                               placeholder="변경할 이메일을 입력하세요">
                     </div>
                     <div class="form-group">
-                        <label for="password">비밀번호</label>
+                        <label for="password">현재 비밀번호</label>
                         <input type="password" class="form-control" id="password" name="password" value=""
-                               placeholder="Enter your password" required>
+                               placeholder="현재 비밀번호를 입력하세요" required>
                     </div>
                     <button type="submit" class="btn btn-primary">완료</button>
                 </form>

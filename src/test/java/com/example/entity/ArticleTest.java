@@ -22,7 +22,7 @@ class ArticleTest {
 
 		// then
 		assertThat(article.getId()).isEqualTo(id);
-		assertThat(article.getWriter()).isEqualTo(writer);
+		assertThat(article.getUserId()).isEqualTo(writer);
 		assertThat(article.getTitle()).isEqualTo(title);
 		assertThat(article.getContents()).isEqualTo(contents);
 	}

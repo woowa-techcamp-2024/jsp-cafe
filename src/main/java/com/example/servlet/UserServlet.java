@@ -1,10 +1,12 @@
 package com.example.servlet;
 
+import static com.example.dto.util.DtoCreationUtil.*;
+
 import java.io.IOException;
 
 import com.example.db.UserDatabase;
-import com.example.db.UserMemoryDatabase;
-import com.example.entity.User;
+import com.example.dto.SignupRequest;
+import com.example.service.UserService;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -17,11 +19,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserServlet extends HttpServlet {
 
 	private UserDatabase userDatabase;
+	private UserService userService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		userDatabase = (UserDatabase)getServletContext().getAttribute("userDatabase");
+		userService = (UserService)getServletContext().getAttribute("userService");
 	}
 
 	@Override
@@ -32,16 +36,9 @@ public class UserServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String userId = req.getParameter("userId");
-		String password = req.getParameter("password");
-		String name = req.getParameter("name");
-		String email = req.getParameter("email");
-		if (userId.isEmpty() || password.isEmpty() || name.isEmpty() || email.isEmpty()) {
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-		User user = new User(userId, password, name, email);
-		userDatabase.insert(user);
+		SignupRequest dto = createDto(SignupRequest.class, req);
+		dto.validate();
+		userService.signup(dto);
 		resp.sendRedirect("/users");
 	}
 }

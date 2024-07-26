@@ -8,8 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-import com.example.db.ArticleMysqlDatabase;
+import com.example.db.ArticleDatabase;
+import com.example.db.ArticleMemoryDatabase;
+import com.example.db.UserDatabase;
 import com.example.db.UserMysqlDatabase;
+import com.example.service.ArticleService;
+import com.example.service.UserService;
 
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -20,8 +24,12 @@ public class ApplicationInitializer implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		sce.getServletContext().setAttribute("userDatabase", new UserMysqlDatabase());
-		sce.getServletContext().setAttribute("articleDatabase", new ArticleMysqlDatabase());
+		UserDatabase userDatabase = new UserMysqlDatabase();
+		ArticleDatabase articleDatabase = new ArticleMemoryDatabase();
+		sce.getServletContext().setAttribute("userDatabase", userDatabase);
+		sce.getServletContext().setAttribute("articleDatabase", articleDatabase);
+		sce.getServletContext().setAttribute("userService", new UserService(userDatabase));
+		sce.getServletContext().setAttribute("articleService", new ArticleService(articleDatabase));
 		String url = "jdbc:mysql://localhost:3306/codesquad";
 
 		try {
