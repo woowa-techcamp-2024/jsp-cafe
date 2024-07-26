@@ -21,5 +21,5 @@ public @interface HttpMapping {
      */
     String method();
 
-    String urlTemplate();
+    String urlTemplate() default "";
 }

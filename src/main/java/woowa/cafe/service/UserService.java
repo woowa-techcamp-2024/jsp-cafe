@@ -3,6 +3,7 @@ package woowa.cafe.service;
 import woowa.cafe.domain.User;
 import woowa.cafe.dto.UserInfo;
 import woowa.cafe.dto.request.CreateUserRequest;
+import woowa.cafe.dto.request.UpdateUserRequest;
 import woowa.cafe.repository.UserRepository;
 import woowa.frame.core.annotation.Component;
 
@@ -36,5 +37,21 @@ public class UserService {
         }
 
         return new UserInfo(user.getId(), user.getUserId(), user.getName(), user.getEmail());
+    }
+
+    public void updateUser(UpdateUserRequest req) {
+        User user = userRepository.findById(req.userId());
+
+        if(!req.password().equals(user.getPassword())) {
+            throw new RuntimeException("Password is not correct");
+        }
+
+        if(req.name() != null) {
+            user.setName(req.name());
+        }
+
+        if(req.email() != null) {
+            user.setEmail(req.email());
+        }
     }
 }

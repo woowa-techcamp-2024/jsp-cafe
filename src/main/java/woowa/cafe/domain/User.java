@@ -34,4 +34,17 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    // setter
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

@@ -11,7 +11,6 @@ import woowa.frame.core.BeanContainer;
 import woowa.frame.core.annotation.Component;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Optional;
 
 @Component
@@ -46,13 +45,7 @@ public class DispatcherServlet extends HttpServlet {
                 }
             }
 
-            response.setContentType("text/html");
-
-            PrintWriter out = response.getWriter();
-            out.println("<html><body>");
-            out.println("<h1>200 OK</h1>");
-            out.println("<h1>" + result + "</h1>");
-            out.println("</body></html>");
+            forward(request, response, "/error/404.html");
         } else {
             forward(request, response, "/error/404.html");
         }
