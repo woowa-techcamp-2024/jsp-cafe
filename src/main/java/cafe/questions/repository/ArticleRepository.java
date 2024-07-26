@@ -1,4 +1,6 @@
-package cafe.questions;
+package cafe.questions.repository;
+
+import cafe.questions.Article;
 
 import java.util.List;
 
@@ -8,4 +10,6 @@ public interface ArticleRepository {
     List<Article> findAll();
 
     Article findById(Long id);
+
+    void deleteAll();
 }

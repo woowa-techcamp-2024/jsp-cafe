@@ -1,4 +1,6 @@
-package cafe.users;
+package cafe.users.repository;
+
+import cafe.users.User;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -10,8 +12,7 @@ public class MemoryUserRepository implements UserRepository {
     public User save(User user) {
         if (user.getId() != null) {
             users.set(Math.toIntExact(user.getId() - 1), user);
-        }
-        else {
+        } else {
             user = user.withId((long) (users.size() + 1));
             users.add(user);
         }
@@ -26,5 +27,10 @@ public class MemoryUserRepository implements UserRepository {
     @Override
     public User findById(Long id) {
         return users.get(Math.toIntExact(id) - 1);
+    }
+
+    @Override
+    public void deleteAll() {
+        users.clear();
     }
 }

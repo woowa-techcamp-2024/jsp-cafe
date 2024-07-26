@@ -1,4 +1,4 @@
-package cafe.users;
+package cafe.users.servlet;
 
 import cafe.MappingHttpServlet;
 import jakarta.servlet.ServletException;

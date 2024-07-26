@@ -1,6 +1,8 @@
-package cafe.questions;
+package cafe.questions.servlet;
 
 import cafe.MappingHttpServlet;
+import cafe.questions.Article;
+import cafe.questions.repository.ArticleRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

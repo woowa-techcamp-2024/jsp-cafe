@@ -1,4 +1,6 @@
-package cafe.questions;
+package cafe.questions.repository;
+
+import cafe.questions.Article;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,5 +28,10 @@ public class MemoryArticleRepository implements ArticleRepository {
     @Override
     public Article findById(Long id) {
         return articles.get(Math.toIntExact(id - 1));
+    }
+
+    @Override
+    public void deleteAll() {
+        articles.clear();
     }
 }

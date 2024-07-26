@@ -1,6 +1,8 @@
-package cafe.users;
+package cafe.users.servlet;
 
 import cafe.MappingHttpServlet;
+import cafe.users.User;
+import cafe.users.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +41,7 @@ public class UserEditServlet extends MappingHttpServlet {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
         req.setAttribute("user", new User(userId, email, username, password).withId(id));
 
-        if (userId == null || email == null|| username == null || password == null || confirmPassword == null
+        if (userId == null || email == null || username == null || password == null || confirmPassword == null
                 || userId.isBlank() || email.isBlank() || username.isBlank() || password.isBlank() || confirmPassword.isBlank()
         ) {
             req.setAttribute("errorMessage", "All fields are required");
