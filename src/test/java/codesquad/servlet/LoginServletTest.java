@@ -22,15 +22,19 @@ class LoginServletTest implements EmptyRequestResponseFixture {
     }
 
     @Nested
-    @DisplayName("GET /login 요청은")
+    @DisplayName("GET /login")
     class IndexServletIs {
         @Test
-        @DisplayName("/WEB-INF/views/user/login.jsp에 forward한다.")
+        @DisplayName("forward to : /WEB-INF/views/user/login.jsp")
         void doGet() throws ServletException, IOException {
+            // given
             HttpServletRequest request = emptyRequest(mockRequestDispatcher);
             HttpServletResponse response = emptyResponse();
+
+            // when
             loginServlet.doGet(request, response);
 
+            // then
             Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/user/login.jsp");
             Assertions.assertTrue(mockRequestDispatcher.isForwarded());
         }
