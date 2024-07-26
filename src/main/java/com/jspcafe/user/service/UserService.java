@@ -30,4 +30,13 @@ public class UserService {
         User updateUser = currentUser.update(email, nickname, password);
         userDao.update(updateUser);
     }
+
+    public User login(final String email, final String password) {
+        User user = userDao.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User email not found: email = " + email));
+        if (user.verifyPassword(password)) {
+            return user;
+        }
+        return null;
+    }
 }

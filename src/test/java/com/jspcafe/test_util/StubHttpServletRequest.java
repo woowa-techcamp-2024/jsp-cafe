@@ -13,6 +13,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
     private String forwardedPath;
     private final Map<String, String> parameters = new HashMap<>();
     private final Map<String, Object> attributes = new HashMap<>();
+    private final StubHttpSession session = new StubHttpSession();
 
     @Override
     public BufferedReader getReader() throws IOException {
@@ -358,7 +359,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
 
     @Override
     public HttpSession getSession() {
-        return null;
+        return session;
     }
 
     @Override

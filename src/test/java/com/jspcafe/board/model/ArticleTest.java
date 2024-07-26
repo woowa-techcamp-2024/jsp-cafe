@@ -2,6 +2,8 @@ package com.jspcafe.board.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArticleTest {
@@ -44,5 +46,19 @@ class ArticleTest {
         // When Then
         assertThrows(IllegalArgumentException.class,
                 () -> Article.create(title, nickname, content));
+    }
+
+    @Test
+    void 유효하지_않은_id값을_입력시_예외를_발생시킨다() {
+        // Given
+        String id = null;
+        String title = "testTitle";
+        String nickname = "testName";
+        String content = "test test test.";
+        LocalDateTime created = LocalDateTime.now();
+
+        // When Then
+        assertThrows(IllegalArgumentException.class,
+                () -> new Article(id, title, nickname, content, created));
     }
 }

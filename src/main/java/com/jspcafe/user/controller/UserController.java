@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,13 +43,19 @@ public class UserController extends HttpServlet {
         }
         switch (path) {
             case "/sign" -> forward("signup", req, resp);
+            case "/login" -> forward("login", req, resp);
+            case "/logout" -> logout(req, resp);
             default -> userProfile(req, resp);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        signUp(req, resp);
+        String path = req.getPathInfo();
+        switch (path) {
+            case "/sign" -> signUp(req, resp);
+            case "/login" -> login(req, resp);
+        }
     }
 
     @Override
@@ -113,5 +120,25 @@ public class UserController extends HttpServlet {
         userService.update(user, email, nickname, newPassword);
         resp.setStatus(HttpServletResponse.SC_SEE_OTHER); // 303 상태 코드
         resp.setHeader("Location", "/users/" + id);
+    }
+
+    private void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+        User user = userService.login(email, password);
+        if (user != null) {
+            HttpSession session = req.getSession();
+            session.setAttribute("userInfo", user);
+            resp.sendRedirect("/");
+            return;
+        }
+        req.setAttribute("loginFailed", true);
+        forward("login", req, resp);
+    }
+
+    private void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        session.invalidate();
+        resp.sendRedirect("/");
     }
 }

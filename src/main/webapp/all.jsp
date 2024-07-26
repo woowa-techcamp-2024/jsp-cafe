@@ -21,7 +21,7 @@
     <div class="w-full max-w-md">
         <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-4">
-                <a href="/login.jsp">로그인 화면</a>
+                <a href="/WEB-INF/views/user/login.jsp">로그인 화면</a>
             </div>
             <div class="mb-4">
                 <a href="/users/sign">회원가입 화면</a>

@@ -45,7 +45,7 @@
             </div>
             <div class="text-center">
                 <span class="text-gray-600">이미 회원이신가요? </span>
-                <a href="/login.jsp" class="text-teal-500 hover:text-teal-600">로그인하기</a>
+                <a href="/users/login" class="text-teal-500 hover:text-teal-600">로그인하기</a>
             </div>
         </form>
     </div>

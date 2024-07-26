@@ -1,11 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: woowatech10
-  Date: 2024. 7. 22.
-  Time: 오후 8:36
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko" class="h-full bg-gray-100">
 <head>
@@ -15,34 +9,39 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="h-full flex flex-col">
-<header class="bg-white shadow">
-    <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-        <h1 class="text-xl font-bold"><a href="/">HELLO, WEB!</a></h1>
-        <a href="#" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
-            로그인/회원가입
-        </a>
-    </div>
-</header>
+
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <main class="flex-grow flex items-center justify-center">
     <div class="w-full max-w-md">
         <h2 class="text-3xl font-bold text-center mb-8">로그인</h2>
 
-        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <c:if test="${loginFailed}">
+            <div id="passwordError"
+                 class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">오류!</strong>
+                <span class="block sm:inline">현재 비밀번호가 일치하지 않습니다.</span>
+            </div>
+        </c:if>
+
+        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                     이메일
                 </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="이메일을 입력해주세요">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                       id="email" name="email" type="email" placeholder="이메일을 입력해주세요">
             </div>
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                     비밀번호
                 </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="비밀번호를 입력해주세요">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                       id="password" name="password" type="password" placeholder="비밀번호를 입력해주세요">
             </div>
             <div class="flex items-center justify-between mb-6">
-                <button class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="button">
+                <button class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                        type="submit">
                     로그인
                 </button>
             </div>
