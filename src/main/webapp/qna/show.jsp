@@ -19,7 +19,7 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users/<%= articles %>" class="article-author-name"><%= articles.getWriter() %></a>
+                          <a href="/users/<%= articles.getWriter().getId() %>" class="article-author-name"><%= articles.getWriter().getName() %></a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
                               <%= articles.getCreated() %>
                               <i class="icon-link"></i>
