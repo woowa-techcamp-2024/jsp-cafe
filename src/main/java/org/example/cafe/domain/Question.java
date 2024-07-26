@@ -2,11 +2,10 @@ package org.example.cafe.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Question {
 
-    private String questionId;
+    private Long questionId;
     private String title;
     private String content;
     private String writer;
@@ -15,24 +14,24 @@ public class Question {
     public Question(String title,
                     String content,
                     String writer) {
-        this.questionId = UUID.randomUUID().toString();
         this.title = title;
         this.content = content;
         this.writer = writer;
-        this.createdAt = LocalDateTime.now();
     }
 
-    public Question(String questionId,
+    public Question(Long questionId,
                     String title,
                     String content,
-                    String writer) {
+                    String writer,
+                    LocalDateTime createdAt) {
         this.questionId = questionId;
         this.title = title;
         this.content = content;
         this.writer = writer;
+        this.createdAt = createdAt;
     }
 
-    public String getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 

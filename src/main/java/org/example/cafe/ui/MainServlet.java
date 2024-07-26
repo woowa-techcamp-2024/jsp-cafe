@@ -27,7 +27,7 @@ public class MainServlet extends HttpServlet {
     }
 
     /**
-     * 게시글을 작성한다.
+     * 게시글 목록 페이지를 반환한다.
      *
      * @param request
      * @param response

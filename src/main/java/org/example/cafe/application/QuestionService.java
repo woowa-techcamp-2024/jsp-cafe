@@ -22,7 +22,7 @@ public class QuestionService {
         return questionRepository.findAll();
     }
 
-    public Question findById(String id) {
+    public Question findById(Long id) {
         return questionRepository.findById(id);
     }
 }

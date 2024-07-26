@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
@@ -103,6 +105,57 @@ public class EndToEndTest {
         return new String(inputStream.readAllBytes());
     }
 
+    private static HttpURLConnection createGetLoginedConnection(String path, User user) throws Exception {
+        String cookie = login(user);
+
+        HttpURLConnection con = createGetConnection(path);
+        con.setRequestProperty("Cookie", cookie);
+        return con;
+    }
+
+    private static HttpURLConnection createPostLoginedConnection(String path, User user) throws Exception {
+        String cookie = login(user);
+
+        HttpURLConnection con = createPostConnection(path);
+        con.setRequestProperty("Cookie", cookie);
+        return con;
+    }
+
+    private static String login(User user) throws Exception {
+        HttpURLConnection con = createPostConnection("/login");
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+        String urlParameters = "userId=" + user.getUserId() + "&password=" + user.getPassword();
+        byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+        try (OutputStream os = con.getOutputStream()) {
+            os.write(postData);
+        }
+
+        String cookie = extractCookies(con);
+        con.disconnect();
+
+        return cookie;
+    }
+
+    private static String extractCookies(HttpURLConnection con) {
+        Map<String, List<String>> headerFields = con.getHeaderFields();
+        List<String> cookiesHeader = headerFields.get("Set-Cookie");
+
+        if (cookiesHeader != null) {
+            StringBuilder cookieBuilder = new StringBuilder();
+            for (String cookie : cookiesHeader) {
+                if (cookieBuilder.length() > 0) {
+                    cookieBuilder.append("; ");
+                }
+                String cookieValue = cookie.split(";", 2)[0];
+                cookieBuilder.append(cookieValue);
+            }
+            return cookieBuilder.toString();
+        }
+        return "";
+    }
+
     @AfterEach
     public void tearDownEach() {
         if (con != null) {
@@ -115,24 +168,49 @@ public class EndToEndTest {
     @Nested
     class STEP_1 {
 
-        @Test
-        void 사용자는_회원가입할_수_있다() throws Exception {
-            //given
-            con = createPostConnection("/users");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String urlParameters = "userId=testUser&password=testPass&nickname=testNick&email=test@example.com";
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+        @Nested
+        class 회원가입한다 {
 
-            //when
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(postData);
+            @Test
+            void 사용자는_회원가입할_수_있다() throws Exception {
+                //given
+                con = createPostConnection("/users");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "userId=testUser&password=testPass&nickname=testNick&email=test@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/users");
+                });
             }
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/users");
-            });
+            @Test
+            void 이미_사용자id가_존재한다면_400_에러를_반환한다() throws Exception {
+                //given
+                userRepository.save(new User("testUser1", "testPass", "testUser1", "testEmail1@test.com"));
+
+                con = createPostConnection("/users");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "userId=testUser1&password=testPass&nickname=testNick&email=test@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(400);
+                });
+            }
         }
 
         @Test
@@ -233,9 +311,9 @@ public class EndToEndTest {
         void 사용자는_특정_게시글을_상세_조회할_수_있다() throws IOException {
             //given
             Question question = new Question("title1", "content1", "writer1");
-            questionRepository.save(question);
+            Long questionId = questionRepository.save(question);
 
-            con = createGetConnection("/questions/" + question.getQuestionId());
+            con = createGetConnection("/questions/" + questionId);
 
             //when
             con.connect();
@@ -246,17 +324,107 @@ public class EndToEndTest {
                 assertThat(getResponse(con)).contains("title1", "content1", "writer1");
             });
         }
+    }
+
+    @Nested
+    class STEP_4 {
+
+        @Test
+        void 올바른_아이디와_비밀번호를_입력하면_로그인할_수_있다() throws IOException {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createPostConnection("/login");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "userId=testUser1&password=testPass";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/");
+                assertThat(extractCookies(con)).contains("SESSION");
+            });
+        }
+
+        @Test
+        void 아이디와_비밀번호_중_하나라도_틀리다면_로그인_실패_페이지를_반환한다() throws IOException {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createPostConnection("/login");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "userId=testUser1&password=wrongPass";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(getResponse(con)).contains("아이디 또는 비밀번호가 틀립니다.");
+            });
+        }
+
+        @Nested
+        class 로그아웃한다 {
+
+            @Test
+            void 로그인한_사용자는_로그아웃할_수_있다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createGetLoginedConnection("/logout", user);
+
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/");
+                });
+            }
+
+            @Test
+            void 로그인하지_않았다면_로그인_페이지로_이동한다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createGetConnection("/logout");
+
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/login");
+                });
+            }
+        }
 
         @Nested
         class 회원_정보를_수정한다 {
 
             @Test
-            void 사용자는_회원_정보를_수정할_수_있다() throws IOException {
+            void 로그인한_사용자는_본인의_회원_정보를_수정할_수_있다() throws Exception {
                 //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
                 userRepository.save(user);
 
-                con = createPostConnection("/users/" + user.getUserId() + "/form");
+                con = createPostLoginedConnection("/users/" + user.getUserId() + "/form", user);
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -274,12 +442,14 @@ public class EndToEndTest {
             }
 
             @Test
-            void 회원이_존재하지_않으면_404_에러를_반환한다() throws IOException {
+            void 다른_회원의_정보를_수정하려_하면_403_에러를_반환한다() throws Exception {
                 //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                User other = new User("testUser2", "testPass", "testUser2", "test2@example.com");
                 userRepository.save(user);
+                userRepository.save(other);
 
-                con = createPostConnection("/users/no-user/form");
+                con = createPostLoginedConnection("/users/testUser2/form", user);
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -291,17 +461,17 @@ public class EndToEndTest {
 
                 //then
                 assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(404);
+                    assertThat(con.getResponseCode()).isEqualTo(403);
                 });
             }
 
             @Test
-            void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws IOException {
+            void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws Exception {
                 //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
                 userRepository.save(user);
 
-                con = createPostConnection("/users/" + user.getUserId() + "/form");
+                con = createPostLoginedConnection("/users/" + user.getUserId() + "/form", user);
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 String urlParameters = "checkPassword=notMatchPass&password=newPass&nickname=updateNick&email=update@example.com";
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);

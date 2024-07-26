@@ -10,10 +10,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 
-@WebServlet(name = "UserForwardServlet", value = "/user/*")
-public class UserForwardServlet extends HttpServlet {
+@WebServlet(name = "UserRegistForwardServlet", value = "/user/regist")
+public class UserRegistForwardServlet extends HttpServlet {
 
-    private static final Logger log = getLogger(UserForwardServlet.class);
+    private static final Logger log = getLogger(UserRegistForwardServlet.class);
 
     @Override
     public void init() {
@@ -21,7 +21,7 @@ public class UserForwardServlet extends HttpServlet {
     }
 
     /**
-     * 회원 프로필 페이지를 반환한다..
+     * 회원 가입 페이지를 반환한다.
      *
      * @param request
      * @param response
@@ -32,21 +32,6 @@ public class UserForwardServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
 
-        String requestURI = request.getRequestURI();
-
-        if (requestURI.equals("/user/regist")) {
-            forward("/WEB-INF/user/regist.jsp", request, response);
-            return;
-        }
-
-        if (requestURI.equals("/user/login")) {
-            forward("/WEB-INF/user/login.jsp", request, response);
-            return;
-        }
-    }
-
-    private void forward(String path, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher(path).forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/regist.jsp").forward(request, response);
     }
 }

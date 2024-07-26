@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import org.example.cafe.application.QuestionService;
 import org.example.cafe.domain.Question;
 import org.slf4j.Logger;
@@ -27,13 +25,22 @@ public class QuestionDetailServlet extends HttpServlet {
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
+    /**
+     * 특정 게시글의 상세 페이지를 반환한다
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the
+     *                 servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
 
         String path = request.getRequestURI();
         String[] pathParts = path.split("/");
-        String questionId = URLDecoder.decode(pathParts[2], StandardCharsets.UTF_8);
+        Long questionId = Long.valueOf(pathParts[2]);
 
         Question question = questionService.findById(questionId);
         if (question == null) {
