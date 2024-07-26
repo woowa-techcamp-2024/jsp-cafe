@@ -27,7 +27,8 @@ public class UserListView extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         log.debug("[UserListView] called");
         List<User> users = userDataHandler.findAll();
         request.setAttribute("users", users);

@@ -47,10 +47,16 @@ public class Article {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Article article = (Article) o;
-        return Objects.equals(articleId, article.articleId) && Objects.equals(title, article.title) && Objects.equals(content, article.content) && Objects.equals(author, article.author) && Objects.equals(createdDt, article.createdDt);
+        return Objects.equals(articleId, article.articleId) && Objects.equals(title, article.title) && Objects.equals(
+                content, article.content) && Objects.equals(author, article.author) && Objects.equals(createdDt,
+                article.createdDt);
     }
 
     @Override

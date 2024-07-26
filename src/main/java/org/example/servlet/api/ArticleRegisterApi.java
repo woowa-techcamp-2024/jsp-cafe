@@ -25,7 +25,8 @@ public class ArticleRegisterApi extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleDataHandler = (ArticleDataHandler) config.getServletContext().getAttribute(DataHandler.ARTICLE.getValue());
+        articleDataHandler = (ArticleDataHandler) config.getServletContext()
+                .getAttribute(DataHandler.ARTICLE.getValue());
     }
 
     @Override

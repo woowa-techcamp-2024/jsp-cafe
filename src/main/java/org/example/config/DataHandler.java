@@ -2,8 +2,7 @@ package org.example.config;
 
 public enum DataHandler {
     USER("userDataHandler"),
-    ARTICLE("articleDataHandler")
-    ;
+    ARTICLE("articleDataHandler");
     private final String value;
 
     DataHandler(String value) {

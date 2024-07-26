@@ -16,7 +16,6 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler{
             pstmt.setString(3, article.getAuthor());
             pstmt.setTimestamp(4, Timestamp.valueOf(article.getCreatedDt()));
             pstmt.executeUpdate();
-
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     long id = generatedKeys.getLong(1);

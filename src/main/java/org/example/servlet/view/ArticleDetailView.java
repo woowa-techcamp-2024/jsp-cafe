@@ -23,17 +23,19 @@ public class ArticleDetailView extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleDataHandler = (ArticleDataHandler) config.getServletContext().getAttribute(DataHandler.ARTICLE.getValue());
+        articleDataHandler = (ArticleDataHandler) config.getServletContext()
+                .getAttribute(DataHandler.ARTICLE.getValue());
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         log.debug("[ArticleDetailView] called");
         String pathInfo = request.getPathInfo();
         Long articleId = Long.valueOf(pathInfo.substring(1));
-        log.debug("[ArticleDetailView] articleIdL: "+articleId);
+        log.debug("[ArticleDetailView] articleIdL: " + articleId);
         Article article = articleDataHandler.findByArticleId(articleId);
-        if (article == null){
+        if (article == null) {
             request.setAttribute("status_code", HttpServletResponse.SC_BAD_REQUEST);
             request.setAttribute("message", "게시글이 없습니다");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

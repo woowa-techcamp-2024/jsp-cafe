@@ -23,11 +23,13 @@ public class ArticlesListView extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleDataHandler = (ArticleDataHandler) config.getServletContext().getAttribute(DataHandler.ARTICLE.getValue());
+        articleDataHandler = (ArticleDataHandler) config.getServletContext()
+                .getAttribute(DataHandler.ARTICLE.getValue());
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         log.debug("[ArticlesListView] called");
         List<Article> articles = articleDataHandler.findAll();
         request.setAttribute("articles", articles);

@@ -18,7 +18,7 @@ import java.io.IOException;
 public class UserProfileUpdateFormView extends HttpServlet {
     private final Logger log = LoggerFactory.getLogger(UserProfileUpdateFormView.class);
 
-    private  UserDataHandler userDataHandler;
+    private UserDataHandler userDataHandler;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -27,14 +27,15 @@ public class UserProfileUpdateFormView extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         log.debug("[UserProfileUpdateFormView] called");
         String pathInfo = request.getPathInfo();
         String[] pathParts = pathInfo.split("/");
-        Long userId = Long.valueOf(pathParts[pathInfo.length()-1]);
-        log.debug("[UserProfileUpdateFormView] "+userId);
+        Long userId = Long.valueOf(pathParts[pathInfo.length() - 1]);
+        log.debug("[UserProfileUpdateFormView] " + userId);
         User user = userDataHandler.findByUserId(userId);
-        if(user == null){
+        if (user == null) {
             request.setAttribute("status_code", HttpServletResponse.SC_BAD_REQUEST);
             request.setAttribute("message", "수정하려는 회원이 없습니다.");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

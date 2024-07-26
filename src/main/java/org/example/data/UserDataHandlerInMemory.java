@@ -13,7 +13,8 @@ public class UserDataHandlerInMemory implements UserDataHandler {
 
     @Override
     public User insert(User user) {
-        user = new User(idGenerator.getAndIncrement(), user.getEmail(), user.getNickname(), user.getPassword(), user.getCreatedDt());
+        user = new User(idGenerator.getAndIncrement(), user.getEmail(), user.getNickname(), user.getPassword(),
+                user.getCreatedDt());
         db.put(user.getUserId(), user);
         return user;
     }

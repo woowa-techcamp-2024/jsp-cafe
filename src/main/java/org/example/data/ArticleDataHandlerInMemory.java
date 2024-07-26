@@ -7,13 +7,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ArticleDataHandlerInMemory implements ArticleDataHandler{
+public class ArticleDataHandlerInMemory implements ArticleDataHandler {
     private Map<Long, Article> db = new ConcurrentHashMap<>();
     private AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
     public Article insert(Article article) {
-        article = new Article(idGenerator.getAndIncrement(), article.getTitle(), article.getContent(), article.getAuthor(), article.getCreatedDt());
+        article = new Article(idGenerator.getAndIncrement(), article.getTitle(), article.getContent(),
+                article.getAuthor(), article.getCreatedDt());
         db.put(article.getArticleId(), article);
         return article;
     }
