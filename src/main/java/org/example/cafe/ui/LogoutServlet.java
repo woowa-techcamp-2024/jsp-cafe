@@ -22,7 +22,7 @@ public class LogoutServlet extends HttpServlet {
     }
 
     /**
-     * 아이디, 비밀번호 기반으로 로그인한다. 인증 성공 시 메인 페이지로 이동한다. 인증 실패 시 로그인 실패 페이지로 이동한다.
+     * 로그아웃한다.
      *
      * @param request
      * @param response
@@ -31,10 +31,6 @@ public class LogoutServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
-        if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect("/login");
-            return;
-        }
 
         session.invalidate();
         response.addCookie(new Cookie("SESSION", ""));

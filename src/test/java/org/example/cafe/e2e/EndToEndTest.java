@@ -351,40 +351,44 @@ public class EndToEndTest {
             });
         }
 
-        @Test
-        void 로그인한_사용자는_로그아웃할_수_있다() throws Exception {
-            //given
-            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-            userRepository.save(user);
+        @Nested
+        class 로그아웃한다 {
 
-            con = createGetLoginedConnection("/logout", user);
+            @Test
+            void 로그인한_사용자는_로그아웃할_수_있다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
 
-            //when
-            con.connect();
+                con = createGetLoginedConnection("/logout", user);
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/");
-            });
-        }
+                //when
+                con.connect();
 
-        @Test
-        void 로그인하지_않았다면_로그인_페이지로_이동한다() throws Exception {
-            //given
-            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-            userRepository.save(user);
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/");
+                });
+            }
 
-            con = createGetConnection("/logout");
+            @Test
+            void 로그인하지_않았다면_로그인_페이지로_이동한다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
 
-            //when
-            con.connect();
+                con = createGetConnection("/logout");
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/login");
-            });
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/login");
+                });
+            }
         }
 
         @Nested

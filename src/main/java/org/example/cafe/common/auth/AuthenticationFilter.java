@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.slf4j.Logger;
 
-@WebFilter(urlPatterns = {"/users/*"})
+@WebFilter(urlPatterns = {"/users/*", "/logout"})
 public class AuthenticationFilter implements Filter {
 
     private static final Logger log = getLogger(AuthenticationFilter.class);
@@ -33,7 +33,8 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        if (httpRequest.getRequestURI().equals("/users") || (httpRequest.getMethod().equals("GET"))) {
+        if (httpRequest.getRequestURI().equals("/users") || (httpRequest.getMethod().equals("GET")
+                && httpRequest.getRequestURI().startsWith("/users/"))) {
             chain.doFilter(request, response);
             return;
         }
