@@ -34,6 +34,12 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        // FIXME
+        return Optional.empty();
+    }
+
+    @Override
     public User update(User user, UserUpdateRequest updateRequest) {
         String nickname = updateRequest.nickname();
         String password = updateRequest.password();
