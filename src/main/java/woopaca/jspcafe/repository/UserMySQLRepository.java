@@ -16,7 +16,7 @@ public class UserMySQLRepository implements UserRepository {
 
     @Override
     public void save(User user) {
-        String sql = "INSERT INTO user (username, nickname, password, created_at) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO user (username, nickname, password, created_at) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getUsername(), user.getNickname(), user.getPassword(), user.getCreatedAt());
     }
 
