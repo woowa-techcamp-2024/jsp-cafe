@@ -21,13 +21,15 @@ public class JdbcQuestionRepository implements QuestionRepository {
                         + "    writer       VARCHAR(30),\n"
                         + "    title        TEXT,\n"
                         + "    contents     TEXT,\n"
-                        + "    created_time DATETIME\n"
+                        + "    created_time DATETIME,\n"
+                        + "    users_primary_id BIGINT,\n"
+                        + "    FOREIGN KEY (users_primary_id) REFERENCES users(id)\n"
                         + ")");
     }
 
     @Override
     public void save(final Question question) {
-        String query = "INSERT INTO question(writer, title, contents, created_time) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO question(writer, title, contents, created_time, users_primary_id) VALUES (?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(
                 query,
@@ -36,13 +38,14 @@ public class JdbcQuestionRepository implements QuestionRepository {
                     ps.setString(2, question.getTitle());
                     ps.setString(3, question.getContents());
                     ps.setTimestamp(4, Timestamp.valueOf(question.getCreatedTime()));
+                    ps.setLong(5, question.getUserPrimaryId());
                 }
         );
     }
 
     @Override
     public List<Question> findAll() {
-        String query = "SELECT id, writer, title, contents, created_time FROM question";
+        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question";
 
         return jdbcTemplate.selectAll(
                 query,
@@ -51,14 +54,15 @@ public class JdbcQuestionRepository implements QuestionRepository {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getString(4),
-                        resultSet.getTimestamp(5).toLocalDateTime()
+                        resultSet.getTimestamp(5).toLocalDateTime(),
+                        resultSet.getLong(6)
                 )
         );
     }
 
     @Override
     public Optional<Question> findById(final Long id) {
-        String query = "SELECT id, writer, title, contents, created_time FROM question WHERE id = ?";
+        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question WHERE id = ?";
 
         Question question = jdbcTemplate.selectOne(
                 query,
@@ -68,7 +72,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getString(4),
-                        resultSet.getTimestamp(5).toLocalDateTime()
+                        resultSet.getTimestamp(5).toLocalDateTime(),
+                        resultSet.getLong(6)
                 )
         );
 

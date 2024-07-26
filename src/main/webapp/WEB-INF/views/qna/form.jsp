@@ -6,13 +6,15 @@
 <jsp:include page="../snippet/navigation.jsp"/>
 <jsp:include page="../snippet/header.jsp"/>
 
+<c:set var="signInUser" value="${sessionScope.signInUser}"/>
+
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
             <form name="question" method="post" action="${pageContext.request.contextPath}/questions">
                 <div class="form-group">
                     <label for="writer">글쓴이</label>
-                    <input class="form-control" id="writer" name="writer" placeholder="글쓴이"/>
+                    <input class="form-control" id="writer" name="writer" value="${signInUser.name}" readonly/>
                 </div>
                 <div class="form-group">
                     <label for="title">제목</label>
@@ -22,6 +24,7 @@
                     <label for="contents">내용</label>
                     <textarea name="contents" id="contents" rows="5" class="form-control"></textarea>
                 </div>
+                <input class="form-control" id="writerId" name="writerId" value="${signInUser.id}" type="hidden"/>
                 <button type="submit" class="btn btn-success clearfix pull-right">질문하기</button>
                 <div class="clearfix"/>
             </form>
