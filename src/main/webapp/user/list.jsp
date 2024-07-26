@@ -23,7 +23,7 @@
                           Users user = users.get(i);
                   %>
                   <tr>
-                    <th scope="row"><%=i + 1%></th>
+                    <th scope="row"><%= user.getId() %></th>
                       <td> <c:out value="<%= user.getUserId() %>"/></td>
                       <td>
                           <span onclick="location.href='<%= request.getContextPath() %>/users/<%= user.getId() %>'" style="cursor:pointer;">
