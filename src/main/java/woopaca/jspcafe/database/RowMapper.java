@@ -4,6 +4,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,6 +71,13 @@ public final class RowMapper {
             return resultSet.getBoolean(fieldName);
         } else if (fieldType == String.class) {
             return resultSet.getString(fieldName);
+        } else if (fieldType == LocalDate.class) {
+            Timestamp fieldValue = resultSet.getTimestamp(fieldName);
+            return fieldValue.toLocalDateTime()
+                    .toLocalDate();
+        } else if (fieldType == LocalDateTime.class) {
+            Timestamp fieldValue = resultSet.getTimestamp(fieldName);
+            return fieldValue.toLocalDateTime();
         }
         return resultSet.getObject(fieldName);
     }
