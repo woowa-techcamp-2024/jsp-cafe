@@ -31,7 +31,12 @@
                     </c:when>
                     <c:otherwise>
                         <li><a href="/users/${signInUser.id}" role="button">${signInUser.name}</a></li>
-                        <li><a href="#" role="button">로그아웃</a></li>
+                        <li>
+                            <form name="logoutForm" method="post"
+                                  action="${pageContext.request.contextPath}/users/sign-out" id="logoutForm"></form>
+                            <a href="#" role="button"
+                               onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
+                        </li>
                         <li><a href="/users/edit/${signInUser.id}" role="button">개인정보수정</a></li>
                     </c:otherwise>
                 </c:choose>
