@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                      https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>index</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.IndexServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>user_join</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.UserJoinServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>user_join</servlet-name>
+        <url-pattern>/users/join</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>users</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.UsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>users</servlet-name>
+        <url-pattern>/users</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>user</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.UserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>user</servlet-name>
+        <url-pattern>/users/*</url-pattern>
+    </servlet-mapping>
+
+    <!--  에러 페이지 설정 -->
+    <error-page>
+        <error-code>400</error-code>
+        <location>/static/error/400.html</location>
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/static/error/401.html</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/static/error/404.html</location>
+    </error-page>
+    <error-page>
+        <error-code>405</error-code>
+        <location>/static/error/405.html</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/static/error/500.html</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/static/error/500.html</location>
+    </error-page>
+</web-app>

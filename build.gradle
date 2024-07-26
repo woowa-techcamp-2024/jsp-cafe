@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.codesquad.cafe'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+dependencies {
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+
+    implementation 'ch.qos.logback:logback-classic:1.4.12'
+    // test - embed tomcat
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.0.23'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.0.23'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-el:10.0.23'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.21.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
