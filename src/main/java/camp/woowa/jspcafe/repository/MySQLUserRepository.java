@@ -66,11 +66,12 @@ public class MySQLUserRepository implements UserRepository{
     }
 
     @Override
-    public Long update(Long id, String userId, String updatedName, String updatedEmail) {
-        try (var pstmt = conn.prepareStatement("UPDATE user SET userId = ?, name = ?, email = ? WHERE id = ?");){
+    public Long update(Long id, String userId, String updatePassword, String updatedName, String updatedEmail) {
+        try (var pstmt = conn.prepareStatement("UPDATE user SET userId = ?, name = ?, email = ?, password = ? WHERE id = ?");){
             pstmt.setString(1, userId);
             pstmt.setString(2, updatedName);
             pstmt.setString(3, updatedEmail);
+            pstmt.setString(4, updatePassword);
             pstmt.setLong(4, id);
 
             pstmt.executeUpdate();

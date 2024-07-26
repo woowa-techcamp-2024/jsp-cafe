@@ -11,7 +11,7 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    Long update(Long id, String userId, String updatedName, String updatedEmail);
+    Long update(Long id, String userId, String updatePassword, String updatedName, String updatedEmail);
 
     void deleteAll();
 

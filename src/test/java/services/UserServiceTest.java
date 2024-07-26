@@ -86,9 +86,9 @@ class UserServiceTest {
         String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
-
+        String updatedPassword = "updatedPassword";
         // when
-        Long updated_id = userService.update(id, password, updatedUserId, updatedName, updatedEmail);
+        Long updated_id = userService.update(id, password, updatedPassword, updatedUserId, updatedName, updatedEmail);
 
         // then
         User user = userService.findById(id);
@@ -111,10 +111,11 @@ class UserServiceTest {
         String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
+        String updatedPassword = "updatedPassword";
 
         // when
         // then
-        assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedUserId, updatedName, updatedEmail));
+        assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedPassword, updatedUserId, updatedName, updatedEmail));
     }
 
     @Test

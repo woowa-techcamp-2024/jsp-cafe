@@ -39,8 +39,9 @@ class UserTest {
         String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
+        String updatedPassword = "updatedPassword";
         // when
-        user.update(updatedUserId, updatedName, updatedEmail);
+        user.update(updatedUserId, updatedPassword, updatedName, updatedEmail);
 
         // then
         assertEquals(user.getUserId(), updatedUserId);

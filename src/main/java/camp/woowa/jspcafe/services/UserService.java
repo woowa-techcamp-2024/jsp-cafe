@@ -26,10 +26,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Long update(Long id, String password, String updatedUserId, String updatedName, String updatedEmail) {
+    public Long update(Long id, String password, String updatePassword, String updatedUserId, String updatedName, String updatedEmail) {
         User targetUser = findById(id);
         if (targetUser.validatePassword(password))
-            return userRepository.update(id, updatedUserId, updatedName, updatedEmail);
+            return userRepository.update(id, updatedUserId,updatePassword, updatedName, updatedEmail);
         else
             throw new CustomException(HttpStatus.INVALID_PASSWORD);
     }

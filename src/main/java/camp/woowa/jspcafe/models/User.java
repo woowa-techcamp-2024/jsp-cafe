@@ -3,7 +3,7 @@ package camp.woowa.jspcafe.models;
 public class User {
     private final Long id;
     private String userId;
-    private final String password;
+    private String password;
     private String name;
     private String email;
 
@@ -35,8 +35,9 @@ public class User {
         return email;
     }
 
-    public void update(String userId, String updatedName, String updatedEmail) {
+    public void update(String userId, String updatePassword, String updatedName, String updatedEmail) {
         this.userId = userId;
+        this.password = updatePassword;
         this.name = updatedName;
         this.email = updatedEmail;
     }

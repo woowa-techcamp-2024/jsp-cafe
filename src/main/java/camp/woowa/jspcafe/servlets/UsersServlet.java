@@ -102,6 +102,7 @@ public class UsersServlet extends HttpServlet {
 
             userService.update(id,
                     req.getParameter("password"),
+                    req.getParameter("updatePassword"),
                     req.getParameter("userId"),
                     req.getParameter("name"),
                     req.getParameter("email"));

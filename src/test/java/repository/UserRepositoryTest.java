@@ -88,10 +88,12 @@ class UserRepositoryTest {
         userRepository.save(userId, password, name, email);
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
-        userRepository.update(id, userId, updatedName, updatedEmail);
+        String updatedPassword = "updatedPassword";
+        userRepository.update(id, userId, updatedPassword, updatedName, updatedEmail);
         User user = userRepository.findById(id);
 
         // then
+        assertEquals(updatedPassword, user.getPassword());
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
     }
