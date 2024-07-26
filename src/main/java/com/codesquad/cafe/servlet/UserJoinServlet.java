@@ -15,6 +15,8 @@ public class UserJoinServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(UserJoinServlet.class);
 
+    private static final String USER_JOIN_FORM_JSP = "/WEB-INF/views/user_join_form.jsp";
+
     private UserRepository userRepository;
 
     @Override
@@ -25,7 +27,7 @@ public class UserJoinServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/user_join_form.jsp").forward(req, resp);
+        req.getRequestDispatcher(USER_JOIN_FORM_JSP).forward(req, resp);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class UserJoinServlet extends HttpServlet {
 
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             req.setAttribute("error", "중복된 이메일입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/user_join_form.jsp").forward(req, resp);
+            req.getRequestDispatcher(USER_JOIN_FORM_JSP).forward(req, resp);
             return;
         }
 

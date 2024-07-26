@@ -46,7 +46,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="/posts/form" class="btn btn-primary pull-right" role="button">글쓰기</a>
+                    <a href="/posts" class="btn btn-primary pull-right" role="button">글쓰기</a>
                 </div>
             </div>
         </div>

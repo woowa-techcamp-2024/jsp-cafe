@@ -33,8 +33,6 @@ public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("IndexServlet doGet : {}", req.getRequestURL());
-
         int pageNum = getRequestedPageNum(req);
         int pageSize = getRequestedPageSize(req);
 
@@ -65,7 +63,7 @@ public class IndexServlet extends HttpServlet {
     private Page<PostDetailsDto> getPostDetailListFrom(Page<Post> posts) {
         List<PostDetailsDto> list = posts.getContent().stream()
                 .map(post -> {
-                    User user = userRepository.findById(post.getUserId()).orElseThrow(()
+                    User user = userRepository.findById(post.getAuthorId()).orElseThrow(()
                             -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
                     return new PostDetailsDto(post.getId(), post.getTitle(), post.getContent(),
                             post.getFileName(),

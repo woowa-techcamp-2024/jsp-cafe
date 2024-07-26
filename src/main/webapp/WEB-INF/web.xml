@@ -5,19 +5,6 @@
                       https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/static/*</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>index</servlet-name>
-        <servlet-class>com.codesquad.cafe.servlet.IndexServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>index</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>user_join</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.UserJoinServlet</servlet-class>
@@ -26,6 +13,7 @@
         <servlet-name>user_join</servlet-name>
         <url-pattern>/users/join</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>users</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.UsersServlet</servlet-class>
@@ -34,6 +22,16 @@
         <servlet-name>users</servlet-name>
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>user_edit</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.UserEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>user_edit</servlet-name>
+        <url-pattern>/users/edit/*</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>user</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.UserServlet</servlet-class>
@@ -41,6 +39,38 @@
     <servlet-mapping>
         <servlet-name>user</servlet-name>
         <url-pattern>/users/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>post_detail</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.PostsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>post_detail</servlet-name>
+        <url-pattern>/posts/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>post_create</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.PostCreateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>post_create</servlet-name>
+        <url-pattern>/posts</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>index</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.IndexServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <!--  에러 페이지 설정 -->

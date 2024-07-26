@@ -18,6 +18,19 @@
                                 <a href="#" class="btn btn-xs btn-default"><span
                                         class="glyphicon glyphicon-envelope"></span>&nbsp;${user.email}</a>
                             </p>
+                            <c:choose>
+                                <c:when test="${user.deleted}">
+                                    <h4 class="media-heading">탈퇴한 유저입니다.</h4>
+                                </c:when>
+                                <c:when test="${not user.deleted}">
+                                    <a class="link-modify-article" href="/users/edit?id=${user.id}">수정</a>
+                                    <form class="form-delete" action="/users/${user.id}" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="id" value="${user.id}">
+                                        <button class="link-delete-article" type="submit">탈퇴</button>
+                                    </form>
+                                </c:when>
+                            </c:choose>
                         </div>
                     </div>
                 </div>

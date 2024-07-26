@@ -1,6 +1,6 @@
 package com.codesquad.cafe.servlet;
 
-import com.codesquad.cafe.db.InMemoryUserRepository;
+import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -15,12 +15,12 @@ public class UsersServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(UsersServlet.class);
 
-    private InMemoryUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        this.userRepository = (InMemoryUserRepository) getServletContext().getAttribute("userRepository");
+        this.userRepository = (UserRepository) getServletContext().getAttribute("userRepository");
     }
 
     @Override

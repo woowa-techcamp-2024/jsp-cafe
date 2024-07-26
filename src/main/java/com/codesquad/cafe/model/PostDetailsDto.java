@@ -37,6 +37,16 @@ public class PostDetailsDto {
         this.createdAt = createdAt;
     }
 
+    public PostDetailsDto(Post post, User user) {
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.fileName = post.getFileName();
+        this.authorId = post.getAuthorId();
+        this.authorUsername = user.getUsername();
+        this.createdAt = post.getCreatedAt();
+    }
+
     public String getFormattedDate() {
         return createdAt.format(formatter);
     }

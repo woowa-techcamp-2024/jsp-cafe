@@ -1,11 +1,13 @@
 package com.codesquad.cafe.model;
 
-import jakarta.servlet.annotation.WebServlet;
-
 public class UserJoinRequest {
+
     private String username;
+
     private String password;
+
     private String name;
+
     private String email;
 
     public String getUsername() {

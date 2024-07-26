@@ -18,6 +18,8 @@ dependencies {
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
 
+    implementation 'mysql:mysql-connector-java:8.0.33'
+
     implementation 'ch.qos.logback:logback-classic:1.4.12'
     // test - embed tomcat
     testImplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.0.23'
