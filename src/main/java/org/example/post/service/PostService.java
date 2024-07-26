@@ -3,14 +3,18 @@ package org.example.post.service;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.example.config.annotation.Autowired;
+import org.example.config.annotation.Component;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostResponse;
 import org.example.post.repository.PostRepository;
 
+@Component
 public class PostService {
 
     private PostRepository postRepository;
 
+    @Autowired
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
