@@ -27,8 +27,7 @@ public class QuestionServlet extends HttpServlet {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
-            req.getRequestDispatcher("/WEB-INF/views/user/login.jsp")
-                    .forward(req, resp);
+            resp.sendRedirect("/users/sign-in");
             return;
         }
 
@@ -43,8 +42,7 @@ public class QuestionServlet extends HttpServlet {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
-            req.getRequestDispatcher("/WEB-INF/user/login.jsp")
-                    .forward(req, resp);
+            resp.sendRedirect("/users/sign-in");
             return;
         }
 
