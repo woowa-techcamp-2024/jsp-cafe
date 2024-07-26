@@ -57,13 +57,18 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
                 <li><a href="${pageContext.request.contextPath}/users" role="button">멤버리스트</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/login.html" role="button">로그인</a></li>
+                <li><a href="${pageContext.request.contextPath}/users/login" role="button">로그인</a></li>
                 <li><a href="${pageContext.request.contextPath}/users/registration" role="button">회원가입</a></li>
                 <!--
                 <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
                 -->
-                <li><a href="#" role="button">로그아웃</a></li>
+<%--                <li><a href="${pageContext.request.contextPath}/users/logout" role="button">로그아웃</a></li>--%>
+                <li>
+                    <form id="logout-form" action="${pageContext.request.contextPath}/users/logout" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-link navbar-btn" role="button">로그아웃</button>
+                    </form>
+                </li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
         </div>
