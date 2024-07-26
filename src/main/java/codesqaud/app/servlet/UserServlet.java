@@ -1,5 +1,6 @@
 package codesqaud.app.servlet;
 
+import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.user.UserDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
@@ -22,8 +23,11 @@ import static jakarta.servlet.http.HttpServletResponse.*;
 
 @WebServlet(value = "/users/*")
 public class UserServlet extends HttpServlet {
-    Pattern USER_PROFILE_PATTERN = Pattern.compile("^/users/([1-9][\\d]{0,9})$");
-    Pattern USER_PROFILE_FORM_PATTERN = Pattern.compile("^/users/profile/([1-9][\\d]{0,9})$");
+    private static final Pattern PROFILE_PATTERN = Pattern.compile("^/users/profile/([1-9][\\d]{0,9})$");
+    private static final String LIST_URI = "/users";
+    private static final String LOGIN_URI = "/users/login";
+    private static final String USER_PROFILE_FORM_URI = "/users/profile";
+
     private UserDao userDao;
 
     @Override
@@ -34,12 +38,12 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getRequestURI().equals("/users")) {
+        if (req.getRequestURI().equals(LIST_URI)) {
             handleUserList(req, resp);
             return;
         }
 
-        if (req.getRequestURI().equals("/users/login")) {
+        if (req.getRequestURI().equals(LOGIN_URI)) {
             handleLoginForm(req, resp);
             return;
         }
@@ -49,27 +53,22 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        Matcher matcher = USER_PROFILE_PATTERN.matcher(req.getRequestURI());
+        if (req.getRequestURI().equals(USER_PROFILE_FORM_URI)) {
+            handleProfileForm(req, resp);
+            return;
+        }
+
+        Matcher matcher = PROFILE_PATTERN.matcher(req.getRequestURI());
         if (matcher.matches()) {
             long id = Long.parseLong(matcher.group(1));
             handleUserProfile(req, resp, id);
             return;
         }
 
-        matcher = USER_PROFILE_FORM_PATTERN.matcher(req.getRequestURI());
-        if (matcher.matches()) {
-            //TODO: 로그인한 사용자만 수정 가능하도록 변경
-            long id = Long.parseLong(matcher.group(1));
-            handleProfileForm(req, resp, id);
-            return;
-        }
-
         throw new HttpException(HttpServletResponse.SC_NOT_FOUND);
     }
 
-    private void handleProfileForm(HttpServletRequest req, HttpServletResponse resp, long id) throws ServletException, IOException {
-        User user = userDao.findById(id).orElseThrow(() -> new HttpException(SC_NOT_FOUND));
-        req.setAttribute("user", user);
+    private void handleProfileForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/user/profile_form.jsp").forward(req, resp);
     }
 
@@ -119,13 +118,12 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        Matcher matcher = USER_PROFILE_PATTERN.matcher(req.getRequestURI());
-        if (matcher.matches()) {
-            //TODO: 로그인한 사용자만 수정 가능하도록 변경
-            long id = Long.parseLong(matcher.group(1));
-            handleProfileUpdate(req, resp, id);
+        if (req.getRequestURI().equals(USER_PROFILE_FORM_URI)) {
+            handleProfileUpdate(req, resp);
             return;
         }
+
+        super.doPost(req, resp);
     }
 
     private void handleLogout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -146,7 +144,7 @@ public class UserServlet extends HttpServlet {
         }
 
         HttpSession session = req.getSession(true);
-        session.setAttribute("user", user.get());
+        session.setAttribute("loginUser", user.get());
         resp.sendRedirect("/");
     }
 
@@ -162,16 +160,28 @@ public class UserServlet extends HttpServlet {
         resp.sendRedirect("/users");
     }
 
-    private void handleProfileUpdate(HttpServletRequest req, HttpServletResponse resp, long id) throws IOException {
-        User user = userDao.findById(id)
-                .orElseThrow(() -> new HttpException(SC_NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
+    private void handleProfileUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        HttpSession session = AuthenticationManager.getAuthSession(req);
+        User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
 
-        user.setEmail(req.getParameter("email"));
-        user.setName(req.getParameter("name"));
-        user.setPassword(req.getParameter("password"));
+        String checkPasswordAttribute = "checkPassword";
+        Object checkPassword = session.getAttribute(checkPasswordAttribute);
 
-        userDao.update(user);
-
-        resp.sendRedirect("/users/" + id);
+        if (Boolean.TRUE.equals(checkPassword)) {
+            loginUser.setEmail(req.getParameter("email"));
+            loginUser.setName(req.getParameter("name"));
+            session.removeAttribute(checkPasswordAttribute);
+            userDao.update(loginUser);
+            resp.sendRedirect("/users/profile/" + loginUser.getId());
+        } else {
+            String password = req.getParameter("password");
+            if (!loginUser.getPassword().equals(password)) {
+                session.setAttribute(checkPasswordAttribute, false);
+                req.setAttribute("isFailed", true);
+            } else {
+                session.setAttribute(checkPasswordAttribute, true);
+            }
+            req.getRequestDispatcher("/WEB-INF/user/profile_form.jsp").forward(req, resp);
+        }
     }
 }

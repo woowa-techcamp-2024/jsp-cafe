@@ -33,7 +33,7 @@
                 -->
                 <c:if test="${isLogin eq true}">
                     <li><a href="/users/logout" role="button" onclick="logout(event)">로그아웃</a></li>
-                    <li><a href="/users/<c:out value="${user.id}"/>/profile" role="button">개인정보수정</a></li>
+                    <li><a href="/users/profile" role="button">개인정보수정</a></li>
                 </c:if>
             </ul>
         </div>

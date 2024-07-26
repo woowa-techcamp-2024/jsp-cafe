@@ -1,8 +1,10 @@
 package codesqaud.app.servlet;
 
+import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
+import codesqaud.app.model.User;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -70,11 +72,11 @@ public class QnaServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String authorId = req.getParameter("authorId");
         String title = req.getParameter("title");
         String content = req.getParameter("contents");
 
-        Article article = new Article(title, content, authorId);
+        User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
+        Article article = new Article(title, content, loginUser.getId());
         articleDao.save(article);
 
         resp.sendRedirect("/");

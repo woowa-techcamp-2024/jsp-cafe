@@ -3,21 +3,22 @@ package codesqaud.app.model;
 import codesqaud.app.exception.HttpException;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class Article {
     private Long id;
     private String title;
     private String contents;
-    private String authorId;
+    private Long authorId;
 
-    public Article(Long id, String title, String contents, String authorId) {
+    public Article(Long id, String title, String contents, Long authorId) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.authorId = authorId;
     }
 
-    public Article(String title, String contents, String authorId) {
+    public Article(String title, String contents, Long authorId) {
         validateTitle(title);
         validateContent(contents);
         validateAuthorId(authorId);
@@ -39,9 +40,9 @@ public class Article {
         }
     }
 
-    private void validateAuthorId(String authorId) {
-        if (authorId == null || authorId.trim().isEmpty()) {
-            throw new HttpException(SC_BAD_REQUEST, "작성자 ID는 null이거나 비어있을 수 없습니다.");
+    private void validateAuthorId(Long authorId) {
+        if (authorId == null) {
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR, "작성자 ID는 비어있을 수 없습니다.");
         }
     }
 
@@ -57,7 +58,7 @@ public class Article {
         return contents;
     }
 
-    public String getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
@@ -75,7 +76,7 @@ public class Article {
         this.contents = contents;
     }
 
-    public void setAuthorId(String authorId) {
+    public void setAuthorId(Long authorId) {
         validateAuthorId(authorId);
         this.authorId = authorId;
     }

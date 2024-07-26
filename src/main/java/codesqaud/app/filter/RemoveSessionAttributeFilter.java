@@ -11,16 +11,20 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebFilter("/*")
-public class AuthenticationFilter extends HttpFilter {
+public class RemoveSessionAttributeFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpSession session = req.getSession();
-        if(session != null && session.getAttribute("loginUser") != null) {
-            req.setAttribute("isLogin", true);
-        } else {
-            req.setAttribute("isLogin", false);
+        if(session != null) {
+            if(!isInProgressCheckPassword(req)) {
+                session.removeAttribute("checkPassword");
+            }
         }
-
+        
         super.doFilter(req, res, chain);
+    }
+
+    private boolean isInProgressCheckPassword(HttpServletRequest req) {
+        return req.getRequestURI().equals("/users/profile");
     }
 }

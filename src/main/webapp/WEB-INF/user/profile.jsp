@@ -14,7 +14,7 @@
                 <div class="well well-sm">
                     <div class="media">
                         <a class="thumbnail pull-left">
-                            <img class="media-object" src="../../images/80-text.png">
+                            <img class="media-object" src="/images/80-text.png">
                         </a>
                         <div class="media-body">
                             <h4 class="media-heading"><c:out value="${user.name}"/></h4>

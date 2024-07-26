@@ -20,7 +20,7 @@ public class DbArticleDao implements ArticleDao {
             resultSet.getLong("id"),
             resultSet.getString("title"),
             resultSet.getString("contents"),
-            resultSet.getString("author_id")
+            resultSet.getLong("author_id")
     );
 
     private final JdbcTemplate jdbcTemplate;
