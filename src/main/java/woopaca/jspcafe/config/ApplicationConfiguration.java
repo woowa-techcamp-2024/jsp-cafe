@@ -6,7 +6,7 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import woopaca.jspcafe.database.DatabaseInitializer;
 import woopaca.jspcafe.database.JdbcTemplate;
-import woopaca.jspcafe.repository.PostMemoryRepository;
+import woopaca.jspcafe.repository.PostMySQLRepository;
 import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.UserMySQLRepository;
 import woopaca.jspcafe.repository.UserRepository;
@@ -38,7 +38,7 @@ public class ApplicationConfiguration implements ServletContextListener {
     }
 
     private PostRepository postRepository() {
-        return new PostMemoryRepository();
+        return new PostMySQLRepository(jdbcTemplate());
     }
 
     private JdbcTemplate jdbcTemplate() {
