@@ -7,7 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
 import org.example.demo.Router;
+import org.example.demo.exception.InternalServerError;
 import org.example.demo.handler.UserHandler;
+
+import java.io.IOException;
 
 @WebServlet(name = "usersServlet", urlPatterns = "/users/*")
 public class UserServlet extends HttpServlet {
@@ -26,13 +29,13 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!router.route(request, response)) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
-        } catch (Exception e) {
-            throw new ServletException(e);
+        } catch (IOException e) {
+            throw new InternalServerError(e.getMessage());
         }
     }
 }

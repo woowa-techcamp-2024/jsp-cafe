@@ -2,6 +2,7 @@ package org.example.demo.db;
 
 import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
+import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class PostDb{
 
     public static void addPost(PostCreateDao dao) {
         //TODO User 로직 분리 필요
-        User user = UserDb.getUserByUserId(dao.getWriter()).orElseThrow(() -> new RuntimeException("user not found"));
+        User user = UserDb.getUserByUserId(dao.getWriter()).orElseThrow(() -> new NotFoundExceptoin("user not found"));
         Post post = new Post(generateNxtId(), user, dao.getTitle(), dao.getContents(), LocalDateTime.now());
         posts.putIfAbsent(post.getId(), post);
     }

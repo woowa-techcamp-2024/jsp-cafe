@@ -5,10 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.demo.db.DbConfig;
-import org.example.demo.db.PostDb;
 import org.example.demo.repository.PostRepository;
-import org.example.demo.repository.UserRepository;
 
 import java.io.IOException;
 

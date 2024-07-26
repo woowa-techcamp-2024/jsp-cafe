@@ -47,6 +47,10 @@ public class UserHandler {
     }
 
     public void handleUserCreate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
+        if (userRepository.getUserByUserId(request.getParameter("userId")).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 유저 아이디입니다.");
+        }
+
         UserCreateDao dao = new UserCreateDao(
                 request.getParameter("userId"),
                 request.getParameter("password"),

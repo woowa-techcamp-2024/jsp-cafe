@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
 import org.example.demo.Router;
+import org.example.demo.exception.InternalServerError;
 import org.example.demo.handler.PostHandler;
 
 import java.io.IOException;
@@ -30,8 +31,8 @@ public class PostServlet extends HttpServlet {
             if (!router.route(request, response)) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
-        } catch (Exception e) {
-            throw new ServletException(e);
+        } catch (IOException e) {
+            throw new InternalServerError(e.getMessage());
         }
     }
 }

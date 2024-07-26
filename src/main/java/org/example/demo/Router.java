@@ -1,8 +1,11 @@
 package org.example.demo;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.exception.InternalServerError;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,7 +18,7 @@ public class Router {
         routes.add(new Route(method, urlPattern, handler));
     }
 
-    public boolean route(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public boolean route(HttpServletRequest request, HttpServletResponse response){
         String path = request.getRequestURI().substring(request.getContextPath().length());
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
 
@@ -27,7 +30,11 @@ public class Router {
                     for (int i = 1; i <= matcher.groupCount(); i++) {
                         params.add(matcher.group(i));
                     }
-                    route.handler.handle(request, response, params);
+                    try {
+                        route.handler.handle(request, response, params);
+                    } catch (IOException | ServletException e) {
+                        throw new InternalServerError(e.getMessage());
+                    }
                     return true;
                 }
             }

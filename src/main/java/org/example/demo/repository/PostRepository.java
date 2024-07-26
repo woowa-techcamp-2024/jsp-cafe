@@ -3,6 +3,7 @@ package org.example.demo.repository;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
+import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
 
 import java.sql.*;
@@ -49,7 +50,7 @@ public class PostRepository {
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             User user = userRepository.getUserByUserId(dao.getWriter())
-                    .orElseThrow(() -> new RuntimeException("user not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("user not found"));
 
             pstmt.setLong(1, user.getId());
             pstmt.setString(2, dao.getTitle());
