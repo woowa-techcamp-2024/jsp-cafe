@@ -41,4 +41,12 @@ public class UserService {
     public User findByUserId(String w) {
         return userRepository.findByUserId(w);
     }
+
+    public User login(String userId, String password) {
+        User user = findByUserId(userId);
+        if (user == null || !user.validatePassword(password))
+            throw new CustomException(HttpStatus.INVALID_USER);
+
+        return user;
+    }
 }
