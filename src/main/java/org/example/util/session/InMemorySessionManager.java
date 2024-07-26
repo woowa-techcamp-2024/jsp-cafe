@@ -13,6 +13,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class InMemorySessionManager implements SessionManager {
 
+    private final Map<String, HttpSession> sessions = new HashMap<>();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Duration sessionTimeout = Duration.ofMinutes(30);
+
     private static final class InstanceHolder {
         private static final SessionManager INSTANCE = new InMemorySessionManager();
     }
@@ -21,9 +25,6 @@ public class InMemorySessionManager implements SessionManager {
         return InstanceHolder.INSTANCE;
     }
 
-    private final Map<String, HttpSession> sessions = new HashMap<>();
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Duration sessionTimeout = Duration.ofMinutes(30);
 
     private InMemorySessionManager() {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -45,11 +46,10 @@ public class InMemorySessionManager implements SessionManager {
     }
 
     @Override
-    public HttpSession createSession() {
-        HttpSession session = new Session();
+    public HttpSession createSession(String sessionId, HttpSession session) {
         lock.writeLock().lock();
         try {
-            sessions.put(session.getId(), session);
+            sessions.put(sessionId, session);
         } finally {
             lock.writeLock().unlock();
         }
