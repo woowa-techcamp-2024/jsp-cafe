@@ -40,39 +40,39 @@
                     <div class="article-doc comment-doc">
                         <c:out value="${article.content}" escapeXml="false" />
                     </div>
-                    <div class="article-util">
-                        <ul class="article-util-list">
-                            <li>
-                                <a class="link-modify-article" href="/articles/${article.articleId}/edit">수정</a>
-                            </li>
-                            <li>
-                                <form class="form-delete" action="/articles/${article.articleId}" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
-                            </li>
-                            <li>
-                                <a class="link-modify-article" href="/articles">목록</a>
-                            </li>
-                        </ul>
-                    </div>
+<%--                    <div class="article-util">--%>
+<%--                        <ul class="article-util-list">--%>
+<%--                            <li>--%>
+<%--                                <a class="link-modify-article" href="/articles/${article.articleId}/edit">수정</a>--%>
+<%--                            </li>--%>
+<%--                            <li>--%>
+<%--                                <form class="form-delete" action="/articles/${article.articleId}" method="POST">--%>
+<%--                                    <input type="hidden" name="_method" value="DELETE">--%>
+<%--                                    <button class="link-delete-article" type="submit">삭제</button>--%>
+<%--                                </form>--%>
+<%--                            </li>--%>
+<%--                            <li>--%>
+<%--                                <a class="link-modify-article" href="/articles">목록</a>--%>
+<%--                            </li>--%>
+<%--                        </ul>--%>
+<%--                    </div>--%>
                 </article>
 
-                <div class="qna-comment">
-                    <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>0</strong>개의 의견</p>
-                        <div class="qna-comment-slipp-articles">
-                            <!-- 댓글 목록을 여기에 추가 -->
-                            <form class="submit-write">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
-                                <div class="clearfix"></div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<%--                <div class="qna-comment">--%>
+<%--                    <div class="qna-comment-slipp">--%>
+<%--                        <p class="qna-comment-count"><strong>0</strong>개의 의견</p>--%>
+<%--                        <div class="qna-comment-slipp-articles">--%>
+<%--                            <!-- 댓글 목록을 여기에 추가 -->--%>
+<%--                            <form class="submit-write">--%>
+<%--                                <div class="form-group" style="padding:14px;">--%>
+<%--                                    <textarea class="form-control" placeholder="Update your status"></textarea>--%>
+<%--                                </div>--%>
+<%--                                <button class="btn btn-success pull-right" type="button">답변하기</button>--%>
+<%--                                <div class="clearfix"></div>--%>
+<%--                            </form>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
             </div>
         </div>
     </div>
