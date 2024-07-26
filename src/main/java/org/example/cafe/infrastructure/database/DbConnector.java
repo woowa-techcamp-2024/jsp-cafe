@@ -20,14 +20,30 @@ public class DbConnector {
     private DataSource dataSource;
 
     public DbConnector init() {
-        this.config = new HikariConfig("/setting.properties");
+        String env = System.getenv("ENV");
+        if ("prod".equals(env)) {
+            this.config = loadFromArgs();
+        } else {
+            this.config = new HikariConfig("/setting.properties");
+        }
+
         this.dataSource = new HikariDataSource(config);
 
         return healthCheck();
     }
 
+    private HikariConfig loadFromArgs() {
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName(System.getenv("DRIVER_CLASS_NAME"));
+        config.setJdbcUrl(System.getenv("JDBC_URL"));
+        config.setUsername(System.getenv("JDBC_USER"));
+        config.setPassword(System.getenv("JDBC_PASSWORD"));
+        return config;
+    }
+
     private DbConnector healthCheck() {
-        try (Statement statement = getConnection().createStatement();
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(HEALTH_CHECK)) {
             if (resultSet.next() && resultSet.getInt(1) == 1) {
                 log.info(config.getJdbcUrl() + " connected.");
