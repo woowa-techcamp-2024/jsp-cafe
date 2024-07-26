@@ -59,4 +59,16 @@ public class UserService {
             throw new IllegalArgumentException("로그인 정보를 모두 입력해야 합니다.");
         }
     }
+
+    public User readSignInUser(final Long editId, final User signInUser) {
+        if (Objects.isNull(editId) || Objects.isNull(signInUser)) {
+            throw new IllegalArgumentException("프로필 수정을 할 사용자를 찾을 수 없습니다.");
+        }
+
+        if (!editId.equals(signInUser.getId())) {
+            throw new IllegalArgumentException("자신의 프로필만 수정할 수 있습니다.");
+        }
+
+        return read(editId);
+    }
 }
