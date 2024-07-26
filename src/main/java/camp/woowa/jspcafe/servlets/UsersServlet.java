@@ -99,7 +99,7 @@ public class UsersServlet extends HttpServlet {
             req.getSession().setAttribute("user", user);
 
             try {
-                res.sendRedirect("/users");
+                res.sendRedirect("/");
             } catch (IOException e) {
                 log(e.getMessage());
             }
