@@ -11,8 +11,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static codesquad.javacafe.common.db.MySqlConnection.close;
-import static codesquad.javacafe.common.db.MySqlConnection.getConnection;
+import static codesquad.javacafe.common.db.DBConnection.close;
+import static codesquad.javacafe.common.db.DBConnection.getConnection;
 
 public class MemberRepository {
     private static final Logger log = LoggerFactory.getLogger(MemberRepository.class);
@@ -24,10 +24,9 @@ public class MemberRepository {
 
     public void save(Connection connection, MemberCreateRequestDto memberDto) {
         var member = memberDto.toEntity();
+        log.debug("[Member] {}",member);
 
-        var sql = "insert into member(member_id, member_password, member_name)\n" +
-                "select ?,?,? from member\n" +
-                "where not exists (select * from member where member_id = ?)";
+
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -38,11 +37,24 @@ public class MemberRepository {
             } else {
                 con = getConnection();
             }
+
+            String sql;
+            if (isH2Database(connection)) {
+                sql = "MERGE INTO member (member_id, member_password, member_name) " +
+                        "KEY (member_id) VALUES (?, ?, ?)";
+            } else {
+                sql = "INSERT INTO member (member_id, member_password, member_name) " +
+                        "SELECT ?, ?, ? FROM DUAL " +
+                        "WHERE NOT EXISTS (SELECT * FROM member WHERE member_id = ?)";
+            }
+
             ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, member.getUserId());
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
-            ps.setString(4, member.getUserId());
+            if (!isH2Database(con)) {
+                ps.setString(4, member.getUserId());
+            }
             ps.executeUpdate();
 
             var rs = ps.getGeneratedKeys();
@@ -62,6 +74,16 @@ public class MemberRepository {
             } else {
                 close(null, ps, null);
             }
+        }
+    }
+
+    private boolean isH2Database(Connection connection) {
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            String databaseProductName = metaData.getDatabaseProductName();
+            return "H2".equalsIgnoreCase(databaseProductName);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to detect database type", e);
         }
     }
 

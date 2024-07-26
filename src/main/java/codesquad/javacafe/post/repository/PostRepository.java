@@ -1,6 +1,5 @@
 package codesquad.javacafe.post.repository;
 
-import codesquad.javacafe.member.entity.Member;
 import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
 import codesquad.javacafe.post.entity.Post;
@@ -13,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static codesquad.javacafe.common.db.MySqlConnection.close;
-import static codesquad.javacafe.common.db.MySqlConnection.getConnection;
+import static codesquad.javacafe.common.db.DBConnection.close;
+import static codesquad.javacafe.common.db.DBConnection.getConnection;
 
 public class PostRepository {
     private static final Logger log = LoggerFactory.getLogger(PostRepository.class);

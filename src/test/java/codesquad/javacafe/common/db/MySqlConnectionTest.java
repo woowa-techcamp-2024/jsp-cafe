@@ -9,6 +9,6 @@ class MySqlConnectionTest {
     @Test
     @DisplayName("MySQL Connection Test")
     void testConnection() {
-        MySqlConnection.getConnection();
+        DBConnection.getConnection();
     }
 }
