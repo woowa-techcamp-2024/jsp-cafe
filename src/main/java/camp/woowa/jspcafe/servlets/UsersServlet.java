@@ -1,6 +1,7 @@
 package camp.woowa.jspcafe.servlets;
 
 import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.models.User;
 import camp.woowa.jspcafe.services.UserService;
 import jakarta.servlet.RequestDispatcher;
@@ -55,12 +56,13 @@ public class UsersServlet extends HttpServlet {
             } catch (ServletException | IOException e) {
                 log(e.getMessage());
             }
-        } else {
+        } else if (pathInfo.split("/").length == 2) { // POST /users/{id} 필터링
             try {
                 User user = userService.findById(Long.parseLong(pathInfo.substring(1)));
                 req.setAttribute("user", user);
             } catch (NumberFormatException e) {
                 log(e.getMessage());
+                throw new CustomException(HttpStatus.BAD_REQUEST);
             }
 
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/jsp/user/profile.jsp");
@@ -70,6 +72,8 @@ public class UsersServlet extends HttpServlet {
             } catch (ServletException | IOException e) {
                 log(e.getMessage());
             }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND);
         }
     }
 
