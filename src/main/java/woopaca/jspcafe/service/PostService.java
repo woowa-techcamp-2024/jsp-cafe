@@ -40,6 +40,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다. postId: " + postId));
         updateViewCount(post);
         List<Post> posts = postRepository.findAll();
+        posts.sort(Comparator.comparing(Post::getWrittenAt).reversed());
         int postsSize = posts.size();
         int postIndex = posts.indexOf(post);
         boolean hasNext = postIndex < postsSize - 1;

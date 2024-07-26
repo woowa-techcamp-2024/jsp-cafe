@@ -1,6 +1,7 @@
 package woopaca.jspcafe.model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Post {
 
@@ -54,5 +55,21 @@ public class Post {
 
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
