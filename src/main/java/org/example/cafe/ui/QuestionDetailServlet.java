@@ -25,6 +25,15 @@ public class QuestionDetailServlet extends HttpServlet {
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
+    /**
+     * 특정 게시글의 상세 페이지를 반환한다
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the
+     *                 servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");

@@ -31,7 +31,7 @@ public class UserProfileServlet extends HttpServlet {
     }
 
     /**
-     * 회원 프로필 페이지를 반환한다..
+     * 특정 회원 프로필 페이지를 반환한다.
      *
      * @param request
      * @param response
