@@ -1,10 +1,7 @@
 package codesquad.javacafe;
 
-import codesquad.javacafe.member.repository.MemberRepository;
-import codesquad.javacafe.post.dto.response.PostResponseDto;
-import codesquad.javacafe.post.repository.PostRepository;
+
 import codesquad.javacafe.post.service.PostService;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
+
 
 /**
  * root 요청은 여기에서 핸들링

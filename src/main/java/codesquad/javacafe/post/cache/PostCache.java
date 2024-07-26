@@ -2,22 +2,21 @@ package codesquad.javacafe.post.cache;
 
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PostCache {
     private static final PostCache instance = new PostCache();
     private static final int MAX_ENTRIES = 100;
     // LRU 캐시로 사용
-    private static final Map<Long, PostResponseDto> cache = new LinkedHashMap<>(){
+    private static final Map<Long, PostResponseDto> cache = new LinkedHashMap<>(MAX_ENTRIES, 0.75f,true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Long, PostResponseDto> eldest) {
             return cache.size() > MAX_ENTRIES;
         }
     };
-    private PostCache(){}
+
+    private PostCache() {
+    }
 
     public static PostCache getInstance() {
         return instance;
@@ -28,7 +27,8 @@ public class PostCache {
     }
 
     public PostResponseDto get(long id) {
-        System.out.println(cache);
+        cache.get(id);
+
         return cache.get(id);
     }
 

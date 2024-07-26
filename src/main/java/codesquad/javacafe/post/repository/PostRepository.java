@@ -26,7 +26,7 @@ public class PostRepository {
     }
 
 
-    public void save(PostCreateRequestDto postDto) {
+    public Post save(PostCreateRequestDto postDto) {
         Post post = postDto.toEntity();
         var sql = "insert into post(post_writer, post_title, post_contents, post_create)\n" +
                 "values (?,?,?,?)";
@@ -46,6 +46,10 @@ public class PostRepository {
                 log.debug("[Post PK] {}", pk);
                 post.setId(pk);
             }
+
+            log.debug("[PostRepository] created post: {}", post);
+
+            return post;
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
@@ -53,7 +57,6 @@ public class PostRepository {
             close(con, ps, null);
 
         }
-        log.debug("[PostRepository] created post: {}", post);
     }
 
     public List<Post> findAll() {
