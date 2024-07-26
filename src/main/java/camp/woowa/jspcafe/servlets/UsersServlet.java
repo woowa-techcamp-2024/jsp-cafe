@@ -91,6 +91,18 @@ public class UsersServlet extends HttpServlet {
             } catch (IOException e) {
                 log(e.getMessage());
             }
+        } else if (pathInfo.equalsIgnoreCase("/login")) {
+            String userId = req.getParameter("userId");
+            String password = req.getParameter("password");
+
+            User user = userService.login(userId, password);
+            req.getSession().setAttribute("user", user);
+
+            try {
+                res.sendRedirect("/users");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
         } else if (pathInfo.endsWith("/form")) { // POST /users/{id}/form 필터링
             String[] split = pathInfo.split("/");
             long id = 0;
