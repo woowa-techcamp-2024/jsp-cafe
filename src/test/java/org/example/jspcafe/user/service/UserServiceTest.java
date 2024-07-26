@@ -1,9 +1,12 @@
 package org.example.jspcafe.user.service;
 
+import org.example.jspcafe.AbstractRepositoryTestSupport;
+import org.example.jspcafe.H2DatabaseConnectionManager;
 import org.example.jspcafe.user.model.User;
-import org.example.jspcafe.user.repository.InMemoryUserRepository;
+import org.example.jspcafe.user.repository.JdbcUserRepository;
 import org.example.jspcafe.user.response.UserListResponse;
 import org.example.jspcafe.user.response.UserProfileResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,18 +19,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class UserServiceTest {
+class UserServiceTest extends AbstractRepositoryTestSupport {
 
-    private UserService userService;
-    private InMemoryUserRepository userRepository;
+    private JdbcUserRepository userRepository = new JdbcUserRepository(super.connectionManager);
+    private UserService userService = new UserService(userRepository);
 
-     @BeforeEach
-     void setUp() {
-         userRepository = new InMemoryUserRepository();
-         userService = new UserService(userRepository);
-     }
+    @Override
+    protected void deleteAllInBatch() {
+        userRepository.deleteAllInBatch();
+    }
 
-     @DisplayName("사용자 리스트를 가져올 수 있다.")
+    @DisplayName("사용자 리스트를 가져올 수 있다.")
      @Test
      void getUsers() {
          // given
@@ -74,6 +76,7 @@ class UserServiceTest {
      void getUserProfileWithNotExistsUser() {
          // given
          String nickname = "nickname";
+
 
          // when & then
          assertThatThrownBy(() -> userService.getProfile(nickname))

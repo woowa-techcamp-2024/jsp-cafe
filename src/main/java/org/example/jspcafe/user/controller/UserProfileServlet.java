@@ -25,7 +25,7 @@ public class UserProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/") || !pathInfo.matches("/[a-zA-Z0-9]+")) {
+        if (pathInfo == null || !pathInfo.startsWith("/")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "닉네임이 올바르지 않습니다.");
             return;
         }

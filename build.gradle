@@ -22,6 +22,10 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
+
+    // MySQL JDBC driver
+    implementation 'mysql:mysql-connector-java:8.0.27'
+
     // Servlet
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
@@ -38,8 +42,14 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.assertj:assertj-core:3.23.1'
+    //h2
+    implementation 'com.h2database:h2:1.4.200'
 }
 
 test {
     useJUnitPlatform()
+}
+
+war {
+    archiveFileName = 'ROOT.war'
 }

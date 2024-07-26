@@ -1,0 +1,146 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.header-title a {
+    text-decoration: none;
+    color: #1f2937;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+nav form {
+    display: inline;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.logout-button {
+    background-color: #ef4444;
+}
+
+.profile-button {
+    background-color: #34d399;
+}
+
+.user-list-button {
+    background-color: #3b82f6;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.post-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.post-title {
+    font-size: 2.5rem;
+    color: #1f2937;
+    margin-bottom: 30px;
+}
+
+.post-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.input-field label {
+    font-size: 1.2rem;
+    color: #4b5563;
+    margin-bottom: 10px;
+}
+
+.input-field input,
+.input-field textarea {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    color: #4b5563;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+}
+
+.input-field input::placeholder,
+.input-field textarea::placeholder {
+    color: #9ca3af;
+}
+
+.input-field input {
+    height: 50px; /* 제목 입력 필드 높이 설정 */
+}
+
+.input-field textarea {
+    height: 400px; /* 내용 입력 필드 높이 설정 */
+}
+
+.submit-button {
+    align-self: flex-end;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #34d399;
+}
+
+.error-message {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.no-error-message {
+    display: none;
+}

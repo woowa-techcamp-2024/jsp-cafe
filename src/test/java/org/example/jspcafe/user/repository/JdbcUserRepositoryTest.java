@@ -1,7 +1,7 @@
 package org.example.jspcafe.user.repository;
 
+import org.example.jspcafe.AbstractRepositoryTestSupport;
 import org.example.jspcafe.user.model.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,18 +13,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
-class InMemoryUserRepositoryTest {
+class JdbcUserRepositoryTest extends AbstractRepositoryTestSupport {
 
-    private InMemoryUserRepository userRepository;
+    private UserRepository userRepository = new JdbcUserRepository(super.connectionManager);
 
-    @BeforeEach
-    void setUp() {
-        userRepository = new InMemoryUserRepository();
+    @Override
+    protected void deleteAllInBatch() {
+        userRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("findAllById에서 빈 목록을 조회하면 빈 목록을 반환한다")
+    @Test
+    void findAllByIdEmpty() {
+        // given
+        List<Long> userIds = List.of();
+
+        // when
+        List<User> foundUsers = userRepository.findAllById(userIds);
+
+        // then
+        assertThat(foundUsers).isEmpty();
     }
 
     @DisplayName("deleteAllInBatch 메서드를 호출하면 저장된 모든 유저를 삭제한다")
     @Test
-    void deleteAllInBatch() {
+    void deleteAllInBatchTest() {
         // given
         List<User> users = List.of(
                 new User("nickname1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
@@ -131,7 +144,6 @@ class InMemoryUserRepositoryTest {
                 );
     }
 
-
     @DisplayName("userId 목록으로 유저를 조회할 수 있다")
     @Test
     void findAllById() {
@@ -195,7 +207,7 @@ class InMemoryUserRepositoryTest {
 
         assertThat(foundUser).isPresent()
                 .get()
-                .extracting(User::getUserId, u -> u.getNickname().getValue(), u -> u.getEmail().getValue(), u -> u.getPassword().getValue())
+                .extracting("userId", "nickname.value", "email.value", "password.value")
                 .contains(savedUserId, nickname, email, password);
     }
 
@@ -229,7 +241,7 @@ class InMemoryUserRepositoryTest {
         Optional<User> updatedUser = userRepository.findById(savedUser.getUserId());
         assertThat(updatedUser).isPresent()
                 .get()
-                .extracting(u -> u.getNickname().getValue(), u -> u.getEmail().getValue(), u -> u.getPassword().getValue())
+                .extracting("nickname.value", "email.value", "password.value")
                 .contains(nickname, email, "newPassword");
     }
 
@@ -303,4 +315,5 @@ class InMemoryUserRepositoryTest {
                 .extracting(User::getUserId)
                 .isNotNull();
     }
+
 }
