@@ -51,11 +51,6 @@ public class UserProfileServlet extends HttpServlet {
             return;
         }
 
-        if (requestURI.equals("/user/login")) {
-            forward("/WEB-INF/user/login.jsp", request, response);
-            return;
-        }
-
         if (requestURI.endsWith("/form")) {
             forwardModifyForm(request, response, userId);
             return;
