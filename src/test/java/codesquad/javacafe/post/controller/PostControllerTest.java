@@ -48,7 +48,7 @@ public class PostControllerTest {
         Statement statement = connection.createStatement();
 
         // Create the post table
-        String createTableSql = "CREATE TABLE post (" +
+        String createTableSql = "CREATE TABLE if not exists post (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "post_writer VARCHAR(255), " +
                 "post_title VARCHAR(255), " +

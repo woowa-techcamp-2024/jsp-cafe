@@ -40,7 +40,7 @@ public class PostRepositoryTest {
         Connection connection = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
 
         // Create the post table
-        String sql = "CREATE TABLE post (" +
+        String sql = "CREATE TABLE if not exists post (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "post_writer VARCHAR(255), " +
                 "post_title VARCHAR(255), " +

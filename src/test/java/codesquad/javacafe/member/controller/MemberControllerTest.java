@@ -9,12 +9,12 @@ import codesquad.javacafe.util.CustomHttpServletRequest;
 import codesquad.javacafe.util.CustomHttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -51,7 +51,7 @@ public class MemberControllerTest {
         Statement statement = connection.createStatement();
 
         // Create the member table
-        String createTableSql = "CREATE TABLE member (" +
+        String createTableSql = "CREATE TABLE if not exists member (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "member_id VARCHAR(255), " +
                 "member_password VARCHAR(255), " +

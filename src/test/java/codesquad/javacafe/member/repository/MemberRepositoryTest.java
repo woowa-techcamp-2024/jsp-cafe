@@ -35,7 +35,7 @@ class MemberRepositoryTest {
     }
 
     private static void createTable() throws SQLException {
-        var sql = "CREATE TABLE member (" +
+        var sql = "CREATE TABLE if not exists member (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "member_id VARCHAR(255) NOT NULL, " +
                 "member_password VARCHAR(255) NOT NULL, " +

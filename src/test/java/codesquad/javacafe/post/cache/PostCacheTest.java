@@ -45,25 +45,38 @@ class PostCacheTest {
 
         // post 하나 저장
         Map<String, String[]> body = new HashMap<>();
-        body.put("writer", new String[]{"writer1"});
-        body.put("title", new String[]{"title1"});
-        body.put("contents", new String[]{"contents1"});
-        PostCreateRequestDto postDto = new PostCreateRequestDto(body);
-        Post savePost = PostRepository.getInstance().save(postDto);
-
         HttpServletRequest request = new CustomHttpServletRequest();
         HttpServletResponse response = new CustomHttpServletResponse();
 
-        ((CustomHttpServletRequest) request).setMethod("GET");
-        ((CustomHttpServletRequest) request).addParameter("postId", savePost.getId() + "");
+        List<Long> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            body.put("writer", new String[]{"writer1"});
+            body.put("title", new String[]{"title1"});
+            body.put("contents", new String[]{"contents1"});
+            PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+            Post save = PostRepository.getInstance().save(postDto);
+            list.add(save.getId());
+        }
 
         long notCacheStart = System.currentTimeMillis();
-        postController.doProcess(request, response);
+        for (int i = 0; i < 100; i++) {
+            ((CustomHttpServletRequest) request).setMethod("GET");
+            ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
+            postController.doProcess(request, response);
+
+        }
         long notCacheEnd = System.currentTimeMillis();
         long notCacheTime = notCacheEnd - notCacheStart;
 
+
+
         long cacheHitStart = System.currentTimeMillis();
-        postController.doProcess(request, response);
+        for (int i = 0; i < 100; i++) {
+            ((CustomHttpServletRequest) request).setMethod("GET");
+            ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
+            postController.doProcess(request, response);
+
+        }
         long cacheHitEnd = System.currentTimeMillis();
         long cacheHitTime = cacheHitEnd - cacheHitStart;
 

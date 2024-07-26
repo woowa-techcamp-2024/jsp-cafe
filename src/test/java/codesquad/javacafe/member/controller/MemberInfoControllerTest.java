@@ -47,7 +47,7 @@ public class MemberInfoControllerTest {
         Statement statement = connection.createStatement();
 
         // Create the member table
-        String createTableSql = "CREATE TABLE member (" +
+        String createTableSql = "CREATE TABLE if not exists member (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "member_id VARCHAR(255), " +
                 "member_password VARCHAR(255), " +
