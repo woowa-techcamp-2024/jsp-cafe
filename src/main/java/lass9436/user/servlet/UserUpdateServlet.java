@@ -2,6 +2,7 @@ package lass9436.user.servlet;
 
 import java.io.IOException;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +17,9 @@ public class UserUpdateServlet extends HttpServlet {
 	private UserRepository userRepository;
 
 	@Override
-	public void init() throws ServletException {
-		// 서블릿 초기화 시 컨텍스트에서 UserRepository 인스턴스를 가져옴
-		userRepository = (UserRepository) getServletContext().getAttribute("userRepository");
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
 	}
 
 	@Override
@@ -40,11 +41,19 @@ public class UserUpdateServlet extends HttpServlet {
 		String[] pathParts = req.getPathInfo().split("/");
 		long userSeq = Long.parseLong(pathParts[1]);
 		String password = req.getParameter("password");
+		String newPassword = req.getParameter("new-password");
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
-		User user = new User();
-		user.setUserSeq(userSeq);
-		user.setPassword(password);
+		User user = userRepository.findByUserSeq(userSeq);
+		if (user == null) {
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found.");
+			return;
+		}
+		if (!user.getPassword().equals(password)) {
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Wrong password.");
+			return;
+		}
+		user.setPassword(newPassword);
 		user.setName(name);
 		user.setEmail(email);
 		userRepository.save(user);
