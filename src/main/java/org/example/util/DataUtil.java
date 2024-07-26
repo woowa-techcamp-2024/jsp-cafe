@@ -3,7 +3,9 @@ package org.example.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.example.config.annotation.Component;
 
+@Component
 public class DataUtil {
     private static final String URL = "jdbc:mysql://localhost:3306/cafe";
     private static final String USER = "root";
