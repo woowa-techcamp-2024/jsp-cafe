@@ -9,12 +9,14 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.slf4j.Logger;
 
+@WebFilter(urlPatterns = {"/users/*"})
 public class AuthenticationFilter implements Filter {
 
     private static final Logger log = getLogger(AuthenticationFilter.class);
