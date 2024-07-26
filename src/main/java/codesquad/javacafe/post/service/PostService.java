@@ -28,8 +28,13 @@ public class PostService {
     }
 
     public List<PostResponseDto> getAllPosts() {
-        return PostRepository.getInstance().findAll()
-                .stream()
+        var postList = PostRepository.getInstance().findAll();
+        if (postList == null) {
+            // TODO error 처리
+            log.error("[PostService] postList is null");
+            return null;
+        }
+        return postList.stream()
                 .map(PostResponseDto::new)
                 .collect(Collectors.toList());
     }

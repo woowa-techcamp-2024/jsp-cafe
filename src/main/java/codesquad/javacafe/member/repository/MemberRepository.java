@@ -1,7 +1,6 @@
 package codesquad.javacafe.member.repository;
 
 
-import codesquad.javacafe.common.db.MySqlConnection;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.entity.Member;
@@ -11,17 +10,12 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static codesquad.javacafe.common.db.MySqlConnection.close;
 import static codesquad.javacafe.common.db.MySqlConnection.getConnection;
 
 public class MemberRepository {
     private static final Logger log = LoggerFactory.getLogger(MemberRepository.class);
-    private static final Map<String, Member> map = new ConcurrentHashMap<>();
     private static final MemberRepository instance = new MemberRepository();
     public static MemberRepository getInstance() {
         return instance;
@@ -30,7 +24,6 @@ public class MemberRepository {
 
     public void save(Connection connection, MemberCreateRequestDto memberDto) {
         var member = memberDto.toEntity();
-
 
         var sql = "insert into member(member_id, member_password, member_name)\n" +
                 "select ?,?,? from member\n" +
@@ -70,9 +63,6 @@ public class MemberRepository {
                 close(null, ps, null);
             }
         }
-
-        map.putIfAbsent(member.getUserId(), member);
-        System.out.println(map);
     }
 
     public List<Member> findAll() {

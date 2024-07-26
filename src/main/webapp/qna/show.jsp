@@ -19,7 +19,7 @@
                 var post = (PostResponseDto)request.getAttribute("post");
             %>
             <header class="qna-header">
-                <h2 class="qna-title"><%=post.getTitle()%>></h2>
+                <h2 class="qna-title"><%=post.getTitle()%></h2>
             </header>
             <div class="content-main">
                 <article class="article">

@@ -45,10 +45,6 @@ public class Member {
         return password;
     }
 
-    public boolean isPasswordSame(String oldPassword) {
-        return Objects.equals(oldPassword, password);
-    }
-
     public String getName() {
         return name;
     }
@@ -63,8 +59,4 @@ public class Member {
                 '}';
     }
 
-    public void update(String password, String name) {
-        this.password = password;
-        this.name = name;
-    }
 }
