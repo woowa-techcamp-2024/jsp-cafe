@@ -1,18 +1,15 @@
 package domain;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 public class Users {
 
-    private final Long id;
+    private Long id;
     private String userId;
     private String password;
     private String name;
     private String email;
-    private static final AtomicLong sequence = new AtomicLong();
 
-    public Users(String userId, String password, String name, String email) {
-        this.id = sequence.getAndIncrement();
+    public Users(Long id, String userId, String password, String name, String email) {
+        this.id = id;
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -21,6 +18,10 @@ public class Users {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -62,6 +63,17 @@ public class Users {
         }
         Users user = (Users) obj;
         return id.equals(user.id);
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 
 }
