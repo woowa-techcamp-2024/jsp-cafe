@@ -78,6 +78,18 @@ class UserControllerTest {
     }
 
     @Test
+    void 회원가입폼을_요청할_경우_회원가입_페이지를_반환한다() throws ServletException, IOException {
+        // Given
+        request.setPathInfo("/sign");
+
+        // When
+        userController.doGet(request, response);
+
+        // Then
+        assertEquals("/WEB-INF/views/user/signup.jsp", request.getForwardedPath());
+    }
+
+    @Test
     void 새로운_사용자를_등록할_수_있다() throws ServletException, IOException {
         // Given
         request.setParameter("email", "newuser@example.com");
@@ -184,5 +196,53 @@ class UserControllerTest {
         //Then
         assertNull(request.getSession().getAttribute("userInfo"));
         assertEquals("/", response.getRedirectLocation());
+    }
+
+    @Test
+    void 프로필_수정페이지를_반환한다() throws ServletException, IOException {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        // When
+        request.setPathInfo("/" + user.id() + "/form");
+        userController.doGet(request, response);
+
+        //Then
+        assertEquals(user, request.getAttribute("user"));
+        assertEquals("/WEB-INF/views/user/user_update_form.jsp", request.getForwardedPath());
+    }
+
+    @Test
+    void 실패한_프로필_수정페이지를_반환한다() throws ServletException, IOException {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        request.setPathInfo("/" + user.id());
+        request.setBody("{\"currentPassword\":\"wrongPassword\",\"email\":\"updated@example.com\",\"nickname\":\"업데이트된사용자\",\"newPassword\":\"newpassword123\"}");
+
+        // When
+        userController.doPut(request, response);
+
+        // Then
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
+        assertEquals("/users/" + user.id() + "/form-failed", response.getHeader("Location"));
+    }
+
+    @Test
+    void 실패한_프로필_수정페이지를_요청시_반환한다() throws ServletException, IOException {
+        // Given
+        User user = User.create("user1@example.com", "사용자1", "password1");
+        userDao.save(user);
+
+        request.setPathInfo("/" + user.id() + "/form-failed");
+
+        // When
+        userController.doGet(request, response);
+
+        // Then
+        assertEquals(user, request.getAttribute("user"));
+        assertEquals("/WEB-INF/views/user/user_update_form_failed.jsp", request.getForwardedPath());
     }
 }

@@ -76,4 +76,14 @@ class ArticleServiceTest {
         assertEquals("2", articles.get(1).id());
         assertEquals("1", articles.get(2).id());
     }
+
+    @Test
+    void 유효하지_않은_id로_조회하면_예외를_발생시킨다() {
+        // Given
+        Article article = Article.create("testTitle", "testName", "test test test.");
+        articleDao.save(article);
+
+        // When + Then
+        assertThrows(ArticleNotFoundException.class, () -> articleService.findById("wrong id"));
+    }
 }
