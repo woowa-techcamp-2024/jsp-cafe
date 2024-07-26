@@ -14,6 +14,9 @@ import org.example.jspcafe.question.service.QuestionService;
 import java.io.IOException;
 import java.util.List;
 
+import static org.example.jspcafe.common.RequestUtil.extractPathVariable;
+import static org.example.jspcafe.common.RequestUtil.getPathInfo;
+
 @WebServlet(name = "QuestionServlet", value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
 
@@ -29,9 +32,9 @@ public class QuestionsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Question> all = questionRepository.getAll();
-        req.setAttribute("questions", all);
-        req.getRequestDispatcher("/qna/list.jsp").forward(req, resp);
+        Long id = extractPathVariable(req);
+        req.setAttribute("question", questionRepository.findById(id));
+        req.getRequestDispatcher("/qna/show.jsp").forward(req, resp);
     }
 
     @Override
