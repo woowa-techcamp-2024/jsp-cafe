@@ -32,4 +32,14 @@ public class LoginHandler {
                 .add("userId", user.getUserId())
                 .found("/");
     }
+
+    @RequestMapping(path = "/logout", method = HttpMethod.GET)
+    public ResponseEntity logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate();
+        }
+        return ResponseEntity.builder()
+                .found("/");
+    }
 }

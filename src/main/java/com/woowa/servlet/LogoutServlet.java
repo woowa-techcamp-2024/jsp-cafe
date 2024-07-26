@@ -8,24 +8,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class LoginServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet {
 
     private final LoginHandler loginHandler;
 
-    public LoginServlet(LoginHandler loginHandler) {
+    public LogoutServlet(LoginHandler loginHandler) {
         this.loginHandler = loginHandler;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/classes/static/user/login.jsp").forward(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        ResponseEntity response = loginHandler.login(email, password, req);
+        ResponseEntity response = loginHandler.logout(req);
         resp.sendRedirect(response.getLocation());
     }
 }

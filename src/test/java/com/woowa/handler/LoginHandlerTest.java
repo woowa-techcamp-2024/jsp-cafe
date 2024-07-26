@@ -17,9 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class LoginHandlerTest {
 
+    private static final Logger log = LoggerFactory.getLogger(LoginHandlerTest.class);
     private LoginHandler loginHandler;
     private UserDatabase userDatabase;
 
@@ -87,6 +90,31 @@ class LoginHandlerTest {
 
             //then
             assertThat(exception).isInstanceOf(NoSuchElementException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("logout 호출 시")
+    class LogoutTest {
+
+        private StubHttpServletRequest request;
+
+        @BeforeEach
+        void setUp() {
+            request = new StubHttpServletRequest();
+        }
+
+        @Test
+        @DisplayName("메인 화면으로 리다이렉트한다.")
+        void redirectToMain() {
+            //given
+            request.getSession();
+
+            //when
+            ResponseEntity response = loginHandler.logout(request);
+
+            //then
+            assertThat(response.getLocation()).isEqualTo("/");
         }
     }
 }
