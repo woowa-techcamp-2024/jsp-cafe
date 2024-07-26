@@ -1,3 +1,4 @@
+<%@ page import="com.hyeonuk.jspcafe.member.domain.Member" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -63,15 +64,26 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
+                <%
+                    if(session == null || session.getAttribute("member") == null){
+                %>
                 <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>>
-                <li><a href="${pageContext.request.contextPath}/members/login" role="button">로그인</a></li>
+                <li><a href="${pageContext.request.contextPath}/login" role="button">로그인</a></li>
                 <li><a href="${pageContext.request.contextPath}/members/regist" role="button">회원가입</a></li>
+                <%
+                    }
+                    else{
+                        Member member = (Member)session.getAttribute("member");
+                %>
                 <li>
-                    <form method="post" action="${pageContext.request.contextPath}/members/logout">
+                    <form method="post" action="${pageContext.request.contextPath}/logout">
                         <button type="submit">로그아웃</button>
                     </form>
                 </li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li><a href="${pageContext.request.contextPath}/members/<%=member.getMemberId()%>/form" role="button">개인정보수정</a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>
