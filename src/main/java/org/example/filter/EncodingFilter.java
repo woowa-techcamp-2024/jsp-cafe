@@ -26,7 +26,6 @@ public class EncodingFilter implements Filter{
         if (encoding != null) {
             request.setCharacterEncoding(encoding);
             response.setCharacterEncoding(encoding);
-            response.setContentType("text/html; charset=" + encoding);
         }
         chain.doFilter(request, response);
     }

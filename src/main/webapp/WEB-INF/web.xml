@@ -5,6 +5,11 @@
   version="6.0">
   <!-- 기본 서블릿에 대한 URL 매핑 설정 -->
   <!-- 기본 서블릿 설정 -->
+  <mime-mapping>
+    <extension>css</extension>
+    <mime-type>text/css</mime-type>
+  </mime-mapping>
+
   <jsp-config>
     <jsp-property-group>
       <url-pattern>*.jsp</url-pattern>
