@@ -29,6 +29,9 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:2.0.13'
     // https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    // https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
+
 
     // https://mvnrepository.com/artifact/jakarta.servlet.jsp/jakarta.servlet.jsp-api
     compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:4.0.0'
