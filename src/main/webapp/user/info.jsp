@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/main.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/profile.css">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/login.css">
   <title>찬우 카페</title>
 </head>
 <body>
@@ -26,18 +25,10 @@
       style="background-image: url('https://avatars.githubusercontent.com/u/69714701');"
       id="profile-image">
   </div>
-  <form method="post" action="/users/profile/${profile.id()}">
-    <div class="form-element">
-      <div class="form-label">닉네임</div>
-      <input autofocus required value="${profile.nickname()}" type="text" id="nickname" name="nickname"
-             placeholder="멋진 닉네임">
-    </div>
-    <div class="form-element">
-      <div class="form-label">기존 비밀번호</div>
-      <input required type="password" id="password" name="password" placeholder="비밀번호가 뭐였지?">
-    </div>
-    <button id="login-submit">회원 정보 변경!</button>
-  </form>
+  <div id="nickname"><c:out value="${profile.nickname()}" /></div>
+  <div id="email"><c:out value="${profile.email()}" /></div>
+  <div id="sign-up-date"><c:out value="${profile.signUpAt()}" /></div>
+  <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
 </div>
 </body>
 </html>

@@ -1,0 +1,48 @@
+#form-title {
+  font-size: 2em;
+  font-family: BM-Hanna-11yrs, serif;
+  margin-bottom: 50px;
+}
+
+#post-form {
+  width: 680px;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-element {
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+  border: #D2DAE0 1px solid;
+  border-radius: 8px;
+}
+
+.form-label {
+  font-size: 0.9em;
+  color: #4B5966;
+
+  margin: 8px 16px;
+}
+
+#post-submit {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 1.2em;
+  color: white;
+
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #62CBC6;
+  margin-top: 40px;
+
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}

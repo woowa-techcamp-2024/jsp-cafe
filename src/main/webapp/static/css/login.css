@@ -7,7 +7,7 @@
   justify-content: center;
 }
 
-#title {
+#form-title {
   font-size: 2em;
   font-family: BM-Hanna-11yrs, serif;
   margin-bottom: 60px;
@@ -28,21 +28,6 @@
   color: #4B5966;
 
   margin: 8px 16px;
-}
-
-input {
-  border: none;
-  outline: none;
-  box-shadow: none;
-
-  margin-bottom: 8px;
-  margin-left: 16px;
-  margin-right: 16px;
-}
-
-input::placeholder {
-  color: #879298;
-  font-size: 1.1em;
 }
 
 #login-submit {
@@ -76,11 +61,11 @@ input::placeholder {
 }
 
 #register-link {
-  font-size: 0.8em;
+  font-size: 0.9em;
   color: #62CBC6;
 }
 
 #register-message {
   color: #14212B;
-  font-size: 0.8em;
+  font-size: 0.9em;
 }

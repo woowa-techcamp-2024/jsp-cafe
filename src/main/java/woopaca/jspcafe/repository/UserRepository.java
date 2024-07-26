@@ -12,4 +12,8 @@ public interface UserRepository {
     List<User> findAll();
 
     Optional<User> findById(String id);
+
+    Optional<User> findByUsername(String username);
+
+    Optional<User> findByNickname(String nickname);
 }

@@ -12,11 +12,16 @@ public class User {
     private String password;
     private LocalDate createdAt;
 
-    public User(String username, String nickname, String password) {
+    public User(String id, String username, String nickname, String password, LocalDate createdAt) {
+        this.id = id;
         this.username = username;
         this.nickname = nickname;
         this.password = password;
-        this.createdAt = LocalDate.now();
+        this.createdAt = createdAt;
+    }
+
+    public User(String username, String nickname, String password) {
+        this(null, username, nickname, password, LocalDate.now());
     }
 
     public String getId() {
@@ -68,5 +73,16 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public boolean matchPassword(String password) {
+        return Objects.equals(this.password, password);
+    }
+
+    public void updateNickname(String nickname) {
+        if (nickname.isBlank()) {
+            throw new IllegalArgumentException("[ERROR] 닉네임은 비어있을 수 없습니다.");
+        }
+        this.nickname = nickname;
     }
 }

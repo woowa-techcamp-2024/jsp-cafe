@@ -1,6 +1,5 @@
 package woopaca.jspcafe.resolver;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,17 +8,21 @@ import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class RequestParametersResolver {
 
     private static final Logger log = LoggerFactory.getLogger(RequestParametersResolver.class);
 
-    public static <T> T resolve(HttpServletRequest request, Class<T> targetRecord) {
+    private RequestParametersResolver() {
+    }
+
+    public static <T> T resolve(Map<String, String[]> parameters, Class<T> targetRecord) {
         try {
             RecordComponent[] recordComponents = targetRecord.getRecordComponents();
             List<Object> arguments = new ArrayList<>();
             for (RecordComponent recordComponent : recordComponents) {
-                Object argument = findArgument(recordComponent, request);
+                Object argument = findArgument(recordComponent, parameters);
                 arguments.add(argument);
             }
 
@@ -35,15 +38,15 @@ public class RequestParametersResolver {
         }
     }
 
-    private static Object findArgument(RecordComponent recordComponent, HttpServletRequest request) {
+    private static Object findArgument(RecordComponent recordComponent, Map<String, String[]> request) {
         String componentName = recordComponent.getName();
         Class<?> componentType = recordComponent.getType();
 
-        String value = request.getParameter(componentName);
-        if (value == null) {
+        String[] values = request.get(componentName);
+        if (values == null || values.length == 0) {
             throw new IllegalArgumentException("[ERROR] 파라미터에 `" + componentName + "` 값이 없습니다.");
         }
-        return convert(value, componentType);
+        return convert(values[0], componentType);
     }
 
     private static Object convert(String value, Class<?> type) {
