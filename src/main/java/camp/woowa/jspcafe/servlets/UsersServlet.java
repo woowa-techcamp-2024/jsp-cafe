@@ -125,6 +125,15 @@ public class UsersServlet extends HttpServlet {
             } catch (IOException e) {
                 log(e.getMessage());
             }
+        } else if (pathInfo.equalsIgnoreCase("/logout")) {
+            req.getSession().invalidate();
+            try {
+                res.sendRedirect("/");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND);
         }
     }
 }
