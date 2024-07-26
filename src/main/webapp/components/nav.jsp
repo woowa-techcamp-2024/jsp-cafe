@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
@@ -47,11 +49,22 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/login.jsp" role="button">로그인</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <!-- 세션 기반 조건부 메뉴 표시 -->
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <div>로그인이 됨</div>
+                        <li><a href="${pageContext.request.contextPath}/user/profile.jsp" role="button">개인정보수정</a></li>
+                        <li>
+                            <form id="logoutForm" action="${pageContext.request.contextPath}/users/logout" method="post" style="display:none;"></form>
+                            <a role="button" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <div>로그인이 안됨</div>
+                        <li><a href="${pageContext.request.contextPath}/user/login.jsp" role="button">로그인</a></li>
+                        <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </div>
     </div>
