@@ -7,28 +7,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
 import org.example.demo.Router;
-import org.example.demo.db.DbConfig;
-import org.example.demo.domain.Post;
-import org.example.demo.exception.NotFoundExceptoin;
-import org.example.demo.model.PostCreateDao;
-import org.example.demo.repository.PostRepository;
-import org.example.demo.repository.UserRepository;
+import org.example.demo.handler.PostHandler;
 
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet(name = "postServlet", urlPatterns = "/posts/*")
 public class PostServlet extends HttpServlet {
     private Router router;
-    private PostRepository postRepository;
+    private PostHandler postHandler;
 
     @Override
     public void init() throws ServletException {
+        postHandler = PostHandler.getInstance();
         router = new Router();
-        router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/?$", this::handleGetPost);
-        router.addRoute(HttpMethod.POST, "^/posts/?$", this::handleCreatePost);
-        DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/test", "root", "");
-        postRepository = PostRepository.getInstance();
+        router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/?$", postHandler::handleGetPost);
+        router.addRoute(HttpMethod.POST, "^/posts/?$", postHandler::handleCreatePost);
     }
 
     @Override
@@ -40,22 +33,5 @@ public class PostServlet extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException(e);
         }
-    }
-
-    private void handleGetPost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
-        Long postId = Long.parseLong(pathVariables.get(0));
-        Post post = postRepository.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
-
-        request.setAttribute("post", post);
-        request.getRequestDispatcher("/post/show.jsp").forward(request, response);
-    }
-
-    private void handleCreatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
-        String writer = request.getParameter("writer");
-        String title = request.getParameter("title");
-        String contents = request.getParameter("contents");
-        postRepository.addPost(new PostCreateDao(writer, title, contents));
-
-        response.sendRedirect("/");
     }
 }
