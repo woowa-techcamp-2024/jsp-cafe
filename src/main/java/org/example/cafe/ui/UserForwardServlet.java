@@ -38,11 +38,6 @@ public class UserForwardServlet extends HttpServlet {
             forward("/WEB-INF/user/regist.jsp", request, response);
             return;
         }
-
-        if (requestURI.equals("/user/login")) {
-            forward("/WEB-INF/user/login.jsp", request, response);
-            return;
-        }
     }
 
     private void forward(String path, HttpServletRequest request, HttpServletResponse response)

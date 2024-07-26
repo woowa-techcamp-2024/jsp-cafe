@@ -20,7 +20,7 @@
                     </c:when>
                     <c:otherwise>
                         <li><a href="/logout" role="button">로그아웃</a></li>
-                        <li><a href="/user/edit" role="button">개인정보수정</a></li>
+                        <li><a href="/users/${sessionScope.userId}/form" role="button">개인정보수정</a></li>
                     </c:otherwise>
                 </c:choose>
             </ul>

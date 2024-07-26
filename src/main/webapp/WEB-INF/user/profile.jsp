@@ -33,7 +33,9 @@
                                         class="glyphicon glyphicon-envelope"></span>&nbsp;<%= user.getEmail()%>
                                 </a>
                             </p>
-                            <a class="link-modify-article" href="/users/${user.userId}/form">수정</a>
+                            <c:if test="${sessionScope.userId == user.userId}">
+                                <a class="link-modify-article" href="/users/${user.userId}/form">수정</a>
+                            </c:if>
                         </div>
                         <%
                             }

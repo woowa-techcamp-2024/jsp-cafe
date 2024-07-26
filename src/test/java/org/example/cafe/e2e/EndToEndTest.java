@@ -113,6 +113,14 @@ public class EndToEndTest {
         return con;
     }
 
+    private static HttpURLConnection createPostLoginedConnection(String path, User user) throws Exception {
+        String cookie = login(user);
+
+        HttpURLConnection con = createPostConnection(path);
+        con.setRequestProperty("Cookie", cookie);
+        return con;
+    }
+
     private static String login(User user) throws Exception {
         HttpURLConnection con = createPostConnection("/login");
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -292,77 +300,6 @@ public class EndToEndTest {
                 assertThat(getResponse(con)).contains("title1", "content1", "writer1");
             });
         }
-
-        @Nested
-        class 회원_정보를_수정한다 {
-
-            @Test
-            void 사용자는_회원_정보를_수정할_수_있다() throws IOException {
-                //given
-                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-                userRepository.save(user);
-
-                con = createPostConnection("/users/" + user.getUserId() + "/form");
-                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
-                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-
-                //when
-                try (OutputStream os = con.getOutputStream()) {
-                    os.write(postData);
-                }
-
-                //then
-                assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(200);
-                    assertThat(getResponse(con)).contains("update@example.com");
-                });
-            }
-
-            @Test
-            void 회원이_존재하지_않으면_404_에러를_반환한다() throws IOException {
-                //given
-                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-                userRepository.save(user);
-
-                con = createPostConnection("/users/no-user/form");
-                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
-                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-
-                //when
-                try (OutputStream os = con.getOutputStream()) {
-                    os.write(postData);
-                }
-
-                //then
-                assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(404);
-                });
-            }
-
-            @Test
-            void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws IOException {
-                //given
-                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-                userRepository.save(user);
-
-                con = createPostConnection("/users/" + user.getUserId() + "/form");
-                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                String urlParameters = "checkPassword=notMatchPass&password=newPass&nickname=updateNick&email=update@example.com";
-                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-
-                //when
-                try (OutputStream os = con.getOutputStream()) {
-                    os.write(postData);
-                }
-
-                //then
-                assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(401);
-                });
-            }
-        }
     }
 
     @Nested
@@ -448,6 +385,79 @@ public class EndToEndTest {
                 assertThat(con.getResponseCode()).isEqualTo(302);
                 assertThat(con.getHeaderField("Location")).isEqualTo("/login");
             });
+        }
+
+        @Nested
+        class 회원_정보를_수정한다 {
+
+            @Test
+            void 로그인한_사용자는_본인의_회원_정보를_수정할_수_있다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createPostLoginedConnection("/users/" + user.getUserId() + "/form", user);
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                    assertThat(getResponse(con)).contains("update@example.com");
+                });
+            }
+
+            @Test
+            void 다른_회원의_정보를_수정하려_하면_403_에러를_반환한다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                User other = new User("testUser2", "testPass", "testUser2", "test2@example.com");
+                userRepository.save(user);
+                userRepository.save(other);
+
+                con = createPostLoginedConnection("/users/testUser2/form", user);
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "checkPassword=testPass&password=newPass&nickname=updateNick&email=update@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(403);
+                });
+            }
+
+            @Test
+            void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createPostLoginedConnection("/users/" + user.getUserId() + "/form", user);
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "checkPassword=notMatchPass&password=newPass&nickname=updateNick&email=update@example.com";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(401);
+                });
+            }
         }
     }
 }

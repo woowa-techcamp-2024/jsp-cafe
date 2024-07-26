@@ -46,11 +46,6 @@ public class UserProfileServlet extends HttpServlet {
         String[] pathParts = requestURI.split("/");
         String userId = URLDecoder.decode(pathParts[2], StandardCharsets.UTF_8);
 
-        if (requestURI.equals("/user/regist")) {
-            forward("/WEB-INF/user/regist.jsp", request, response);
-            return;
-        }
-
         if (requestURI.endsWith("/form")) {
             forwardModifyForm(request, response, userId);
             return;
@@ -63,13 +58,14 @@ public class UserProfileServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
     }
 
-    private void forward(String path, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher(path).forward(request, response);
-    }
-
     private void forwardModifyForm(HttpServletRequest request, HttpServletResponse response, String userId)
             throws IOException, ServletException {
+        String loginUserId = (String) request.getSession().getAttribute("userId");
+        if (!userId.equals(loginUserId)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         request.setAttribute("user", userService.findById(userId));
         request.getRequestDispatcher("/WEB-INF/user/update.jsp").forward(request, response);
     }
@@ -95,6 +91,12 @@ public class UserProfileServlet extends HttpServlet {
 
         if (!path.endsWith("/form")) {
             super.doPost(request, response);
+            return;
+        }
+
+        String loginUserId = (String) request.getSession().getAttribute("userId");
+        if (!userId.equals(loginUserId)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
