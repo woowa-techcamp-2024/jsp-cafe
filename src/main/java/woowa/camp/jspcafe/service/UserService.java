@@ -2,15 +2,19 @@ package woowa.camp.jspcafe.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.UserRepository;
+import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 import woowa.camp.jspcafe.service.dto.UserResponse;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final DateTimeProvider dateTimeProvider;
 
@@ -45,6 +49,16 @@ public class UserService {
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserException("User with id " + id + " not found"));
+    }
+
+    public UserResponse updateUserInfo(Long userId, String password, UserUpdateRequest userUpdateRequest) {
+        User user = findById(userId);
+
+        if (!user.getPassword().equals(password)) {
+            throw new UserException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return UserResponse.of(userRepository.update(user, userUpdateRequest));
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import woowa.camp.jspcafe.domain.User;
+import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
 
 public class InMemoryUserRepository implements UserRepository {
 
@@ -32,4 +33,15 @@ public class InMemoryUserRepository implements UserRepository {
         return Optional.ofNullable(users.get(id));
     }
 
+    @Override
+    public User update(User user, UserUpdateRequest updateRequest) {
+        String nickname = updateRequest.nickname();
+        String password = updateRequest.password();
+
+        User updateUser = new User(user.getEmail(), nickname, password, user.getRegisterAt());
+        updateUser.setId(user.getId());
+        users.remove(user.getId());
+        users.put(updateUser.getId(), updateUser);
+        return updateUser;
+    }
 }
