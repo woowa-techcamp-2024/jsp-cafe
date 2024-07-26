@@ -1,6 +1,6 @@
 package servlet;
 
-import domain.Users;
+import dto.UsersDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -33,7 +33,7 @@ public class CreateAccountServlet extends HttpServlet {
         String password = req.getParameter("password");
         String name = req.getParameter("name");
         String email = req.getParameter("email");
-        userService.saveUser(new Users(userId, password, name, email));
+        userService.saveUser(new UsersDao(userId, password, name, email));
         resp.sendRedirect("/users");
     }
 
