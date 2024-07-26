@@ -10,4 +10,20 @@
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
     </servlet-mapping>
+    <error-page>
+        <exception-type>java.lang.IllegalArgumentException</exception-type>
+        <location>/exception/400.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>org.example.demo.exception.NotFoundExceptoin</exception-type>
+        <location>/exception/404.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>org.example.demo.exception.InternalServerError</exception-type>
+        <location>/exception/500.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/exception/generic-error.jsp</location>
+    </error-page>
 </web-app>
