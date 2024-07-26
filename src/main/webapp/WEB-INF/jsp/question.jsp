@@ -30,7 +30,7 @@
                         <div class="article-header-text">
                             <a href="/users/${articleCommonResponse.writer}"
                                class="article-author-name"><c:out
-                                    value="${articleCommonResponse.writer}" escapeXml="false"/>
+                                    value="${articleCommonResponse.writer}"/>
                             </a>
                             <a href="/questions/${articleCommonResponse.id}"
                                class="article-header-time" title="퍼머링크">
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="article-doc">
-                        <c:out value="${articleCommonResponse.contents}" escapeXml="false"/>
+                        <c:out value="${articleCommonResponse.contents}"/>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">

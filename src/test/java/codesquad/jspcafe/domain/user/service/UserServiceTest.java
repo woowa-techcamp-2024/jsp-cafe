@@ -5,13 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import codesquad.jspcafe.domain.user.domain.User;
+import codesquad.jspcafe.domain.user.payload.request.UserLoginRequest;
 import codesquad.jspcafe.domain.user.payload.request.UserUpdateRequest;
 import codesquad.jspcafe.domain.user.payload.response.UserCommonResponse;
+import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -85,7 +88,7 @@ class UserServiceTest {
         void getUserByIdFailed() {
             // Act & Assert
             assertThatThrownBy(() -> userService.getUserById(expectedUserId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("유저를 찾을 수 없습니다!");
         }
 
@@ -143,7 +146,7 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(
                 () -> userService.updateUserInfo(expectedDto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SecurityException.class)
                 .hasMessage("비밀번호가 일치하지 않습니다!");
         }
 
@@ -182,7 +185,64 @@ class UserServiceTest {
             // Act & Assert
             assertThatThrownBy(
                 () -> userService.updateUserInfo(expectedDto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("유저를 찾을 수 없습니다!");
+        }
+    }
+
+    @Nested
+    @DisplayName("로그인할 때")
+    class whenLogin {
+
+        @Test
+        @DisplayName("비밀번호가 일치하지 않으면 예외를 던진다.")
+        void loginUserFailed() {
+            // Arrange
+            userRepository.save(
+                new User(expectedUserId, expectedPassword, expectedName, expectedEmail));
+            UserLoginRequest loginRequest = UserLoginRequest.from(Map.of(
+                "userId", new String[]{expectedUserId},
+                "password", new String[]{"wrongPassword"}
+            ));
+            // Act & Assert
+            assertThatThrownBy(
+                () -> userService.loginUser(loginRequest))
+                .isInstanceOf(SecurityException.class)
+                .hasMessage("비밀번호가 일치하지 않습니다!");
+        }
+
+        @Test
+        @DisplayName("유저를 로그인할 수 있다.")
+        void loginUserSuccess() {
+            // Arrange
+            Long expectedId = 1L;
+            userRepository.save(
+                new User(expectedId, expectedUserId, expectedPassword, expectedName,
+                    expectedEmail));
+            UserLoginRequest loginRequest = UserLoginRequest.from(Map.of(
+                "userId", new String[]{expectedUserId},
+                "password", new String[]{expectedPassword}
+            ));
+            // Act
+            UserSessionResponse actualResult = userService.loginUser(loginRequest);
+            // Assert
+            assertThat(actualResult)
+                .extracting("id", "userId", "username", "email")
+                .containsExactly(expectedId, expectedUserId, expectedName, expectedEmail);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 유저는 로그인할 수 없다.")
+        void loginUserFailedByNotExistUser() {
+            // Arrange
+            UserLoginRequest loginRequest = UserLoginRequest.from(Map.of(
+                "userId", new String[]{expectedUserId},
+                "password", new String[]{expectedPassword}
+            ));
+            // Act & Assert
+            assertThatThrownBy(
+                () -> userService.loginUser(loginRequest))
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("유저를 찾을 수 없습니다!");
         }
     }

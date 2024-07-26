@@ -27,12 +27,12 @@
                         <div class="media-body">
                             <c:set var="user" value="${requestScope.user}"/>
                             <h4 class="media-heading">
-                                <c:out value="${user.username}" escapeXml="false"/>
+                                <c:out value="${user.username}"/>
                             </h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default">
+                                <a class="btn btn-xs btn-default" href="mailto:${user.email}">
                                     <span class="glyphicon glyphicon-envelope">
-                                        <c:out value="${user.email}" escapeXml="false"/>
+                                        <c:out value="${user.email}"/>
                                     </span>
                                 </a>
                             </p>
