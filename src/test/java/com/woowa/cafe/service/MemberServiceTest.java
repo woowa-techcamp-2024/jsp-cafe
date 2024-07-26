@@ -132,4 +132,27 @@ class MemberServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("로그인이 정상적으로 된다.")
+    void login() {
+        SaveMemberDto dto = new SaveMemberDto("test", "test",
+                "test", "test@test.com");
+        memberService.save(dto);
+
+        String login = memberService.login(dto.memberId(), dto.password());
+
+        assertThat(login).isEqualTo(dto.memberId());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 비밀번호가 일치하지 않는다.")
+    void login_fail() {
+        SaveMemberDto dto = new SaveMemberDto("test", "test",
+                "test", "test@test.com");
+        memberService.save(dto);
+
+        assertThatThrownBy(() -> memberService.login(dto.memberId(), "unMatch"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

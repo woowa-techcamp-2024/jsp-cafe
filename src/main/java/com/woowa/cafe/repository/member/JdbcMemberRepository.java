@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class JdbcMemberRepository implements MemberRepository {
     @Override
     public String save(final Member member) {
         try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO member VALUES (?, ?, ?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO members VALUES (?, ?, ?, ?)");
             pstmt.setString(1, member.getMemberId());
             pstmt.setString(2, member.getPassword());
             pstmt.setString(3, member.getName());
@@ -30,6 +31,8 @@ public class JdbcMemberRepository implements MemberRepository {
             pstmt.executeUpdate();
 
             return member.getMemberId();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +41,7 @@ public class JdbcMemberRepository implements MemberRepository {
     @Override
     public Optional<Member> findById(final String memberId) {
         try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM member WHERE member_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM members WHERE member_id = ?");
             pstmt.setString(1, memberId);
             var rs = pstmt.executeQuery();
 
@@ -60,7 +63,7 @@ public class JdbcMemberRepository implements MemberRepository {
             return List.of();
         }
         try (var connection = dataSource.getConnection()) {
-            StringBuilder sb = new StringBuilder("SELECT * FROM member WHERE member_id IN (");
+            StringBuilder sb = new StringBuilder("SELECT * FROM members WHERE member_id IN (");
             for (int i = 0; i < memberIds.size(); i++) {
                 sb.append("?");
                 if (i < memberIds.size() - 1) {
@@ -94,7 +97,7 @@ public class JdbcMemberRepository implements MemberRepository {
         List<Member> members = new ArrayList<>();
 
         try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM member");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM members");
             var rs = pstmt.executeQuery();
             while (rs.next()) {
                 members.add(new Member(rs.getString("member_id"),
@@ -112,7 +115,7 @@ public class JdbcMemberRepository implements MemberRepository {
     @Override
     public Optional<Member> update(final Member member) {
         try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE member SET password = ?, name = ?, email = ? WHERE member_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE members SET password = ?, name = ?, email = ? WHERE member_id = ?");
             pstmt.setString(1, member.getPassword());
             pstmt.setString(2, member.getName());
             pstmt.setString(3, member.getEmail());

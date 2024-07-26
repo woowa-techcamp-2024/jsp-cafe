@@ -22,7 +22,7 @@ public class UsersServlet extends HttpServlet {
     private MemberService memberService;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         this.memberService = (MemberService) getServletContext().getAttribute("memberService");
         log.info("UsersServlet is initialized");
     }

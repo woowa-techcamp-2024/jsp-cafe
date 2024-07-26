@@ -24,7 +24,7 @@ public class ArticleServlet extends HttpServlet {
     private ArticleService articleService;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         this.articleService = (ArticleService) getServletContext().getAttribute("articleService");
         log.info("ArticleServlet is initialized");
     }
@@ -47,7 +47,7 @@ public class ArticleServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
         Map<String, String> bodyFormData = HttpMessageUtils.getBodyFormData(req);

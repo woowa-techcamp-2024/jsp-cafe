@@ -22,7 +22,7 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public Long save(final Article article) {
         try (Connection connection = this.dataSource.getConnection()) {
-            String sql = "INSERT INTO article (writer_id, title, contents, create_at, modified_at) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO articles (writer_id, title, contents, create_at, modified_at) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, article.getWriterId());
             pstmt.setString(2, article.getTitle());
@@ -48,7 +48,7 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public Optional<Article> findById(final Long articleId) {
         try (Connection connection = this.dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM article WHERE article_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM articles WHERE article_id = ?");
             pstmt.setLong(1, articleId);
 
             ResultSet resultSet = pstmt.executeQuery();
@@ -72,7 +72,7 @@ public class JdbcArticleRepository implements ArticleRepository {
     public List<Article> findAll() {
         List<Article> articles = new ArrayList<>();
         try (Connection connection = this.dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM article");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM articles");
 
             ResultSet resultSet = pstmt.executeQuery();
 
@@ -95,7 +95,7 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public Optional<Article> update(final Article article) {
         try (Connection connection = this.dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE article SET writer_id = ?, title = ?, contents = ?, modified_at = ? WHERE article_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE articles SET writer_id = ?, title = ?, contents = ?, modified_at = ? WHERE article_id = ?");
             pstmt.setString(1, article.getWriterId());
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContents());

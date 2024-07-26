@@ -62,10 +62,6 @@ class ArticleServiceTest {
 
         List<ArticleDto> articles = articleService.findAll();
 
-        for (ArticleDto article : articles) {
-            System.out.println(article);
-        }
-
         assertAll(() -> assertThat(articles.size()).isEqualTo(2),
                 () -> assertThat(articles.get(0).articleId()).isEqualTo(articleId),
                 () -> assertThat(articles.get(1).articleId()).isEqualTo(articleId1),

@@ -1,3 +1,4 @@
+<%@ page import="com.woowa.cafe.domain.Member" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -14,7 +15,9 @@
             <form name="updateUser" method="post" action=<%="/user/" + session.getAttribute("memberId")%>>
                 <div class="form-group">
                     <label for="memberId">사용자 아이디</label>
-                    <input class="form-control" id="memberId" name="memberId" placeholder="<%= ((Member)request.getAttribute("member")).getMemberId()%>" readonly="readonly">
+                    <input class="form-control" id="memberId" name="memberId"
+                           placeholder="<%= ((Member)request.getAttribute("member")).getMemberId()%>"
+                           readonly="readonly">
                 </div>
                 <div class="form-group">
                     <label for="lastPassword">이전 비밀번호</label>
