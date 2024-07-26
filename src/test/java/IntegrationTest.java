@@ -192,8 +192,9 @@ public class IntegrationTest {
                         String.format("userId=%s&" +
                                 "email=%s&" +
                                 "username=%s&" +
-                                "password=%s&" +
-                                "confirmPassword=%s", userId, newEmail, newUsername, newPassword, newConfirmPassword)
+                                "currentPassword=%s&" +
+                                "newPassword=%s&" +
+                                "confirmPassword=%s", userId, newEmail, newUsername, password, newPassword, newConfirmPassword)
                 ))
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -204,6 +205,89 @@ public class IntegrationTest {
         assertEquals(newEmail, updatedUser.getEmail());
         assertEquals(newUsername, updatedUser.getUsername());
         assertEquals(newPassword, updatedUser.getPassword());
+    }
+
+    @Test
+    void 로그인_성공_테스트() throws IOException, InterruptedException {
+        String userId = "test" + System.currentTimeMillis();
+        String email = "test" + System.currentTimeMillis() + "@mail.com";
+        String username = "test" + System.currentTimeMillis();
+        String password = "password" + System.currentTimeMillis();
+        User user = factory.userRepository().save(new User(userId, email, username, password));
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/user/login"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("userId=%s&password=%s", user.getUserId(), user.getPassword())
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(302, response.statusCode());
+        assertEquals("/", response.headers().firstValue("Location").orElse(null));
+    }
+
+    @Test
+    void 로그인_실패_테스트() throws IOException, InterruptedException {
+        String userId = "test" + System.currentTimeMillis();
+        String email = "test" + System.currentTimeMillis() + "@mail.com";
+        String username = "test" + System.currentTimeMillis();
+        String password = "password" + System.currentTimeMillis();
+        User user = factory.userRepository().save(new User(userId, email, username, password));
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/user/login"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("userId=%s&password=%s", user.getUserId(), "wrong password")
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("Invalid credentials"));
+    }
+
+    HttpClient getLoginClient() throws IOException, InterruptedException {
+        String userId = "test" + System.currentTimeMillis();
+        String email = "test" + System.currentTimeMillis() + "@mail.com";
+        String username = "test" + System.currentTimeMillis();
+        String password = "password" + System.currentTimeMillis();
+        User user = factory.userRepository().save(new User(userId, email, username, password));
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/user/login"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        String.format("userId=%s&password=%s", user.getUserId(), user.getPassword())
+                ))
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(302, response.statusCode());
+        assertEquals("/", response.headers().firstValue("Location").orElse(null));
+
+        return client;
+    }
+
+    @Test
+        // TODO: 로그아웃 되는것을 어떻게 검증하지?
+        // TODO: 로그아웃 되었을 때 세션에 user가 없어지는 것을 어떻게 검증할 수 있을까?
+    void 로그아웃_테스트() throws IOException, InterruptedException {
+        HttpClient client = getLoginClient();
+
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/user/logout"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(302, response.statusCode());
+        assertEquals("/", response.headers().firstValue("Location").orElse(null));
     }
 
 }

@@ -25,9 +25,15 @@ public class UserEditServlet extends MappingHttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
+        User loginUser = (User) req.getSession().getAttribute("user");
+
+        if (loginUser == null || !loginUser.getId().equals(id)) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         User user = userRepository.findById(id);
         req.setAttribute("user", user);
-
         req.getRequestDispatcher("/WEB-INF/views/users/editProfile.jsp").forward(req, resp);
     }
 
@@ -36,13 +42,14 @@ public class UserEditServlet extends MappingHttpServlet {
         String userId = req.getParameter("userId");
         String email = req.getParameter("email");
         String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        String currentPassword = req.getParameter("currentPassword");
+        String newPassword = req.getParameter("newPassword");
         String confirmPassword = req.getParameter("confirmPassword");
         Long id = Long.valueOf(req.getPathInfo().substring(1));
-        req.setAttribute("user", new User(userId, email, username, password).withId(id));
+        req.setAttribute("user", new User(userId, email, username, newPassword).withId(id));
 
-        if (userId == null || email == null || username == null || password == null || confirmPassword == null
-                || userId.isBlank() || email.isBlank() || username.isBlank() || password.isBlank() || confirmPassword.isBlank()
+        if (userId == null || email == null || username == null
+                || userId.isBlank() || email.isBlank() || username.isBlank()
         ) {
             req.setAttribute("errorMessage", "All fields are required");
             req.getRequestDispatcher("/WEB-INF/views/users/editProfile.jsp").forward(req, resp);
@@ -57,13 +64,17 @@ public class UserEditServlet extends MappingHttpServlet {
             return;
         }
 
-
-        if (!password.equals(confirmPassword)) {
-            req.setAttribute("errorMessage", "Passwords do not match");
+        if (!user.getPassword().equals(currentPassword)) {
+            req.setAttribute("errorMessage", "Current password is incorrect");
             req.getRequestDispatcher("/WEB-INF/views/users/editProfile.jsp").forward(req, resp);
             return;
         }
 
+        if (newPassword != null && confirmPassword != null && !newPassword.isBlank() && !confirmPassword.isBlank()) {
+            if (newPassword.equals(confirmPassword)) {
+                currentPassword = newPassword;
+            }
+        }
 
         if (!userId.equals(user.getUserId())) {
             req.setAttribute("errorMessage", "User ID cannot be changed");
@@ -71,7 +82,7 @@ public class UserEditServlet extends MappingHttpServlet {
             return;
         }
 
-        userRepository.save(user.withEmail(email).withUsername(username).withPassword(password));
+        userRepository.save(user.withEmail(email).withUsername(username).withPassword(currentPassword));
         resp.sendRedirect("/users");
     }
 }

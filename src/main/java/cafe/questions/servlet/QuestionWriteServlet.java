@@ -3,6 +3,7 @@ package cafe.questions.servlet;
 import cafe.MappingHttpServlet;
 import cafe.questions.Article;
 import cafe.questions.repository.ArticleRepository;
+import cafe.users.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,7 +42,8 @@ public class QuestionWriteServlet extends MappingHttpServlet {
         }
 
         // TODO: 사용자 id 를 어떻게 가져올 것인가?
-        articleRepository.save(new Article(null, title, content));
+        User user = (User) req.getSession().getAttribute("user");
+        articleRepository.save(new Article(user == null ? null : user.getId(), title, content));
         resp.sendRedirect(req.getContextPath() + "/questions");
     }
 }

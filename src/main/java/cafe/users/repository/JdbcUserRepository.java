@@ -116,6 +116,29 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    public User findByUserId(String userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new User(
+                            resultSet.getLong("id"),
+                            resultSet.getString("user_id"),
+                            resultSet.getString("email"),
+                            resultSet.getString("username"),
+                            resultSet.getString("password")
+                    );
+                }
+                return null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void deleteAll() {
         try (Connection connection = connectionPool.getConnection();
              Statement statement = connection.createStatement()) {

@@ -4,7 +4,6 @@ import cafe.database.ConnectionPool;
 import cafe.database.RealJdbcConnectionPool;
 import cafe.questions.repository.ArticleRepository;
 import cafe.questions.repository.JdbcArticleRepository;
-import cafe.questions.repository.MemoryArticleRepository;
 import cafe.users.repository.JdbcUserRepository;
 import cafe.users.repository.UserRepository;
 import cafe.util.PropertiesLoader;

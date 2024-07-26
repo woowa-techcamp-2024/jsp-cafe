@@ -30,6 +30,14 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public User findByUserId(String userId) {
+        return users.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public void deleteAll() {
         users.clear();
     }

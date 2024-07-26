@@ -16,8 +16,8 @@
             <c:forEach var="user" items="${userList}">
                 <tr onclick="location.href='${pageContext.request.contextPath}/users/${user.id}'"
                     style="cursor: pointer;">
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
+                    <td><c:out value="${user.username}"/></td>
+                    <td><c:out value="${user.email}"/></td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -26,8 +26,3 @@
 </div>
 
 <%@ include file="/WEB-INF/views/footer.jsp" %>
-
-<!-- Bootstrap Bundle with Popper -->
-<script src="${pageContext.request.contextPath}/static/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
