@@ -15,9 +15,9 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
     @Override
     public Optional<ArticleResponse> findById(Long id) {
         try (Connection connection = MySqlConnectionManager.getConnection()) {
-            String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.userId AS writer " +
+            String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
-                    "LEFT JOIN users u ON a.writer = u.userId " +
+                    "LEFT JOIN users u ON a.writer = u.user_id " +
                     "WHERE a.id = ?";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setLong(1, id);
@@ -39,9 +39,9 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
     @Override
     public List<ArticleResponse> findAll() {
         try (Connection connection = MySqlConnectionManager.getConnection()) {
-            String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.userId AS writer " +
+            String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
-                    "LEFT JOIN users u ON a.writer = u.userId";
+                    "LEFT JOIN users u ON a.writer = u.user_id";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             List<ArticleResponse> articles = new ArrayList<>();

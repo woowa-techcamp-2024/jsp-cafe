@@ -3,7 +3,7 @@ CREATE SCHEMA IF NOT EXISTS jsp_cafe;
 CREATE TABLE IF NOT EXISTS jsp_cafe.users
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY, -- Auto-incrementing ID, primary key
-    userId   VARCHAR(50)  NOT NULL UNIQUE,      -- Unique user ID
+    user_id   VARCHAR(50)  NOT NULL UNIQUE,      -- Unique user ID
     password VARCHAR(255) NOT NULL,             -- Password field
     name     VARCHAR(100) NOT NULL,             -- User's name
     email    VARCHAR(100) NOT NULL UNIQUE       -- User's email, must be unique

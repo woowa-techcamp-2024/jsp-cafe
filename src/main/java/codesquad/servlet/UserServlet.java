@@ -31,8 +31,10 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo.endsWith("/update-form")) {
+            logger.info("requesting user update form");
             processUpdateForm(req, resp);
         } else {
+            logger.info("requesting user info");
             processUserInfo(req, resp);
         }
     }
