@@ -17,6 +17,10 @@ import java.util.List;
 public class IndexServlet extends HttpServlet {
     private ArticleQueryDao articleQueryDao;
 
+    public IndexServlet(ArticleQueryDao articleQueryDao) {
+        this.articleQueryDao = articleQueryDao;
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
