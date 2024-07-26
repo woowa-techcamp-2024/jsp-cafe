@@ -3,24 +3,19 @@ package com.woowa.hyeonsik.application.servlet;
 import com.woowa.hyeonsik.application.domain.User;
 import com.woowa.hyeonsik.application.service.UserService;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet("/users/*")
 public class UserPathServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UserPathServlet.class);
-    private UserService userService;
+    private final UserService userService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        userService = (UserService) getServletContext().getAttribute("userService");
+    public UserPathServlet(UserService userService) {
+        this.userService = userService;
     }
 
     @Override

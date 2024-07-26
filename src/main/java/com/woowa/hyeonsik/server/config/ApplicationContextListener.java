@@ -3,6 +3,10 @@ package com.woowa.hyeonsik.server.config;
 import com.woowa.hyeonsik.application.dao.*;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.application.service.UserService;
+import com.woowa.hyeonsik.application.servlet.QnaPathServlet;
+import com.woowa.hyeonsik.application.servlet.QnaServlet;
+import com.woowa.hyeonsik.application.servlet.UserPathServlet;
+import com.woowa.hyeonsik.application.servlet.UserServlet;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
 import com.woowa.hyeonsik.server.database.property.MysqlProperty;
 import jakarta.servlet.ServletContextEvent;
@@ -25,9 +29,13 @@ public class ApplicationContextListener implements ServletContextListener {
         ArticleDao articleDao = new JdbcArticleDao(connector);
         ArticleService articleService = new ArticleService(articleDao);
 
-        sce.getServletContext().setAttribute("userDao", userDao);
-        sce.getServletContext().setAttribute("userService", userService);
-        sce.getServletContext().setAttribute("articleDao", articleDao);
-        sce.getServletContext().setAttribute("articleService", articleService);
+        sce.getServletContext().addServlet("qnaPathServlet", new QnaPathServlet(articleService))
+                .addMapping("/questions/*");
+        sce.getServletContext().addServlet("qnaServlet", new QnaServlet(articleService))
+                .addMapping("/questions", "");
+        sce.getServletContext().addServlet("userPathServlet", new UserPathServlet(userService))
+                .addMapping("/users/*");
+        sce.getServletContext().addServlet("userServlet", new UserServlet(userService))
+                .addMapping("/users");
     }
 }
