@@ -6,7 +6,7 @@
     <div class="col-md-6">
         <h2 class="mt-5">Edit Profile</h2>
         <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger">${errorMessage}</div>
+            <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
         </c:if>
         <form action="${pageContext.request.contextPath}/users/edit/${user.id}" method="post">
             <input type="hidden" name="userId" value="${user.userId}">
@@ -26,8 +26,12 @@
                        value="${user.username}" required>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">New Password</label>
-                <input type="password" class="form-control" id="password" name="password">
+                <label for="currentPassword" class="form-label">Current Password</label>
+                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+            </div>
+            <div class="mb-3">
+                <label for="newPassword" class="form-label">New Password</label>
+                <input type="password" class="form-control" id="newPassword" name="newPassword">
             </div>
             <div class="mb-3">
                 <label for="confirmPassword" class="form-label">Confirm New Password</label>
