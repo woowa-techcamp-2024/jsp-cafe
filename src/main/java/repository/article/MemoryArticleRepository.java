@@ -1,4 +1,4 @@
-package repository;
+package repository.article;
 
 import domain.Article;
 
@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class MemoryArticleRepository implements ArticleRepository{
+public class MemoryArticleRepository implements ArticleRepository {
 
     private final Map<Long, Article> articleMap;
-
+    private static final AtomicLong sequence = new AtomicLong();
 
     public MemoryArticleRepository(Map<Long, Article> map) {
         this.articleMap = map;
@@ -18,6 +19,7 @@ public class MemoryArticleRepository implements ArticleRepository{
 
     @Override
     public void saveArticle(Article article) {
+        article.setId(sequence.incrementAndGet());
         articleMap.put(article.getId(), article);
     }
 
