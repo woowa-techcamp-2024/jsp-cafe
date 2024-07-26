@@ -6,7 +6,7 @@
     <div class="col-md-6">
         <h2 class="mt-5">Sign Up</h2>
         <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger">${errorMessage}</div>
+            <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
         </c:if>
         <form action="${pageContext.request.contextPath}/users" method="post">
             <div class="mb-3">

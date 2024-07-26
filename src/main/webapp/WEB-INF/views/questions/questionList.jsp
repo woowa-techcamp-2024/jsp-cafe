@@ -6,7 +6,7 @@
     <div class="col-md-8">
         <h2 class="mt-5">Post List</h2>
         <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger">${errorMessage}</div>
+            <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
         </c:if>
         <table class="table table-striped">
             <thead>
@@ -20,10 +20,18 @@
             <c:forEach var="article" items="${articleList}">
                 <tr onclick="location.href='${pageContext.request.contextPath}/questions/${article.id}'"
                     style="cursor: pointer;">
-                    <td>${article.title}</td>
-                        <%--                    <td>${article.author}</td>--%>
-                    <td>익명</td>
-                    <td>${article.createdDate}</td>
+                    <td><c:out value="${article.title}"/></td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${article.userId == 0}">
+                                Unknown
+                            </c:when>
+                            <c:otherwise>
+                                <c:out value="${article.userId}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td><c:out value="${article.createdDate}"/></td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -32,8 +40,3 @@
 </div>
 
 <%@ include file="/WEB-INF/views/footer.jsp" %>
-
-<!-- Bootstrap Bundle with Popper -->
-<script src="${pageContext.request.contextPath}/static/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
