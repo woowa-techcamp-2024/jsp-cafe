@@ -1,6 +1,7 @@
 package codesquad.javacafe.member.controller;
 
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
@@ -37,6 +38,7 @@ public class MemberInfoController implements SubController {
                 dispatcher.forward(req, res);
                 break;
             }
+            default: throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("Request Method = "+method);
         }
     }
 

@@ -1,5 +1,6 @@
 package codesquad.javacafe.post.service;
 
+import codesquad.javacafe.common.exception.ServerErrorCode;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 import codesquad.javacafe.post.repository.PostRepository;
@@ -21,8 +22,8 @@ public class PostService {
     public PostResponseDto getPost(long id) {
         var post = PostRepository.getInstance().findById(id);
         if (Objects.isNull(post)) {
-            // TODO Error 처리
             log.error("[PostService] post is null");
+            throw ServerErrorCode.INTERNAL_SERVER_ERROR.customException("post id = "+id);
         }
         return new PostResponseDto(post);
     }
@@ -30,8 +31,7 @@ public class PostService {
     public List<PostResponseDto> getAllPosts() {
         var postList = PostRepository.getInstance().findAll();
         if (postList == null) {
-            // TODO error 처리
-            log.error("[PostService] postList is null");
+            log.debug("[PostService] postList is null");
             return null;
         }
         return postList.stream()

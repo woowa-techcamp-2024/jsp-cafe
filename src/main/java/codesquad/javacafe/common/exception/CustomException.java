@@ -22,4 +22,20 @@ public class CustomException extends RuntimeException{
 		this.errorMessage = errorMessage;
 		this.debugMessage = debugMessage;
 	}
+
+	public HttpStatus getHttpStatus() {
+		return httpStatus;
+	}
+
+	public String getErrorName() {
+		return errorName;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public String getDebugMessage() {
+		return debugMessage;
+	}
 }
