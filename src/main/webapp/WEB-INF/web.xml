@@ -7,4 +7,16 @@
         <url-pattern>/static/*</url-pattern>
         <url-pattern>/favicon.ico</url-pattern>
     </servlet-mapping>
+    <error-page>
+        <error-code>400</error-code>
+        <location>/error/400.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error/500.jsp</location>
+    </error-page>
 </web-app>
