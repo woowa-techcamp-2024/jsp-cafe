@@ -61,7 +61,7 @@ class MemberRepositoryTest {
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
 
-        memberRepository.save(connection, memberDto);
+        memberRepository.save(memberDto);
 
         var sql = "SELECT * FROM member WHERE member_id = 'user1'";
         try (var statement = connection.createStatement();
@@ -87,8 +87,8 @@ class MemberRepositoryTest {
         body2.put("name", new String[]{"User Two"});
         MemberCreateRequestDto memberDto2 = new MemberCreateRequestDto(body2);
 
-        memberRepository.save(connection, memberDto1);
-        memberRepository.save(connection, memberDto2);
+        memberRepository.save(memberDto1);
+        memberRepository.save(memberDto2);
 
         List<Member> members = memberRepository.findAll();
         for (Member member : members) {
@@ -107,9 +107,9 @@ class MemberRepositoryTest {
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
 
-        memberRepository.save(connection, memberDto);
+        memberRepository.save(memberDto);
 
-        Member member = memberRepository.findByUserId(connection, "user1");
+        Member member = memberRepository.findByUserId("user1");
 
         assertNotNull(member);
         assertEquals("user1", member.getUserId());
@@ -125,7 +125,7 @@ class MemberRepositoryTest {
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
 
-        memberRepository.save(connection, memberDto);
+        memberRepository.save(memberDto);
 
         Map<String, String[]> body2 = new HashMap<>();
         body2.put("userId", new String[]{"user1"});

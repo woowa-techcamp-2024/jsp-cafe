@@ -1,6 +1,7 @@
 package codesquad.javacafe.member.service;
 
 import codesquad.javacafe.common.db.DBConnection;
+import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
@@ -23,24 +24,7 @@ public class MemberService {
     }
 
     public void createMember(MemberCreateRequestDto memberDto) {
-        Connection connection = null;
-        try {
-            connection = DBConnection.getConnection();
-            connection.setAutoCommit(false);
-//            var findMember = MemberRepository.getInstance().findByUserId(connection,memberDto.getUserId());
-//            if (findMember != null) {
-//                // TODO error 처리
-//                log.error("[MemberService] duplicated Member, memberId = {}",findMember.getId());
-//            }
-            MemberRepository.getInstance().save(connection,memberDto);
-            connection.commit();
-
-        } catch (SQLException exception) {
-            log.error("[SQLException] MemberService createMember, error = {}",exception);
-            throw new RuntimeException(exception);
-        }finally {
-            DBConnection.close(connection,null,null);
-        }
+        MemberRepository.getInstance().save(memberDto);
 
     }
 
@@ -52,10 +36,13 @@ public class MemberService {
     }
 
     public MemberResponseDto getMemberInfo(String userId) {
-        return new MemberResponseDto(MemberRepository.getInstance().findByUserId(null,userId));
+        return new MemberResponseDto(MemberRepository.getInstance().findByUserId(userId));
     }
 
     public void updateMember(MemberUpdateRequestDto memberDto) {
-        MemberRepository.getInstance().update(memberDto);
+        int result = MemberRepository.getInstance().update(memberDto);
+        if (result == 0) {
+            throw ClientErrorCode.INVALID_PASSWORD.customException("update member info = "+memberDto);
+        }
     }
 }

@@ -74,7 +74,7 @@ public class MemberInfoControllerTest {
         body.put("password", new String[]{"password1"});
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
-        MemberRepository.getInstance().save(connection, memberDto);
+        MemberRepository.getInstance().save(memberDto);
 
         // Simulate GET request
         HttpServletRequest request = new CustomHttpServletRequest();
@@ -99,7 +99,7 @@ public class MemberInfoControllerTest {
         body.put("password", new String[]{"password1"});
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
-        MemberRepository.getInstance().save(connection, memberDto);
+        MemberRepository.getInstance().save(memberDto);
 
         // Simulate POST request
         HttpServletRequest request = new CustomHttpServletRequest();

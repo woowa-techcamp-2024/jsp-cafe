@@ -78,7 +78,7 @@ public class MemberControllerTest {
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
 
-        memberRepository.save(connection, memberDto);
+        memberRepository.save( memberDto);
 
         HttpServletRequest request = new CustomHttpServletRequest();
         HttpServletResponse response = new CustomHttpServletResponse();
