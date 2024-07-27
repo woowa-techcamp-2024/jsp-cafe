@@ -53,5 +53,7 @@ public class UserService {
         if(req.email() != null) {
             user.setEmail(req.email());
         }
+
+        userRepository.update(user);
     }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import woowa.cafe.domain.User;
 import woowa.cafe.dto.request.UpdateUserRequest;
+import woowa.cafe.repository.SimpleUserRepository;
 import woowa.cafe.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserServiceTest {
 
     private final UserService userService;
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository = new SimpleUserRepository();
 
     {
         userService = new UserService(userRepository);

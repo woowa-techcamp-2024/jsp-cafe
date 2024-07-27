@@ -9,28 +9,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
-public class UserRepository {
+public interface UserRepository {
 
-    private Map<String, User> database = new ConcurrentHashMap<>();
+    User findById(String id);
 
-    public User findById(String id) {
-        return database.get(id);
-    }
+    void save(User user);
 
-    public void save(User user) {
-        try {
-            String uuid = UUID.randomUUID().toString();
-            Field id = User.class.getDeclaredField("id");
-            id.setAccessible(true);
-            id.set(user, uuid);
-            database.put(user.getId(), user);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    List<User> findAll();
 
-    public List<User> findAll() {
-        return database.values().stream().toList();
-    }
+    void update(User user);
 }
