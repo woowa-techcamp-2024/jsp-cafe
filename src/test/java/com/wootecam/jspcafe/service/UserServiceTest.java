@@ -274,4 +274,65 @@ class UserServiceTest extends ServiceTest {
             }
         }
     }
+
+    @Nested
+    class readSignInUser_메소드는 {
+
+        @Nested
+        class 만약_수정하려는_사용자와_로그인한_사용자가_다르다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                User user = new User(1L, "userId", "password", "name", "email");
+
+                // expect
+                assertThatThrownBy(() -> userService.readSignInUser(2L, user))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("자신의 프로필만 수정할 수 있습니다.");
+            }
+        }
+
+        @Nested
+        class 수정하려는_사용자나_로그인한_사용자의_정보가_null이라면 {
+
+            @ParameterizedTest
+            @MethodSource("generateInvalidEditUserInfo")
+            void 예외가_발생한다(List<Object> invalidEditUserInfo) {
+                // expect
+                assertThatThrownBy(() -> userService.readSignInUser((Long) invalidEditUserInfo.get(0),
+                        (User) invalidEditUserInfo.get(1)))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("프로필 수정을 할 사용자를 찾을 수 없습니다.");
+            }
+
+            private static Stream<Arguments> generateInvalidEditUserInfo() {
+                return Stream.of(
+                        Arguments.of(Arrays.asList(null, new User(1L, "userId", "password", "name", "email"))),
+                        Arguments.of(Arrays.asList(1L, null))
+                );
+            }
+        }
+
+        @Nested
+        class 수정하려는_사용자와_로그인한_사용자가_일치한다면 {
+
+            @Test
+            void 수정할_사용자를_반환한다() {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+
+                // when
+                User findUser = userService.readSignInUser(1L, new User(1L, "userId", "password", "name", "email"));
+
+                // then
+                assertAll(
+                        () -> assertThat(findUser.getUserId()).isEqualTo("userId"),
+                        () -> assertThat(findUser.getPassword()).isEqualTo("password"),
+                        () -> assertThat(findUser.getName()).isEqualTo("name"),
+                        () -> assertThat(findUser.getEmail()).isEqualTo("email")
+                );
+            }
+        }
+    }
 }

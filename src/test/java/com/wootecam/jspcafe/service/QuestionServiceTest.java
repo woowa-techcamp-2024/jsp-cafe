@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.Question;
+import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -35,21 +36,27 @@ class QuestionServiceTest extends ServiceTest {
 
             @ParameterizedTest
             @MethodSource("generateInvalidQuestionInfo")
-            void 예외를_발생시킨다(List<String> invalidUserInfo) {
-                assertThatThrownBy(() -> questionService.append(invalidUserInfo.get(0), invalidUserInfo.get(1),
-                        invalidUserInfo.get(2)))
+            void 예외를_발생시킨다(List<Object> invalidUserInfo) {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+
+                // expect
+                assertThatThrownBy(
+                        () -> questionService.append((String) invalidUserInfo.get(0), (String) invalidUserInfo.get(1),
+                                (String) invalidUserInfo.get(2), (Long) invalidUserInfo.get(3)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("질문 작성 시 모든 정보를 입력해야 합니다.");
             }
 
             private static Stream<Arguments> generateInvalidQuestionInfo() {
                 return Stream.of(
-                        Arguments.of(List.of("", "제목입니다.", "내용입니다.")),
-                        Arguments.of(List.of("작성자", "", "내용입니다.")),
-                        Arguments.of(List.of("작성자", "제목입니다.", "")),
-                        Arguments.of(Arrays.asList(null, "제목입니다.", "내용입니다.")),
-                        Arguments.of(Arrays.asList("작성자", null, "내용입니다.")),
-                        Arguments.of(Arrays.asList("작성자", "제목입니다.", null))
+                        Arguments.of(List.of("", "제목입니다.", "내용입니다.", 1L)),
+                        Arguments.of(List.of("작성자", "", "내용입니다.", 1L)),
+                        Arguments.of(List.of("작성자", "제목입니다.", "", 1L)),
+                        Arguments.of(Arrays.asList(null, "제목입니다.", "내용입니다.", 1L)),
+                        Arguments.of(Arrays.asList("작성자", null, "내용입니다.", 1L)),
+                        Arguments.of(Arrays.asList("작성자", "제목입니다.", null, 1L)),
+                        Arguments.of(Arrays.asList("작성자", "제목입니다.", "내용입니다.", null))
                 );
             }
         }
@@ -59,9 +66,12 @@ class QuestionServiceTest extends ServiceTest {
 
             @Test
             void 질문을_저장합니다() {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+
                 // expect
                 assertThatNoException()
-                        .isThrownBy(() -> questionService.append("작성자", "제목입니다.", "내용입니다."));
+                        .isThrownBy(() -> questionService.append("작성자", "제목입니다.", "내용입니다.", 1L));
             }
         }
     }
@@ -72,9 +82,10 @@ class QuestionServiceTest extends ServiceTest {
         @Test
         void 저장되어있는_모든_질문을_반환한다() {
             // given
-            questionRepository.save(new Question(1L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
-            questionRepository.save(new Question(2L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
-            questionRepository.save(new Question(3L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
+            userRepository.save(new User(1L, "userId", "password", "name", "email"));
+            questionRepository.save(new Question(1L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            questionRepository.save(new Question(2L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            questionRepository.save(new Question(3L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
             // when
             List<Question> questions = questionService.readAll();
@@ -94,7 +105,8 @@ class QuestionServiceTest extends ServiceTest {
             @Test
             void id에_해당하는_질문을_반환한다() {
                 // given
-                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now()));
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
                 // when
                 Question question = questionService.read(1L);

@@ -10,25 +10,28 @@ public class Question {
     private final String title;
     private final String contents;
     private final LocalDateTime createdTime;
+    private final Long userPrimaryId;
 
-    public Question(final String writer, final String title, final String contents, final LocalDateTime createdTime) {
-        validate(writer, title, contents, createdTime);
+    public Question(final String writer, final String title, final String contents, final LocalDateTime createdTime,
+                    final Long userPrimaryId) {
+        validate(writer, title, contents, createdTime, userPrimaryId);
         this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.createdTime = createdTime;
+        this.userPrimaryId = userPrimaryId;
     }
 
     public Question(final Long id, final String writer, final String title, final String contents,
-                    final LocalDateTime createdTime) {
-        this(writer, title, contents, createdTime);
+                    final LocalDateTime createdTime, final Long userPrimaryId) {
+        this(writer, title, contents, createdTime, userPrimaryId);
         this.id = id;
     }
 
     private void validate(final String writer, final String title, final String contents,
-                          final LocalDateTime createdTime) {
+                          final LocalDateTime createdTime, final Long userPrimaryId) {
         if (Objects.isNull(writer) || Objects.isNull(title) || Objects.isNull(contents) || Objects.isNull(createdTime)
-                || writer.isEmpty() || title.isEmpty() || contents.isEmpty()) {
+                || Objects.isNull(userPrimaryId) || writer.isEmpty() || title.isEmpty() || contents.isEmpty()) {
             throw new IllegalArgumentException("질문 작성 시 모든 정보를 입력해야 합니다.");
         }
     }
@@ -53,6 +56,10 @@ public class Question {
         return createdTime;
     }
 
+    public Long getUserPrimaryId() {
+        return userPrimaryId;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -61,6 +68,7 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", createdTime=" + createdTime +
+                ", userPrimaryId=" + userPrimaryId +
                 '}';
     }
 }

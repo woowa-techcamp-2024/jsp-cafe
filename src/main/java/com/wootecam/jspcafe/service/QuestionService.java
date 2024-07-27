@@ -17,8 +17,8 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
-    public void append(final String writer, final String title, final String contents) {
-        Question question = new Question(writer, title, contents, LocalDateTime.now());
+    public void append(final String writer, final String title, final String contents, final Long writerId) {
+        Question question = new Question(writer, title, contents, LocalDateTime.now(), writerId);
 
         log.info("write question = {}", question);
 
@@ -26,7 +26,7 @@ public class QuestionService {
     }
 
     public List<Question> readAll() {
-        return questionRepository.findAll();
+        return questionRepository.findAllOrderByCreatedTimeDesc();
     }
 
     public Question read(final Long id) {

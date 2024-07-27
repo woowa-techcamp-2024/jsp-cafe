@@ -1,11 +1,13 @@
 package com.wootecam.jspcafe.servlet.question;
 
+import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.QuestionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +24,14 @@ public class QuestionServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
-        log.debug("forward to question form");
+        User signInUser = (User) req.getSession().getAttribute("signInUser");
 
+        if (Objects.isNull(signInUser)) {
+            resp.sendRedirect("/users/sign-in");
+            return;
+        }
+
+        log.debug("forward to question form");
         req.getRequestDispatcher("/WEB-INF/views/qna/form.jsp")
                 .forward(req, resp);
     }
@@ -31,10 +39,18 @@ public class QuestionServlet extends HttpServlet {
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
+        User signInUser = (User) req.getSession().getAttribute("signInUser");
+
+        if (Objects.isNull(signInUser)) {
+            resp.sendRedirect("/users/sign-in");
+            return;
+        }
+
         questionService.append(
                 req.getParameter("writer"),
                 req.getParameter("title"),
-                req.getParameter("contents")
+                req.getParameter("contents"),
+                signInUser.getId()
         );
 
         resp.sendRedirect("/");

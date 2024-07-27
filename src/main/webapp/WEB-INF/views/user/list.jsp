@@ -27,7 +27,9 @@
                         <td>${user.userId}</td>
                         <td>${user.name}</td>
                         <td>${user.email}</td>
-                        <td><a href="/users/edit/${user.id}" class="btn btn-success" role="button">수정</a></td>
+                        <c:if test="${sessionScope.signInUser != null && sessionScope.signInUser.id == user.id}">
+                            <td><a href="/users/edit/${user.id}" class="btn btn-success" role="button">수정</a></td>
+                        </c:if>
                     </tr>
                 </c:forEach>
                 </tbody>

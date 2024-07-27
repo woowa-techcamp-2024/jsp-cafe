@@ -20,7 +20,8 @@ public class UserEditServlet extends HttpServlet {
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
         Long id = parseSuffixPathVariable(req.getPathInfo());
-        User user = userService.read(id);
+        User signInUser = (User) req.getSession().getAttribute("signInUser");
+        User user = userService.readSignInUser(id, signInUser);
 
         req.setAttribute("user", user);
         req.getRequestDispatcher("/WEB-INF/views/user/update_form.jsp")

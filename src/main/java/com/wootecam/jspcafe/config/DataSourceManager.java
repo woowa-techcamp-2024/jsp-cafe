@@ -21,6 +21,11 @@ public class DataSourceManager {
             Properties props = new Properties();
             loadProperties(props);
             String driverClassName = props.getProperty("datasource.driverClassName");
+            try {
+                Class.forName(driverClassName);
+            } catch (ClassNotFoundException e) {
+                log.error("드라이버 클래스를 로딩할 수 없습니다.");
+            }
             String url = props.getProperty("datasource.url");
             String user = props.getProperty("datasource.user");
             String password = props.getProperty("datasource.password");
