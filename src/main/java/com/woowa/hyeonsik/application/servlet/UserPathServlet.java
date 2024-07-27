@@ -30,6 +30,7 @@ public class UserPathServlet extends HttpServlet {
 
         if (requestURI.endsWith("/form")) {
             // 회원정보 수정
+            authorizeUserAccess(request, userId);
             SendPageUtil.forward("/template/user/updateForm.jsp", this.getServletContext(), request, response);
         } else {
             // 회원정보 확인
@@ -39,11 +40,16 @@ public class UserPathServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // URI에서 유저ID를 가져온다.
         String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/users/".length());
         String[] split = requestURI.split("/");
         String userId = split[0];
         logger.debug("특정 유저의 정보를 수정합니다. UserID: {}", userId);
 
+        // 적절한 접근이지 세션을 통해 확인한다.
+        authorizeUserAccess(request, userId);
+
+        // 유저 정보 업데이트
         String password = request.getParameter("password");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -54,5 +60,18 @@ public class UserPathServlet extends HttpServlet {
 
         request.setAttribute("user", user);
         SendPageUtil.forward("/template/user/updateForm.jsp", this.getServletContext(), request, response);
+    }
+
+    private void authorizeUserAccess(final HttpServletRequest request, final String userId) {
+        final HttpSession session = request.getSession(false);
+        final User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            throw new IllegalStateException("세션 값이 잘못되었습니다.");
+        }
+
+        // 다른 사용자의 정보를 수정하려는 경우 예외 발생
+        if (!sessionUser.getUserId().equals(userId)) {
+            throw new IllegalStateException("다른 사용자 정보에 접근할 수 없습니다.");
+        }
     }
 }
