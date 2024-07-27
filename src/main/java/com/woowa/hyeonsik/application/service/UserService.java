@@ -36,4 +36,19 @@ public class UserService {
 
         userDao.update(newUser);
     }
+
+    /**
+     * 계정 정보를 통해 유저 인증 정보를 확인합니다.
+     * @param userId
+     * @param password
+     * @return
+     */
+    public void validateUser(String userId, String password) {
+        final User user = userDao.findByUserId(userId)
+            .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
+
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+    }
 }
