@@ -73,7 +73,8 @@ public class MemberProfileControllerTest {
         body.put("password", new String[]{"password1"});
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
-        MemberRepository.getInstance().save(memberDto);
+        var member = memberDto.toEntity();
+        MemberRepository.getInstance().save(member);
 
         // Simulate GET request with query parameters
         HttpServletRequest request = new CustomHttpServletRequest();

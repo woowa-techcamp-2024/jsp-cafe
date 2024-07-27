@@ -24,7 +24,8 @@ public class MemberService {
     }
 
     public void createMember(MemberCreateRequestDto memberDto) {
-        MemberRepository.getInstance().save(memberDto);
+        var member = memberDto.toEntity();
+        MemberRepository.getInstance().save(member);
 
     }
 

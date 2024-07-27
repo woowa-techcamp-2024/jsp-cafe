@@ -22,8 +22,7 @@ public class MemberRepository {
     }
 
 
-    public void save(MemberCreateRequestDto memberDto) {
-        var member = memberDto.toEntity();
+    public void save(Member member) {
         log.debug("[Member] {}",member);
 
 

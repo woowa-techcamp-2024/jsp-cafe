@@ -60,8 +60,8 @@ class MemberRepositoryTest {
         body.put("password", new String[]{"password1"});
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
-
-        memberRepository.save(memberDto);
+        var member = memberDto.toEntity();
+        memberRepository.save(member);
 
         var sql = "SELECT * FROM member WHERE member_id = 'user1'";
         try (var statement = connection.createStatement();
@@ -80,15 +80,16 @@ class MemberRepositoryTest {
         body1.put("password", new String[]{"password1"});
         body1.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto1 = new MemberCreateRequestDto(body1);
-
+        var member1 = memberDto1.toEntity();
         Map<String, String[]> body2 = new HashMap<>();
         body2.put("userId", new String[]{"user2"});
         body2.put("password", new String[]{"password2"});
         body2.put("name", new String[]{"User Two"});
         MemberCreateRequestDto memberDto2 = new MemberCreateRequestDto(body2);
+        var member2 = memberDto2.toEntity();
 
-        memberRepository.save(memberDto1);
-        memberRepository.save(memberDto2);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
 
         List<Member> members = memberRepository.findAll();
         for (Member member : members) {
@@ -106,15 +107,15 @@ class MemberRepositoryTest {
         body.put("password", new String[]{"password1"});
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
+        var member = memberDto.toEntity();
+        memberRepository.save(member);
 
-        memberRepository.save(memberDto);
+        Member findMember = memberRepository.findByUserId("user1");
 
-        Member member = memberRepository.findByUserId("user1");
-
-        assertNotNull(member);
-        assertEquals("user1", member.getUserId());
-        assertEquals("password1", member.getPassword());
-        assertEquals("User One", member.getName());
+        assertNotNull(findMember);
+        assertEquals("user1", findMember.getUserId());
+        assertEquals("password1", findMember.getPassword());
+        assertEquals("User One", findMember.getName());
     }
 
     @Test
@@ -124,8 +125,8 @@ class MemberRepositoryTest {
         body.put("password", new String[]{"password1"});
         body.put("name", new String[]{"User One"});
         MemberCreateRequestDto memberDto = new MemberCreateRequestDto(body);
-
-        memberRepository.save(memberDto);
+        var member = memberDto.toEntity();
+        memberRepository.save(member);
 
         Map<String, String[]> body2 = new HashMap<>();
         body2.put("userId", new String[]{"user1"});
