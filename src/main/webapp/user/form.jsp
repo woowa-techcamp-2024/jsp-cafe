@@ -31,8 +31,11 @@
 </div>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<%
+    var contextPath = request.getContextPath();
+%>
+<script src="<%=contextPath%>/js/jquery-2.2.0.min.js"></script>
+<script src="<%=contextPath%>/js/bootstrap.min.js"></script>
+<script src="<%=contextPath%>/js/scripts.js"></script>
 	</body>
 </html>

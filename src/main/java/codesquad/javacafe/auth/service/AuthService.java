@@ -3,14 +3,16 @@ package codesquad.javacafe.auth.service;
 import java.util.Objects;
 
 import codesquad.javacafe.auth.dto.request.LoginRequestDto;
-import codesquad.javacafe.auth.dto.session.MemberInfo;
+import codesquad.javacafe.common.session.MemberInfo;
 import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.member.entity.Member;
 import codesquad.javacafe.member.repository.MemberRepository;
 
 public class AuthService {
 	private static final AuthService instance = new AuthService();
-	private AuthService() {}
+
+	private AuthService() {
+	}
 
 	public static AuthService getInstance() {
 		return instance;
@@ -20,10 +22,10 @@ public class AuthService {
 		Member member = MemberRepository.getInstance().findByUserId(requestDto.getUserId());
 
 		// 비밀번호 불일치 시 예외 발생
-		if(!Objects.equals(member.getPassword() , requestDto.getPassword())) {
-			throw ClientErrorCode.INVALID_PASSWORD.customException("request member info = "+requestDto);
+		if (!Objects.equals(member.getPassword(), requestDto.getPassword())) {
+			throw ClientErrorCode.INVALID_PASSWORD.customException("request member info = " + requestDto);
 		}
 
-		return new MemberInfo(member.getId(), member.getName());
+		return new MemberInfo(member.getId(), member.getUserId(), member.getName());
 	}
 }

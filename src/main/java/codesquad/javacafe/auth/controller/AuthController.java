@@ -1,17 +1,15 @@
 package codesquad.javacafe.auth.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codesquad.javacafe.auth.dto.request.LoginRequestDto;
-import codesquad.javacafe.auth.dto.session.MemberInfo;
+import codesquad.javacafe.common.session.MemberInfo;
 import codesquad.javacafe.auth.service.AuthService;
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.common.exception.ClientErrorCode;
-import codesquad.javacafe.member.dto.response.MemberResponseDto;
 import codesquad.javacafe.member.service.MemberService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

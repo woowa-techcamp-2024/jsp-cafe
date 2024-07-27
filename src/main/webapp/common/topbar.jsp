@@ -1,4 +1,4 @@
-<%@ page import="codesquad.javacafe.auth.dto.session.MemberInfo" %><%--
+<%@ page import="codesquad.javacafe.common.session.MemberInfo" %><%--
   Created by IntelliJ IDEA.
   User: woowatech28
   Date: 2024. 7. 25.
@@ -45,7 +45,17 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="user/list.jsp"><i class="glyphicon glyphicon-user"></i></a></li>
+                <%
+                    if(loginInfo != null){
+                %>
+                <li><a href="/api/users/info?userId=<%=loginInfo.getUserId()%>"><i class="glyphicon glyphicon-user"></i></a></li>
+                <%
+                    }else{
+                %>
+                <li><a href="/api/auth"><i class="glyphicon glyphicon-user"></i></a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>

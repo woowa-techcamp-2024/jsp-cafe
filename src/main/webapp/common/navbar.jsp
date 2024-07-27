@@ -1,4 +1,4 @@
-<%@ page import="codesquad.javacafe.auth.dto.session.MemberInfo" %><%--
+<%@ page import="codesquad.javacafe.common.session.MemberInfo" %><%--
   Created by IntelliJ IDEA.
   User: woowatech28
   Date: 2024. 7. 25.
@@ -34,7 +34,7 @@
                 <li class="active"><a href="/">Posts</a></li>
                 <li><a href="<%=contextPath%>/qna/form.jsp">글쓰기</a></li>
                 <li><a href="/api/users">회원목록</a></li>
-                <li><a href="#" role="button">회원정보수정</a></li>
+                <li><a href="/api/users/info" role="button">회원정보수정</a></li>
                 <li><a href="#" role="button" id="logoutButton">로그아웃</a></li>
             </ul>
         </div>
