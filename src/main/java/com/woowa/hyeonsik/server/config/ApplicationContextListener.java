@@ -4,6 +4,7 @@ import com.woowa.hyeonsik.application.dao.*;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.application.service.UserService;
 import com.woowa.hyeonsik.application.servlet.LoginServlet;
+import com.woowa.hyeonsik.application.servlet.LogoutServlet;
 import com.woowa.hyeonsik.application.servlet.QnaPathServlet;
 import com.woowa.hyeonsik.application.servlet.QnaServlet;
 import com.woowa.hyeonsik.application.servlet.UserPathServlet;
@@ -40,5 +41,7 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/users");
         sce.getServletContext().addServlet("loginServlet", new LoginServlet(userService))
             .addMapping("/auth/login");
+        sce.getServletContext().addServlet("logoutServlet", new LogoutServlet())
+            .addMapping("/auth/logout");
     }
 }
