@@ -1,18 +1,17 @@
 package woopaca.jspcafe.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 public class User {
 
-    private String id;
+    private Long id;
     private String username;
     private String nickname;
     private String password;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    public User(String id, String username, String nickname, String password, LocalDate createdAt) {
+    public User(Long id, String username, String nickname, String password, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
@@ -21,10 +20,10 @@ public class User {
     }
 
     public User(String username, String nickname, String password) {
-        this(null, username, nickname, password, LocalDate.now());
+        this(null, username, nickname, password, LocalDateTime.now());
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -40,23 +39,23 @@ public class User {
         return password;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    /**
-     * UUID를 사용해 id 생성
-     * @return 만약 이미 id가 존재한다면 기존 id를 반환,
-     *        없다면 새로운 id를 생성하고 반환
-     */
-    public String generateUniqueId() {
-        if (id != null) {
-            return id;
-        }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-        this.id = UUID.randomUUID()
-                .toString();
-        return id;
+    public boolean matchPassword(String password) {
+        return Objects.equals(this.password, password);
+    }
+
+    public void updateNickname(String nickname) {
+        if (nickname.isBlank()) {
+            throw new IllegalArgumentException("[ERROR] 닉네임은 비어있을 수 없습니다.");
+        }
+        this.nickname = nickname;
     }
 
     @Override
@@ -73,16 +72,5 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    public boolean matchPassword(String password) {
-        return Objects.equals(this.password, password);
-    }
-
-    public void updateNickname(String nickname) {
-        if (nickname.isBlank()) {
-            throw new IllegalArgumentException("[ERROR] 닉네임은 비어있을 수 없습니다.");
-        }
-        this.nickname = nickname;
     }
 }

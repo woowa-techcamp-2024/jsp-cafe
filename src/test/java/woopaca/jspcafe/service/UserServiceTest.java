@@ -98,7 +98,7 @@ class UserServiceTest {
 
         @Test
         void 사용자_프로필을_조회한다() {
-            String userId = "111";
+            Long userId = 111L;
             UserProfile userProfile = userService.getUserProfile(userId);
             assertThat(userProfile).isNotNull();
             assertThat(userProfile.nickname()).isEqualTo("test");
@@ -106,7 +106,7 @@ class UserServiceTest {
 
         @Test
         void 사용자_프로필을_조회할_수_없는_경우_예외가_발생한다() {
-            String userId = "-1";
+            Long userId = -1L;
             assertThatThrownBy(() -> userService.getUserProfile(userId))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("[ERROR] 사용자를 찾을 수 없습니다.");

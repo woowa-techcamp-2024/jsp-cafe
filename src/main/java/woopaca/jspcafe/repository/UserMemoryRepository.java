@@ -6,24 +6,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 public class UserMemoryRepository implements UserRepository {
 
-    private static final Map<String, User> users = new ConcurrentHashMap<>();
+    private static final Map<Long, User> users = new ConcurrentHashMap<>();
+    private static final AtomicLong sequence = new AtomicLong(0);
 
     /**
-     * 사용자 저장 - 사용자의 UUID id를 생성 후 저장
+     * 사용자 저장 - 순차 증가 id를 생성 후 저장
      * @param user 사용자
      */
     @Override
     public void save(User user) {
-        String uniqueId = user.generateUniqueId();
-        if (users.containsKey(uniqueId)) {
+        if (user.getId() != null) {
             users.put(user.getId(), user);
             return;
         }
 
+        user.setId(sequence.incrementAndGet());
         users.compute(user.getId(), (key, value) -> {
             if (value != null) {
                 throw new IllegalArgumentException("[ERROR] duplicate key: " + key);
@@ -49,7 +51,7 @@ public class UserMemoryRepository implements UserRepository {
      * @return 만약 존재하면 사용자, 존재하지 않으면 Optional.empty()
      */
     @Override
-    public Optional<User> findById(String id) {
+    public Optional<User> findById(Long id) {
         return Optional.ofNullable(users.get(id));
     }
 

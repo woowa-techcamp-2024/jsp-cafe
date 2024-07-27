@@ -4,7 +4,7 @@ import woopaca.jspcafe.model.User;
 
 import java.time.format.DateTimeFormatter;
 
-public record UserProfile(String id, String nickname, String email, String signUpAt) {
+public record UserProfile(Long id, String nickname, String email, String signUpAt) {
 
     public static UserProfile from(User user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일에 가입");

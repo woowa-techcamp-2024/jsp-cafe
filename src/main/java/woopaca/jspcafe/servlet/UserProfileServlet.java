@@ -29,7 +29,7 @@ public class UserProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        String userId = pathInfo.substring(1);
+        Long userId = Long.parseLong(pathInfo.substring(1));
         UserProfile profile = userService.getUserProfile(userId);
         request.setAttribute("profile", profile);
         request.getRequestDispatcher("/user/profile.jsp")
@@ -41,7 +41,7 @@ public class UserProfileServlet extends HttpServlet {
         UpdateProfileRequest updateProfileRequest =
                 RequestParametersResolver.resolve(request.getParameterMap(), UpdateProfileRequest.class);
         String pathInfo = request.getPathInfo();
-        String userId = pathInfo.substring(1);
+        Long userId = Long.parseLong(pathInfo.substring(1));
         userService.updateUserProfile(userId, updateProfileRequest);
         response.sendRedirect("/users/" + userId);
     }

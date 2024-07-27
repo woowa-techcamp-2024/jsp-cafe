@@ -3,10 +3,11 @@ package woopaca.jspcafe.service;
 import woopaca.jspcafe.model.Post;
 import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.UserRepository;
+import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
 import woopaca.jspcafe.servlet.dto.response.PostsResponse;
-import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class PostService {
@@ -29,6 +30,7 @@ public class PostService {
     public List<PostsResponse> getAllPosts() {
         return postRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
                 .map(PostsResponse::from)
                 .toList();
     }
@@ -38,6 +40,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다. postId: " + postId));
         updateViewCount(post);
         List<Post> posts = postRepository.findAll();
+        posts.sort(Comparator.comparing(Post::getWrittenAt).reversed());
         int postsSize = posts.size();
         int postIndex = posts.indexOf(post);
         boolean hasNext = postIndex < postsSize - 1;
