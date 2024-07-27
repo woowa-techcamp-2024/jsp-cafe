@@ -4,11 +4,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<jsp:include page="/template/component/htmlhead.jsp"></jsp:include>
+<jsp:include page="/template/component/head.jsp"></jsp:include>
 <body>
 
 <div>
-    <jsp:include page="/template/component/header.jsp"></jsp:include>
+    <jsp:include page="/template/component/nav.jsp"></jsp:include>
 </div>
 
 <div class="container" id="main">
