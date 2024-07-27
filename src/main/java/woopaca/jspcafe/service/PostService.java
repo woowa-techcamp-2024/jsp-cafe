@@ -4,6 +4,7 @@ import woopaca.jspcafe.model.Post;
 import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
+import woopaca.jspcafe.servlet.dto.response.PageInfo;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
 import woopaca.jspcafe.servlet.dto.response.PostsResponse;
 
@@ -39,6 +40,16 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다. postId: " + postId));
         updateViewCount(post);
+        PageInfo pageInfo = getPageInfo(post);
+        return PostDetailsResponse.of(post, pageInfo);
+    }
+
+    private void updateViewCount(Post post) {
+        post.increaseViewCount();
+        postRepository.save(post);
+    }
+
+    private PageInfo getPageInfo(Post post) {
         List<Post> posts = postRepository.findAll();
         posts.sort(Comparator.comparing(Post::getWrittenAt).reversed());
         int postsSize = posts.size();
@@ -47,11 +58,6 @@ public class PostService {
         boolean hasPrevious = postIndex > 0;
         Long previousPostId = hasPrevious ? posts.get(postIndex - 1).getId() : null;
         Long nextPostId = hasNext ? posts.get(postIndex + 1).getId() : null;
-        return PostDetailsResponse.of(post, hasNext, hasPrevious, nextPostId, previousPostId);
-    }
-
-    private void updateViewCount(Post post) {
-        post.increaseViewCount();
-        postRepository.save(post);
+        return new PageInfo(hasNext, hasPrevious, nextPostId, previousPostId);
     }
 }

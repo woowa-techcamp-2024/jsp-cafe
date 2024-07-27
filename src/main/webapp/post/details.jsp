@@ -52,13 +52,7 @@
           <button id="comment-submit" type="submit" disabled>댓글 작성</button>
         </div>
       </div>
-    </form>
-    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
-      <a class="<c:out value='${post.hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:out value="${post.hasPrevious() ? '/posts/' + post.previousPostId() : 'javascript:void(0)'}" />">⬅ 이전 글</a>
-      <a class="<c:out value='${post.hasNext() ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:out value="${post.hasNext() ? '/posts/' + post.nextPostId() : 'javascript:void(0)'}" />">다음 글 ➡</a>
-    </div>--%>
+    </form>--%>
     <div id="comments-count">댓글 3개</div>
     <div id="comments-container">
       <div class="comment">
@@ -87,12 +81,12 @@
       </div>
     </form>
     <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
-      <a class="<c:out value='${post.hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:url value='/posts/${post.previousPostId()}'/>"
+      <a class="<c:out value='${post.pageInfo().hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
+         href="<c:url value='/posts/${post.pageInfo().previousPostId()}'/>"
       >⬅ 이전
         글</a>
-      <a class="<c:out value='${post.hasNext() ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:url value='/posts/${post.nextPostId()}'/>"
+      <a class="<c:out value='${post.pageInfo().hasNext() ? "move-post" : "move-post-disabled"}'/>"
+         href="<c:url value='/posts/${post.pageInfo().nextPostId()}'/>"
       >다음 글 ➡</a>
     </div>
   </div>
