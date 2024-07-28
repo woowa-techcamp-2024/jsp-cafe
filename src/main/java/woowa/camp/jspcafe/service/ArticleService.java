@@ -9,6 +9,7 @@ import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
+import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
@@ -42,14 +43,14 @@ public class ArticleService {
 
     public ArticleDetailsResponse findArticleDetails(Long id) {
         Article article = findArticle(id);
+        upHits(article);
+        article = findArticle(id);
 
         if (article.isAnonymousAuthor()) {
-            article.upHits();
             return ArticleDetailsResponse.of(article, null, "익명");
         }
 
         User author = findAuthor(article.getAuthorId());
-        article.upHits();
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
 
@@ -79,6 +80,11 @@ public class ArticleService {
     private User findAuthor(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserException("User with id " + userId + " not found"));
+    }
+
+    private void upHits(Article article) {
+        article.upHits();
+        articleRepository.update(article.getId(), new ArticleUpdateRequest(article.getHits()));
     }
 
 }
