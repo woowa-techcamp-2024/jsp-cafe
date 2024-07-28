@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 
 public class DBArticleRepository implements ArticleRepository {
 
@@ -152,6 +153,34 @@ public class DBArticleRepository implements ArticleRepository {
         }
     }
 
+    @Override
+    public void update(Long id, ArticleUpdateRequest updateRequest) {
+        StringBuffer sql = new StringBuffer("UPDATE articles SET ");
+        List<Object> params = new ArrayList<>();
+
+        if (updateRequest.hitIncrease() != null) {
+            sql.append("hits = ?");
+            params.add(updateRequest.hitIncrease());
+        }
+
+        sql.append(" WHERE id = ?");
+        params.add(id);
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql.toString())) {
+
+            for (int count = 0; count < params.size(); count ++) {
+                pstmt.setObject(count + 1, params.get(count));
+            }
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Article with id " + id + " not found");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update article", e);
+        }
+    }
 
     private Article mapRowToArticle(ResultSet resultSet) throws SQLException {
         Long authorId = resultSet.getLong("author_id");
