@@ -54,8 +54,8 @@ public class ExceptionHandlingFilter implements Filter {
             SendPageUtil.redirect("/auth/login.jsp", httpRequest.getServletContext(), httpResponse);
         } catch (IllegalArgumentException e) {
             logger.debug("잘못된 요청입니다. 내용: {}", e.getMessage());
-            httpResponse.setStatus(400);
-            SendPageUtil.redirect("/error/error.jsp", httpRequest.getServletContext(), httpResponse);
+            request.setAttribute("error_message", e.getMessage());
+            httpResponse.sendError(400, e.getMessage());
         } catch (JdbcException e) {
             logger.debug("데이터베이스 접근 중 에러가 발생했습니다. 내용: {}", e.getMessage());
             SendPageUtil.redirect("/error/error.jsp", httpRequest.getServletContext(), httpResponse);

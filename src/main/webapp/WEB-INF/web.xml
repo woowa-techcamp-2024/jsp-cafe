@@ -10,6 +10,10 @@
 
     <!-- ExceptionHandlingFilter를 통해 처리되지 못한 에러를 처리한다.-->
     <error-page>
+        <error-code>400</error-code>
+        <location>/template/error/error.jsp</location>
+    </error-page>
+    <error-page>
         <error-code>404</error-code>
         <location>/template/error/error.jsp</location>
     </error-page>

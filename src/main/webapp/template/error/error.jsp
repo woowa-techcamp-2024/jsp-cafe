@@ -19,6 +19,33 @@
             text-decoration: underline;
         }
     </style>
+
+    <style>
+        .stack-trace {
+            font-family: monospace;
+            white-space: pre;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+        .toggle-button {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
     <script>
         function toggleStackTrace() {
             var stackTrace = document.getElementById('stackTrace');
@@ -27,6 +54,20 @@
             } else {
                 stackTrace.style.display = 'none';
             }
+        }
+    </script>
+    <script>
+        function toggleStackTrace() {
+            var stackTrace = document.getElementById('stackTrace');
+            if (stackTrace.style.display === 'none') {
+                stackTrace.style.display = 'block';
+            } else {
+                stackTrace.style.display = 'none';
+            }
+        }
+
+        function goBack() {
+            window.history.back();
         }
     </script>
 </head>
@@ -44,7 +85,7 @@
                 </c:when>
                 <c:when test="${pageContext.errorData.statusCode == 400}">
                     <h1>잘못된 요청입니다.</h1>
-                    <c:out value="문제: ${pageContext.exception}" />
+                    <c:out value="문제: ${error_message}" />
                 </c:when>
                 <c:when test="${pageContext.errorData.statusCode == 500}">
                     <h1>처리 중 문제가 발생했습니다.</h1>
@@ -69,8 +110,10 @@
                 </c:otherwise>
             </c:choose>
             <br/>
-
         </div>
+
+        <!-- 뒤로가기 버튼 -->
+        <button class="back-button" onclick="goBack()">뒤로가기</button>
     </div>
 </div>
 
