@@ -9,13 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.fixture.ArticleFixture;
 import woowa.camp.jspcafe.fixture.UserFixture;
+import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
-import woowa.camp.jspcafe.repository.article.InMemoryArticleRepository;
+import woowa.camp.jspcafe.repository.article.DBArticleRepository;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
@@ -26,6 +29,7 @@ import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
 class ArticleServiceTest {
 
+    private DatabaseConnector databaseConnector;
     private ArticleRepository articleRepository;
     private UserRepository userRepository;
     private DateTimeProvider fixedDateTime;
@@ -33,7 +37,8 @@ class ArticleServiceTest {
 
     @BeforeEach
     void setUp() {
-        articleRepository = new InMemoryArticleRepository();
+        databaseConnector = new DatabaseConnector();
+        articleRepository = new DBArticleRepository(databaseConnector);
         userRepository = new InMemoryUserRepository();
         fixedDateTime = new FixedDateTimeProvider(2024, 7, 25);
         articleService = new ArticleService(articleRepository, userRepository, fixedDateTime);
@@ -41,6 +46,7 @@ class ArticleServiceTest {
 
     @Nested
     @DisplayName("Describe_게시글을 작성하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class WriteArticleTest {
 
         @Test
@@ -87,6 +93,7 @@ class ArticleServiceTest {
 
     @Nested
     @DisplayName("Describe_상세 게시글을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindArticleTest {
 
         @Test
@@ -117,9 +124,11 @@ class ArticleServiceTest {
             String title = "익명 제목";
             String content = "익명 내용";
             Article article = articleService.writeArticle(new ArticleWriteRequest(null, title, content));
+            System.out.println("article = " + article);
 
             // when
             ArticleDetailsResponse response = articleService.findArticleDetails(article.getId());
+            System.out.println("response = " + response);
 
             // then
             assertArticleDetailsResponse(response, article, title, content, null, "익명");
@@ -139,7 +148,7 @@ class ArticleServiceTest {
             assertThat(response.getAuthorId()).isEqualTo(authorId);
             assertThat(response.getAuthorNickname()).isEqualTo(authorNickname);
             assertThat(response.getCreatedAt()).isEqualTo(fixedDateTime.getNow());
-            assertThat(response.getHits()).isEqualTo(article.getHits());
+            assertThat(response.getHits()).isEqualTo(article.getHits() + 1);
         }
 
         @Test
@@ -153,7 +162,8 @@ class ArticleServiceTest {
             // when
             articleService.findArticleDetails(article.getId());
             // then
-            assertThat(article.getHits()).isEqualTo(1);
+            Article findArticle = articleRepository.findById(article.getId()).get();
+            assertThat(findArticle.getHits()).isEqualTo(1);
 
         }
 
@@ -170,6 +180,7 @@ class ArticleServiceTest {
 
     @Nested
     @DisplayName("Describe_게시글 목록을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
     class FindArticlesTest {
 
         @Test
