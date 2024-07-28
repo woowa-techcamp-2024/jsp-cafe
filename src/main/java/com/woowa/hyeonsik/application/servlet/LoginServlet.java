@@ -1,6 +1,7 @@
 package com.woowa.hyeonsik.application.servlet;
 
 import com.woowa.hyeonsik.application.domain.User;
+import com.woowa.hyeonsik.application.exception.AuthenticationException;
 import com.woowa.hyeonsik.application.service.UserService;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
 import jakarta.servlet.ServletException;
@@ -34,7 +35,7 @@ public class LoginServlet extends HttpServlet {
             logger.debug("세션을 통해 유저 정보를 저장합니다. {}: {}", session.getId(), foundUser.getUserId());
             SendPageUtil.redirect("", getServletContext(), response);
         } catch (IllegalArgumentException e) {
-            SendPageUtil.redirect("/auth/login_failed.jsp", getServletContext(), response);
+            throw new AuthenticationException("아이디 또는 비밀번호가 틀립니다. 다시 로그인 해주세요.", e.getCause());
         }
     }
 }
