@@ -55,4 +55,17 @@ public class ArticlePreviewResponse {
     public String getAuthorNickname() {
         return authorNickname;
     }
+
+    @Override
+    public String toString() {
+        return "ArticlePreviewResponse{" +
+                "articleId=" + articleId +
+                ", title='" + title + '\'' +
+                ", hits=" + hits +
+                ", createdAt=" + createdAt +
+                ", authorId=" + authorId +
+                ", authorNickname='" + authorNickname + '\'' +
+                '}';
+    }
+
 }
