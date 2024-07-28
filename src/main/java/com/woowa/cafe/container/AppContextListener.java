@@ -25,7 +25,7 @@ public class AppContextListener implements ServletContextListener {
     }
 
     private static DataSource getDataSource(final ServletContextEvent sce) {
-        DataSourceConfig dataSourceConfig = new DataSourceConfig();
+        DataSourceConfig dataSourceConfig = new DataSourceConfig(sce.getServletContext());
         DataSource dataSource = dataSourceConfig.getDataSource();
 
         sce.getServletContext().setAttribute("dataSource", dataSource);
