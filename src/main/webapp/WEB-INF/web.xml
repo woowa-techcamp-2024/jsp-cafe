@@ -7,4 +7,14 @@
         <welcome-file>/template/index.jsp</welcome-file>
         <welcome-file>/static/index.html</welcome-file>
     </welcome-file-list>
+
+    <!-- ExceptionHandlingFilter를 통해 처리되지 못한 에러를 처리한다.-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/template/error/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/template/error/error.jsp</location>
+    </error-page>
 </web-app>
