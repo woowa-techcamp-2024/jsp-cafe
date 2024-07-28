@@ -2,6 +2,8 @@ package com.woowa.hyeonsik.server.filter;
 
 import com.woowa.hyeonsik.application.exception.AuthenticationException;
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
+import com.woowa.hyeonsik.application.exception.LoginFailedException;
+import com.woowa.hyeonsik.application.exception.LoginRequiredException;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
 import com.woowa.hyeonsik.server.database.JdbcException;
 import jakarta.servlet.Filter;
@@ -38,14 +40,20 @@ public class ExceptionHandlingFilter implements Filter {
         // filterChain 처리 중 전파되는 Exception을 Catch하고 처리한다.
         try {
             filterChain.doFilter(request, response);
-        } catch (AuthenticationException e) {
-            logger.debug("인증 실패 - 계정 정보 불일치");
+        } catch(LoginFailedException e) {
+            logger.debug("인증 실패 - 인증 정보가 일치하지 않습니다.");
             SendPageUtil.redirect("/auth/login_failed.jsp", httpRequest.getServletContext(), httpResponse);
+        } catch (LoginRequiredException e) {
+            logger.debug("인증 실패 - 세션이 비어있습니다.");
+            SendPageUtil.redirect("/auth/login_required.jsp", httpRequest.getServletContext(), httpResponse);
+        } catch (AuthenticationException e) {
+            logger.debug("인증 실패 - 정의되지 않은 인증 실패 케이스입니다.");
+            SendPageUtil.redirect("/error/error.jsp", httpRequest.getServletContext(), httpResponse);
         } catch (AuthorizationException e) {
             logger.debug("인가 실패 - 접근 권한이 없음");
             SendPageUtil.redirect("/auth/login.jsp", httpRequest.getServletContext(), httpResponse);
         } catch (IllegalArgumentException e) {
-            logger.debug("잘못된 요청입니다.");
+            logger.debug("잘못된 요청입니다. 내용: {}", e.getMessage());
             httpResponse.setStatus(400);
             SendPageUtil.redirect("/error/error.jsp", httpRequest.getServletContext(), httpResponse);
         } catch (JdbcException e) {

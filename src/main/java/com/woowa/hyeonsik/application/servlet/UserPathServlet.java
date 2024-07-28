@@ -1,8 +1,8 @@
 package com.woowa.hyeonsik.application.servlet;
 
 import com.woowa.hyeonsik.application.domain.User;
-import com.woowa.hyeonsik.application.exception.AuthenticationException;
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
+import com.woowa.hyeonsik.application.exception.LoginRequiredException;
 import com.woowa.hyeonsik.application.service.UserService;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
 import jakarta.servlet.ServletException;
@@ -68,7 +68,7 @@ public class UserPathServlet extends HttpServlet {
         final HttpSession session = request.getSession(false);
         final User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
-            throw new AuthenticationException("세션 값이 잘못되었습니다.");
+            throw new LoginRequiredException("로그인이 필요한 작업입니다.");
         }
 
         // 다른 사용자의 정보를 수정하려는 경우 예외 발생
