@@ -41,7 +41,7 @@ public class PostEditPageServlet extends HttpServlet {
 
 
         if (!post.canModifyBy(userId)) {
-            req.setAttribute("errorMessage", "수정 권한이 없습니다.");
+            req.getSession().setAttribute("errorMessage", "수정 권한이 없습니다.");
             resp.sendRedirect("/posts/" + postId);
             return;
         }
