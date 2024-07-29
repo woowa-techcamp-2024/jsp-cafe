@@ -46,6 +46,7 @@ public class DispatcherServlet extends HttpServlet {
         logger.info("view resolver: {}", viewResolver);
     }
 
+    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (isStaticResource(req)) {
             getServletContext().getNamedDispatcher("default").forward(req, resp);

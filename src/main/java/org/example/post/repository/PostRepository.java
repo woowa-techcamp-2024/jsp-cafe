@@ -81,7 +81,7 @@ public class PostRepository {
             }
             return posts;
         } catch (SQLException e) {
-            throw new SerialException("Database Error");
+            throw new SerialException(e.getMessage());
         }
     }
 }
