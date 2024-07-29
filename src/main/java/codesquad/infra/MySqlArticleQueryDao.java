@@ -14,14 +14,18 @@ import java.util.Optional;
 public class MySqlArticleQueryDao implements ArticleQueryDao {
     @Override
     public Optional<ArticleResponse> findById(Long id) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySqlConnectionManager.getConnection();
             String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
                     "LEFT JOIN users u ON a.writer = u.user_id " +
                     "WHERE a.id = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setLong(1, id);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Long articleId = resultSet.getLong("articleId");
                 String title = resultSet.getString("title");
@@ -33,26 +37,29 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
             return Optional.empty();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public List<ArticleResponse> findAll() {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySqlConnectionManager.getConnection();
             String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
                     "LEFT JOIN users u ON a.writer = u.user_id";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             List<ArticleResponse> articles = new ArrayList<>();
             while (resultSet.next()) {
                 Long articleId = resultSet.getLong("articleId");
                 String title = resultSet.getString("title");
                 String content = resultSet.getString("content");
                 Long writerId = resultSet.getLong("writerId");
-                if (writerId == null) {
-                    writerId = 0L;
-                }
                 String writer = resultSet.getString("writer");
                 if (writer == null) {
                     writer = "알수없는 사용자";
@@ -62,6 +69,8 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
             return articles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 }

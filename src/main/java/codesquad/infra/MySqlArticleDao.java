@@ -14,32 +14,42 @@ import java.util.Optional;
 public class MySqlArticleDao implements ArticleDao {
     @Override
     public Long save(Article article) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySqlConnectionManager.getConnection();
             String sql = "insert into articles(title,writer,content) values(?,?,?)";
-            PreparedStatement pstmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            pstmt.setString(1, article.getTitle());
-            pstmt.setString(2, article.getWriter());
-            pstmt.setString(3, article.getContent());
-            pstmt.executeUpdate();
-            ResultSet generatedKeys = pstmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                long id = generatedKeys.getLong(1);
+            preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, article.getTitle());
+            preparedStatement.setString(2, article.getWriter());
+            preparedStatement.setString(3, article.getContent());
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                long id = resultSet.getLong(1);
                 article = new Article(id, article);
                 return id;
             }
             throw new SQLException("Failed to insert article");
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public Optional<Article> findById(Long id) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySqlConnectionManager.getConnection();
             String sql = "select * from articles where id = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setLong(1, id);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String title = resultSet.getString("title");
                 String writer = resultSet.getString("writer");
@@ -49,15 +59,21 @@ public class MySqlArticleDao implements ArticleDao {
             return Optional.empty();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public List<Article> findAll() {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySqlConnectionManager.getConnection();
             String sql = "select * from articles";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             List<Article> articles = new ArrayList<>();
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
@@ -69,6 +85,8 @@ public class MySqlArticleDao implements ArticleDao {
             return articles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 }
