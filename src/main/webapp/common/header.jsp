@@ -5,7 +5,7 @@
   <a id="greeting" href="${pageContext.request.contextPath}/">찬우 카페</a>
   <c:choose>
     <c:when test="${empty sessionScope.authentication}">
-      <a class="login-button" href="${pageContext.request.contextPath}/users/login">로그인/회원가입</a>
+      <a class="login-button" href="${pageContext.request.contextPath}/login">로그인/회원가입</a>
     </c:when>
     <c:otherwise>
       <div id="buttons-container">

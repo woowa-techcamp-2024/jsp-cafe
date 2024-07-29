@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/users/login")
+@WebServlet("/login")
 public class LoginFormServlet extends HttpServlet {
 
     @Override
