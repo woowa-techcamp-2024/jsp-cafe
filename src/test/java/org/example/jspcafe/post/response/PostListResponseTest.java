@@ -14,8 +14,8 @@ class PostListResponseTest {
     void createPostListResponse() {
         // given
         List<PostResponse> postList = List.of(
-                new PostResponse(1L, "nickname", "title", "content", null),
-                new PostResponse(2L, "nickname", "title", "content", null)
+                new PostResponse(1L, 1L, "nickname", "title", "content", null),
+                new PostResponse(2L, 1L, "nickname", "title", "content", null)
         );
         int totalElements = postList.size();
 
