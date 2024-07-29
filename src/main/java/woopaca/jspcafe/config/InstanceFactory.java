@@ -5,6 +5,7 @@ import woopaca.jspcafe.repository.PostMySQLRepository;
 import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.UserMySQLRepository;
 import woopaca.jspcafe.repository.UserRepository;
+import woopaca.jspcafe.service.AuthService;
 import woopaca.jspcafe.service.PostService;
 import woopaca.jspcafe.service.UserService;
 
@@ -14,6 +15,7 @@ public final class InstanceFactory {
     private static PostRepository postRepository;
     private static UserService userService;
     private static PostService postService;
+    private static AuthService authService;
     private static JdbcTemplate jdbcTemplate;
 
     private InstanceFactory() {
@@ -52,5 +54,12 @@ public final class InstanceFactory {
             jdbcTemplate = new JdbcTemplate();
         }
         return jdbcTemplate;
+    }
+
+    public static AuthService authService() {
+        if (authService == null) {
+            authService = new AuthService(userRepository());
+        }
+        return authService;
     }
 }

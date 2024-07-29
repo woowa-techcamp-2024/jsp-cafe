@@ -17,6 +17,7 @@ public class ApplicationConfiguration implements ServletContextListener {
         ServletContext servletContext = sce.getServletContext();
         servletContext.setAttribute("userService", InstanceFactory.userService());
         servletContext.setAttribute("postService", InstanceFactory.postService());
+        servletContext.setAttribute("authService", InstanceFactory.authService());
     }
 
     @Override
