@@ -11,9 +11,9 @@ import java.sql.Statement;
 import java.util.stream.Collectors;
 
 public class JdbcTemplate {
-    public static final String URL = "jdbc:mysql://localhost:3306/jsp-cafe?useSSL=false&serverTimezone=UTC&allowMultiQueries=true";
-    private static final String MYSQL_USERNAME = "root";
-    private static final String MYSQL_PASSWORD = "";
+    private static String URL;
+    private static String MYSQL_USERNAME;
+    private static String MYSQL_PASSWORD;
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -22,6 +22,11 @@ public class JdbcTemplate {
 
     public static void initializeDatabase() throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
+
+        URL = System.getenv("MYSQL_URL");
+        MYSQL_USERNAME = System.getenv("MYSQL_USERNAME");
+        MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
+
         try (Connection conn = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
              Statement stmt = conn.createStatement()) {
 
