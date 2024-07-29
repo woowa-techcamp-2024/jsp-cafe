@@ -1,6 +1,6 @@
 package repository;
 
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
 import org.junit.jupiter.api.BeforeEach;

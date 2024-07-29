@@ -1,4 +1,4 @@
-package camp.woowa.jspcafe.servlets.view;
+package camp.woowa.jspcafe.servlet.view;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -1,4 +1,4 @@
-package camp.woowa.jspcafe.models;
+package camp.woowa.jspcafe.model;
 
 import java.util.Objects;
 

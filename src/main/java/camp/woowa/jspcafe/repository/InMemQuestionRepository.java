@@ -1,6 +1,6 @@
 package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.model.Question;
 
 import java.util.List;
 import java.util.Map;

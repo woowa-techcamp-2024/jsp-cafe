@@ -1,4 +1,4 @@
-package camp.woowa.jspcafe.models;
+package camp.woowa.jspcafe.model;
 
 public class Question {
     private final Long id;

@@ -1,7 +1,7 @@
-package camp.woowa.jspcafe.servlets.view;
+package camp.woowa.jspcafe.servlet.view;
 
-import camp.woowa.jspcafe.models.Question;
-import camp.woowa.jspcafe.services.QuestionService;
+import camp.woowa.jspcafe.model.Question;
+import camp.woowa.jspcafe.service.QuestionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

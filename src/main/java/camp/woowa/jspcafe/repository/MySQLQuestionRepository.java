@@ -2,7 +2,7 @@ package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.model.Question;
 
 import java.sql.Connection;
 import java.sql.SQLException;

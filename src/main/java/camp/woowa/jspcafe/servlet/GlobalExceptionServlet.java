@@ -1,4 +1,4 @@
-package camp.woowa.jspcafe.servlets;
+package camp.woowa.jspcafe.servlet;
 
 import camp.woowa.jspcafe.exception.CustomException;
 import jakarta.servlet.ServletException;
