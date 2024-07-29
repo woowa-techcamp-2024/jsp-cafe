@@ -45,7 +45,7 @@ public class QuestionService {
         Question question = read(questionId);
 
         if (!Objects.equals(question.getUserPrimaryId(), signInUserId)) {
-            throw new BadRequestException("다른 사용자의 글은 삭제할 수 없습니다.");
+            throw new BadRequestException("다른 사용자의 글은 수정할 수 없습니다.");
         }
 
         return question;
