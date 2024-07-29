@@ -52,7 +52,9 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
-    private void logout(HttpServletRequest request, HttpServletResponse response) {
-        // TODO 로그아웃 처리
+    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        response.sendRedirect("/");
     }
 }
