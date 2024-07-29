@@ -83,7 +83,6 @@ public class JdbcTemplate {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
             statementConsumer.accept(pstmt);
-            connection.setAutoCommit(false);
             int affectedRows = 0;
             try {
                 affectedRows = pstmt.executeUpdate();

@@ -14,6 +14,7 @@ import com.codesquad.cafe.db.entity.User;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -46,6 +47,11 @@ class PostDaoTest {
     @AfterEach
     void tearDown() {
         postDao.deleteAll();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        userDao.deleteAll();
     }
 
     @DisplayName("게시글 저장")

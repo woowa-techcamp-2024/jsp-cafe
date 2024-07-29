@@ -26,7 +26,7 @@ class PostCreateServletTest extends E2ETestBase {
 
     private static User user;
 
-    private final String path = "/posts";
+    private final String path = "/posts/create";
 
 
     @BeforeAll

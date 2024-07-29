@@ -104,6 +104,7 @@ class UserDaoTest {
     @Test
     void findAll() {
         //given
+        userDao.deleteAll();
         User firstUser = createUser("user1", "test1234", "user", "javajigi@gamil.com");
         User secondUser = createUser("user2", "test1234", "user", "javajigi@gamil.com");
         User thirdUser = createUser("user3", "test1234", "user", "javajigi@gamil.com");

@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.http.HttpResponse;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,26 +33,31 @@ class IndexServletTest extends E2ETestBase {
 
     private static final String path = "/";
 
-    private static User user;
+    private User user;
 
-    private static List<Post> posts;
+    private List<Post> posts;
 
     @BeforeAll
     static void beforeAll() throws Exception {
         userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
         postRepository = (PostRepository) context.getServletContext().getAttribute("postRepository");
+    }
+
+    @BeforeEach
+    void setUp() {
         posts = new ArrayList<>();
         user = userRepository.save(User.of("woowa", "1234", "김수현", "woowa@gmail.com"));
         posts.add(postRepository.save(Post.of(user.getId(), "title1", "content1", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title2", "content2", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title3", "content3", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title4", "content4", null)));
+
     }
 
-    @AfterAll
-    static void afterAll() {
-        userRepository.deleteAll();
+    @AfterEach
+    void tearDown() {
         postRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -75,7 +81,8 @@ class IndexServletTest extends E2ETestBase {
     @DisplayName("page parameter에 맞는 게시글을 반환한다.")
     @ParameterizedTest
     @MethodSource
-    void testDoGetPageParam(String pathWithQueryString, List<Post> expectedPosts) throws IOException {
+    void testDoGetPageParam(String pathWithQueryString, List<String> expectedPostsTitle, List<String> excludePosts)
+            throws IOException {
         //when
         SavedHttpResponse response = get(pathWithQueryString);
         String html = response.getBody();
@@ -88,18 +95,20 @@ class IndexServletTest extends E2ETestBase {
         assertTrue(html.contains("회원가입"));
         assertTrue(html.contains("전체 글 " + posts.size()));
 
-        expectedPosts.forEach(post -> {
-            assertTrue(html.contains(post.getTitle()));
+        expectedPostsTitle.forEach(title -> {
+            assertTrue(html.contains(title));
+        });
+        excludePosts.forEach(title -> {
+            assertTrue(!html.contains(title));
         });
     }
 
     public static Stream<Arguments> testDoGetPageParam() {
+        userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
         return Stream.of(
-                Arguments.of(path, posts.stream().toList()),
-                Arguments.of(path + "?pageNum=1&pageSize=2", List.of(posts.get(3), posts.get(2))),
-                Arguments.of(path + "?pageNum=2&pageSize=2", List.of(posts.get(1), posts.get(0))),
-                Arguments.of(path + "?pageNum=2&pageSize=3", List.of())
-        );
+                Arguments.of(path + "?pageNum=1&pageSize=2", List.of("title4", "title3"), List.of("title2", "title1")),
+                Arguments.of(path + "?pageNum=2&pageSize=2", List.of("title2", "title1"), List.of("title4", "title3"))
+                );
     }
 
     @DisplayName("잘못된 pageParam 요청시 에러를 반환한다.")
