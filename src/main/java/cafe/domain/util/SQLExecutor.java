@@ -1,4 +1,4 @@
-package cafe.domain.sql;
+package cafe.domain.util;
 
 import java.lang.reflect.Field;
 import java.sql.*;

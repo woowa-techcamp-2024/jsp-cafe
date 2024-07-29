@@ -1,10 +1,15 @@
 package cafe.config;
 
-import cafe.handler.articles.ArticleCreateHandler;
-import cafe.handler.articles.ArticleHandler;
-import cafe.handler.DefaultHandler;
-import cafe.handler.articles.ArticleListHandler;
-import cafe.handler.users.*;
+import cafe.controller.handler.articles.ArticleCreateHandler;
+import cafe.controller.handler.articles.ArticleHandler;
+import cafe.controller.handler.DefaultHandler;
+import cafe.controller.handler.articles.ArticleListHandler;
+import cafe.controller.handler.users.UserInfoEditHandler;
+import cafe.controller.handler.users.UserInfoHandler;
+import cafe.controller.handler.users.UserInfoListHandler;
+import cafe.controller.handler.users.UserSignInHandler;
+import cafe.controller.handler.users.UserSignOutHandler;
+import cafe.controller.handler.users.UserSignUpHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;

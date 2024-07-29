@@ -1,6 +1,6 @@
 package cafe.controller;
 
-import cafe.handler.Handler;
+import cafe.controller.handler.Handler;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

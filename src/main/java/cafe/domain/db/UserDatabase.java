@@ -1,20 +1,29 @@
 package cafe.domain.db;
 
-import cafe.domain.DatabaseManager;
+import cafe.domain.util.DatabaseConnector;
 import cafe.domain.entity.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class UserDatabase implements Database<String, User> {
+    DatabaseConnector databaseConnector;
+
+    public UserDatabase(DatabaseConnector databaseConnector) {
+        this.databaseConnector = databaseConnector;
+    }
+
+    @Override
+    public DatabaseConnector getConnector() {
+        return this.databaseConnector;
+    }
 
     public User selectByUserId(String userid) {
         User user = null;
 
         String sql = "SELECT * FROM `users` WHERE `userid` = ?";
-        try (Connection connection = DatabaseManager.connect();
+        try (Connection connection = databaseConnector.connect();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, userid);
@@ -28,7 +37,7 @@ public class UserDatabase implements Database<String, User> {
                     user = User.of(userId, name, password, email);
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

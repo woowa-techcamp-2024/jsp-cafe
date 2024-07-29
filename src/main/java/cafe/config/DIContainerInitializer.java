@@ -1,5 +1,7 @@
 package cafe.config;
 
+import cafe.domain.util.DatabaseConnector;
+import cafe.domain.util.MySQLConnector;
 import cafe.domain.db.ArticleDatabase;
 import cafe.domain.db.SessionDatabase;
 import cafe.domain.db.UserDatabase;
@@ -15,8 +17,9 @@ public class DIContainerInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
 
-        UserDatabase userDatabase = new UserDatabase();
-        ArticleDatabase articleDatabase = new ArticleDatabase();
+        DatabaseConnector databaseConnector = new MySQLConnector();
+        UserDatabase userDatabase = new UserDatabase(databaseConnector);
+        ArticleDatabase articleDatabase = new ArticleDatabase(databaseConnector);
         SessionDatabase sessionDatabase = new SessionDatabase();
 
         UserService userService = new UserService(userDatabase, sessionDatabase);

@@ -1,8 +1,8 @@
 package cafe.domain.db;
 
-import cafe.domain.DatabaseManager;
-import cafe.domain.sql.SQLExecutor;
-import cafe.domain.sql.SQLGenerator;
+import cafe.domain.util.DatabaseConnector;
+import cafe.domain.util.SQLExecutor;
+import cafe.domain.util.SQLGenerator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -17,12 +17,16 @@ public interface Database<K, V> {
     SQLGenerator sqlGenerator = SQLGenerator.getInstance();
     SQLExecutor sqlExecutor = SQLExecutor.getInstance();
 
+    default DatabaseConnector getConnector() {
+        return null;
+    }
+
     default void insert(V data) {
         String className = findClassName();
         Field[] fields = findFields();
         for (Field field : fields) field.setAccessible(true);
 
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String insertSQL = sqlGenerator.generateInsertSQL(className, fields);
             sqlExecutor.executeInsert(connection, insertSQL, fields, data);
         } catch (Exception e) {
@@ -37,7 +41,7 @@ public interface Database<K, V> {
         constructor.setAccessible(true);
 
         V data = null;
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String selectSQL = sqlGenerator.generateSelectByIdSQL(className);
             ResultSet rs = sqlExecutor.executeSelectById(connection, selectSQL, id);
 
@@ -58,7 +62,7 @@ public interface Database<K, V> {
         constructor.setAccessible(true);
 
         Map<K, V> result = new HashMap<>();
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String selectAllSQL = sqlGenerator.generateSelectAllSQL(className);
             ResultSet rs = sqlExecutor.executeSelectAll(connection, selectAllSQL);
 
@@ -79,7 +83,7 @@ public interface Database<K, V> {
         Field[] fields = findFields();
         for (Field field : fields) field.setAccessible(true);
 
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String updateSQL = sqlGenerator.generateUpdateSQL(className, fields);
             sqlExecutor.executeUpdate(connection, updateSQL, fields, data, id);
         } catch (Exception e) {
