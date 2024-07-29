@@ -47,6 +47,7 @@ public class PostService {
         final List<PostResponse> postList = posts.stream()
                 .map(post -> new PostResponse(
                         post.getPostId(),
+                        post.getUserId(),
                         nicknameMap.get(post.getUserId()).getValue(),
                         post.getTitle().getValue(),
                         post.getContent().getValue(),
@@ -75,6 +76,7 @@ public class PostService {
                             .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
                     return new PostResponse(
                             post.getPostId(),
+                            post.getUserId(),
                             user.getNickname().getValue(),
                             post.getTitle().getValue(),
                             post.getContent().getValue(),

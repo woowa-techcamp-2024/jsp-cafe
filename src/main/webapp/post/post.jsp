@@ -11,6 +11,10 @@
     // 출력 형식 지정
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초");
     String formattedDate = (post.createdAt() != null) ? post.createdAt().format(formatter) : "날짜 형식 오류";
+
+    Boolean isLogined = (Boolean) session.getAttribute("isLogined");
+    Long loggedInUserId = (Long) session.getAttribute("userId"); // 로그인한 사용자의 ID
+    Long postAuthorId = post.userId(); // 글쓴이의 사용자 ID
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,9 +32,8 @@
         <h1 class="header-title"><a href="/">HELLO, WEB!</a></h1>
         <nav>
             <%
-                Boolean isLogined = (Boolean) session.getAttribute("isLogined");
-                String nickname = (String) session.getAttribute("nickname");
                 if (isLogined != null && isLogined) {
+                    String nickname = (String) session.getAttribute("nickname");
             %>
             <span class="user-name">환영합니다, <%= nickname %>!</span>
             <form action="${pageContext.request.contextPath}/api/logout" method="post" style="display: inline;">
@@ -60,6 +63,20 @@
                     <span class="article-author">작성자: <%= post.nickname() %></span>
                     <span class="article-date">작성일자: <%= formattedDate %></span>
                     <span class="article-views">조회수: 1</span>
+                    <div class="article-actions">
+                        <%
+                            if (isLogined != null && isLogined && loggedInUserId != null && loggedInUserId.equals(postAuthorId)) {
+                        %>
+                        <form action="${pageContext.request.contextPath}/edit-post.jsp" method="get" style="display: inline;">
+                            <input type="hidden" name="postId" value="<%= post.postId() %>">
+                            <button type="submit" class="edit-post-button active">수정</button>
+                        </form>
+                        <form action="${pageContext.request.contextPath}/api/delete-post" method="post" style="display: inline;">
+                            <input type="hidden" name="postId" value="<%= post.postId() %>">
+                            <button type="submit" class="delete-post-button active">삭제</button>
+                        </form>
+                        <% } %>
+                    </div>
                 </div>
             </header>
             <article class="article-content">
@@ -83,7 +100,7 @@
                 String commentWriter = (String) request.getAttribute("commentWriter");
             %>
             <form action="${pageContext.request.contextPath}/api/comments" method="post" class="comment-form">
-                <label for="commentInput" class="comment-form-label"><%= commentWriter%></label>
+                <label for="commentInput" class="comment-form-label"><%= commentWriter %></label>
                 <textarea id="commentInput" name="content" class="comment-form-textarea" placeholder="댓글 입력"></textarea>
                 <button type="submit" class="comment-form-button">댓글입력</button>
             </form>
