@@ -4,6 +4,7 @@ import com.jspcafe.board.model.Article;
 import com.jspcafe.board.service.ArticleService;
 import com.jspcafe.board.model.ArticleDao;
 import com.jspcafe.test_util.*;
+import com.jspcafe.user.model.User;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,6 @@ class ArticleControllerTest {
         // Given
         Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
         articleDao.save(article);
-
         request.setPathInfo("/" + article.id());
 
         // When
@@ -79,8 +79,9 @@ class ArticleControllerTest {
     @Test
     void 새_게시글을_작성할_수_있다() throws ServletException, IOException {
         // Given
+        User user = User.create("test@test", "새 작성자", "password");
+        request.getSession().setAttribute("userInfo", user);
         request.setParameter("title", "새 게시글");
-        request.setParameter("nickname", "새 작성자");
         request.setParameter("content", "새 내용");
 
         // When

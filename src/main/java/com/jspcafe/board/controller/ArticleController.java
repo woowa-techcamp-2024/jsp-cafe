@@ -2,6 +2,7 @@ package com.jspcafe.board.controller;
 
 import com.jspcafe.board.model.Article;
 import com.jspcafe.board.service.ArticleService;
+import com.jspcafe.user.model.User;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -9,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,9 +55,9 @@ public class ArticleController extends HttpServlet {
 
     private void writeArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String title = req.getParameter("title");
-        String nickname = req.getParameter("nickname");
         String content = req.getParameter("content");
-        articleService.write(title, nickname, content);
+        User user = getUser(req);
+        articleService.write(title, user.nickname(), content);
         resp.sendRedirect("/");
     }
 
@@ -64,5 +66,10 @@ public class ArticleController extends HttpServlet {
         Article article = articleService.findById(id);
         req.setAttribute("article", article);
         forward("article_detail", req, resp);
+    }
+
+    private User getUser(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        return (User) session.getAttribute("userInfo");
     }
 }
