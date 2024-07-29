@@ -26,10 +26,12 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Long update(Long id, String password, String updatePassword, String updatedUserId, String updatedName, String updatedEmail) {
+    public Long update(User sessionUser, Long id, String password, String updatedName, String updatedEmail) {
         User targetUser = findById(id);
+        if (!sessionUser.equals(targetUser))
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "You are not authorized to update this user.");
         if (targetUser.validatePassword(password))
-            return userRepository.update(id, updatedUserId,updatePassword, updatedName, updatedEmail);
+            return userRepository.update(id, updatedName, updatedEmail);
         else
             throw new CustomException(HttpStatus.INVALID_PASSWORD);
     }
@@ -48,5 +50,10 @@ public class UserService {
             throw new CustomException(HttpStatus.INVALID_USER);
 
         return user;
+    }
+
+    public boolean validateAuthorization(User sessionUser) {
+        User user = findById(sessionUser.getId());
+        return user.validatePassword(sessionUser.getPassword());
     }
 }

@@ -86,9 +86,10 @@ class UserServiceTest {
         String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
-        String updatedPassword = "updatedPassword";
+        User old_user = userService.findById(id);
+
         // when
-        Long updated_id = userService.update(id, password, updatedPassword, updatedUserId, updatedName, updatedEmail);
+        Long updated_id = userService.update(old_user, id, password, updatedName, updatedEmail);
 
         // then
         User user = userService.findById(id);
@@ -108,14 +109,13 @@ class UserServiceTest {
         String name = "name";
         String email = "email";
         Long id = userRepository.save(userId, password, name, email);
-        String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
-        String updatedPassword = "updatedPassword";
 
+        User old_user = userRepository.findById(id);
         // when
         // then
-        assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedPassword, updatedUserId, updatedName, updatedEmail));
+        assertThrows(RuntimeException.class, () -> userService.update(old_user, id, "1234", updatedName, updatedEmail));
     }
 
     @Test

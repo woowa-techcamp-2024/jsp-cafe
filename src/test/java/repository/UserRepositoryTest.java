@@ -89,7 +89,7 @@ class UserRepositoryTest {
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
         String updatedPassword = "updatedPassword";
-        userRepository.update(id, userId, updatedPassword, updatedName, updatedEmail);
+        userRepository.update(id, updatedName, updatedEmail);
         User user = userRepository.findById(id);
 
         // then

@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.models;
 
+import java.util.Objects;
+
 public class User {
     private final Long id;
     private String userId;
@@ -35,14 +37,25 @@ public class User {
         return email;
     }
 
-    public void update(String userId, String updatePassword, String updatedName, String updatedEmail) {
-        this.userId = userId;
-        this.password = updatePassword;
+    public void update(String updatedName, String updatedEmail) {
         this.name = updatedName;
         this.email = updatedEmail;
     }
 
     public boolean validatePassword(String password) {
         return this.password.equals(password);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(userId, user.userId) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, password, name, email);
     }
 }
