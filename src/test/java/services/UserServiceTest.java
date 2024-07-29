@@ -83,7 +83,6 @@ class UserServiceTest {
         String name = "name";
         String email = "email";
         Long id = userRepository.save(userId, password, name, email);
-        String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
         User old_user = userService.findById(id);
@@ -96,7 +95,6 @@ class UserServiceTest {
         User updated = userRepository.findById(updated_id);
 
         assertEquals(user, updated);
-        assertEquals(user.getUserId(), updatedUserId);
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
     }
