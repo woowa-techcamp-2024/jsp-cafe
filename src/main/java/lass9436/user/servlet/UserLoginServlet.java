@@ -35,6 +35,7 @@ public class UserLoginServlet extends HttpServlet {
         if(user != null && password.equals(user.getPassword())) {
             req.getSession().setAttribute("userId", userId);
             req.getSession().setAttribute("userSeq", user.getUserSeq());
+            req.getSession().setAttribute("userName", user.getName());
             resp.sendRedirect("/");
             return;
         }

@@ -33,10 +33,21 @@ public class QuestionServlet extends HttpServlet {
 		String title = req.getParameter("title");
 		String contents = req.getParameter("contents");
 
-		User user = userRepository.findByUserId(writer);
+		if ("guest".equals(writer)) {
+			questionRepository.save(new Question(null, writer, title, contents));
+			resp.sendRedirect("/");
+			return;
+		}
 
-		// Question 객체 생성
-		questionRepository.save(new Question(user.getUserSeq(), writer, title, contents));
-		resp.sendRedirect("/");
+		String userId = (String) req.getSession().getAttribute("userId");
+		User user = userRepository.findByUserId(userId);
+
+		if (user != null && user.getName().equals(writer)){
+			questionRepository.save(new Question(user.getUserSeq(), writer, title, contents));
+			resp.sendRedirect("/");
+			return;
+		}
+
+		resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
 	}
 }
