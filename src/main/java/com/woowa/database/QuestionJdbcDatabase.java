@@ -125,4 +125,9 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
             DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
     }
+
+    @Override
+    public void update(Question question) {
+
+    }
 }

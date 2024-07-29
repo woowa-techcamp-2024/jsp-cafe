@@ -230,4 +230,67 @@ class QuestionHandlerTest {
             assertThat(response.getViewName()).isEqualTo("/qna/update");
         }
     }
+
+    @Nested
+    @DisplayName("updateQuestion 호출 시")
+    class UpdateQuestionTest {
+
+        private User user;
+        private Question question;
+
+        @BeforeEach
+        void setUp() {
+            user = UserFixture.user();
+            question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+        }
+
+        @Test
+        @DisplayName("질문을 업데이트한다.")
+        void updateQuestion() {
+            //given
+            String title = "updateTitle";
+            String content = "updateContent";
+
+            //when
+            questionHandler.updateQuestion(user.getUserId(), question.getQuestionId(), title, content);
+
+            //then
+            Question findQuestion = questionDatabase.findById(question.getQuestionId()).get();
+            assertThat(findQuestion.getTitle()).isEqualTo(title);
+            assertThat(findQuestion.getContent()).isEqualTo(content);
+        }
+
+        @Test
+        @DisplayName("예외(Authorization): 질문 작성자가 아니면")
+        void authorization_WHenNoAuthor() {
+            //given
+            User anotherUser = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
+            userDatabase.save(anotherUser);
+
+            //when
+            Exception exception = catchException(() ->
+                    questionHandler.updateQuestion(anotherUser.getUserId(), question.getQuestionId(), "update",
+                            "update"));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+
+        @Test
+        @DisplayName("질문 상세 조회 화면으로 리다이렉트한다.")
+        void redirectToQuestion() {
+            //given
+            String title = "updateTitle";
+            String content = "updateContent";
+
+            //when
+            ResponseEntity response = questionHandler.updateQuestion(user.getUserId(), question.getQuestionId(), title,
+                    content);
+
+            //then
+            assertThat(response.getLocation()).isEqualTo("/questions/" + question.getQuestionId());
+        }
+    }
 }

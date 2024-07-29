@@ -3,7 +3,7 @@ package com.woowa.framework.web;
 import java.util.Arrays;
 
 public enum HttpMethod {
-    GET, POST;
+    GET, POST, PUT;
 
     public static HttpMethod from(String method) {
         return Arrays.stream(values())

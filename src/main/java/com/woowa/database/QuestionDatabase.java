@@ -12,4 +12,6 @@ public interface QuestionDatabase {
     List<Question> findAllOrderByCreatedAt(int page, int size);
 
     Optional<Question> findById(String questionId);
+
+    void update(Question question);
 }
