@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * UserSignUpServlet은 사용자 회원가입 요청을 처리하는 서블릿입니다. <br> GET 및 POST 메서드를 제공하여 각각 사용자 목록을 표시하고 새로운 사용자를
- * 생성합니다.
+ * UserSignUpServlet은 /users/signup URI에 대해 사용자 회원가입 요청을 처리하는 서블릿입니다. <br> GET 및 POST 메서드를 제공하며 사용자
+ * 회원가입 페이지 표시 및 새로운 사용자를 생성합니다.
  */
-@WebServlet("/users")
+@WebServlet("/users/signup")
 public class UserSignUpServlet extends HttpServlet {
 
     private transient UserService userService;
@@ -29,7 +29,7 @@ public class UserSignUpServlet extends HttpServlet {
     }
 
     /**
-     * GET 요청을 처리하여 userList.jsp 페이지로 포워딩합니다. 클라이언트가 /users로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
+     * GET 요청을 처리하여 userSignupForm.jsp 페이지로 포워딩합니다. 클라이언트가 /users로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -39,12 +39,11 @@ public class UserSignUpServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        req.setAttribute("userList", userService.findAllUser());
-        req.getRequestDispatcher("/WEB-INF/jsp/userList.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/userSignupForm.jsp").forward(req, resp);
     }
 
     /**
-     * POST 요청을 처리하여 새로운 사용자를 생성한 후 /users 페이지로 리디렉션합니다. 클라이언트가 /users로 POST 요청을 보낼 때 이 메서드가 호출됩니다.
+     * POST 요청을 처리하여 새로운 사용자를 생성한 후 / 페이지로 리디렉션합니다. 클라이언트가 /users로 POST 요청을 보낼 때 이 메서드가 호출됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -56,6 +55,6 @@ public class UserSignUpServlet extends HttpServlet {
         throws ServletException, IOException {
         Map<String, String[]> map = req.getParameterMap();
         userService.createUser(map);
-        resp.sendRedirect("/users");
+        resp.sendRedirect("/");
     }
 }
