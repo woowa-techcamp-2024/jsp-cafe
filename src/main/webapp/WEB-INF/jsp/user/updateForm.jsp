@@ -7,15 +7,11 @@
           <form name="question" method="post" action="${pageContext.request.contextPath}/users/${user.id}/form">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
-                  <input class="form-control" id="userId" name="userId" placeholder="User ID" value="${user.userId}">
+                  <input class="form-control" id="userId" name="userId" placeholder="User ID" value="${user.userId}" disabled>
               </div>
               <div class="form-group">
                   <label for="password">비밀번호</label>
                   <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-              </div>
-              <div class="form-group">
-                  <label for="updatePassword">변경할 비밀번호</label>
-                  <input type="password" class="form-control" id="updatePassword" name="updatePassword" placeholder="Update Password">
               </div>
               <div class="form-group">
                   <label for="name">이름</label>
