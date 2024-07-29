@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.servlet.view;
 
+import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.service.QuestionService;
 import jakarta.servlet.ServletException;
@@ -50,6 +52,8 @@ public class QnAViewServlet extends HttpServlet {
                 log("Exception Occurred", e);
             }
 
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Page Not Found");
         }
     }
 }
