@@ -13,6 +13,10 @@ public class Post {
     private Content content;
     private LocalDateTime createdAt;
 
+    public boolean canModifyBy(Long userId) {
+        return this.userId.equals(userId);
+    }
+
     public void updateTitle(String title) {
         this.title = new Title(title);
     }
