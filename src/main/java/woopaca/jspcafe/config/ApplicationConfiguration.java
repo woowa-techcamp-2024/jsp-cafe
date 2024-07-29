@@ -5,6 +5,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import woopaca.jspcafe.database.DatabaseInitializer;
+import woopaca.jspcafe.database.JdbcTemplate;
 
 @WebListener
 public class ApplicationConfiguration implements ServletContextListener {
@@ -16,5 +17,11 @@ public class ApplicationConfiguration implements ServletContextListener {
         ServletContext servletContext = sce.getServletContext();
         servletContext.setAttribute("userService", InstanceFactory.userService());
         servletContext.setAttribute("postService", InstanceFactory.postService());
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        JdbcTemplate jdbcTemplate = InstanceFactory.jdbcTemplate();
+        jdbcTemplate.shutdownConnectionPool();
     }
 }

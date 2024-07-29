@@ -76,4 +76,8 @@ public final class JdbcTemplate {
             throw new RuntimeException(e);
         }
     }
+
+    public void shutdownConnectionPool() {
+        ((HikariDataSource) dataSource).close();
+    }
 }
