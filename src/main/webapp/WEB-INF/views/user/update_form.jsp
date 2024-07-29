@@ -3,34 +3,15 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <jsp:include page="../common/header.jsp" />
 
-<div class="container" id="main">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default content-main">
-            <form name="question" action="${pageContext.request.contextPath}/users/edit/${user.id}" method="post">
-                <div class="form-group">
-                    <label for="email">이메일</label>
-                    <input type="email" class="form-control" id="email" name="email" value="${user.email}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="newNickname">새로운 닉네임</label>
-                    <input class="form-control" id="newNickname" name="newNickname" value="${user.nickname}" placeholder="Name">
-                </div>
-                <div class="form-group">
-                    <label for="newPassword">새로운 비밀번호</label>
-                    <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="New Password">
-                </div>
-                <div class="form-group">
-                    <label for="password">기존 비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="password">
-                </div>
-                <button type="submit" class="btn btn-success clearfix pull-right">정보 수정</button>
-                <div class="clearfix" />
-            </form>
-        </div>
-    </div>
+<div class="login-container">
+    <h2>로그인</h2>
+    <form name="login" action="${pageContext.request.contextPath}/users/edit/${user.id}" method="post" class="login-form">
+        <input type="email" id="email" name="email" value="${user.email}" readonly>
+        <input type="nickname" id="newNickname" name="newNickname" value="${user.nickname}" placeholder="새로운 닉네임을 입력해주세요" required>
+        <input type="password" id="newPassword" name="newPassword" placeholder="새로운 비밀번호를 입력해주세요" required>
+        <input type="password" id="password" name="password" placeholder="기존 비밀번호를 입력해주세요" required>
+        <button type="submit">로그인</button>
+    </form>
 </div>
 
-<%@ include file="../common/footer.jsp" %>
-
-</body>
-</html>
+<jsp:include page="../common/footer.jsp"/>
