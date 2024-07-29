@@ -1,8 +1,8 @@
 package lass9436.question.model;
 
 public class Question {
-	private long questionSeq;
-	private long userSeq;
+	private Long questionSeq;
+	private Long userSeq;
 	private String writer;
 	private String title;
 	private String contents;
@@ -11,7 +11,7 @@ public class Question {
 	public Question() {}
 
 	// 매개변수를 받는 생성자
-	public Question(long userSeq, String writer, String title, String contents) {
+	public Question(Long userSeq, String writer, String title, String contents) {
 		this.userSeq = userSeq;
 		this.writer = writer;
 		this.title = title;
@@ -19,11 +19,11 @@ public class Question {
 	}
 
 	// Getters and Setters
-	public long getQuestionSeq() {
+	public Long getQuestionSeq() {
 		return questionSeq;
 	}
 
-	public void setQuestionSeq(long questionSeq) {
+	public void setQuestionSeq(Long questionSeq) {
 		this.questionSeq = questionSeq;
 	}
 
@@ -51,11 +51,11 @@ public class Question {
 		this.contents = contents;
 	}
 
-	public long getUserSeq() {
+	public Long getUserSeq() {
 		return userSeq;
 	}
 
-	public void setUserSeq(long userSeq) {
+	public void setUserSeq(Long userSeq) {
 		this.userSeq = userSeq;
 	}
 
