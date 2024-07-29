@@ -59,7 +59,7 @@ public class UserLoginServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("WOOWA_SESSIONID", user);
 
-            Cookie loginCookie = new Cookie("WOOWA_SESSIONID", user.getEmail());
+            Cookie loginCookie = new Cookie("WOOWA_SESSIONID", String.valueOf(user.getId()));
             loginCookie.setPath("/");
             resp.addCookie(loginCookie);
             resp.sendRedirect(req.getContextPath() + "/");
