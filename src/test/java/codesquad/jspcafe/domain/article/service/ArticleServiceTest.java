@@ -10,6 +10,9 @@ import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
+import codesquad.jspcafe.domain.user.domain.User;
+import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
+import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,19 +26,30 @@ import org.junit.jupiter.api.Test;
 class ArticleServiceTest {
 
     private ArticleRepository articleRepository = new ArticleMemoryRepository();
-    private final ArticleService articleService = new ArticleService(articleRepository);
+    private UserRepository userRepository = new UserMemoryRepository();
+    private final ArticleService articleService = new ArticleService(articleRepository,
+        userRepository);
 
+    private final String expectedUserId = "userId";
     private final String expectedTitle = "title";
-    private final String expectedWriter = "writer";
+    private final User expectedWriter = new User(1L, expectedUserId, "password", "name",
+        "test@gmail.com");
     private final String expectedContents = "contents";
     private final LocalDateTime expectedCreatedAt = LocalDateTime.now();
     private final Long expectedId = 1L;
     private Article expectedArticle;
 
+    {
+        userRepository.save(expectedWriter);
+    }
+
     @BeforeEach
     void clear() {
         articleRepository = new ArticleMemoryRepository();
         for (Field field : articleService.getClass().getDeclaredFields()) {
+            if (field.getType() != ArticleRepository.class) {
+                continue;
+            }
             field.setAccessible(true);
             try {
                 field.set(articleService, articleRepository);
@@ -53,17 +67,18 @@ class ArticleServiceTest {
         // Arrange
         Map<String, String[]> expectedValues = Map.of(
             "title", new String[]{expectedTitle},
-            "writer", new String[]{expectedWriter},
             "contents", new String[]{expectedContents}
         );
         // Act
-        ArticleCommonResponse actualResult = articleService.createArticle(expectedValues);
+        ArticleCommonResponse actualResult = articleService.createArticle(expectedValues,
+            expectedUserId);
         // Assert
         assertAll(
             () -> assertThat(actualResult.getId()).isNotNull(),
             () -> assertThat(actualResult)
-                .extracting("title", "writer", "contents")
-                .containsExactly(expectedTitle, expectedWriter, expectedContents),
+                .extracting("title", "writerUserId", "writerUsername", "contents")
+                .containsExactly(expectedTitle, expectedWriter.getUserId(),
+                    expectedWriter.getUsername(), expectedContents),
             () -> assertThat(actualResult.getCreatedAt()).isNotNull()
         );
     }
@@ -92,8 +107,10 @@ class ArticleServiceTest {
                 expectedId.toString());
             // Assert
             assertThat(actualResult)
-                .extracting("id", "title", "writer", "contents", "createdAt")
-                .containsExactly(expectedId, expectedTitle, expectedWriter, expectedContents,
+                .extracting("id", "title", "writerUserId", "writerUsername", "contents",
+                    "createdAt")
+                .containsExactly(expectedId, expectedTitle, expectedWriter.getUserId(),
+                    expectedWriter.getUsername(), expectedContents,
                     DateTimeFormatExecutor.execute(expectedCreatedAt));
         }
 
@@ -108,8 +125,9 @@ class ArticleServiceTest {
             assertAll(
                 () -> assertThat(actualResult).hasSize(1),
                 () -> assertThat(actualResult.get(0))
-                    .extracting("id", "title", "writer", "createdAt")
-                    .containsExactly(expectedId, expectedTitle, expectedWriter,
+                    .extracting("id", "title", "writerUserId", "writerUsername", "createdAt")
+                    .containsExactly(expectedId, expectedTitle, expectedWriter.getUserId(),
+                        expectedWriter.getUsername(),
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
         }

@@ -1,6 +1,7 @@
 package codesquad.jspcafe.domain.article.controller;
 
 import codesquad.jspcafe.domain.article.service.ArticleService;
+import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -53,8 +54,10 @@ public class ArticleCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
+        UserSessionResponse userCommonResponse = (UserSessionResponse) req.getSession()
+            .getAttribute("user");
         Map<String, String[]> map = req.getParameterMap();
-        articleService.createArticle(map);
+        articleService.createArticle(map, userCommonResponse.getUserId());
         resp.sendRedirect("/");
     }
 }

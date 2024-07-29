@@ -28,9 +28,9 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/${articleCommonResponse.writer}"
+                            <a href="/users/${articleCommonResponse.writerUserId}"
                                class="article-author-name"><c:out
-                                    value="${articleCommonResponse.writer}"/>
+                                    value="${articleCommonResponse.writerUsername}"/>
                             </a>
                             <a href="/questions/${articleCommonResponse.id}"
                                class="article-header-time" title="퍼머링크">

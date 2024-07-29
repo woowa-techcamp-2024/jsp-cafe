@@ -3,6 +3,7 @@ package codesquad.jspcafe.domain.article.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import codesquad.jspcafe.domain.user.domain.User;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class ArticleTest {
 
     private final String expectedTitle = "title";
-    private final String expectedWriter = "writer";
+    private final User expectedWriter = new User(1L, "userId", "password", "name",
+        "test@gmail.com");
     private final String expectedContents = "contents";
     private final LocalDateTime expectedCreatedAt = LocalDateTime.now();
 
@@ -63,13 +65,12 @@ class ArticleTest {
                 .hasMessage("제목은 필수 입력값입니다.");
         }
 
-        @DisplayName("writer가 null이거나 빈 문자열이면 예외가 발생한다.")
-        @MethodSource("expectedValues")
-        @ParameterizedTest
-        void createFailWhenWriterIsNull(String value) {
+        @DisplayName("writer가 null이면 예외가 발생한다.")
+        @Test
+        void createFailWhenWriterIsNull() {
             // Act & Assert
             assertThatThrownBy(
-                () -> new Article(expectedTitle, value, expectedContents, expectedCreatedAt))
+                () -> new Article(expectedTitle, null, expectedContents, expectedCreatedAt))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("글쓴이는 필수 입력값입니다.");
         }

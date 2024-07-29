@@ -29,8 +29,8 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">${contentResponse.createdAt}</span>
-                                <a href="/users/${contentResponse.writer}"
-                                   class="author"><c:out value="${contentResponse.writer}"/>
+                                <a href="/users/${contentResponse.writerUserId}"
+                                   class="author"><c:out value="${contentResponse.writerUsername}"/>
                                 </a>
 
                             </div>

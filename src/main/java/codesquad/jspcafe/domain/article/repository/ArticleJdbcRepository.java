@@ -2,6 +2,7 @@ package codesquad.jspcafe.domain.article.repository;
 
 import codesquad.jspcafe.common.database.JDBCConnectionManager;
 import codesquad.jspcafe.domain.article.domain.Article;
+import codesquad.jspcafe.domain.user.domain.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,9 +24,10 @@ public class ArticleJdbcRepository implements ArticleRepository {
         (
             id        BIGINT AUTO_INCREMENT PRIMARY KEY,
             title     VARCHAR(255) NOT NULL,
-            writer    VARCHAR(255) NOT NULL,
+            writer    BIGINT NOT NULL,
             contents  TEXT         NOT NULL,
-            createdAt DATETIME
+            createdAt DATETIME,
+            FOREIGN KEY(writer) REFERENCES users (id)
         );""";
 
     private final JDBCConnectionManager connectionManager;
@@ -42,7 +44,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery,
                 Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, article.getTitle());
-            preparedStatement.setString(2, article.getWriter());
+            preparedStatement.setLong(2, article.getWriter().getId());
             preparedStatement.setString(3, article.getContents());
             preparedStatement.setTimestamp(4, Timestamp.valueOf(article.getCreatedAt()));
             preparedStatement.executeUpdate();
@@ -59,18 +61,24 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public Optional<Article> findById(Long id) {
-        String findByIdQuery = "SELECT id, title, writer, contents, createdAt FROM articles WHERE id = ?";
+        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.id = ? AND a.writer = u.id";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Article article = new Article(
-                    resultSet.getLong("id"),
-                    resultSet.getString("title"),
-                    resultSet.getString("writer"),
-                    resultSet.getString("contents"),
-                    resultSet.getTimestamp("createdAt").toLocalDateTime()
+                    resultSet.getLong("a.id"),
+                    resultSet.getString("a.title"),
+                    new User(
+                        resultSet.getLong("u.id"),
+                        resultSet.getString("u.user_id"),
+                        resultSet.getString("u.password"),
+                        resultSet.getString("u.username"),
+                        resultSet.getString("u.email")
+                    ),
+                    resultSet.getString("a.contents"),
+                    resultSet.getTimestamp("a.createdAt").toLocalDateTime()
                 );
                 return Optional.of(article);
             }
@@ -83,17 +91,23 @@ public class ArticleJdbcRepository implements ArticleRepository {
     @Override
     public List<Article> findAll() {
         List<Article> articles = new ArrayList<>();
-        String findAllQuery = "SELECT id, title, writer, contents, createdAt FROM articles";
+        String findAllQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id";
         try (Connection connection = connectionManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findAllQuery)) {
             while (resultSet.next()) {
                 Article article = new Article(
-                    resultSet.getLong("id"),
-                    resultSet.getString("title"),
-                    resultSet.getString("writer"),
-                    resultSet.getString("contents"),
-                    resultSet.getTimestamp("createdAt").toLocalDateTime()
+                    resultSet.getLong("a.id"),
+                    resultSet.getString("a.title"),
+                    new User(
+                        resultSet.getLong("u.id"),
+                        resultSet.getString("u.user_id"),
+                        resultSet.getString("u.password"),
+                        resultSet.getString("u.username"),
+                        resultSet.getString("u.email")
+                    ),
+                    resultSet.getString("a.contents"),
+                    resultSet.getTimestamp("a.createdAt").toLocalDateTime()
                 );
                 articles.add(article);
             }
