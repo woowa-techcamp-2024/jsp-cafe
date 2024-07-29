@@ -29,7 +29,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    void 로그인한_사용자는_게시글_작성에_접속하면_다음필터에_넘겨준다() throws ServletException, IOException {
+    void 로그인한_사용자는_게시글관련_페이지로_접속하면_다음필터에_넘겨준다() throws ServletException, IOException {
         // Given
         HttpSession session = request.getSession();
         session.setAttribute("userInfo", User.create("test@test", "testName", "testPassword"));
@@ -42,7 +42,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    void 로그인하지_않은_사용자는_게시글_작성에_접속하면_로그인페이지로_리다이렉트_된다() throws ServletException, IOException {
+    void 로그인하지_않은_사용자는_게시글관련_페이지에_접속하면_로그인페이지로_리다이렉트_된다() throws ServletException, IOException {
         // Given
         HttpSession session = request.getSession();
         session.invalidate();
