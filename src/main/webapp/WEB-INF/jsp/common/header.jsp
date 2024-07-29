@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <header class="header">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <h1 class="header-title"><a href="${pageContext.request.contextPath}/">HELLO, WEB!</a></h1>
     <nav>
         <c:choose>
