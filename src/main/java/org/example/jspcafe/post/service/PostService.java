@@ -59,6 +59,11 @@ public class PostService {
         return PostListResponse.of(totalElements, postList);
     }
 
+    public Post getPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+    }
+
 
     public PostService(
             JdbcPostRepository postRepository,
