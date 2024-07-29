@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<link rel="stylesheet" href="<c:url value="/css/error-message.css" />">
 <%
     // 세션에서 에러 메시지를 가져와서 request에 설정
     String sessionErrorMessage = (String) session.getAttribute("errorMessage");
