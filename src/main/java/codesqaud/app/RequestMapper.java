@@ -32,17 +32,23 @@ public record RequestMapper(String method, String urlPattern, String[] uriSegmen
             return false;
         }
 
-        String[] uriSegments = request.getRequestURI().split("/");
+        String[] requestUriSegments = request.getRequestURI().split("/");
 
-        if(this.uriSegments.length != uriSegments.length) {
+        if(this.uriSegments.length > requestUriSegments.length) {
             return false;
         }
 
-        for (int i = 0; i < this.uriSegments.length; i++) {
-            if(!this.uriSegments[i].equals("**") && !this.uriSegments[i].equals(uriSegments[i])) {
+        int minLength = Math.min(this.uriSegments.length, requestUriSegments.length);
+        for (int i = 0; i < minLength; i++) {
+            if(this.uriSegments[i].equals("**")) {
+               continue;
+            }
+
+            if(!this.uriSegments[i].equals(requestUriSegments[i])) {
                 return false;
             }
         }
+
 
         return true;
     }
