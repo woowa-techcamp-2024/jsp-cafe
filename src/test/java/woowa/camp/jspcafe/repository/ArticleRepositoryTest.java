@@ -63,7 +63,7 @@ class ArticleRepositoryTest {
             assertThat(savedId2).isEqualTo(savedId1 + 1);
         }
 
-        @Test
+        @Deprecated(since = "[요구사항 변경] 로그인한 회원만 게시글 작성이 가능함")
         @DisplayName("[Success] 게시글 작성자 id가 null 이면 익명게시판으로서 게시판 저장에 성공한다.")
         void test3() {
             Article anonymousArticle = Article.create(null, "title", "content", fixedDateTime.getNow());

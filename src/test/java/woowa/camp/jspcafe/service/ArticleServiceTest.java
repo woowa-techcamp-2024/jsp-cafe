@@ -71,22 +71,15 @@ class ArticleServiceTest {
         }
 
         @Test
-        @DisplayName("[Success] 익명 사용자로 게시글을 작성할 수 있다")
+        @DisplayName("[Success] 익명 사용자로 게시글을 작성할 수 없다")
         void writeAnonymousArticle() {
             // given
             String title = "익명 제목";
             String content = "익명 내용";
             ArticleWriteRequest request = new ArticleWriteRequest(null, title, content);
 
-            // when
-            Article result = articleService.writeArticle(request);
-
-            // then
-            assertThat(result).isNotNull();
-            assertThat(result.getId()).isNotNull();
-            assertThat(result.getTitle()).isEqualTo(title);
-            assertThat(result.getContent()).isEqualTo(content);
-            assertThat(result.isAnonymousAuthor()).isTrue();
+            // when then
+            assertThatThrownBy(() -> articleService.writeArticle(request)).isInstanceOf(ArticleException.class);
         }
 
     }
@@ -111,19 +104,14 @@ class ArticleServiceTest {
             assertArticleDetailsResponse(response, article, title, content, authorId, user1.getNickname());
         }
 
-        private User setupUser() {
-            User user1 = UserFixture.createUser1();
-            userRepository.save(user1);
-            return user1;
-        }
-
         @Test
-        @DisplayName("[Success] 익명 게시글을 조회할 수 있다")
+        @DisplayName("[Success] 회원이 작성한 게시글을 조회할 수 있다")
         void findAnonymousArticle() {
             // given
+            User user = setupUser();
             String title = "익명 제목";
             String content = "익명 내용";
-            Article article = articleService.writeArticle(new ArticleWriteRequest(null, title, content));
+            Article article = articleService.writeArticle(new ArticleWriteRequest(user.getId(), title, content));
             System.out.println("article = " + article);
 
             // when
@@ -131,7 +119,7 @@ class ArticleServiceTest {
             System.out.println("response = " + response);
 
             // then
-            assertArticleDetailsResponse(response, article, title, content, null, "익명");
+            assertArticleDetailsResponse(response, article, title, content, user.getId(), user.getNickname());
         }
 
         private void assertArticleDetailsResponse(ArticleDetailsResponse response,
@@ -155,8 +143,9 @@ class ArticleServiceTest {
         @DisplayName("[Success] 조회수가 1 증가한다")
         void test() {
             // given
+            User user = setupUser();
             ArticleWriteRequest articleWriteRequest = ArticleFixture.createArticleWriteRequestWithAuthorId(
-                    null, fixedDateTime.getNow());
+                    user.getId(), fixedDateTime.getNow());
             Article article = articleService.writeArticle(articleWriteRequest);
             assertThat(article.getHits()).isEqualTo(0);
             // when
@@ -205,18 +194,20 @@ class ArticleServiceTest {
         }
 
         @Test
-        @DisplayName("[Success] 익명 게시글과 일반 게시글이 혼합된 목록을 조회할 수 있다")
+        @DisplayName("[Success] 여러 회원의 일반 게시글 목록을 조회할 수 있다")
         void findMixedArticleList() {
             // given
             User user1 = UserFixture.createUser(1, fixedDateTime.getNow());
+            User user2 = UserFixture.createUser(2, fixedDateTime.getNow());
             userRepository.save(user1);
+            userRepository.save(user2);
             Article article1 = articleService.writeArticle(new ArticleWriteRequest(1L, "일반 제목", "일반 내용"));
-            Article article2 = articleService.writeArticle(new ArticleWriteRequest(null, "익명 제목", "익명 내용"));
+            Article article2 = articleService.writeArticle(new ArticleWriteRequest(2L, "익명 제목", "익명 내용"));
             // when
             List<ArticlePreviewResponse> responses = articleService.findArticleList(1);
             // then
             assertThat(responses).hasSize(2);
-            assertArticleResponse(responses.get(0), "익명", null, article2);
+            assertArticleResponse(responses.get(0), user2.getNickname(), user2.getId(), article2);
             assertArticleResponse(responses.get(1), user1.getNickname(), user1.getId(), article1);
         }
 
@@ -232,6 +223,12 @@ class ArticleServiceTest {
             assertThat(response.getCreatedAt()).isEqualTo(expectedArticle.getCreatedAt());
             assertThat(response.getTitle()).isEqualTo(expectedArticle.getTitle());
         }
+    }
+
+    private User setupUser() {
+        User user1 = UserFixture.createUser1();
+        userRepository.save(user1);
+        return user1;
     }
 
 }
