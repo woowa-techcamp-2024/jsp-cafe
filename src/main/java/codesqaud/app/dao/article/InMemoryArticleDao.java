@@ -1,5 +1,6 @@
 package codesqaud.app.dao.article;
 
+import codesqaud.app.dto.ArticleDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import org.slf4j.Logger;
@@ -64,5 +65,10 @@ public class InMemoryArticleDao implements ArticleDao {
             throw new HttpException(SC_NOT_FOUND, "해당 qna 글은 존재하지 않습니다.");
         }
         articles.remove(article.getId());
+    }
+
+    @Override
+    public List<ArticleDto> findAllAsDto() {
+        throw new UnsupportedOperationException();
     }
 }

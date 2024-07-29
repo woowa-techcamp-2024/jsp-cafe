@@ -2,6 +2,8 @@ package codesqaud.app.dao.article;
 
 import codesqaud.app.dao.JdbcTemplate;
 import codesqaud.app.dao.RowMapper;
+import codesqaud.app.dto.ArticleDto;
+import codesqaud.app.dto.UserDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import org.slf4j.Logger;
@@ -22,6 +24,19 @@ public class DbArticleDao implements ArticleDao {
             resultSet.getString("contents"),
             resultSet.getLong("author_id")
     );
+
+    private static final RowMapper<ArticleDto> ARTICLE_DTO_ROW_MAPPER = (resultSet) -> new ArticleDto(
+            resultSet.getLong("id"),
+            resultSet.getString("title"),
+            resultSet.getString("contents"),
+            new UserDto(
+                    resultSet.getLong("author_id"),
+                    resultSet.getString("user_id"),
+                    resultSet.getString("user_name"),
+                    resultSet.getString("user_email")
+                    )
+    );
+
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -75,5 +90,15 @@ public class DbArticleDao implements ArticleDao {
         if(update == 0) {
             throw new HttpException(SC_NOT_FOUND, "해당 qna 글은 존재하지 않습니다.");
         }
+    }
+
+    @Override
+    public List<ArticleDto> findAllAsDto() {
+        String sql = """
+                SELECT articles.id, articles.title, articles.contents, articles.author_id,
+                users.user_id as user_id, users.name as user_name, users.email as user_email
+                FROM articles JOIN users ON articles.id = users.id
+                """;
+        return jdbcTemplate.query(sql, ARTICLE_DTO_ROW_MAPPER);
     }
 }
