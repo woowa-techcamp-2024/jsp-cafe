@@ -1,14 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
 <!DOCTYPE html>
-<html lang="kr">
+<html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>SLiPP Java Web Programming</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="${pageContext.request.contextPath}/static/css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="${pageContext.request.contextPath}/static/css/styles.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>HELLO, WEB!</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
+<body>
+<header>
+    <div class="container">
+        <div class="logo">
+            <a href="${pageContext.request.contextPath}/">HELLO, WEB!</a>
+        </div>
+        <jsp:include page="../common/navigation.jsp" />
+    </div>
+</header>

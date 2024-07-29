@@ -1,18 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.util.List" %>
-<%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
-
-<html>
-
-<%@ include file="../common/header.jsp" %>
-
-<body>
-
-<%@ include file="../common/navigation.jsp" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<jsp:include page="../common/header.jsp" />
 
 <div class="container" id="main">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         <div class="panel panel-default">
             <table class="table table-hover">
                 <thead>
@@ -42,7 +34,4 @@
     </div>
 </div>
 
-<%@ include file="../common/footer.jsp" %>
-
-</body>
-</html>
+<jsp:include page="../common/footer.jsp" />

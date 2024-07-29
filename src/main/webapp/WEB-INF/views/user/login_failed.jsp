@@ -1,32 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
-<html>
-
-<%@ include file="../common/header.jsp" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<jsp:include page="../common/header.jsp" />
 
 <body>
-
-<%@ include file="../common/navigation.jsp" %>
-
-<div class="container" id="main">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default content-main">
-            <div class="alert alert-danger" role="alert">아이디 또는 비밀번호가 틀립니다. 다시 로그인 해주세요.</div>
-            <form name="question" method="post" action="${pageContext.request.contextPath}/users/login">
-                <div class="form-group">
-                    <label for="email">이메일</label>
-                    <input class="form-control" id="email" name="email" placeholder="Email">
-                </div>
-                <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                </div>
-                <button type="submit" class="btn btn-success clearfix pull-right">로그인</button>
-                <div class="clearfix" />
-            </form>
+<main>
+    <h2>로그인</h2>
+    <form action="${pageContext.request.contextPath}/users/login" method="post">
+        <div class="alert alert-danger" role="alert">아이디 또는 비밀번호가 틀립니다. 다시 로그인 해주세요.</div>
+        <div>
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요" required>
         </div>
-    </div>
-</div>
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="비밀번호를 입력해주세요" required>
+        </div>
+        <button type="submit">로그인</button>
+    </form>
+    <p>아직 회원가입을 안하셨나요? <a href="${pageContext.request.contextPath}/users/registration">회원가입하기</a></p>
+</main>
+</body>
 
 <%@ include file="../common/footer.jsp" %>
 

@@ -1,13 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<html>
-
-<%@ include file="../common/header.jsp" %>
-
-<body>
-
-<%@ include file="../common/navigation.jsp" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<jsp:include page="../common/header.jsp" />
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
