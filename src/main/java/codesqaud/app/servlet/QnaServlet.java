@@ -68,7 +68,7 @@ public class QnaServlet extends HttpServlet {
     }
 
     private void handleArticleDetails(HttpServletRequest req, HttpServletResponse resp, Long id) throws ServletException, IOException {
-        Article article = articleDao.findById(id).orElseThrow(
+        ArticleDto article = articleDao.findByIdAsDto(id).orElseThrow(
                 () -> new HttpException(HttpServletResponse.SC_NOT_FOUND)
         );
         req.setAttribute("article", article);
