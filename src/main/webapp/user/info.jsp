@@ -26,7 +26,7 @@
   <div id="email"><c:out value="${profile.email()}" /></div>
   <div id="sign-up-date"><c:out value="${profile.signUpAt()}" /></div>
   <c:choose>
-    <c:when test="${profile.id() == sessionScope.authentication.principal().getId()}">
+    <c:when test="${sessionScope.authentication.isPrincipal(profile.id())}">
       <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
     </c:when>
   </c:choose>
