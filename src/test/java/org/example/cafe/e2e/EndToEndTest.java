@@ -271,26 +271,6 @@ public class EndToEndTest {
     class STEP_2 {
 
         @Test
-        void 사용자는_게시글을_작성할_수_있다() throws IOException {
-            //given
-            con = createPostConnection("/questions");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String urlParameters = "writer=test&title=test&contents=test";
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-
-            //when
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(postData);
-            }
-
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/");
-            });
-        }
-
-        @Test
         void 사용자는_게시글_목록을_조회할_수_있다() throws IOException {
             //given
             questionRepository.save(new Question("title1", "content1", "writer1"));
@@ -489,6 +469,89 @@ public class EndToEndTest {
                     assertThat(getResponse(con)).contains("비밀번호가 일치하지 않습니다");
                 });
             }
+        }
+    }
+
+    @Nested
+    class STEP_5 {
+
+        @Test
+        void 로그인하지_않은_사용자는_게시글_작성_폼_요청_시_로그인_페이지로_이동한다() throws IOException {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createGetConnection("/questions");
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/login");
+            });
+        }
+
+        @Test
+        void 로그인하지_않은_사용자는_게시글_작성_시_로그인_페이지로_이동한다() throws IOException {
+            //given
+            con = createPostConnection("/questions");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "title=test&contents=test";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/login");
+            });
+        }
+
+        @Test
+        void 로그인한_사용자는_게시글_작성_폼을_요청할_수_있다() throws Exception {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            con = createGetLoginedConnection("/questions", user);
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+            });
+        }
+
+        @Test
+        void 로그인한_사용자는_게시글을_작성할_수_있다() throws Exception {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+
+            //given
+            con = createPostLoginedConnection("/questions", user);
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String urlParameters = "title=test&contents=test";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+            //when
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postData);
+            }
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(302);
+                assertThat(con.getHeaderField("Location")).isEqualTo("/");
+            });
         }
     }
 }

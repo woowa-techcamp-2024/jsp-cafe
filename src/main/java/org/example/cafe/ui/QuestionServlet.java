@@ -42,7 +42,8 @@ public class QuestionServlet extends BaseServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
 
-        String writer = request.getParameter("writer");
+        assert request.getSession().getAttribute("userId") != null;
+        String writer = (String) request.getSession().getAttribute("userId");
         String title = request.getParameter("title");
         String contents = request.getParameter("contents");
 

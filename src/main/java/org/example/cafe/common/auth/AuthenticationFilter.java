@@ -25,6 +25,8 @@ public class AuthenticationFilter implements Filter {
 
     private static final Logger log = getLogger(AuthenticationFilter.class);
     private static final List<Endpoint> ENDPOINT_PATTERNS = List.of(
+            new Endpoint("GET", "/questions"),
+            new Endpoint("POST", "/questions"),
             new Endpoint("POST", "/users/*"),
             new Endpoint("GET", "/logout"));
 
