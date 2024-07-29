@@ -5,20 +5,23 @@ import java.util.Objects;
 
 public class Article {
     private Long articleId;
+    private Long userId;
     private String title;
     private String content;
     private String author;
     private LocalDateTime createdDt;
 
-    public Article(String title, String content, String author, LocalDateTime createdDt) {
+    public Article(Long articleId, String title, String content, String author, LocalDateTime createdDt, Long userId) {
+        this.articleId = articleId;
+        this.userId = userId;
         this.title = title;
         this.content = content;
         this.author = author;
         this.createdDt = createdDt;
     }
 
-    public Article(Long articleId, String title, String content, String author, LocalDateTime createdDt) {
-        this.articleId = articleId;
+    public Article(String title, String content, String author, LocalDateTime createdDt, Long userId) {
+        this.userId = userId;
         this.title = title;
         this.content = content;
         this.author = author;
@@ -27,6 +30,10 @@ public class Article {
 
     public Long getArticleId() {
         return articleId;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public String getTitle() {

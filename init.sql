@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS users;
 -- Article 테이블 생성
 CREATE TABLE IF NOT EXISTS articles (
     article_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     author VARCHAR(100) NOT NULL,
