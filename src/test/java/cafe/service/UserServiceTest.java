@@ -1,102 +1,93 @@
 package cafe.service;
 
+import cafe.domain.db.SessionDatabase;
 import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
-import cafe.servlet.TestHttpServletRequest;
-import cafe.servlet.TestHttpServletResponse;
+import cafe.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class UserServiceTest {
-    private UserService userService;
     private UserDatabase userDatabase;
-    private TestHttpServletRequest req;
-    private TestHttpServletResponse resp;
+    private SessionDatabase sessionDatabase;
+    private UserService userService;
 
     @BeforeEach
-    public void setUp() {
-        userDatabase = new UserDatabase();
-        userService = new UserService(userDatabase);
-        req = new TestHttpServletRequest();
-        resp = new TestHttpServletResponse();
+    void setUp() {
+        userDatabase = Mockito.mock(UserDatabase.class);
+        sessionDatabase = Mockito.mock(SessionDatabase.class);
+        userService = new UserService(userDatabase, sessionDatabase);
     }
 
     @Test
-    @DisplayName("User 객체를 데이터베이스에 저장하는 기능 테스트")
-    public void testSave() {
-        req.setParameter("userId", "user1");
-        req.setParameter("password", "password123");
-        req.setParameter("name", "John Doe");
-        req.setParameter("email", "john.doe@example.com");
+    @DisplayName("ID로 사용자 조회")
+    void find() {
+        User user = User.of("1", "password", "홍길동", "hong@example.com");
+        when(userDatabase.selectById("1")).thenReturn(user);
 
-        userService.save(req, resp);
+        UserDto userDto = userService.find("/users/1");
 
-        Map<String, User> allUsers = userDatabase.findAll();
-        assertEquals(1, allUsers.size());
-        User savedUser = allUsers.values().iterator().next();
-        assertEquals("user1", savedUser.getId());
-        assertEquals("password123", savedUser.getPassword());
-        assertEquals("John Doe", savedUser.getName());
-        assertEquals("john.doe@example.com", savedUser.getEmail());
+        assertNotNull(userDto);
+        assertEquals("1", userDto.getId());
+        assertEquals(user, userDto.getUser());
     }
 
     @Test
-    @DisplayName("ID로 User 객체를 조회하는 기능 테스트")
-    public void testFind() {
-        User user = User.of("user1", "password123", "John Doe", "john.doe@example.com");
-        userDatabase.save(user);
+    @DisplayName("세션 ID로 사용자 조회")
+    void findBySession() {
+        User user = User.of("1", "password", "홍길동", "hong@example.com");
+        when(sessionDatabase.selectById("session1")).thenReturn(user);
 
-        String userId = userDatabase.findAll().keySet().iterator().next();
-        req.setRequestURI("/users/" + userId);
+        Map<String, User> users = new HashMap<>();
+        users.put("1", user);
+        when(userDatabase.selectAll()).thenReturn(users);
 
-        User foundUser = userService.find(req, resp);
+        UserDto userDto = userService.findBySession("session1");
 
-        assertNotNull(foundUser);
-        assertEquals("user1", foundUser.getId());
-        assertEquals("password123", foundUser.getPassword());
-        assertEquals("John Doe", foundUser.getName());
-        assertEquals("john.doe@example.com", foundUser.getEmail());
+        assertNotNull(userDto);
+        assertEquals("1", userDto.getId());
+        assertEquals(user, userDto.getUser());
     }
 
     @Test
-    @DisplayName("모든 User 객체를 조회하는 기능 테스트")
-    public void testFindAll() {
-        User user1 = User.of("user1", "password123", "John Doe", "john.doe@example.com");
-        User user2 = User.of("user2", "password456", "Jane Doe", "jane.doe@example.com");
-        userDatabase.save(user1);
-        userDatabase.save(user2);
+    @DisplayName("모든 사용자 조회")
+    void findAll() {
+        Map<String, User> users = new HashMap<>();
+        users.put("1", User.of("1", "password", "홍길동", "hong@example.com"));
+        when(userDatabase.selectAll()).thenReturn(users);
 
-        Map<String, User> allUsers = userService.findAll(req, resp);
+        Map<String, User> result = userService.findAll();
 
-        assertEquals(2, allUsers.size());
-        assertTrue(allUsers.containsValue(user1));
-        assertTrue(allUsers.containsValue(user2));
+        assertNotNull(result);
+        assertEquals(1, result.size());
     }
 
     @Test
-    @DisplayName("User 객체를 업데이트하는 기능 테스트")
-    public void testUpdate() {
-        User user = User.of("user1", "password123", "John Doe", "john.doe@example.com");
-        userDatabase.save(user);
+    @DisplayName("업데이트 중 사용자 찾을 수 없을 때 예외 발생")
+    void updateUserNotFound() {
+        when(userDatabase.selectById("1")).thenReturn(null);
 
-        String userId = userDatabase.findAll().keySet().iterator().next();
-        req.setRequestURI("/users/" + userId);
-        req.setParameter("before-password", "password123");
-        req.setParameter("password", "newpassword123");
-        req.setParameter("name", "John Doe Updated");
-        req.setParameter("email", "john.doe.updated@example.com");
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.update("/users/1", "홍길동 업데이트", "newpassword", "hong.updated@example.com", "password")
+        );
+    }
 
-        userService.update(req, resp);
+    @Test
+    @DisplayName("업데이트 중 비밀번호가 틀렸을 때 예외 발생")
+    void updateIncorrectPassword() {
+        User existingUser = User.of("1", "password", "홍길동", "hong@example.com");
+        when(userDatabase.selectById("1")).thenReturn(existingUser);
 
-        User updatedUser = userDatabase.find(userId);
-        assertNotNull(updatedUser);
-        assertEquals("newpassword123", updatedUser.getPassword());
-        assertEquals("John Doe Updated", updatedUser.getName());
-        assertEquals("john.doe.updated@example.com", updatedUser.getEmail());
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.update("/users/1", "홍길동 업데이트", "newpassword", "hong.updated@example.com", "wrongpassword")
+        );
     }
 }

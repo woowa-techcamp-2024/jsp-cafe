@@ -1,34 +1,37 @@
 package cafe.domain.db;
 
+import cafe.domain.DatabaseManager;
 import cafe.domain.entity.User;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class UserDatabase {
-    private final Map<String, User> userDatabase;
+public class UserDatabase implements Database<String, User> {
 
-    public UserDatabase() {
-        this.userDatabase = new HashMap<>();
-    }
+    public User selectByUserId(String userid) {
+        User user = null;
 
-    public void save(User user) {
-        userDatabase.put(UUID.randomUUID().toString(), user);
-    }
+        String sql = "SELECT * FROM `users` WHERE `userid` = ?";
+        try (Connection connection = DatabaseManager.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-    public User find(String id) {
-        if (!userDatabase.containsKey(id)) {
-            return null;
+            statement.setString(1, userid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String userId = resultSet.getString("userid");
+                    String name = resultSet.getString("name");
+                    String password = resultSet.getString("password");
+                    String email = resultSet.getString("email");
+
+                    user = User.of(userId, name, password, email);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return userDatabase.get(id);
-    }
 
-    public Map<String, User> findAll() {
-        return userDatabase;
-    }
-
-    public void update(String id, User user) {
-        userDatabase.put(id, user);
+        return user;
     }
 }

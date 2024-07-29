@@ -1,25 +1,25 @@
 package cafe.domain.entity;
 
 public class User {
-    private final String id;
-    private final String password;
+    private final String userid;
     private final String name;
+    private final String password;
     private final String email;
 
-    public static User of(String id, String password, String name, String email) {
-        return new User(id, password, name, email);
+    public static User of(String id, String name, String password, String email) {
+        return new User(id, name, password, email);
     }
 
-    private User(String id, String password, String name, String email) {
+    private User(String id, String name, String password, String email) {
         validate(id, password, name, email);
-        this.id = id;
-        this.password = password;
+        this.userid = id;
         this.name = name;
+        this.password = password;
         this.email = email;
     }
 
-    public String getId() {
-        return id;
+    public String getUserid() {
+        return userid;
     }
 
     public String getPassword() {
