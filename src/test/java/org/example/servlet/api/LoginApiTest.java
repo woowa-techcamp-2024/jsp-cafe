@@ -1,17 +1,22 @@
 package org.example.servlet.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.DataHandler;
-import org.example.domain.User;
-import org.example.mock.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.example.constance.DataHandler;
+import org.example.domain.User;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestHttpSession;
+import org.example.mock.TestRequestDispatcher;
+import org.example.mock.TestServletConfig;
+import org.example.mock.TestServletContext;
+import org.example.mock.TestUserDataHandler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoginApiTest {
 
@@ -76,7 +81,7 @@ public class LoginApiTest {
     @Test
     public void testInvalidPassword() throws IOException, ServletException {
         // given
-        User user = new User("test@example.com",  "Test User", "password",LocalDateTime.now());
+        User user = new User("test@example.com", "Test User", "password", LocalDateTime.now());
         userDataHandler.insert(user);
         request.setParameter("email", "test@example.com");
         request.setParameter("password", "wrongpassword");

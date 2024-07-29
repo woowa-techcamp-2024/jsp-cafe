@@ -1,4 +1,4 @@
-package org.example.config;
+package org.example.constance;
 
 public enum DataHandler {
     USER("userDataHandler"),
