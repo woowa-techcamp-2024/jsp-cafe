@@ -32,10 +32,9 @@ public class QnaServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String writer = request.getParameter("writer");
         String title = request.getParameter("title");
         String contents = request.getParameter("contents");
-        logger.debug("글쓰기 요청도착! writer: {}, title: {}, contents: {}", writer, title, contents);
+        logger.debug("글쓰기 요청도착! writer: {}, title: {}, contents: {}", title, contents);
 
         // 세션이 존재하는지 확인
         final HttpSession session = request.getSession(false);
@@ -43,6 +42,10 @@ public class QnaServlet extends HttpServlet {
         if (sessionUser == null) {
             throw new LoginRequiredException("로그인이 필요한 작업입니다.");
         }
+
+        // 세션에서 글쓴이 정보를 가져온다.
+        User user = (User) request.getSession(false).getAttribute("user");
+        String writer = user.getUserId();
 
         // 게시글 작성
         Article article = new Article(null, writer, title, contents);
