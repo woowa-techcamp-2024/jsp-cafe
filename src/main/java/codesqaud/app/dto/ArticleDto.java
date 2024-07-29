@@ -1,15 +1,31 @@
 package codesqaud.app.dto;
 
-import codesqaud.app.model.Article;
+public class ArticleDto {
+    private final Long id;
+    private final String title;
+    private final String contents;
+    private final UserDto author;
 
-public record ArticleDto(Long id, String title, String contents, Long authorId) {
+    public ArticleDto(Long id, String title, String contents, UserDto author) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.author = author;
+    }
 
-    public static ArticleDto fromPostAndUser(Article article) {
-        return new ArticleDto(
-                article.getId(),
-                article.getTitle(),
-                article.getContents(),
-                article.getAuthorId()
-        );
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public UserDto getAuthor() {
+        return author;
     }
 }
