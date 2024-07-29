@@ -77,7 +77,7 @@ class UserServiceTest {
                 SignUpRequest signUpRequest = new SignUpRequest("new", "test", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
                         .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다. nickname: test");
+                        .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다.");
             }
         }
     }
