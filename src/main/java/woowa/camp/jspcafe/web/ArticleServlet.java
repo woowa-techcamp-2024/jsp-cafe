@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.servlet;
+package woowa.camp.jspcafe.web;
 
 import static woowa.camp.jspcafe.utils.PathVariableExtractor.extractPathVariables;
 

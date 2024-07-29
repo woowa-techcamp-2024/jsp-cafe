@@ -155,7 +155,7 @@ public class DBArticleRepository implements ArticleRepository {
 
     @Override
     public void update(Long id, ArticleUpdateRequest updateRequest) {
-        StringBuffer sql = new StringBuffer("UPDATE articles SET ");
+        StringBuilder sql = new StringBuilder("UPDATE articles SET ");
         List<Object> params = new ArrayList<>();
 
         if (updateRequest.hitIncrease() != null) {
@@ -169,7 +169,7 @@ public class DBArticleRepository implements ArticleRepository {
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql.toString())) {
 
-            for (int count = 0; count < params.size(); count ++) {
+            for (int count = 0; count < params.size(); count++) {
                 pstmt.setObject(count + 1, params.get(count));
             }
 
