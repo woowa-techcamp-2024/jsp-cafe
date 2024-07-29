@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 수정</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/create-post.css">
 </head>
 <body>
@@ -21,20 +20,7 @@
     Post post = (Post) request.getAttribute("post");
 %>
 <div class="container">
-    <header class="header">
-        <h1 class="header-title"><a href="${pageContext.request.contextPath}/">HELLO, WEB!</a></h1>
-        <nav>
-            <form action="${pageContext.request.contextPath}/logout" method="post" style="display: inline;">
-                <button type="submit" class="logout-button">로그아웃</button>
-            </form>
-            <form action="${pageContext.request.contextPath}/profile" method="get" style="display: inline;">
-                <button type="submit" class="profile-button">마이페이지</button>
-            </form>
-            <form action="${pageContext.request.contextPath}/users" method="get" style="display: inline;">
-                <button type="submit" class="user-list-button">멤버리스트</button>
-            </form>
-        </nav>
-    </header>
+    <jsp:include page="/WEB-INF/jsp/common/header.jsp" />
     <main class="main-content">
         <div class="post-container">
             <h1 class="post-title">게시글 수정</h1>
@@ -61,7 +47,6 @@
                 </div>
                 <button type="submit" class="submit-button">수정 완료</button>
             </form>
-
             <!-- 에러 메시지 모듈 포함 -->
             <jsp:include page="/WEB-INF/jsp/common/error-message.jsp">
                 <jsp:param name="errorMessage" value="<%= errorMessage %>" />
