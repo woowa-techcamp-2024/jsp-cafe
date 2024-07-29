@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -113,10 +114,17 @@ public class UsersServlet extends HttpServlet {
                 log(e.getMessage());
             }
 
-            userService.update(id,
+
+            HttpSession session = req.getSession(false);
+
+            if (session == null) {
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            }
+
+            User sessionUser = (User) session.getAttribute("user");
+
+            userService.update(sessionUser, id,
                     req.getParameter("password"),
-                    req.getParameter("updatePassword"),
-                    req.getParameter("userId"),
                     req.getParameter("name"),
                     req.getParameter("email"));
 
