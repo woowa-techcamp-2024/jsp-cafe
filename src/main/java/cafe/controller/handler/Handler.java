@@ -1,4 +1,4 @@
-package cafe.handler;
+package cafe.controller.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

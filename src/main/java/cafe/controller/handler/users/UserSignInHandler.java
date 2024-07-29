@@ -1,6 +1,6 @@
-package cafe.handler.users;
+package cafe.controller.handler.users;
 
-import cafe.handler.Handler;
+import cafe.controller.handler.Handler;
 import cafe.service.SessionService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
