@@ -3,20 +3,44 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
+    <!-- listener -->
     <listener>
-        <listener-class>cafe.container.DIContainerListener</listener-class>
+        <listener-class>cafe.config.DatabaseInitializer</listener-class>
     </listener>
+    <listener>
+        <listener-class>cafe.config.DIContainerInitializer</listener-class>
+    </listener>
+    <listener>
+        <listener-class>cafe.config.DIHandlerInitializer</listener-class>
+    </listener>
+
+    <!-- filter -->
+    <filter>
+        <filter-name>signInFilter</filter-name>
+        <filter-class>cafe.filter.SignInFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>signInFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- servlet -->
+    <servlet>
+        <servlet-name>frontController</servlet-name>
+        <servlet-class>cafe.controller.FrontController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>frontController</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/fonts/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.ico</url-pattern>
-    </servlet-mapping>
+
+    <!-- error page -->
+    <error-page>
+        <location>/error.jsp</location>
+    </error-page>
 </web-app>
