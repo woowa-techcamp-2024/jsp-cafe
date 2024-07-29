@@ -57,7 +57,7 @@ public class UserLoginServlet extends HttpServlet {
         try {
             User user = userService.authenticateUser(email, password);
             HttpSession session = req.getSession();
-            session.setAttribute("loggedInUser", user);
+            session.setAttribute("WOOWA_SESSIONID", user);
 
             Cookie loginCookie = new Cookie("WOOWA_SESSIONID", user.getEmail());
             loginCookie.setPath("/");

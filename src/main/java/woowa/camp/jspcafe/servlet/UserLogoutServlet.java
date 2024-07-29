@@ -20,9 +20,9 @@ public class UserLogoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null) {
-            if (session.getAttribute("loggedInUser") != null) {
+            if (session.getAttribute("WOOWA_SESSIONID") != null) {
                 log.info("loggedInUser 세션이 존재합니다");
-                session.removeAttribute("loggedInUser");
+                session.removeAttribute("WOOWA_SESSIONID");
             }
         }
 
