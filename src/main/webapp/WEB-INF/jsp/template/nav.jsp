@@ -56,7 +56,7 @@
                     <li><a href="${pageContext.request.contextPath}/user/form" role="button">회원가입</a></li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">
-                    <li><form method="post" action="${pageContext.request.contextPath}/users/logout"><a type="submit">로그아웃</a></form></li>
+                    <li><form method="post" action="${pageContext.request.contextPath}/users/logout"><button type="submit">로그아웃</button></form></li>
                     <li><a href="${pageContext.request.contextPath}/users/${sessionScope.user.id}/form" role="button">개인정보수정</a></li>
                 </c:if>
             </ul>
