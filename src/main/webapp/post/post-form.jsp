@@ -16,7 +16,7 @@
     <a id="greeting" href="/">찬우 카페</a>
     <a id="login-button" href="/users/login">로그인/회원가입</a>
   </div>
-  <form id="post-form" method="post" action="/posts/write">
+  <form id="post-form" method="post" action="${pageContext.request.contextPath}/posts/write">
     <div id="form-title">
       글쓰기
     </div>

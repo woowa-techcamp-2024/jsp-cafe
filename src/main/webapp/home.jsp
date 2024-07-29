@@ -22,7 +22,7 @@
     </div>
     <div id="posts-information">
       <div>전체 글 <c:out value="${postsCount}" />개</div>
-      <a id="write-button" href="/posts/write">글쓰기</a>
+      <a id="write-button" href="${pageContext.request.contextPath}/posts/write">글쓰기</a>
     </div>
     <div id="posts">
       <div id="posts-header">

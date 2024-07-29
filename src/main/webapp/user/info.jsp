@@ -17,7 +17,7 @@
     <a id="login-button" href="/users/login">로그인/회원가입</a>
   </div>
   <div id="back-header">
-    <a id="back-button" href="/users">
+    <a id="back-button" href="${pageContext.request.contextPath}/users">
       <img src="${pageContext.request.contextPath}/static/assets/arrow-left.svg" alt="">
     </a>
   </div>

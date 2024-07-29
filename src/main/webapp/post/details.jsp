@@ -18,7 +18,7 @@
     <a id="login-button" href="/users/login">로그인/회원가입</a>
   </div>
   <div id="post-container">
-    <a id="back-button" style="margin-bottom: 20px" href="/">
+    <a id="back-button" style="margin-bottom: 20px" href="${pageContext.request.contextPath}/">
       <img src="${pageContext.request.contextPath}/static/assets/arrow-left.svg" alt="">
     </a>
     <div id="post-title"><c:out value="${post.title()}" /></div>
