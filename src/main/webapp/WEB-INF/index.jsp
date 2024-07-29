@@ -29,7 +29,7 @@
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
                                     <span class="time">2016-01-15 18:47</span>
-                                    <a href="user/profile.jsp" class="author"><c:out value=" ${article.authorId}"/></a>
+                                    <a href="/users/profile/<c:out value="${article.author.id}"/>" class="author"><c:out value=" ${article.author.userId}"/></a>
                                 </div>
                                 <div class="reply" title="댓글">
                                     <i class="icon-reply"></i>
@@ -138,9 +138,6 @@
 </div>
 -->
 
-<!-- script references -->
-<script src="/js/jquery-2.2.0.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/scripts.js"></script>
+<%@include file="share/footer.jsp" %>
 </body>
 </html>
