@@ -1,5 +1,7 @@
 package com.codesquad.cafe.model;
 
+import com.codesquad.cafe.db.entity.User;
+
 public class UserJoinRequest {
 
     private String username;
@@ -40,4 +42,5 @@ public class UserJoinRequest {
         sb.append('}');
         return sb.toString();
     }
+
 }

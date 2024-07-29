@@ -1,7 +1,9 @@
 package com.codesquad.cafe.db;
 
-import com.codesquad.cafe.model.Post;
-import com.codesquad.cafe.model.PostDetailsDto;
+import com.codesquad.cafe.exception.DataIntegrationException;
+import com.codesquad.cafe.db.entity.Post;
+import com.codesquad.cafe.db.entity.PostDetailsDto;
+import com.codesquad.cafe.db.entity.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,9 +20,12 @@ public class InMemoryPostRepository implements PostRepository {
 
     private AtomicLong seq;
 
-    public InMemoryPostRepository() {
+    private UserRepository userRepository;
+
+    public InMemoryPostRepository(UserRepository userRepository) {
         posts = new ConcurrentHashMap<>();
         seq = new AtomicLong(1);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -41,17 +46,17 @@ public class InMemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public Page<Post> findByPage(int pageNum, int pageSize) {
+    public int countAll() {
+        return posts.size();
+    }
+
+    @Override
+    public Page<PostDetailsDto> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize) {
         if (pageNum < 1 || pageSize < 1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("page num and page size should be greater than 0");
         }
 
-        int totalElements = posts.size();
-        int totalPage = (int) Math.ceil((double) posts.size() / pageSize);
-
-        if (totalElements == 0 || pageNum > totalPage) {
-            return Page.emptyPage(pageNum, pageSize, totalElements, totalPage);
-        }
+        int totalElements = countAll();
 
         int start = (pageNum - 1) * pageSize;
         List<Post> result = posts.values().stream()
@@ -60,7 +65,20 @@ public class InMemoryPostRepository implements PostRepository {
                 .limit(pageSize)
                 .toList();
 
-        return Page.of(result, pageNum, pageSize, result.size(), posts.size(), totalPage);
+        List<PostDetailsDto> detailsDto = result.stream().map(post -> {
+            Optional<User> user = userRepository.findById(post.getAuthorId());
+            if (user.isEmpty()) {
+                throw new DataIntegrationException("author of post does not exists");
+            }
+            return new PostDetailsDto(post, user.get());
+        }).toList();
+
+        return Page.of(
+                detailsDto,
+                pageNum,
+                pageSize,
+                totalElements
+        );
     }
 
     @Override
@@ -69,8 +87,17 @@ public class InMemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<PostDetailsDto> findAllPostWithDetail() {
-        //todo
-        return null;
+    public Optional<PostDetailsDto> findPostWithAuthorById(Long id) {
+        Optional<Post> post = findById(id);
+        if (post.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<User> author = userRepository.findById(post.get().getId());
+        if (author.isEmpty()) {
+            throw new DataIntegrationException("author of post does not exists");
+        }
+
+        return Optional.of(new PostDetailsDto(post.get(), author.get()));
     }
 }

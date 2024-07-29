@@ -2,7 +2,7 @@ package com.codesquad.cafe.servlet;
 
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.exception.ModelMappingException;
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.User;
 import com.codesquad.cafe.model.UserEditRequest;
 import com.codesquad.cafe.util.RequestParamModelMapper;
 import jakarta.servlet.ServletException;
@@ -84,6 +84,6 @@ public class UserEditServlet extends HttpServlet {
         } catch (ModelMappingException | IllegalArgumentException e) {
             resp.sendError(400);
         }
-
     }
+
 }

@@ -37,4 +37,5 @@ public class UserEditRequest {
     public String getEmail() {
         return email;
     }
+
 }

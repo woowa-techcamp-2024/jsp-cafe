@@ -1,4 +1,4 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.db.entity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,26 +15,38 @@ public class PostDetailsDto {
 
     private String fileName;
 
+    private int view;
+
     private Long authorId;
 
     private String authorUsername;
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
+    private boolean deleted;
+
     public PostDetailsDto(Long postId,
                           String title,
                           String content,
                           String fileName,
+                          int view,
                           Long authorId,
                           String authorUsername,
-                          LocalDateTime createdAt) {
+                          LocalDateTime createdAt,
+                          LocalDateTime updatedAt,
+                          boolean deleted) {
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.fileName = fileName;
+        this.view = view;
         this.authorId = authorId;
         this.authorUsername = authorUsername;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deleted = deleted;
     }
 
     public PostDetailsDto(Post post, User user) {
@@ -45,6 +57,8 @@ public class PostDetailsDto {
         this.authorId = post.getAuthorId();
         this.authorUsername = user.getUsername();
         this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
+        this.deleted = post.isDeleted();
     }
 
     public String getFormattedDate() {
@@ -77,5 +91,13 @@ public class PostDetailsDto {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 }

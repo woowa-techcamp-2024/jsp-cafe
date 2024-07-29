@@ -1,6 +1,6 @@
 package com.codesquad.cafe.db;
 
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,4 +76,5 @@ public class InMemoryUserRepository implements UserRepository {
     public void deleteAll() {
         this.users.clear();
     }
+
 }

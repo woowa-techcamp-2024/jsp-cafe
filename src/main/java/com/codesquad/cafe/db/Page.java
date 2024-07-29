@@ -4,13 +4,21 @@ import java.util.Collections;
 import java.util.List;
 
 public class Page<T> {
+
     private List<T> content;
+
     private int pageNumber;
+
     private int pageSize;
+
     private int actualSize;
+
     private long totalElements;
+
     private int totalPages;
+
     private boolean isFirstPage;
+
     private boolean isLastPage;
 
     private Page(List<T> content,
@@ -21,6 +29,21 @@ public class Page<T> {
                  int totalPages,
                  boolean isFirstPage,
                  boolean isLastPage) {
+        if (pageNumber < 0) {
+            throw new IllegalArgumentException("page number should be greater than 0");
+        }
+        if (pageNumber > totalPages) {
+            throw new IllegalArgumentException("page number should be less than or equal to total pages");
+        }
+        if (pageSize < 1) {
+            throw new IllegalArgumentException("page size should be greater than 0");
+        }
+        if (actualSize > pageSize) {
+            throw new IllegalArgumentException("actual size should be less than or equal to page size");
+        }
+        if (totalElements < 0) {
+            throw new IllegalArgumentException("total elements should be greater than or equal to 0");
+        }
         this.content = content;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
@@ -35,17 +58,18 @@ public class Page<T> {
             List<T> content,
             int pageNumber,
             int pageSize,
-            int actualSize,
-            long totalElements,
-            int totalPages) {
-        if (actualSize == 0) {
+            long totalElements) {
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+
+        // 없는 페이지 요청시 예외 처리
+        if (content.isEmpty()) {
             return emptyPage(pageNumber, pageSize, (int) totalElements, totalPages);
         }
         return new Page(
                 content,
                 pageNumber,
                 pageSize,
-                actualSize,
+                content.size(),
                 totalElements,
                 totalPages,
                 pageNumber == 1,
@@ -98,4 +122,5 @@ public class Page<T> {
     public boolean getIsLastPage() {
         return isLastPage;
     }
+
 }
