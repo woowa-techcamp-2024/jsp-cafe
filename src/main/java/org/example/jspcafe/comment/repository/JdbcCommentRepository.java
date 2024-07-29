@@ -1,5 +1,6 @@
 package org.example.jspcafe.comment.repository;
 
+import org.example.jspcafe.Component;
 import org.example.jspcafe.DatabaseConnectionManager;
 import org.example.jspcafe.ReflectionIdFieldExtractor;
 import org.example.jspcafe.comment.model.Comment;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
 public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> implements CommentRepository  {
 
     private final DatabaseConnectionManager connectionManager;
