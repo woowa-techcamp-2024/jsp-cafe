@@ -93,11 +93,24 @@ public class DbArticleDao implements ArticleDao {
     }
 
     @Override
+    public Optional<ArticleDto> findByIdAsDto(Long id) {
+        String sql = """
+                SELECT articles.id, articles.title, articles.contents, articles.author_id,
+                users.user_id as user_id, users.name as user_name, users.email as user_email
+                FROM articles JOIN users ON articles.author_id = users.id
+                WHERE articles.id = ?
+                """;
+
+        ArticleDto articleDto = jdbcTemplate.queryForObject(sql, ARTICLE_DTO_ROW_MAPPER, id);
+        return Optional.ofNullable(articleDto);
+    }
+
+    @Override
     public List<ArticleDto> findAllAsDto() {
         String sql = """
                 SELECT articles.id, articles.title, articles.contents, articles.author_id,
                 users.user_id as user_id, users.name as user_name, users.email as user_email
-                FROM articles JOIN users ON articles.id = users.id
+                FROM articles JOIN users ON articles.author_id = users.id
                 """;
         return jdbcTemplate.query(sql, ARTICLE_DTO_ROW_MAPPER);
     }
