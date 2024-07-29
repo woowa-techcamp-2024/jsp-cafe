@@ -176,7 +176,7 @@ class QuestionServiceTest extends ServiceTest {
                 // expect
                 assertThatThrownBy(() -> questionService.readQuestionToEdit(1L, 2L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("다른 사용자의 글은 삭제할 수 없습니다.");
+                        .hasMessage("다른 사용자의 글은 수정할 수 없습니다.");
             }
         }
     }
