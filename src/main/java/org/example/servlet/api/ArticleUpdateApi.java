@@ -33,20 +33,33 @@ public class ArticleUpdateApi extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         Long articleId = Long.valueOf(req.getParameter("articleId"));
         Article article = articleDataHandler.findByArticleId(articleId);
-        if (isArticleNull(req,resp,article)){
+        if (isArticleNull(req, resp, article)) {
             return;
         }
-        HttpSession session = req.getSession();
-        User user = (User) session.getAttribute(SessionName.USER.getName());
-        if (isCorrectAuthor(req, resp, user, article)){
+        if (isCorrectAuthor(req, resp, article)) {
             return;
         }
+        // ToDo article update
+
+        //
         resp.sendRedirect("/articles/" + articleId);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        req.setCharacterEncoding("UTF-8");
+        Long articleId = Long.valueOf(req.getParameter("articleId"));
+        Article article = articleDataHandler.findByArticleId(articleId);
+        if (isArticleNull(req, resp, article)) {
+            return;
+        }
+        if (isCorrectAuthor(req, resp, article)) {
+            return;
+        }
+        // ToDo Article Delete
+
+        //
+        resp.sendRedirect("/articles/" + articleId);
     }
 
     private boolean isArticleNull(HttpServletRequest request, HttpServletResponse response, Article article)
@@ -61,8 +74,10 @@ public class ArticleUpdateApi extends HttpServlet {
         return false;
     }
 
-    private boolean isCorrectAuthor(HttpServletRequest request, HttpServletResponse response, User user, Article article)
+    private boolean isCorrectAuthor(HttpServletRequest request, HttpServletResponse response, Article article)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(SessionName.USER.getName());
         if (!user.getUserId().equals(article.getArticleId())) {
             request.setAttribute("status_code", HttpServletResponse.SC_NOT_FOUND);
             request.setAttribute("message", "Article 작성자가 아닙니다");
@@ -71,4 +86,5 @@ public class ArticleUpdateApi extends HttpServlet {
             return true;
         }
         return false;
+    }
 }
