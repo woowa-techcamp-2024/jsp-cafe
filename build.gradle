@@ -56,5 +56,5 @@ test {
 
 tasks.register('dockerCompose', Exec) {
     dependsOn('build')
-    commandLine 'docker-compose', 'up', '--build', '-d'
+    commandLine 'docker', 'compose', 'up', '--build', '-d'
 }
