@@ -1,6 +1,7 @@
 package com.woowa;
 
 import com.woowa.database.UserDatabase;
+import com.woowa.filter.HttpMethodFilter;
 import com.woowa.framework.ApplicationInitializer;
 import com.woowa.framework.BeanFactory;
 import com.woowa.handler.LoginHandler;
@@ -13,10 +14,13 @@ import com.woowa.servlet.LogoutServlet;
 import com.woowa.servlet.QuestionServlet;
 import com.woowa.servlet.SignupServlet;
 import com.woowa.servlet.UserProfileServlet;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration.Dynamic;
+import java.util.EnumSet;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,11 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         DispatcherServlet dispatcherServlet = new DispatcherServlet();
         dispatcherServlet.init(beanFactory);
 
+        addServlet(ctx, dispatcherServlet, beanFactory);
+        addFilter(ctx);
+    }
+
+    private void addServlet(ServletContext ctx, DispatcherServlet dispatcherServlet, BeanFactory beanFactory) {
         Dynamic helloServlet = ctx.addServlet("helloServlet", dispatcherServlet);
         helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/fonts/*", "/favicon.ico", "/user/*",
                 "/qna/*");
@@ -66,5 +75,10 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet",
                 new FindQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
         findQuestionServlet.addMapping("/questions/*");
+    }
+
+    private void addFilter(ServletContext ctx) {
+        FilterRegistration.Dynamic httpMethodFilter = ctx.addFilter("httpMethodFilter", new HttpMethodFilter());
+        httpMethodFilter.addMappingForUrlPatterns(null, true, "/*");
     }
 }
