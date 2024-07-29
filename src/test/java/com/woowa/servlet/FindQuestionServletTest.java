@@ -12,6 +12,7 @@ import com.woowa.model.User;
 import com.woowa.support.QuestionFixture;
 import com.woowa.support.StubHttpServletRequest;
 import com.woowa.support.StubHttpServletResponse;
+import com.woowa.support.StubHttpSession;
 import com.woowa.support.UserFixture;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
@@ -63,6 +64,32 @@ class FindQuestionServletTest {
 
             //then
             assertThat(request.getAttribute("question")).isNotNull().isInstanceOf(Question.class);
+        }
+
+        @Nested
+        @DisplayName("/update 이면")
+        class UpdateTest {
+
+            @Test
+            @DisplayName("질문 수정 폼을 반환한다.")
+            void update() throws ServletException, IOException {
+                //given
+                User user = UserFixture.user();
+                Question question = QuestionFixture.question(user);
+                userDatabase.save(user);
+                questionDatabase.save(question);
+
+                request.setRequestUri("/questions/" + question.getQuestionId() + "/update");
+                StubHttpSession session = new StubHttpSession();
+                session.setAttribute("userId", user.getUserId());
+                request.setSession(session);
+
+                //when
+                findQuestionServlet.doGet(request, response);
+
+                //then
+                assertThat(request.getRequestDispatcher().getPath()).isEqualTo("/WEB-INF/classes/static/qna/update.jsp");
+            }
         }
     }
 }
