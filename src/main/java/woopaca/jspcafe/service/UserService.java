@@ -80,7 +80,7 @@ public class UserService {
     private void validateDuplicateNickname(String nickname) {
         userRepository.findByNickname(nickname)
                 .ifPresent(user -> {
-                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 닉네임입니다. nickname: " + nickname);
+                    throw new IllegalArgumentException("[ERROR] 이미 사용 중인 닉네임입니다.");
                 });
     }
 }
