@@ -90,4 +90,23 @@ public class PostService {
                 })
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
     }
+
+    public void updatePost(final PostModifyRequest request) {
+        final Long userId = request.userId();
+        final Long postId = request.postId();
+        final String title = request.title();
+        final String content = request.content();
+
+        final Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        if (!post.canModifyBy(userId)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        post.updateTitle(title);
+        post.updateContent(content);
+
+        postRepository.update(post);
+    }
 }
