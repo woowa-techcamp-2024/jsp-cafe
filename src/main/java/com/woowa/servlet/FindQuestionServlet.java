@@ -29,19 +29,34 @@ public class FindQuestionServlet extends HttpServlet {
         ResponseEntity response;
         if (questionId.endsWith(UPDATE_SUFFIX)) {
             questionId = questionId.replace(UPDATE_SUFFIX, "");
-            HttpSession session = req.getSession(false);
-            if(session == null) {
-                throw new AuthenticationException("세션이 없습니다.");
-            }
-            Object userId = session.getAttribute("userId");
-            if(userId == null) {
-                throw new AuthenticationException("세션이 없습니다.");
-            }
-            response = questionHandler.updateQuestionForm((String) userId, questionId);
+            String userId = getUserIdFromSession(req);
+            response = questionHandler.updateQuestionForm(userId, questionId);
         } else {
             response = questionHandler.findQuestion(questionId);
         }
         req.setAttribute("question", response.getModel().get("question"));
         req.getRequestDispatcher("/WEB-INF/classes/static" + response.getViewName() + ".jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String questionId = req.getRequestURI().replace(PREFIX, "");
+        String userId = getUserIdFromSession(req);
+        String title = req.getParameter("title");
+        String content = req.getParameter("content");
+        ResponseEntity response = questionHandler.updateQuestion(userId, questionId, title, content);
+        resp.sendRedirect(response.getLocation());
+    }
+
+    private String getUserIdFromSession(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            throw new AuthenticationException("세션이 없습니다.");
+        }
+        Object userId = session.getAttribute("userId");
+        if (userId == null) {
+            throw new AuthenticationException("세션이 없습니다.");
+        }
+        return (String) userId;
     }
 }

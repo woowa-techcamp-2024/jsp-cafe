@@ -92,4 +92,43 @@ class FindQuestionServletTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("doPut 호출 시")
+    class DoPutTest {
+
+        private StubHttpServletRequest request;
+        private StubHttpServletResponse response;
+        private User user;
+        private Question question;
+
+        @BeforeEach
+        void setUp() {
+            request = new StubHttpServletRequest();
+            response = new StubHttpServletResponse();
+            StubHttpSession session = new StubHttpSession();
+            request.setSession(session);
+
+            user = UserFixture.user();
+            question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+            session.setAttribute("userId", user.getUserId());
+        }
+
+        @Test
+        @DisplayName("질문 상세 조회로 리다이렉트한다.")
+        void redirectToQuestion() throws ServletException, IOException {
+            //given
+            request.setRequestUri("/questions/" + question.getQuestionId());
+            request.addParameter("title", "updateTitle");
+            request.addParameter("content", "updateContent");
+
+            //when
+            findQuestionServlet.doPut(request, response);
+
+            //then
+            assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
+        }
+    }
 }
