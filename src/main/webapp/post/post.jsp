@@ -64,20 +64,16 @@
                     <span class="article-author">작성자: <%= post.nickname() %></span>
                     <span class="article-date">작성일자: <%= formattedDate %></span>
                     <span class="article-views">조회수: 1</span>
-                    <div class="article-actions">
                         <%
                             if (isLogined != null && isLogined && loggedInUserId != null && loggedInUserId.equals(postAuthorId)) {
                         %>
-                        <form action="${pageContext.request.contextPath}/edit-post.jsp" method="get" style="display: inline;">
-                            <input type="hidden" name="postId" value="<%= post.postId() %>">
+                        <form action="${pageContext.request.contextPath}/post/edit/<%= post.postId() %>" method="get" style="display: inline;">
                             <button type="submit" class="edit-post-button active">수정</button>
                         </form>
-                        <form action="${pageContext.request.contextPath}/api/delete-post" method="post" style="display: inline;">
-                            <input type="hidden" name="postId" value="<%= post.postId() %>">
+                        <form action="${pageContext.request.contextPath}/api/delete-post/<%= post.postId() %>" method="post" style="display: inline;">
                             <button type="submit" class="delete-post-button active">삭제</button>
                         </form>
                         <% } %>
-                    </div>
                 </div>
             </header>
             <article class="article-content">
