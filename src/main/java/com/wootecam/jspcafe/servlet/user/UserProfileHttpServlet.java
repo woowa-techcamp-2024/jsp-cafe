@@ -2,17 +2,17 @@ package com.wootecam.jspcafe.servlet.user;
 
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.UserService;
+import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class UserProfileServlet extends HttpServlet {
+public class UserProfileHttpServlet extends AbstractHttpServlet {
 
     private final UserService userService;
 
-    public UserProfileServlet(final UserService userService) {
+    public UserProfileHttpServlet(final UserService userService) {
         this.userService = userService;
     }
 

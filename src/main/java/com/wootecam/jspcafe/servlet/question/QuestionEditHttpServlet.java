@@ -3,18 +3,18 @@ package com.wootecam.jspcafe.servlet.question;
 import com.wootecam.jspcafe.domain.Question;
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.QuestionService;
+import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-public class QuestionEditServlet extends HttpServlet {
+public class QuestionEditHttpServlet extends AbstractHttpServlet {
 
     private final QuestionService questionService;
 
-    public QuestionEditServlet(final QuestionService questionService) {
+    public QuestionEditHttpServlet(final QuestionService questionService) {
         this.questionService = questionService;
     }
 

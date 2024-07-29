@@ -2,8 +2,8 @@ package com.wootecam.jspcafe.servlet.question;
 
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.QuestionService;
+import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -11,13 +11,13 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QuestionServlet extends HttpServlet {
+public class QuestionHttpServlet extends AbstractHttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(QuestionServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionHttpServlet.class);
 
     private final QuestionService questionService;
 
-    public QuestionServlet(final QuestionService questionService) {
+    public QuestionHttpServlet(final QuestionService questionService) {
         this.questionService = questionService;
     }
 

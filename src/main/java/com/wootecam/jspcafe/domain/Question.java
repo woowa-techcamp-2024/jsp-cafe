@@ -1,5 +1,6 @@
 package com.wootecam.jspcafe.domain;
 
+import com.wootecam.jspcafe.exception.BadRequestException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -32,7 +33,7 @@ public class Question {
                           final LocalDateTime createdTime, final Long userPrimaryId) {
         if (Objects.isNull(writer) || Objects.isNull(title) || Objects.isNull(contents) || Objects.isNull(createdTime)
                 || Objects.isNull(userPrimaryId) || writer.isEmpty() || title.isEmpty() || contents.isEmpty()) {
-            throw new IllegalArgumentException("질문 작성 시 모든 정보를 입력해야 합니다.");
+            throw new BadRequestException("질문 작성 시 모든 정보를 입력해야 합니다.");
         }
     }
 

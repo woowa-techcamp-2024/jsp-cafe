@@ -1,16 +1,16 @@
 package com.wootecam.jspcafe.servlet.user;
 
+import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SignupFormServlet extends HttpServlet {
+public class SignupFormHttpServlet extends AbstractHttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(SignupFormServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(SignupFormHttpServlet.class);
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)

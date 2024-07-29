@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.User;
+import com.wootecam.jspcafe.exception.BadRequestException;
+import com.wootecam.jspcafe.exception.NotFoundException;
 import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +42,7 @@ class UserServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> userService.signup(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2),
                                 invalidUserInfo.get(3)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("회원가입 시 모든 정보를 입력해야 합니다.");
             }
 
@@ -166,7 +168,7 @@ class UserServiceTest extends ServiceTest {
                         () -> userService.edit(1L, invalidEditUserInfo.get(0), invalidEditUserInfo.get(1),
                                 invalidEditUserInfo.get(2),
                                 invalidEditUserInfo.get(3)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("회원 수정 시 모든 정보를 입력해야 합니다.");
             }
 
@@ -195,7 +197,7 @@ class UserServiceTest extends ServiceTest {
                 // expect
                 assertThatThrownBy(
                         () -> userService.edit(1L, "differentPassword", "newPassword", "name", "email"))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
             }
         }
@@ -288,7 +290,7 @@ class UserServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(() -> userService.readSignInUser(2L, user))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("자신의 프로필만 수정할 수 있습니다.");
             }
         }
@@ -302,7 +304,7 @@ class UserServiceTest extends ServiceTest {
                 // expect
                 assertThatThrownBy(() -> userService.readSignInUser((Long) invalidEditUserInfo.get(0),
                         (User) invalidEditUserInfo.get(1)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(NotFoundException.class)
                         .hasMessage("프로필 수정을 할 사용자를 찾을 수 없습니다.");
             }
 

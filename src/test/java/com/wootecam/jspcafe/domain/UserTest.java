@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.jspcafe.exception.BadRequestException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,7 +21,7 @@ class UserTest {
         // expect
         assertThatThrownBy(() -> new User(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2),
                 invalidUserInfo.get(3)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessage("회원가입 시 모든 정보를 입력해야 합니다.");
     }
 
@@ -47,7 +48,7 @@ class UserTest {
         assertThatThrownBy(
                 () -> user.edit(invalidEditUserInfo.get(0), invalidEditUserInfo.get(1), invalidEditUserInfo.get(2),
                         invalidEditUserInfo.get(3)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessage("회원 수정 시 모든 정보를 입력해야 합니다.");
     }
 
@@ -72,7 +73,7 @@ class UserTest {
         // expect
         assertThatThrownBy(
                 () -> user.edit("differentPassword", "newPassword", "name", "email"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessage("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
     }
 

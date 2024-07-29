@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.Question;
 import com.wootecam.jspcafe.domain.User;
+import com.wootecam.jspcafe.exception.BadRequestException;
+import com.wootecam.jspcafe.exception.NotFoundException;
 import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -44,7 +46,7 @@ class QuestionServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> questionService.append((String) invalidUserInfo.get(0), (String) invalidUserInfo.get(1),
                                 (String) invalidUserInfo.get(2), (Long) invalidUserInfo.get(3)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("질문 작성 시 모든 정보를 입력해야 합니다.");
             }
 
@@ -157,7 +159,7 @@ class QuestionServiceTest extends ServiceTest {
             void 예외가_발생한다() {
                 // expect
                 assertThatThrownBy(() -> questionService.readQuestionToEdit(null, 1L))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(NotFoundException.class)
                         .hasMessage("수정 할 게시글을 찾을 수 없습니다.");
             }
         }
@@ -173,7 +175,7 @@ class QuestionServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(() -> questionService.readQuestionToEdit(1L, 2L))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("다른 사용자의 글은 삭제할 수 없습니다.");
             }
         }
