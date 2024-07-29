@@ -24,6 +24,7 @@ public class AuthenticationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
+        includeMatchers.addMatcher("GET", "/users");
         includeMatchers.addMatcher("GET", "/users/*");
         includeMatchers.addMatcher("GET", "/users/profile/*");
         includeMatchers.addMatcher("POST", "/users/profile/*");
