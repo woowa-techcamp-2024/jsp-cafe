@@ -1,5 +1,6 @@
 package org.example.jspcafe.di;
 
+import com.google.gson.Gson;
 import org.example.jspcafe.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class SimpleDIContainer {
 
     public SimpleDIContainer(String basePackage) throws Exception {
         componentClasses = scan(basePackage);
+        instances.put(Gson.class, new Gson());
         createInstances(componentClasses);
     }
 
