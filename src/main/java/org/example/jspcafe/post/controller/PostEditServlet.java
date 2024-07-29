@@ -7,12 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.di.ApplicationContext;
-import org.example.jspcafe.post.model.Post;
+import org.example.jspcafe.post.request.PostModifyRequest;
 import org.example.jspcafe.post.service.PostService;
 
 import java.io.IOException;
 
-@WebServlet(name = "postEditServlet", value = "/post/edit/*")
+@WebServlet(name = "PostEditServlet", value = "/api/posts/*")
 public class PostEditServlet extends HttpServlet {
 
     private PostService postService;
@@ -24,7 +24,7 @@ public class PostEditServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         Boolean isLogined = (Boolean) session.getAttribute("isLogined");
         Long userId = (Long) session.getAttribute("userId");
@@ -35,39 +35,20 @@ public class PostEditServlet extends HttpServlet {
         }
 
         String pathInfo = req.getPathInfo();
-        Long postId = Long.parseLong(pathInfo.substring(1)); // "/{postId}"에서 postId 추출
+        Long postId = Long.parseLong(pathInfo.substring(1));
 
-        Post post = postService.getPostById(postId);
+        String title = req.getParameter("title");
+        String content = req.getParameter("content");
 
-
-        if (!post.canModifyBy(userId)) {
-            req.setAttribute("errorMessage", "수정 권한이 없습니다.");
-            resp.sendRedirect("/post/post.jsp");
+        PostModifyRequest request = new PostModifyRequest(userId, postId, title, content);
+        try {
+            postService.modifyPost(request);
+        } catch (Exception e) {
+            session.setAttribute("errorMessage", e.getMessage());
+            resp.sendRedirect(req.getContextPath() + "/post/edit/" + postId);
             return;
         }
 
-        req.setAttribute("post", post);
-        req.getRequestDispatcher("/WEB-INF/jsp/post/edit.jsp").forward(req, resp);
+        resp.sendRedirect("/posts/" + postId);
     }
-
-//    @Override
-//    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        HttpSession session = req.getSession();
-//        Boolean isLogined = (Boolean) session.getAttribute("isLogined");
-//        Long userId = (Long) session.getAttribute("userId");
-//
-//        if (isLogined == null || !isLogined) {
-//            resp.sendRedirect("/login");
-//            return;
-//        }
-//
-//        Long postId = Long.parseLong(req.getParameter("postId"));
-//        String title = req.getParameter("title");
-//        String content = req.getParameter("content");
-//
-//        PostModifyRequest request = new PostModifyRequest(userId, postId, title, content);
-//        postService.updatePost(request);
-//
-//        resp.sendRedirect("/posts/" + postId);
-//    }
 }
