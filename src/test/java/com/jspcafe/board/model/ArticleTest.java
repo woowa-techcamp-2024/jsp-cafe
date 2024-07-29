@@ -55,10 +55,10 @@ class ArticleTest {
         String title = "testTitle";
         String nickname = "testName";
         String content = "test test test.";
-        LocalDateTime created = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         // When Then
         assertThrows(IllegalArgumentException.class,
-                () -> new Article(id, title, nickname, content, created));
+                () -> new Article(id, title, nickname, content, now, now));
     }
 }

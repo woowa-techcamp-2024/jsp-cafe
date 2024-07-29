@@ -15,7 +15,7 @@ public class ArticleDao {
     }
 
     public void save(final Article article) {
-        String sql = "INSERT INTO articles (id, title, nickname, content, create_at) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (id, title, nickname, content, create_at, update_at) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, article.id());
@@ -23,6 +23,8 @@ public class ArticleDao {
             pstmt.setString(3, article.nickname());
             pstmt.setString(4, article.content());
             pstmt.setTimestamp(5, Timestamp.valueOf(article.createAt()));
+            pstmt.setTimestamp(6, Timestamp.valueOf(article.updateAt()));
+
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error saving article", e);
@@ -41,7 +43,8 @@ public class ArticleDao {
                             rs.getString("title"),
                             rs.getString("nickname"),
                             rs.getString("content"),
-                            rs.getTimestamp("create_at").toLocalDateTime()
+                            rs.getTimestamp("create_at").toLocalDateTime(),
+                            rs.getTimestamp("update_at").toLocalDateTime()
                     ));
                 }
             }
@@ -52,7 +55,7 @@ public class ArticleDao {
     }
 
     public List<Article> findAll() {
-        String sql = "SELECT * FROM articles ORDER BY create_at DESC";
+        String sql = "SELECT * FROM articles ORDER BY update_at DESC";
         List<Article> articles = new ArrayList<>();
         try (Connection conn = databaseConnector.getConnection();
              Statement stmt = conn.createStatement();
@@ -63,7 +66,8 @@ public class ArticleDao {
                         rs.getString("title"),
                         rs.getString("nickname"),
                         rs.getString("content"),
-                        rs.getTimestamp("create_at").toLocalDateTime()
+                        rs.getTimestamp("create_at").toLocalDateTime(),
+                        rs.getTimestamp("update_at").toLocalDateTime()
                 ));
             }
         } catch (SQLException e) {

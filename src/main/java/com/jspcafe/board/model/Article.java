@@ -3,10 +3,10 @@ package com.jspcafe.board.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record Article(String id, String title, String nickname, String content, LocalDateTime createAt) {
+public record Article(String id, String title, String nickname, String content, LocalDateTime createAt, LocalDateTime updateAt) {
 
     public static Article create(String title, String nickname, String content) {
-        return new Article(UUID.randomUUID().toString(), title, nickname, content, LocalDateTime.now());
+        return new Article(UUID.randomUUID().toString(), title, nickname, content, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public Article {

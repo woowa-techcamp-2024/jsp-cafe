@@ -56,12 +56,12 @@ class ArticleServiceTest {
     }
 
     @Test
-    void 게시글을_최신순으로_정렬하여_가져온다() {
+    void 게시글을_업데이트순으로_정렬하여_가져온다() {
         // Given
         LocalDateTime now = LocalDateTime.now();
-        Article article1 = new Article("1", "First Article", "user1", "Content 1", now.minusDays(2));
-        Article article2 = new Article("2", "Second Article", "user2", "Content 2", now.minusDays(1));
-        Article article3 = new Article("3", "Third Article", "user3", "Content 3", now);
+        Article article1 = new Article("1", "First Article", "user1", "Content 1", now.minusDays(2), now.minusDays(2));
+        Article article2 = new Article("2", "Second Article", "user2", "Content 2", now.minusDays(3), now.minusDays(1));
+        Article article3 = new Article("3", "Third Article", "user3", "Content 3", now.minusDays(4), now);
 
         articleDao.save(article1);
         articleDao.save(article2);
