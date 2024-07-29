@@ -64,16 +64,16 @@
                     <span class="article-author">작성자: <%= post.nickname() %></span>
                     <span class="article-date">작성일자: <%= formattedDate %></span>
                     <span class="article-views">조회수: 1</span>
-                        <%
-                            if (isLogined != null && isLogined && loggedInUserId != null && loggedInUserId.equals(postAuthorId)) {
-                        %>
-                        <form action="${pageContext.request.contextPath}/post/edit/<%= post.postId() %>" method="get" style="display: inline;">
-                            <button type="submit" class="edit-post-button active">수정</button>
-                        </form>
-                        <form action="${pageContext.request.contextPath}/api/delete-post/<%= post.postId() %>" method="post" style="display: inline;">
-                            <button type="submit" class="delete-post-button active">삭제</button>
-                        </form>
-                        <% } %>
+                    <%
+                        if (isLogined != null && isLogined && loggedInUserId != null && loggedInUserId.equals(postAuthorId)) {
+                    %>
+                    <form action="${pageContext.request.contextPath}/post/edit/<%= post.postId() %>" method="get" style="display: inline;">
+                        <button type="submit" class="edit-post-button active">수정</button>
+                    </form>
+                    <form action="${pageContext.request.contextPath}/api/delete-post/<%= post.postId() %>" method="post" style="display: inline;">
+                        <button type="submit" class="delete-post-button active">삭제</button>
+                    </form>
+                    <% } %>
                 </div>
             </header>
             <article class="article-content">
@@ -83,11 +83,22 @@
                 <div class="comment-count">댓글 <%= comments.size() %>개</div>
                 <%
                     for (CommentResponse comment : comments) {
+                        Long commentAuthorId = comment.userId();
                 %>
                 <div class="comment">
                     <div class="comment-author"><%= comment.nickname() %></div>
                     <div class="comment-content"><%= comment.content() %></div>
                     <div class="comment-date"><%= (comment.createdAt() != null) ? comment.createdAt().format(formatter) : "날짜 형식 오류" %></div>
+                    <%
+                        if (isLogined != null && isLogined && loggedInUserId != null && loggedInUserId.equals(commentAuthorId)) {
+                    %>
+                    <form action="${pageContext.request.contextPath}/comment/edit/<%= comment.commentId() %>" method="get" style="display: inline;">
+                        <button type="submit" class="edit-comment-button">수정</button>
+                    </form>
+                    <form action="${pageContext.request.contextPath}/api/delete-comment/<%= comment.commentId() %>" method="post" style="display: inline;">
+                        <button type="submit" class="delete-comment-button">삭제</button>
+                    </form>
+                    <% } %>
                 </div>
                 <%
                     }
