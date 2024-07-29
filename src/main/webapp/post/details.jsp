@@ -13,10 +13,7 @@
 </head>
 <body>
 <div id="container">
-  <div id="header">
-    <a id="greeting" href="/">찬우 카페</a>
-    <a id="login-button" href="/users/login">로그인/회원가입</a>
-  </div>
+  <jsp:include page="${pageContext.request.contextPath}/common/header.jsp" />
   <div id="post-container">
     <a id="back-button" style="margin-bottom: 20px" href="${pageContext.request.contextPath}/">
       <img src="${pageContext.request.contextPath}/static/assets/arrow-left.svg" alt="">

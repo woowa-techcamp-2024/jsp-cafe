@@ -12,10 +12,7 @@
 </head>
 <body>
 <div id="container">
-  <div id="header">
-    <a id="greeting" href="${pageContext.request.contextPath}/">찬우 카페</a>
-    <a id="login-button" href="${pageContext.request.contextPath}/users/login">로그인/회원가입</a>
-  </div>
+  <jsp:include page="${pageContext.request.contextPath}/common/header.jsp" />
   <form id="user-form" method="post" action="${pageContext.request.contextPath}/auth/login">
     <div id="form-title">
       로그인
