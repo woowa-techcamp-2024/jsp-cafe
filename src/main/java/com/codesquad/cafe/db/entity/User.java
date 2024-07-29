@@ -1,6 +1,7 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.db.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class User {
 
@@ -118,13 +119,35 @@ public class User {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
-        sb.append(", id='").append(id).append('\'');
+        sb.append("id=").append(id);
         sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
+        sb.append(", name='").append(name).append('\'');
         sb.append(", email='").append(email).append('\'');
-        sb.append(", isDeleted='").append(isDeleted()).append('\'');
+        sb.append(", createdAt=").append(createdAt);
+        sb.append(", updatedAt=").append(updatedAt);
+        sb.append(", deleted=").append(deleted);
         sb.append('}');
         return sb.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return deleted == user.deleted && Objects.equals(id, user.id) && Objects.equals(username,
+                user.username) && Objects.equals(password, user.password) && Objects.equals(name,
+                user.name) && Objects.equals(email, user.email) && Objects.equals(createdAt,
+                user.createdAt) && Objects.equals(updatedAt, user.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, name, email, createdAt, updatedAt, deleted);
+    }
 }
