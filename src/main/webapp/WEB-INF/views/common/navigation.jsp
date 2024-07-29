@@ -25,6 +25,7 @@
             <c:otherwise>
                 <a href="${pageContext.request.contextPath}/users">멤버리스트</a>
                 <a href="${pageContext.request.contextPath}/users/<%= userId %>">마이페이지</a>
+                <a href="${pageContext.request.contextPath}/users/edit/<%= userId %>">개인정보수정</a>
                 <form action="${pageContext.request.contextPath}/users/logout" method="post">
                     <button type="submit">로그아웃</button>
                 </form>
