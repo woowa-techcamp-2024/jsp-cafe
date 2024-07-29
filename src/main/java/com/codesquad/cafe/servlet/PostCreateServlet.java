@@ -1,7 +1,7 @@
 package com.codesquad.cafe.servlet;
 
-import com.codesquad.cafe.db.InMemoryPostRepository;
-import com.codesquad.cafe.db.InMemoryUserRepository;
+import com.codesquad.cafe.db.PostRepository;
+import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.exception.ModelMappingException;
 import com.codesquad.cafe.model.PostCreateRequest;
 import com.codesquad.cafe.util.RequestParamModelMapper;
@@ -15,17 +15,17 @@ import org.slf4j.LoggerFactory;
 
 public class PostCreateServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(PostsServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(PostServlet.class);
 
-    private InMemoryPostRepository postRepository;
+    private PostRepository postRepository;
 
-    private InMemoryUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        this.postRepository = (InMemoryPostRepository) getServletContext().getAttribute("postRepository");
-        this.userRepository = (InMemoryUserRepository) getServletContext().getAttribute("userRepository");
+        this.postRepository = (PostRepository) getServletContext().getAttribute("postRepository");
+        this.userRepository = (UserRepository) getServletContext().getAttribute("userRepository");
     }
 
     @Override

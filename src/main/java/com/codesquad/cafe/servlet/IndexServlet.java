@@ -1,33 +1,30 @@
 package com.codesquad.cafe.servlet;
 
-import com.codesquad.cafe.db.InMemoryPostRepository;
-import com.codesquad.cafe.db.InMemoryUserRepository;
 import com.codesquad.cafe.db.Page;
-import com.codesquad.cafe.model.Post;
-import com.codesquad.cafe.model.PostDetailsDto;
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.PostRepository;
+import com.codesquad.cafe.db.UserRepository;
+import com.codesquad.cafe.db.entity.PostDetailsDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class IndexServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(IndexServlet.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private InMemoryPostRepository postRepository;
+    private PostRepository postRepository;
 
-    private InMemoryUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        this.postRepository = (InMemoryPostRepository) getServletContext().getAttribute("postRepository");
-        this.userRepository = (InMemoryUserRepository) getServletContext().getAttribute("userRepository");
+        this.postRepository = (PostRepository) getServletContext().getAttribute("postRepository");
+        this.userRepository = (UserRepository) getServletContext().getAttribute("userRepository");
     }
 
 
@@ -36,18 +33,13 @@ public class IndexServlet extends HttpServlet {
         int pageNum = getRequestedPageNum(req);
         int pageSize = getRequestedPageSize(req);
 
-        Page<Post> posts;
         try {
-            posts = postRepository.findByPage(pageNum, pageSize);
+            Page<PostDetailsDto> page = postRepository.findPostWithAuthorByPageSortByCreatedAtDesc(pageNum, pageSize);
+            req.setAttribute("page", page);
+            req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
         } catch (IllegalArgumentException e) {
             resp.sendError(400);
-            return;
         }
-
-        Page<PostDetailsDto> page = getPostDetailListFrom(posts);
-
-        req.setAttribute("page", page);
-        req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }
 
     private int getRequestedPageNum(HttpServletRequest req) {
@@ -60,24 +52,4 @@ public class IndexServlet extends HttpServlet {
         return (pageSizeParam == null || pageSizeParam.isEmpty()) ? 5 : Integer.parseInt(pageSizeParam);
     }
 
-    private Page<PostDetailsDto> getPostDetailListFrom(Page<Post> posts) {
-        List<PostDetailsDto> list = posts.getContent().stream()
-                .map(post -> {
-                    User user = userRepository.findById(post.getAuthorId()).orElseThrow(()
-                            -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-                    return new PostDetailsDto(post.getId(), post.getTitle(), post.getContent(),
-                            post.getFileName(),
-                            user.getId(), user.getUsername(), post.getCreatedAt());
-                })
-                .toList();
-
-        return Page.of(
-                list,
-                posts.getPageNumber(),
-                posts.getPageSize(),
-                posts.getActualSize(),
-                posts.getTotalElements(),
-                posts.getTotalPages()
-        );
-    }
 }
