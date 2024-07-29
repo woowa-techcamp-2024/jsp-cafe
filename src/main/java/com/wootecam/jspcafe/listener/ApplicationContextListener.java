@@ -1,5 +1,6 @@
 package com.wootecam.jspcafe.listener;
 
+import com.wootecam.jspcafe.config.DataSourceManager;
 import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
 import com.wootecam.jspcafe.domain.UserRepository;
@@ -27,7 +28,10 @@ public class ApplicationContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        DataSourceManager dataSourceManager = new DataSourceManager();
+        servletContext.setAttribute("dataSourceManager", dataSourceManager);
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceManager);
 
         UserRepository userRepository = new JdbcUserRepository(jdbcTemplate);
         QuestionRepository questionRepository = new JdbcQuestionRepository(jdbcTemplate);
@@ -54,5 +58,13 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/questions");
         servletContext.addServlet("questionDetailServlet", new QuestionDetailServlet(questionService))
                 .addMapping("/questions/*");
+    }
+
+    @Override
+    public void contextDestroyed(final ServletContextEvent sce) {
+        DataSourceManager dataSourceManager = (DataSourceManager) sce.getServletContext()
+                .getAttribute("dataSourceManage");
+
+        dataSourceManager.shutdown();
     }
 }

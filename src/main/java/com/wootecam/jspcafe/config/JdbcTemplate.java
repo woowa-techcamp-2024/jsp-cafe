@@ -14,7 +14,11 @@ public class JdbcTemplate {
 
     private final Logger log = LoggerFactory.getLogger(JdbcTemplate.class);
 
-    private final DataSourceManager dataSourceManager = new DataSourceManager();
+    private final DataSourceManager dataSourceManager;
+
+    public JdbcTemplate(final DataSourceManager dataSourceManager) {
+        this.dataSourceManager = dataSourceManager;
+    }
 
     public void update(final String query, final PreparedStatementSetter psSetter) {
         try (Connection conn = dataSourceManager.getConnection();
