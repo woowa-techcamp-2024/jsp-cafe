@@ -10,6 +10,7 @@ import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionEditServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionServlet;
 import com.wootecam.jspcafe.servlet.user.SignInFormServlet;
 import com.wootecam.jspcafe.servlet.user.SignOutServlet;
@@ -58,12 +59,14 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/questions");
         servletContext.addServlet("questionDetailServlet", new QuestionDetailServlet(questionService))
                 .addMapping("/questions/*");
+        servletContext.addServlet("questionEditServlet", new QuestionEditServlet(questionService))
+                .addMapping("/questions/edit/*");
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent sce) {
         DataSourceManager dataSourceManager = (DataSourceManager) sce.getServletContext()
-                .getAttribute("dataSourceManage");
+                .getAttribute("dataSourceManager");
 
         dataSourceManager.shutdown();
     }

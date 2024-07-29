@@ -121,4 +121,61 @@ class QuestionServiceTest extends ServiceTest {
             }
         }
     }
+
+    @Nested
+    class readQuestionToEdit_메소드는 {
+
+        @Nested
+        class 만약_questionId에_해당하는_질문이_있고_작성자와_사용자가_동일하면 {
+
+            @Test
+            void questionId에_해당하는_질문을_반환한다() {
+                // given
+                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자1", "1제목입니다.", "1내용입니다.", LocalDateTime.now(), 1L));
+                questionRepository.save(new Question("작성자2", "2제목입니다.", "2내용입니다.", LocalDateTime.now(), 1L));
+
+                // when
+                Question question = questionService.readQuestionToEdit(2L, 1L);
+
+                // then
+                assertAll(
+                        () -> assertThat(question.getId()).isEqualTo(2L),
+                        () -> assertThat(question.getWriter()).isEqualTo("작성자2"),
+                        () -> assertThat(question.getTitle()).isEqualTo("2제목입니다."),
+                        () -> assertThat(question.getContents()).isEqualTo("2내용입니다."),
+                        () -> assertThat(question.getUserPrimaryId()).isEqualTo(1L)
+                );
+
+            }
+        }
+
+        @Nested
+        class 만약_questionId값이_null이라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // expect
+                assertThatThrownBy(() -> questionService.readQuestionToEdit(null, 1L))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("수정 할 게시글을 찾을 수 없습니다.");
+            }
+        }
+
+        @Nested
+        class 만약_작성자의_id와_로그인한_사용자의_id가_다르면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                userRepository.save(new User(1L, "userId1", "password1", "name1", "email1"));
+                questionRepository.save(new Question("작성자1", "1제목입니다.", "1내용입니다.", LocalDateTime.now(), 1L));
+
+                // expect
+                assertThatThrownBy(() -> questionService.readQuestionToEdit(1L, 2L))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("다른 사용자의 글은 삭제할 수 없습니다.");
+            }
+        }
+    }
 }

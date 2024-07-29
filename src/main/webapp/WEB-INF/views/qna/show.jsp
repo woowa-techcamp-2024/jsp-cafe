@@ -32,7 +32,7 @@
                                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${createdTime}"/>
                                 <i class="icon-link"></i>
                             </a>
-                        </div>
+                        </div>1
                     </div>
                     <div class="article-doc">
                         ${question.contents}
@@ -40,10 +40,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/questions/edit/${currentQuestion.id}">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/questions/delete/${currentQuestion.id}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
