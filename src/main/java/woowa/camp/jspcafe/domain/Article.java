@@ -1,6 +1,7 @@
 package woowa.camp.jspcafe.domain;
 
 import java.time.LocalDate;
+import woowa.camp.jspcafe.domain.exception.ArticleException;
 
 public class Article {
 
@@ -23,7 +24,7 @@ public class Article {
 
     public static Article create(Long authorId, String title, String content, LocalDate createdAt) {
         if (isAnonymousAuthor(authorId)) {
-            return new Article(null, title, content, 0, createdAt);
+            throw new ArticleException("작성자 ID가 null 입니다. 익명 사용자는 게시글을 작성할 수 없습니다.");
         }
         return new Article(authorId, title, content, 0, createdAt);
     }
