@@ -51,4 +51,5 @@ public class UserJoinServlet extends HttpServlet {
 
         resp.sendRedirect("/users");
     }
+
 }

@@ -1,7 +1,7 @@
 package com.codesquad.cafe.servlet;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,4 +30,5 @@ public class UsersServlet extends HttpServlet {
         req.setAttribute("total", users.size());
         req.getRequestDispatcher("/WEB-INF/views/users.jsp").forward(req, resp);
     }
+
 }

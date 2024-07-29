@@ -1,6 +1,6 @@
 package com.codesquad.cafe.db;
 
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.User;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +15,5 @@ public interface UserRepository {
     List<User> findAll();
 
     void deleteAll();
+
 }

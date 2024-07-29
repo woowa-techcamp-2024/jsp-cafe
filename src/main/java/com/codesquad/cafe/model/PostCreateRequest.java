@@ -1,10 +1,14 @@
 package com.codesquad.cafe.model;
 
-public class PostCreateRequest {
-    private Long authorId;
-    private String title;
-    private String content;
+import com.codesquad.cafe.db.entity.Post;
 
+public class PostCreateRequest {
+
+    private Long authorId;
+
+    private String title;
+
+    private String content;
 
     public Long getAuthorId() {
         return authorId;
@@ -19,6 +23,7 @@ public class PostCreateRequest {
     }
 
     public Post toPost() {
-        return Post.of(authorId, title, content, null);
+        return  Post.of(authorId, title, content, null);
     }
+
 }

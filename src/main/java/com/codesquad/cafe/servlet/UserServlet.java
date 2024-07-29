@@ -1,7 +1,7 @@
 package com.codesquad.cafe.servlet;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +56,7 @@ public class UserServlet extends HttpServlet {
         try {
             Long id = Long.valueOf(req.getParameter("id"));
             Optional<User> user = userRepository.findById(id);
-            if (user.isEmpty() ||user.get().isDeleted()){
+            if (user.isEmpty() || user.get().isDeleted()) {
                 resp.sendError(400);
             }
             User originalUser = user.get();
@@ -69,8 +69,8 @@ public class UserServlet extends HttpServlet {
     }
 
     private Long parsePathVariable(String pathInfo) {
-
         String[] paths = pathInfo.substring(1).split("/");
         return Long.parseLong(paths[0]);
     }
+
 }

@@ -8,7 +8,7 @@ import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.http.HttpResponse;

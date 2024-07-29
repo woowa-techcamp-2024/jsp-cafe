@@ -8,8 +8,8 @@ import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.model.Post;
-import com.codesquad.cafe.model.User;
+import com.codesquad.cafe.db.entity.Post;
+import com.codesquad.cafe.db.entity.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -38,7 +38,6 @@ class IndexServletTest extends E2ETestBase {
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        E2ETestBase.setUpClass();
         userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
         postRepository = (PostRepository) context.getServletContext().getAttribute("postRepository");
         posts = new ArrayList<>();
