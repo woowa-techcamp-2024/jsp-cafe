@@ -25,7 +25,11 @@
   <div id="nickname"><c:out value="${profile.nickname()}" /></div>
   <div id="email"><c:out value="${profile.email()}" /></div>
   <div id="sign-up-date"><c:out value="${profile.signUpAt()}" /></div>
-  <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
+  <c:choose>
+    <c:when test="${profile.id() == sessionScope.authentication.principal().getId()}">
+      <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
+    </c:when>
+  </c:choose>
 </div>
 </body>
 </html>
