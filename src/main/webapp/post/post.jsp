@@ -4,6 +4,7 @@
 <%@ page import="org.example.jspcafe.post.response.CommentResponse" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     PostResponse post = (PostResponse) request.getAttribute("post");
     List<CommentResponse> comments = (List<CommentResponse>) request.getAttribute("comments");
@@ -112,5 +113,12 @@
         </div>
     </main>
 </div>
+<!-- 에러 메시지 모듈 포함 -->
+<%
+    String errorMessage = (String) request.getAttribute("errorMessage");
+%>
+<jsp:include page="/WEB-INF/jsp/common/error-message.jsp">
+    <jsp:param name="errorMessage" value="<%= errorMessage %>" />
+</jsp:include>
 </body>
 </html>
