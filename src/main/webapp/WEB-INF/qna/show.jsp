@@ -20,7 +20,9 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/todo" class="article-author-name"><c:out value="${article.authorId}"/></a>
+                            <a href="/users/profile/<c:out value="${article.author.id}"/>" class="article-author-name">
+                                <c:out value=" ${article.author.name}"/>
+                            </a>
                             <a href="/todo" class="article-header-time" title="퍼머링크">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
@@ -42,7 +44,7 @@
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/WEB-INF/index.jspndex.jsp">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>
