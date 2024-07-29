@@ -18,8 +18,8 @@ public class ExceptionFilter implements Filter {
             chain.doFilter(req, resp);
         } catch (HttpException e) {
             log.error("HttpException occurred: {}, {}", e.getStatus(), e.getMessage());
-            req.setAttribute("status", e.getStatus().getCode());
-            req.setAttribute("message", e.getStatus().getStatusMessage());
+            req.setAttribute("status", e.getStatus());
+            req.setAttribute("message", e.getMessage());
             req.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(req, resp);
         } catch (Exception e) {
             log.error("Exception occurred", e);
