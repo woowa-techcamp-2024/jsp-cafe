@@ -24,7 +24,7 @@ public class UserEditServlet extends HttpServlet {
         User user = userService.readSignInUser(id, signInUser);
 
         req.setAttribute("user", user);
-        req.getRequestDispatcher("/WEB-INF/views/user/update_form.jsp")
+        req.getRequestDispatcher("/WEB-INF/views/user/edit_form.jsp")
                 .forward(req, resp);
     }
 
