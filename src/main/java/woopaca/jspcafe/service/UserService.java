@@ -1,5 +1,6 @@
 package woopaca.jspcafe.service;
 
+import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
@@ -53,7 +54,11 @@ public class UserService {
         return UserProfile.from(user);
     }
 
-    public void updateUserProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
+    public void updateUserProfile(Long userId, UpdateProfileRequest updateProfileRequest, Authentication authentication) {
+        if (!authentication.isPrincipal(userId)) {
+            throw new IllegalArgumentException("[ERROR] 다른 사용자의 프로필을 수정할 수 없습니다.");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));
         if (!user.matchPassword(updateProfileRequest.password())) {
