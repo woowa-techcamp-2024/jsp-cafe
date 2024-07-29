@@ -5,6 +5,7 @@ import org.example.jspcafe.post.model.Post;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
 import org.example.jspcafe.post.repository.PostRepository;
 import org.example.jspcafe.post.request.PostCreateRequest;
+import org.example.jspcafe.post.request.PostModifyRequest;
 import org.example.jspcafe.post.response.PostListResponse;
 import org.example.jspcafe.post.response.PostResponse;
 import org.example.jspcafe.user.model.Nickname;
@@ -91,7 +92,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
     }
 
-    public void updatePost(final PostModifyRequest request) {
+    public void modifyPost(final PostModifyRequest request) {
         final Long userId = request.userId();
         final Long postId = request.postId();
         final String title = request.title();
