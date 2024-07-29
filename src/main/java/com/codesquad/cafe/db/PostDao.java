@@ -141,6 +141,10 @@ public class PostDao implements PostRepository {
 
     @Override
     public Page<PostDetailsDto> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize) {
+        if (pageNum < 1 || pageSize < 1) {
+            throw new IllegalArgumentException("page num and page size should be greater than 0");
+        }
+
         int totalElements = countAll();
         String sql = "SELECT "
                 + "p.id as p_id, "
