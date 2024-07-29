@@ -56,6 +56,9 @@ public class User {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is empty!");
         }
+        if (!email.contains("@")) {
+            throw new IllegalArgumentException("Email is invalid!");
+        }
     }
 
     public void validate(String id, String password, String name, String email) {
