@@ -4,7 +4,6 @@ import static org.example.cafe.utils.LoggerFactory.getLogger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,7 +14,7 @@ import org.example.cafe.domain.User;
 import org.slf4j.Logger;
 
 @WebServlet(name = "UserServlet", value = "/users")
-public class UserServlet extends HttpServlet {
+public class UserServlet extends BaseServlet {
 
     private static final Logger log = getLogger(UserServlet.class);
 
@@ -64,14 +63,7 @@ public class UserServlet extends HttpServlet {
         String email = request.getParameter("email");
 
         UserCreateDto userCreateDto = new UserCreateDto(userId, password, nickname, email);
-
-        try {
-            userService.createUser(userCreateDto);
-        } catch (IllegalArgumentException e) {
-            log.error("User creation failed", e);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
+        userService.createUser(userCreateDto);
 
         response.sendRedirect("/users");
     }

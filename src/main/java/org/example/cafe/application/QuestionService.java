@@ -2,6 +2,7 @@ package org.example.cafe.application;
 
 import java.util.List;
 import org.example.cafe.application.dto.QuestionCreateDto;
+import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.QuestionRepository;
 
@@ -23,6 +24,11 @@ public class QuestionService {
     }
 
     public Question findById(Long id) {
-        return questionRepository.findById(id);
+        Question question = questionRepository.findById(id);
+        if (question == null) {
+            throw new DataNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        return question;
     }
 }

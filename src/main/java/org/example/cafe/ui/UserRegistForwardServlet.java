@@ -4,14 +4,13 @@ import static org.example.cafe.utils.LoggerFactory.getLogger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 
 @WebServlet(name = "UserRegistForwardServlet", value = "/user/regist")
-public class UserRegistForwardServlet extends HttpServlet {
+public class UserRegistForwardServlet extends BaseServlet {
 
     private static final Logger log = getLogger(UserRegistForwardServlet.class);
 

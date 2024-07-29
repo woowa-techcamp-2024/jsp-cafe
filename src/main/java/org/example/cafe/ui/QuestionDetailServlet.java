@@ -4,7 +4,6 @@ import static org.example.cafe.utils.LoggerFactory.getLogger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import org.example.cafe.domain.Question;
 import org.slf4j.Logger;
 
 @WebServlet("/questions/*")
-public class QuestionDetailServlet extends HttpServlet {
+public class QuestionDetailServlet extends BaseServlet {
 
     private static final Logger log = getLogger(QuestionDetailServlet.class);
 
@@ -43,10 +42,6 @@ public class QuestionDetailServlet extends HttpServlet {
         Long questionId = Long.valueOf(pathParts[2]);
 
         Question question = questionService.findById(questionId);
-        if (question == null) {
-            response.sendError(404);
-            return;
-        }
 
         request.setAttribute("question", question);
         request.getRequestDispatcher("/WEB-INF/qna/detail.jsp").forward(request, response);

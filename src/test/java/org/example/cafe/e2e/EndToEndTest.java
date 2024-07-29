@@ -54,7 +54,7 @@ public class EndToEndTest {
 
         tomcat.setBaseDir(System.getProperty("java.io.tmpdir"));
 
-        StandardContext context = (StandardContext) tomcat.addWebapp("/", new File(webappPath).getAbsolutePath());
+        StandardContext context = (StandardContext) tomcat.addWebapp("", new File(webappPath).getAbsolutePath());
 
         File additionWebInfClasses = new File("build/classes");
         WebResourceRoot resources = new StandardRoot(context);
@@ -208,7 +208,8 @@ public class EndToEndTest {
 
                 //then
                 assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(400);
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                    assertThat(getResponse(con)).contains("이미 사용 중인 아이디입니다");
                 });
             }
         }
@@ -461,7 +462,8 @@ public class EndToEndTest {
 
                 //then
                 assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(403);
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                    assertThat(getResponse(con)).contains("다른 사용자의 정보를 수정할 수 없습니다");
                 });
             }
 
@@ -483,7 +485,8 @@ public class EndToEndTest {
 
                 //then
                 assertAll(() -> {
-                    assertThat(con.getResponseCode()).isEqualTo(401);
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                    assertThat(getResponse(con)).contains("비밀번호가 일치하지 않습니다");
                 });
             }
         }
