@@ -12,10 +12,8 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
             <form name="question" method="post" action="${pageContext.request.contextPath}/questions">
-                <div class="form-group">
-                    <label for="writer">글쓴이</label>
-                    <input class="form-control" id="writer" name="writer" value="${signInUser.name}" readonly/>
-                </div>
+                <input class="form-control" id="writer" name="writer" type="hidden" value="${signInUser.name}"
+                       readonly/>
                 <div class="form-group">
                     <label for="title">제목</label>
                     <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
