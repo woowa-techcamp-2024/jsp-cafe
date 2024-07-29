@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.di.ApplicationContext;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.post.response.PostResponse;
@@ -29,6 +30,12 @@ public class PostDetailServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        HttpSession session = req.getSession();
+        if (session.getAttribute("isLogined") == null || !(boolean) session.getAttribute("isLogined")) {
+            resp.sendRedirect("/login");
             return;
         }
 
