@@ -1,7 +1,8 @@
 package codesquad.servlet;
 
-import codesquad.fixture.http.EmptyRequestResponseFixture;
-import codesquad.fixture.http.MockRequestDispatcher;
+import codesquad.http.MockRequest;
+import codesquad.http.MockRequestDispatcher;
+import codesquad.http.MockResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-class QnaRegisterFormServletTest implements EmptyRequestResponseFixture {
+class QnaRegisterFormServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
     private QnaRegisterFormServlet qnaRegisterFormServlet;
 
@@ -26,8 +27,8 @@ class QnaRegisterFormServletTest implements EmptyRequestResponseFixture {
         @DisplayName("forward to : /WEB-INF/views/qna/form.jsp")
         void doGet() throws ServletException, IOException {
             // given
-            HttpServletRequest request = emptyRequest(mockRequestDispatcher);
-            HttpServletResponse response = emptyResponse();
+            HttpServletRequest request = new MockRequest("/qna/register-form", "GET", mockRequestDispatcher);
+            HttpServletResponse response = new MockResponse();
 
             // when
             qnaRegisterFormServlet.doGet(request, response);
@@ -37,5 +38,4 @@ class QnaRegisterFormServletTest implements EmptyRequestResponseFixture {
             Assertions.assertTrue(mockRequestDispatcher.isForwarded());
         }
     }
-
 }

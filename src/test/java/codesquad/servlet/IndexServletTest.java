@@ -1,7 +1,8 @@
 package codesquad.servlet;
 
-import codesquad.fixture.http.EmptyRequestResponseFixture;
-import codesquad.fixture.http.MockRequestDispatcher;
+import codesquad.http.MockRequest;
+import codesquad.http.MockRequestDispatcher;
+import codesquad.http.MockResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-class IndexServletTest implements EmptyRequestResponseFixture {
+class IndexServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
     private MockArticleQueryDao mockArticleQueryDao;
     private IndexServlet indexServlet;
@@ -28,8 +29,8 @@ class IndexServletTest implements EmptyRequestResponseFixture {
         @DisplayName("forward to : /WEB-INF/views/index.jsp")
         void doGet() throws ServletException, IOException {
             // given
-            HttpServletRequest request = emptyRequest(mockRequestDispatcher);
-            HttpServletResponse response = emptyResponse();
+            HttpServletRequest request = new MockRequest("/", "GET", mockRequestDispatcher);
+            HttpServletResponse response = new MockResponse();
 
             // when
             indexServlet.doGet(request, response);

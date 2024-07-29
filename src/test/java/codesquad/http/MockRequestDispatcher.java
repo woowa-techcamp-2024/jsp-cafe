@@ -1,4 +1,4 @@
-package codesquad.fixture.http;
+package codesquad.http;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;

@@ -17,6 +17,9 @@ import java.util.List;
 public class IndexServlet extends HttpServlet {
     private ArticleQueryDao articleQueryDao;
 
+    public IndexServlet() {
+    }
+
     public IndexServlet(ArticleQueryDao articleQueryDao) {
         this.articleQueryDao = articleQueryDao;
     }

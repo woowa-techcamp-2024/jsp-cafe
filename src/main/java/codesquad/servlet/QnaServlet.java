@@ -21,6 +21,13 @@ public class QnaServlet extends HttpServlet {
 
     private ArticleQueryDao articleQueryDao;
 
+    public QnaServlet() {
+    }
+
+    public QnaServlet(ArticleQueryDao articleQueryDao) {
+        this.articleQueryDao = articleQueryDao;
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();

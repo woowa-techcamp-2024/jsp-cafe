@@ -4,9 +4,9 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
-public interface MethodFieldRequestFixture extends SimpleRequestFixture {
-    default HttpServletRequest getFieldRequest() {
-        return new HttpServletRequestWrapper(emptyRequest()) {
+public interface MethodFieldRequestFixture {
+    default HttpServletRequest getFieldRequest(HttpServletRequest req) {
+        return new HttpServletRequestWrapper(req) {
             @Override
             public DispatcherType getDispatcherType() {
                 return DispatcherType.REQUEST;
@@ -27,8 +27,8 @@ public interface MethodFieldRequestFixture extends SimpleRequestFixture {
         };
     }
 
-    default HttpServletRequest postFieldRequest() {
-        return new HttpServletRequestWrapper(emptyRequest()) {
+    default HttpServletRequest postFieldRequest(HttpServletRequest req) {
+        return new HttpServletRequestWrapper(req) {
             @Override
             public DispatcherType getDispatcherType() {
                 return DispatcherType.REQUEST;
@@ -49,8 +49,8 @@ public interface MethodFieldRequestFixture extends SimpleRequestFixture {
         };
     }
 
-    default HttpServletRequest putFieldRequest() {
-        return new HttpServletRequestWrapper(emptyRequest()) {
+    default HttpServletRequest putFieldRequest(HttpServletRequest req) {
+        return new HttpServletRequestWrapper(req) {
             @Override
             public DispatcherType getDispatcherType() {
                 return DispatcherType.REQUEST;
@@ -71,8 +71,8 @@ public interface MethodFieldRequestFixture extends SimpleRequestFixture {
         };
     }
 
-    default HttpServletRequest deleteFieldRequest() {
-        return new HttpServletRequestWrapper(emptyRequest()) {
+    default HttpServletRequest deleteFieldRequest(HttpServletRequest req) {
+        return new HttpServletRequestWrapper(req) {
             @Override
             public DispatcherType getDispatcherType() {
                 return DispatcherType.REQUEST;

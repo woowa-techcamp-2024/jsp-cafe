@@ -1,7 +1,8 @@
 package codesquad.servlet;
 
-import codesquad.fixture.http.EmptyRequestResponseFixture;
-import codesquad.fixture.http.MockRequestDispatcher;
+import codesquad.http.MockRequest;
+import codesquad.http.MockRequestDispatcher;
+import codesquad.http.MockResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,9 +10,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class UserRegisterFormServletTest implements EmptyRequestResponseFixture {
+class UserRegisterFormServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
     private UserRegisterFormServlet userRegisterFormServlet;
 
@@ -25,11 +24,11 @@ class UserRegisterFormServletTest implements EmptyRequestResponseFixture {
     @DisplayName("GET /users/register-form")
     class UserRegisterFormServletIs {
         @Test
-        @DisplayName("forward to : /")
+        @DisplayName("forward to : /WEB-INF/views/user/form.jsp")
         void doGet() throws ServletException, IOException {
             // given
-            HttpServletRequest request = emptyRequest(mockRequestDispatcher);
-            HttpServletResponse response = emptyResponse();
+            HttpServletRequest request = new MockRequest("/users/register-form", "GET", mockRequestDispatcher);
+            HttpServletResponse response = new MockResponse();
 
             // when
             userRegisterFormServlet.doGet(request, response);

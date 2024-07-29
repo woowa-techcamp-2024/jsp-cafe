@@ -18,6 +18,9 @@ import java.util.Optional;
 public class LoginServlet extends HttpServlet {
     private UserDao userDao;
 
+    public LoginServlet() {
+    }
+
     public LoginServlet(UserDao userDao) {
         this.userDao = userDao;
     }

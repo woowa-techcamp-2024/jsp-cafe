@@ -1,7 +1,8 @@
 package codesquad.servlet;
 
-import codesquad.fixture.http.EmptyRequestResponseFixture;
-import codesquad.fixture.http.MockRequestDispatcher;
+import codesquad.http.MockRequest;
+import codesquad.http.MockRequestDispatcher;
+import codesquad.http.MockResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-class LoginServletTest implements EmptyRequestResponseFixture {
+class LoginServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
     private MockUserDao mockUserDao;
     private LoginServlet loginServlet;
@@ -28,8 +29,8 @@ class LoginServletTest implements EmptyRequestResponseFixture {
         @DisplayName("forward to : /WEB-INF/views/user/login.jsp")
         void doGet() throws ServletException, IOException {
             // given
-            HttpServletRequest request = emptyRequest(mockRequestDispatcher);
-            HttpServletResponse response = emptyResponse();
+            HttpServletRequest request = new MockRequest("/login", "GET", mockRequestDispatcher);
+            HttpServletResponse response = new MockResponse();
 
             // when
             loginServlet.doGet(request, response);
