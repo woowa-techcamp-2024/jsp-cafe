@@ -37,15 +37,10 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPatch(req, resp);
-    }
-
     private void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             LoginRequest loginRequest = RequestParametersResolver.resolve(request.getParameterMap(), LoginRequest.class);
-            Authentication authentication = authService.authentication(loginRequest);
+            Authentication authentication = authService.authenticate(loginRequest);
             HttpSession session = request.getSession();
             session.setAttribute("authentication", authentication);
             response.sendRedirect("/");
