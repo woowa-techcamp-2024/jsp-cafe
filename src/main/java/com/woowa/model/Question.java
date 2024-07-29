@@ -40,4 +40,8 @@ public class Question {
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public void checkAuthority(User user) {
+        author.checkAuthority(user);
+    }
 }
