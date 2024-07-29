@@ -14,6 +14,7 @@
 <div id="container">
   <div class="error-message">헉, 오류가 발생했어요!</div>
   <div class="error-message">500 Internal Server Error<br>(서버 개발자들 난리 났겠죠?)</div>
+  <a id="home-button" href="${pageContext.request.contextPath}/">홈으로 가기</a>
 </div>
 </body>
 </html>

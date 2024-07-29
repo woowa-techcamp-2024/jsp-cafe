@@ -14,6 +14,7 @@
 <div id="container">
   <div class="error-message">헉, 아무것도 없어요!</div>
   <div class="error-message">404 Not Found<br>(개발자들은 이해하겠죠?)</div>
+  <a id="home-button" href="${pageContext.request.contextPath}/">홈으로 가기</a>
 </div>
 </body>
 </html>

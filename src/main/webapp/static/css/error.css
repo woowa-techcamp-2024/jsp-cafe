@@ -15,3 +15,23 @@
 body {
   background-color: #62CBC6;
 }
+
+#home-button {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 1em;
+
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #FFFFFF;
+
+  transition: background-color 0.3s;
+
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+}
+
+#home-button:hover {
+  background-color: #E6E6E6;
+  cursor: pointer;
+}
