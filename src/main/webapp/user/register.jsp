@@ -20,6 +20,9 @@
     <div id="form-title">
       회원가입
     </div>
+    <c:if test="${not empty  error}">
+      <div id="error-box"><c:out value="${error}" /></div>
+    </c:if>
     <div class="form-element">
       <div class="form-label">이메일</div>
       <input autofocus required type="email" id="username" name="username" placeholder="이메일을 입력해주세요">
