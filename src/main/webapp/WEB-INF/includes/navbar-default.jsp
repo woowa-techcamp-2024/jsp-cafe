@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="utf-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="navbar navbar-default" id="subnav">
     <div class="col-md-12">
         <div class="navbar-header">
@@ -18,11 +19,21 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
+                <%
+                    String userId = (String) session.getAttribute("userId");
+                    if (userId == null) {
+                %>
                 <li class="active"><a href="../index.jsp">Posts</a></li>
-                <li><a href="/userPage?action=login" role="button">로그인</a></li>
+                <li><a href="/users/login" role="button">로그인</a></li>
                 <li><a href="/userPage?action=register" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <%
+                } else {
+                %>
+                <li><a href="/users/logout" role="button">로그아웃</a></li>
+                <li><a href="/users/update/<%=(long)session.getAttribute("userSeq")%>" role="button">개인정보수정</a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>
