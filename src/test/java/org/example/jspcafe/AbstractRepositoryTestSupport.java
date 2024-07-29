@@ -46,8 +46,17 @@ public abstract class AbstractRepositoryTestSupport {
                     "created_at TIMESTAMP NOT NULL" +
                     ");";
 
+            String createCommentsTable = "CREATE TABLE IF NOT EXISTS comments (" +
+                    "comment_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "post_id BIGINT NOT NULL, " +
+                    "user_id BIGINT NOT NULL, " +
+                    "content VARCHAR(255) NOT NULL, " +
+                    "created_at TIMESTAMP NOT NULL" +
+                    ");";
+
             statement.execute(createUsersTable);
             statement.execute(createPostsTable);
+            statement.execute(createCommentsTable);
         }
     }
 }
