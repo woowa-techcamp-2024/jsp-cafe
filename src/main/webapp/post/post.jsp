@@ -107,7 +107,7 @@
             <%
                 String commentWriter = (String) request.getAttribute("commentWriter");
             %>
-            <form action="${pageContext.request.contextPath}/api/comments" method="post" class="comment-form">
+            <form action="${pageContext.request.contextPath}/api/posts<%= post.postId() %>/comments" method="post" class="comment-form">
                 <label for="commentInput" class="comment-form-label"><%= commentWriter %></label>
                 <textarea id="commentInput" name="content" class="comment-form-textarea" placeholder="댓글 입력"></textarea>
                 <button type="submit" class="comment-form-button">댓글입력</button>
