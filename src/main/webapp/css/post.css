@@ -180,3 +180,30 @@
     cursor: not-allowed;
 }
 
+.comment-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.edit-comment-button,
+.delete-comment-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.edit-comment-button:hover,
+.delete-comment-button:hover {
+    background-color: #0056b3;
+}
+
+.edit-comment-button:disabled,
+.delete-comment-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
