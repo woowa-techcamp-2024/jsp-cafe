@@ -54,10 +54,27 @@ public class QuestionHandler {
 
     @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.GET)
     public ResponseEntity findQuestion(String questionId) {
-        Question question = questionDatabase.findById(questionId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
+        Question question = getQuestion(questionId);
         return ResponseEntity.builder()
                 .add("question", question)
+                .viewName("/qna/show")
                 .ok();
+    }
+
+    @RequestMapping(path = "/questions/{questionId}/update", method = HttpMethod.GET)
+    public ResponseEntity updateQuestionForm(String userId, String questionId) {
+        User user = userDatabase.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+        Question question = getQuestion(questionId);
+        question.checkAuthority(user);
+        return ResponseEntity.builder()
+                .add("question", question)
+                .viewName("/qna/update")
+                .ok();
+    }
+
+    private Question getQuestion(String questionId) {
+        return questionDatabase.findById(questionId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
     }
 }

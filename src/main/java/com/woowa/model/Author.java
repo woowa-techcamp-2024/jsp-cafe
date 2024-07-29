@@ -53,6 +53,6 @@ public class Author {
         if (user.getUserId().equals(userId)) {
             return;
         }
-        throw new AuthorizationException("권한이 없습니다.");
+        throw new AuthorizationException("다른 사람의 질문은 수정할 수 없습니다.");
     }
 }

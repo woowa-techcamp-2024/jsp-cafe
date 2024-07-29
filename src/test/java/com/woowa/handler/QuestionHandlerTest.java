@@ -8,6 +8,7 @@ import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
+import com.woowa.exception.AuthorizationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;
 import com.woowa.model.Question;
@@ -172,6 +173,61 @@ class QuestionHandlerTest {
             assertThat(findQuestion.getContent()).isEqualTo(question.getContent());
             assertThat(findQuestion.getAuthor()).isEqualTo(Author.from(user));
             assertThat(findQuestion.getCreatedAt()).isEqualTo(question.getCreatedAt());
+        }
+    }
+
+    @Nested
+    @DisplayName("updateQuestionForm 호출 시")
+    class UpdateQuestionFormTest {
+
+        private User user;
+        private Question question;
+
+        @BeforeEach
+        void setUp() {
+            user = UserFixture.user();
+            question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+        }
+
+        @Test
+        @DisplayName("예외(Authority): 유효한 사용자가 아니면")
+        void checkUserAuthority() {
+            //given
+            User userB = UserFixture.user();
+            userDatabase.save(userB);
+
+            //when
+            Exception exception = catchException(
+                    () -> questionHandler.updateQuestionForm(userB.getUserId(), question.getQuestionId()));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+
+        @Test
+        @DisplayName("질문 데이터를 모델에 추가한다.")
+        void addQuestionToModel() {
+            //given
+
+            //when
+            ResponseEntity response = questionHandler.updateQuestionForm(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(response.getModel().get("question")).isNotNull();
+        }
+
+        @Test
+        @DisplayName("질문 수정 폼의 뷰 이름을 반환한다.")
+        void returnViewName() {
+            //given
+
+            //when
+            ResponseEntity response = questionHandler.updateQuestionForm(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(response.getViewName()).isEqualTo("/qna/update");
         }
     }
 }
