@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<jsp:include page="common/header.jsp" />
+<jsp:include page="common/header.jsp"/>
 
 <body>
 <div class="container">
     <div class="banner">
-        <p>부스트캠프 백엔드 교육용 페이지</p>
-        <H2>HELLO, WEB! 입니다.</H2>
+        <p>JSP Cafe Mission !</p>
+        <H2>김준기 카페입니다 !</H2>
     </div>
 
     <p style="color: #888888;">전체 글 N개</p>
@@ -53,13 +53,14 @@
             </c:if>
         </div>
 
-        <form>
-            <input type="text" placeholder="검색어를 입력하세요" style="color: #888888;">
-            <a href="${pageContext.request.contextPath}/articles/write" class="btn btn-primary pull-right" role="button">글쓰기</a>
-<%--            <button>글쓰기</button>--%>
-        </form>
+        <%--        <form>--%>
+        <%--            <input type="text" placeholder="검색어를 입력하세요" style="color: #888888;">--%>
+        <a href="${pageContext.request.contextPath}/articles/write" class="btn btn-primary pull-right"
+           role="button">글쓰기</a>
+        <%--            <button>글쓰기</button>--%>
+        <%--        </form>--%>
     </div>
 </div>
 </body>
 
-<jsp:include page="common/footer.jsp" />
+<jsp:include page="common/footer.jsp"/>
