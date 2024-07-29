@@ -1,7 +1,7 @@
 package service;
 
 import domain.Article;
-import domain.Users;
+import domain.User;
 import dto.ArticleDao;
 import repository.article.ArticleRepository;
 import repository.users.UserRepository;
@@ -25,7 +25,7 @@ public class ArticleService {
     }
 
     public void saveArticle(ArticleDao articleDao) {
-        Users writer = userRepository.findByUserId(articleDao.getWriter())
+        User writer = userRepository.findByUserId(articleDao.getWriter())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

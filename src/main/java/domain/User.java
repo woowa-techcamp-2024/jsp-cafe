@@ -1,6 +1,6 @@
 package domain;
 
-public class Users {
+public class User {
 
     private Long id;
     private String userId;
@@ -8,7 +8,7 @@ public class Users {
     private String name;
     private String email;
 
-    public Users(Long id, String userId, String password, String name, String email) {
+    public User(Long id, String userId, String password, String name, String email) {
         this.id = id;
         this.userId = userId;
         this.password = password;
@@ -58,10 +58,10 @@ public class Users {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Users)) {
+        if (!(obj instanceof User)) {
             return false;
         }
-        Users user = (Users) obj;
+        User user = (User) obj;
         return id.equals(user.id);
     }
 

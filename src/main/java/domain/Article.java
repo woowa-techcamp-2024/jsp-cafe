@@ -3,12 +3,12 @@ package domain;
 public class Article {
 
     private Long id;
-    private Users writer;
+    private User writer;
     private String title;
     private String content;
     private String created;
 
-    public Article(Long id, Users writer, String title, String content, String created) {
+    public Article(Long id, User writer, String title, String content, String created) {
         this.id = id;
         this.writer = writer;
         this.title = title;
@@ -24,11 +24,11 @@ public class Article {
         this.id = id;
     }
 
-    public Users getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(Users writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 

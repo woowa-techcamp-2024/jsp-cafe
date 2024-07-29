@@ -1,4 +1,4 @@
-<%@ page import="domain.Users" %>
+<%@ page import="domain.User" %>
 <%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -18,9 +18,9 @@
               </thead>
               <tbody>
                   <%
-                      List<Users> users = (List<Users>) request.getAttribute("users");
+                      List<User> users = (List<User>) request.getAttribute("users");
                       for (int i = 0; i < users.size(); i++){
-                          Users user = users.get(i);
+                          User user = users.get(i);
                   %>
                   <tr>
                     <th scope="row"><%= user.getId() %></th>

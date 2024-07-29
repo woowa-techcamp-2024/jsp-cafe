@@ -1,6 +1,6 @@
 package repository.users;
 
-import domain.Users;
+import domain.User;
 import utils.DatabaseUtils;
 
 import java.sql.*;
@@ -11,7 +11,7 @@ import java.util.Optional;
 public class JDBCUserRepository implements UserRepository {
 
     @Override
-    public void saveUser(Users user)  {
+    public void saveUser(User user)  {
         String sql = "INSERT INTO Users (userId, password, name, email) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -23,24 +23,23 @@ public class JDBCUserRepository implements UserRepository {
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     user.setId(rs.getLong(1));
-                    System.out.println("user key = " + user.getId());
                 }
             }
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public Optional<Users> findById(Long id) {
+    public Optional<User> findById(Long id) {
         String sql = "SELECT * FROM Users WHERE id = ?";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(new Users(
+                    return Optional.of(new User(
                             rs.getLong("id"),
                             rs.getString("userId"),
                             rs.getString("password"),
@@ -49,7 +48,7 @@ public class JDBCUserRepository implements UserRepository {
                     ));
                 }
             }
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -57,14 +56,14 @@ public class JDBCUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<Users> findByUserId(String password) {
+    public Optional<User> findByUserId(String password) {
         String sql = "SELECT * FROM Users WHERE userId = ?";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, password);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(new Users(
+                    return Optional.of(new User(
                             rs.getLong("id"),
                             rs.getString("userId"),
                             rs.getString("password"),
@@ -73,7 +72,7 @@ public class JDBCUserRepository implements UserRepository {
                     ));
                 }
             }
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,14 +80,14 @@ public class JDBCUserRepository implements UserRepository {
     }
 
     @Override
-    public List<Users> findAll() {
-        List<Users> users = new ArrayList<>();
+    public List<User> findAll() {
+        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM Users";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                users.add(new Users(
+                users.add(new User(
                         rs.getLong("id"),
                         rs.getString("userId"),
                         rs.getString("password"),
@@ -96,7 +95,7 @@ public class JDBCUserRepository implements UserRepository {
                         rs.getString("email")
                 ));
             }
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,7 +103,7 @@ public class JDBCUserRepository implements UserRepository {
     }
 
     @Override
-    public void updateUser(Users user) {
+    public void updateUser(User user) {
         String sql = "UPDATE Users SET userId = ?, password = ?, name = ?, email = ? WHERE id = ?";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -114,7 +113,7 @@ public class JDBCUserRepository implements UserRepository {
             pstmt.setString(4, user.getEmail());
             pstmt.setLong(5, user.getId());
             pstmt.executeUpdate();
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }

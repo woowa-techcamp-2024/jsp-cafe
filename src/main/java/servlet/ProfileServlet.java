@@ -1,6 +1,6 @@
 package servlet;
 
-import domain.Users;
+import domain.User;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -34,7 +34,7 @@ public class ProfileServlet extends HttpServlet {
         String[] pathParts = pathInfo.split("/");
         Long userId = Long.parseLong(pathParts[1]);
 
-        Users user = userService.findById(userId);
+        User user = userService.findById(userId);
         req.setAttribute("user", user);
 
         if (pathParts.length != 2) {

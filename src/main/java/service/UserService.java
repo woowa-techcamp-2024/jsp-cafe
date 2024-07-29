@@ -1,6 +1,6 @@
 package service;
 
-import domain.Users;
+import domain.User;
 import dto.UsersDao;
 import exception.TomcatException;
 import repository.users.UserRepository;
@@ -33,16 +33,16 @@ public class UserService {
                         });
     }
 
-    public List<Users> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
     public void saveUser(UsersDao userDao) {
-        Users user = new Users(null, userDao.getUserId(), userDao.getPassword(), userDao.getName(), userDao.getEmail());
+        User user = new User(null, userDao.getUserId(), userDao.getPassword(), userDao.getName(), userDao.getEmail());
         userRepository.saveUser(user);
     }
 
-    public Users findById(Long id) {
+    public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new TomcatException("User not found"));
     }
