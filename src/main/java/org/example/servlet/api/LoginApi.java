@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.example.config.DataHandler;
+import java.io.IOException;
+import org.example.constance.DataHandler;
+import org.example.constance.SessionName;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 @WebServlet("/api/login")
 public class LoginApi extends HttpServlet {
@@ -40,7 +40,7 @@ public class LoginApi extends HttpServlet {
             return;
         }
         HttpSession session = request.getSession();
-        session.setAttribute("user", user);
+        session.setAttribute(SessionName.USER.getName(), user);
         response.sendRedirect("/");
     }
 

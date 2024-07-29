@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.example.domain.User" %>
-
+<%@ page import="org.example.constance.SessionName" %>
 <header>
     <a href="/">
         <h1>HELLO, WEB!</h1>
@@ -13,8 +13,8 @@
         <button class="btn">사용자 목록</button>
     </a>
 
-    <% if (session.getAttribute("user") != null) {
-        User user = (User)session.getAttribute("user");
+    <% if (session.getAttribute(SessionName.USER.getName()) != null) {
+        User user = (User)session.getAttribute(SessionName.USER.getName());
     %>
         <a href="/api/logout">
             <button class="btn">로그아웃</button>

@@ -7,15 +7,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.example.config.DataHandler;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import org.example.constance.DataHandler;
+import org.example.constance.SessionName;
 import org.example.data.ArticleDataHandler;
 import org.example.domain.Article;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
 
 @WebServlet("/api/articles")
 public class ArticleRegisterApi extends HttpServlet {
@@ -35,9 +35,9 @@ public class ArticleRegisterApi extends HttpServlet {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         HttpSession session = request.getSession(false);
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(SessionName.USER.getName());
         String author = user.getNickname();
-        Article article = new Article(title, content, author, LocalDateTime.now());
+        Article article = new Article(title, content, author, LocalDateTime.now(), user.getUserId());
         Article savedArticle = articleDataHandler.insert(article);
         log.debug("[ArticleRegisterApi]" + savedArticle.toString());
         response.sendRedirect("/");

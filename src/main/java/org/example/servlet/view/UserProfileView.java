@@ -6,13 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.DataHandler;
+import java.io.IOException;
+import org.example.constance.DataHandler;
+import org.example.constance.SessionName;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/users/*"})
 public class UserProfileView extends HttpServlet {
@@ -40,7 +40,7 @@ public class UserProfileView extends HttpServlet {
             request.getRequestDispatcher("/error/error.jsp").forward(request, response);
             return;
         }
-        request.setAttribute("user", user);
+        request.setAttribute(SessionName.USER.getName(), user);
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
     }
 }

@@ -6,15 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
-
-import org.example.config.DataHandler;
+import org.example.constance.DataHandler;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 @WebServlet("/api/users")
 public class UserRegisterApi extends HttpServlet {

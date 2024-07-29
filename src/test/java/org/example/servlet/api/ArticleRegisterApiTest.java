@@ -1,19 +1,22 @@
 package org.example.servlet.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.servlet.ServletException;
-import org.example.config.DataHandler;
-import org.example.domain.Article;
-import org.example.domain.User;
-import org.example.mock.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-
 import java.io.IOException;
 import java.time.LocalDateTime;
-
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.example.constance.DataHandler;
+import org.example.constance.SessionName;
+import org.example.domain.Article;
+import org.example.domain.User;
+import org.example.mock.TestArticleDataHandler;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestHttpSession;
+import org.example.mock.TestServletConfig;
+import org.example.mock.TestServletContext;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ArticleRegisterApiTest {
 
@@ -40,7 +43,7 @@ public class ArticleRegisterApiTest {
         servlet.init(servletConfig);
 
         User user = new User(1L, "a@a.com", "b", "c", LocalDateTime.now());
-        session.setAttribute("user", user);
+        session.setAttribute(SessionName.USER.getName(), user);
         request.setSession(session);
     }
 

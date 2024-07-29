@@ -6,14 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.DataHandler;
+import java.io.IOException;
+import java.util.List;
+import org.example.constance.DataHandler;
 import org.example.data.ArticleDataHandler;
 import org.example.domain.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
 
 @WebServlet("")
 public class ArticlesListView extends HttpServlet {
