@@ -33,6 +33,30 @@ public class PostApiServlet extends HttpServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String[] split = req.getRequestURI().split("/");
+
+        // /api/posts/{postId}
+        if (split.length == 4) {
+            HttpSession session = req.getSession();
+            Boolean isLogined = (Boolean) session.getAttribute("isLogined");
+            Long userId = (Long) session.getAttribute("userId");
+
+            if (isLogined == null || !isLogined) {
+                resp.sendRedirect("/login");
+                return;
+            }
+
+            String pathInfo = req.getPathInfo();
+            Long postId = Long.parseLong(pathInfo.substring(1));
+
+            postService.deletePost(userId, postId);
+
+            resp.sendRedirect("/posts");
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] split = req.getRequestURI().split("/");
 
