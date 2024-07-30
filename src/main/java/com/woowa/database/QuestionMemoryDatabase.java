@@ -42,4 +42,9 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
     public void delete(Question question) {
         questions.remove(question.getQuestionId());
     }
+
+    @Override
+    public Optional<Question> findByIdWithReplies(String questionId) {
+        return findById(questionId);
+    }
 }

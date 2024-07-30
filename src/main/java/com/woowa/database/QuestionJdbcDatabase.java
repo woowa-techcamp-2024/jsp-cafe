@@ -2,11 +2,14 @@ package com.woowa.database;
 
 import com.woowa.model.Author;
 import com.woowa.model.Question;
+import com.woowa.model.QuestionInfo;
+import com.woowa.model.Reply;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -161,6 +164,49 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
             throw new IllegalArgumentException("SQL 예외", e);
         } finally {
             DBConnectionUtils.closeConnection(con, pstmt, null);
+        }
+    }
+
+    @Override
+    public Optional<Question> findByIdWithReplies(String questionId) {
+        Optional<Question> optionalQuestion = findById(questionId);
+        List<Reply> replies = findRepliesByQuestionId(questionId);
+        optionalQuestion.ifPresent(q -> q.getReplies().addAll(replies));
+        return optionalQuestion;
+    }
+
+    private List<Reply> findRepliesByQuestionId(String questionId) {
+        String sql = "select * from reply r join user u on r.user_id = u.user_id where question_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Reply> replies = new ArrayList<>();
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, questionId);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                replies.add(Reply.create(
+                        rs.getString("reply_id"),
+                        rs.getString("content"),
+                        new Author(
+                                rs.getString("user_id"),
+                                rs.getString("nickname")
+                        ),
+                        new QuestionInfo(
+                                questionId,
+                                ""
+                        ),
+                        ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
+                ));
+            }
+            return replies;
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
     }
 }

@@ -14,6 +14,7 @@ import com.woowa.model.Author;
 import com.woowa.model.Question;
 import com.woowa.model.User;
 import com.woowa.support.QuestionFixture;
+import com.woowa.support.ReplyFixture;
 import com.woowa.support.UserFixture;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
@@ -162,7 +163,10 @@ class QuestionHandlerTest {
             question = QuestionFixture.question(user);
             userDatabase.save(user);
             questionDatabase.save(question);
-
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question)
+            ));
         }
 
         @Test
@@ -181,6 +185,19 @@ class QuestionHandlerTest {
             assertThat(findQuestion.getContent()).isEqualTo(question.getContent());
             assertThat(findQuestion.getAuthor()).isEqualTo(Author.from(user));
             assertThat(findQuestion.getCreatedAt()).isEqualTo(question.getCreatedAt());
+        }
+
+        @Test
+        @DisplayName("댓글을 함께 조회한다.")
+        void withReplies() {
+            //given
+
+            //when
+            ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());
+
+            //then
+            Question findQuestion = (Question) response.getModel().get("question");
+            assertThat(findQuestion.getReplies()).hasSize(2);
         }
     }
 

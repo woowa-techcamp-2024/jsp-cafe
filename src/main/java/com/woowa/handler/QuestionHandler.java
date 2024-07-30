@@ -53,11 +53,16 @@ public class QuestionHandler {
 
     @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.GET)
     public ResponseEntity findQuestion(String questionId) {
-        Question question = getQuestion(questionId);
+        Question question = getQuestionWithReplies(questionId);
         return ResponseEntity.builder()
                 .add("question", question)
                 .viewName("/qna/show")
                 .ok();
+    }
+
+    private Question getQuestionWithReplies(String questionId) {
+        return questionDatabase.findByIdWithReplies(questionId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
     }
 
     @RequestMapping(path = "/questions/{questionId}/update", method = HttpMethod.GET)
