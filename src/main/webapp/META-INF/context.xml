@@ -11,6 +11,7 @@
               timeBetweenEvictionRunsMillis="30000"
               maxActive="20"
               minIdle="20"
+              maxIdle="20"
               maxWait="10000"
               initialSize="20"
               removeAbandonedTimeout="60"
@@ -23,5 +24,5 @@
               username="test_user"
               password="test_password"
               driverClassName="com.mysql.cj.jdbc.Driver"
-              url="jdbc:mysql://mysql:3306/mysql"/>
+              url="jdbc:mysql://mysql:3306/jsp_cafe"/>
 </Context>
