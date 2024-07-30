@@ -56,7 +56,7 @@
                               <a class="link-modify-article" href="/questions/${question.questionId}/update">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/${question.questionId}" method="POST">
+                              <form id="deleteForm" class="form-delete" action="/questions/${question.questionId}" method="POST">
                                   <input type="hidden" name="_method" value="DELETE">
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>
@@ -157,5 +157,31 @@
 <script src="../js/jquery-2.2.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/scripts.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.delete-answer-form').on('submit', function(e) {
+            e.preventDefault(); // 기본 폼 제출 동작 방지
+
+            const form = $(this);
+            const url = form.attr('action');
+
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function(response) {
+                    // 성공적으로 삭제된 경우
+                    alert('댓글이 삭제되었습니다.');
+                    // 필요한 경우 페이지 새로고침 또는 DOM 업데이트
+                    form.closest("article").remove();
+                },
+                error: function(xhr, status, error) {
+                    // 오류 처리
+                    console.error('Error:', error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                }
+            });
+        });
+    });
+</script>
 	</body>
 </html>
