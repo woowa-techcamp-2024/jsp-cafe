@@ -86,7 +86,6 @@ public class JdbcTemplate {
             int affectedRows = 0;
             try {
                 affectedRows = pstmt.executeUpdate();
-                connection.commit();
             } catch (SQLException exception) {
                 connection.rollback();
                 throw new SQLException();
