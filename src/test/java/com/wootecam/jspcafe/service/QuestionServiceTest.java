@@ -45,7 +45,8 @@ class QuestionServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> questionService.append((String) invalidQuestionInfo.get(0), (String) invalidQuestionInfo.get(1),
+                        () -> questionService.append((String) invalidQuestionInfo.get(0),
+                                (String) invalidQuestionInfo.get(1),
                                 (String) invalidQuestionInfo.get(2), (Long) invalidQuestionInfo.get(3)))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("질문 작성 시 모든 정보를 입력해야 합니다.");
@@ -250,6 +251,19 @@ class QuestionServiceTest extends ServiceTest {
                 assertThatThrownBy(() -> questionService.delete(1L, 2L))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("다른 사용자의 질문은 삭제할 수 없습니다.");
+
+            }
+        }
+
+        @Nested
+        class 만약_삭제할_질문의_id가_null이라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // expect
+                assertThatThrownBy(() -> questionService.delete(null, 2L))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage("삭제 할 질문을 찾을 수 없습니다.");
 
             }
         }

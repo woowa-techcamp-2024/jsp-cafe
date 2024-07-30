@@ -61,6 +61,10 @@ public class QuestionService {
     }
 
     public void delete(final Long questionId, final Long signInUserId) {
+        if (Objects.isNull(questionId)) {
+            throw new NotFoundException("삭제 할 질문을 찾을 수 없습니다.");
+        }
+
         Question question = read(questionId);
 
         if (!question.isSameWriter(signInUserId)) {
