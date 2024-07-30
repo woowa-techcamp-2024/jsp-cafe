@@ -23,4 +23,13 @@ public class QuestionService {
     public Question findById(Long id) {
         return questionRepository.findById(id);
     }
+
+    public void update(Long id, String updatedTitle, String updatedContent, long writerId) {
+        Question target = findById(id);
+        if (target.getWriterId() != writerId) {
+            throw new IllegalArgumentException("You are not authorized to update this question.");
+        }
+
+        questionRepository.update(id, updatedTitle, updatedContent);
+    }
 }
