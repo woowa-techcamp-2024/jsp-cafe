@@ -64,11 +64,10 @@
                 <c:set var="replies" value="${requestScope.replies}"/>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>${requestScope.repliesLength}</strong>개의
-                            의견</p>
+                        <p class="qna-comment-count">의견</p>
                         <div class="qna-comment-slipp-articles">
                             <c:forEach var="reply" items="${replies}">
-                                <article class="article" id="answer-1405">
+                                <article class="article" id="answer-${reply.id}">
                                     <div class="article-header">
                                         <div class="article-header-thumb">
                                             <img src="<c:url value="/resources/images/80-text.png"/>"
@@ -102,8 +101,8 @@
                             </c:forEach>
 
 
-                            <form class="submit-write" method="POST"
-                                  action="<c:url value="/replies"/>">
+                            <form id="replyCreate" name="replyCreate" class="submit-write"
+                                  method="POST" action="<c:url value="/replies"/>">
                                 <input type="hidden" id="article" name="article"
                                        value=${articleCommonResponse.id}>
                                 <div class="form-group" style="padding:14px;">
@@ -147,11 +146,33 @@
           }
         }
       });
-    })
-  })
-</script>
-<script>
-  $(document).ready(function () {
+    });
+
+    $('#replyCreate').on('submit', function (e) {
+      e.preventDefault();
+
+      let form = $(this);
+      let actionUrl = form.attr('action');
+      let data = form.serialize();
+
+      $.ajax({
+        url: actionUrl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+          addReplyToDOM(response);
+          let textarea = document.querySelector('#replyCreate textarea');
+          textarea.value = '';
+        },
+        error: function (xhr, status, error) {
+          let errorMessage = xhr.responseText;
+          if (confirm(status + ": " + errorMessage)) {
+            window.location.href = '/questions/' + ${articleCommonResponse.id};
+          }
+        }
+      });
+    });
+
     $('#replyDelete').on('submit', function (e) {
       e.preventDefault();
 
@@ -171,6 +192,6 @@
           }
         }
       });
-    });
+    })
   })
 </script>

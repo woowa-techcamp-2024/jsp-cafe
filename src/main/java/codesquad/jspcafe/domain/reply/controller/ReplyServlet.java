@@ -1,6 +1,7 @@
 package codesquad.jspcafe.domain.reply.controller;
 
 import codesquad.jspcafe.domain.reply.payload.request.ReplyCreateRequest;
+import codesquad.jspcafe.domain.reply.payload.respose.ReplyCommonResponse;
 import codesquad.jspcafe.domain.reply.service.ReplyService;
 import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import jakarta.servlet.ServletException;
@@ -33,8 +34,8 @@ public class ReplyServlet extends HttpServlet {
     }
 
     /**
-     * POST 요청을 처리하여 새로운 댓글을 생성한 후 /questions/{articleId} 페이지로 리다이렉션합니다.<br> 클라이언트가 /replies로 POST
-     * 요청을 보낼 때 이 메서드가 호출됩니다.
+     * POST 요청을 처리하여 새로운 댓글을 생성한 후 CREATED 응답과 함께 JSON 바디를 반환합니다. <br> 클라이언트가 /replies로 POST 요청을 보낼
+     * 때 이 메서드가 호출됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
@@ -47,8 +48,11 @@ public class ReplyServlet extends HttpServlet {
         UserSessionResponse userSessionResponse = (UserSessionResponse) req.getSession()
             .getAttribute("user");
         Map<String, String[]> map = req.getParameterMap();
-        replyService.createReply(ReplyCreateRequest.of(map, userSessionResponse.getUserId()));
-        resp.sendRedirect("/questions/" + map.get("article")[0]);
+        ReplyCommonResponse commonResponse = replyService.createReply(
+            ReplyCreateRequest.of(map, userSessionResponse.getUserId()));
+        resp.setStatus(HttpServletResponse.SC_CREATED);
+        resp.setContentType("application/json");
+        resp.getWriter().write(commonResponse.toString());
     }
 
     /**
