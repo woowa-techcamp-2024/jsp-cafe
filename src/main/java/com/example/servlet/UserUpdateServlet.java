@@ -2,6 +2,7 @@ package com.example.servlet;
 
 import java.io.IOException;
 
+import com.example.annotation.Login;
 import com.example.dto.UserUpdateRequest;
 import com.example.dto.util.DtoCreationUtil;
 import com.example.service.UserService;
@@ -12,9 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/users/edit/*")
+@WebServlet(name = "UserUpdateServlet", urlPatterns = "/users/edit/*")
 public class UserUpdateServlet extends HttpServlet {
 
 	private UserService userService;
@@ -31,13 +31,9 @@ public class UserUpdateServlet extends HttpServlet {
 		req.getRequestDispatcher("/WEB-INF/user/updateForm.jsp").forward(req, resp);
 	}
 
+	@Login
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		HttpSession session = req.getSession();
-		if (session.getAttribute("login") == null) {
-			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
 		String id = req.getPathInfo().substring(1);
 		UserUpdateRequest dto = DtoCreationUtil.createDto(UserUpdateRequest.class, req);
 		dto.validate();

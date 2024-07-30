@@ -2,6 +2,7 @@ package com.example.servlet;
 
 import java.io.IOException;
 
+import com.example.annotation.Login;
 import com.example.dto.SaveArticleRequest;
 import com.example.dto.util.DtoCreationUtil;
 import com.example.entity.Article;
@@ -26,14 +27,10 @@ public class ArticleServlet extends HttpServlet {
 		articleService = (ArticleService)config.getServletContext().getAttribute("articleService");
 	}
 
+	@Login
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		HttpSession session = req.getSession();
-		if (session.getAttribute("login") == null) {
-			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
-
 		String userId = (String)session.getAttribute("id");
 		SaveArticleRequest dto = DtoCreationUtil.createDto(SaveArticleRequest.class, req);
 		dto.validate();
@@ -41,12 +38,9 @@ public class ArticleServlet extends HttpServlet {
 		resp.sendRedirect("/");
 	}
 
+	@Login
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (req.getPathInfo() == null) {
-			req.getRequestDispatcher("/WEB-INF/qna/form.jsp").forward(req, resp);
-			return;
-		}
 		Long articleId = Long.parseLong(req.getPathInfo().substring(1));
 		Article article = articleService.getArticle(articleId);
 		req.setAttribute("article", article);
