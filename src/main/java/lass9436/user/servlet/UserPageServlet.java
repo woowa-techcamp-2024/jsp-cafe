@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lass9436.user.model.User;
 import lass9436.user.model.UserRepository;
 
 @WebServlet("/userPage")
@@ -24,10 +25,12 @@ public class UserPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
-        actionMethodMap = new HashMap<>();
-        actionMethodMap.put("register", this::handleRegister);
-        actionMethodMap.put("login-failed", this::handleLoginFailed);
-        actionMethodMap.put("list", this::handleList);
+        actionMethodMap = Map.of(
+        "register", this::handleRegister,
+        "login-failed", this::handleLoginFailed,
+        "list", this::handleList,
+        "detail", this::handleDetail
+        );
     }
 
     @Override
@@ -59,5 +62,12 @@ public class UserPageServlet extends HttpServlet {
     private String handleList(HttpServletRequest req, HttpServletResponse resp) {
         req.setAttribute("users", userRepository.findAll());
         return "/list.jsp";
+    }
+
+    private String handleDetail(HttpServletRequest req, HttpServletResponse resp) {
+        long seq = Long.parseLong(req.getParameter("seq"));
+        User user = userRepository.findByUserSeq(seq);
+        req.setAttribute("user", user);
+        return "/detail.jsp";
     }
 }

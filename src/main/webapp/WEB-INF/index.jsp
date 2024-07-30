@@ -33,7 +33,7 @@
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
                               <span class="time">2016-01-15 18:47</span>
-                              <a href="/users/${question.userSeq}" class="author">${question.writer}</a>
+                              <a href="/userPage?action=detail&seq=${question.userSeq}" class="author">${question.writer}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
