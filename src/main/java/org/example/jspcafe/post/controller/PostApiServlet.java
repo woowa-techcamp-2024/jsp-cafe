@@ -38,7 +38,10 @@ public class PostApiServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] split = req.getRequestURI().split("/");
 
-        // /api/posts/{postId}
+        /**
+         * 게시글 삭제 API
+         * /api/posts/{postId}
+         */
         if (split.length == 4) {
             HttpSession session = req.getSession();
             Boolean isLogined = (Boolean) session.getAttribute("isLogined");
@@ -63,7 +66,10 @@ public class PostApiServlet extends HttpServlet {
             return;
         }
 
-        // /api/posts/{postId}/comments/{commentId}
+        /**
+         * 댓글 삭제 API
+         * /api/posts/{postId}/comments/{commentId}
+         */
         if (split.length == 6 && "comments".equals(split[4])) {
             Long commentId = Long.parseLong(split[split.length - 1]);
             Long userId = (Long) req.getSession().getAttribute("userId");
@@ -84,7 +90,11 @@ public class PostApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] split = req.getRequestURI().split("/");
 
-        // /api/posts/{postId}/comments
+        /**
+         * 댓글 조회 API
+         * post에 달린 댓글을 조회합니다.
+         * /api/posts/{postId}/comments
+         */
         if (split.length == 5 && split[4].equals("comments")) {
             Long postId = Long.parseLong(split[split.length - 2]);
             final CommentResponse[] comments = commentService.findCommentsJoinUser(postId).toArray(CommentResponse[]::new);
@@ -103,7 +113,52 @@ public class PostApiServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] split = req.getRequestURI().split("/");
 
-        // /api/posts/{postId}/comments/{commentId}
+        /**
+         * 게시글 수정 API
+         * /api/posts/{postId}
+         */
+        if (split.length == 4) {
+            HttpSession session = req.getSession();
+            Boolean isLogined = (Boolean) session.getAttribute("isLogined");
+            Long userId = (Long) session.getAttribute("userId");
+
+            if (isLogined == null || !isLogined) {
+                resp.sendRedirect("/login");
+                return;
+            }
+
+            String pathInfo = req.getPathInfo();
+            Long postId = Long.parseLong(pathInfo.substring(1));
+
+            StringBuilder jsonBuffer = new StringBuilder();
+            String line;
+            try (BufferedReader reader = req.getReader()) {
+                while ((line = reader.readLine()) != null) {
+                    jsonBuffer.append(line);
+                }
+            }
+
+            // JSON 데이터를 파싱하여 title, content 필드를 추출합니다.
+            String jsonString = jsonBuffer.toString();
+            JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+            String title = jsonNode.get("title").asText();
+            String content = jsonNode.get("content").asText();
+
+            PostModifyRequest request = new PostModifyRequest(userId, postId, title, content);
+            try {
+                postService.modifyPost(request);
+            } catch (Exception e) {
+                session.setAttribute("errorMessage", e.getMessage());
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+            return;
+        }
+
+        /**
+         * 댓글 수정 API
+         * /api/posts/{postId}/comments/{commentId}
+         */
         if (split.length == 6 && split[4].equals("comments")) {
             Long commentId = Long.parseLong(split[split.length - 1]);
             Long userId = (Long) req.getSession().getAttribute("userId");
@@ -129,14 +184,21 @@ public class PostApiServlet extends HttpServlet {
             commentService.modifyComment(userId, commentId, content);
 
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
         }
+
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] split = req.getRequestURI().split("/");
 
-        // /api/posts/{postId}/comments
+        /**
+         * 댓글 생성 API
+         * post에 댓글을 생성합니다.
+         * /api/posts/{postId}/comments
+         */
         if (split.length == 5 && split[4].equals("comments")) {
             Long postId = Long.parseLong(split[split.length - 2]);
             Long userId = (Long) req.getSession().getAttribute("userId");
@@ -170,33 +232,5 @@ public class PostApiServlet extends HttpServlet {
             return;
         }
 
-        // /api/posts/{postId}
-        if (split.length == 4) {
-            HttpSession session = req.getSession();
-            Boolean isLogined = (Boolean) session.getAttribute("isLogined");
-            Long userId = (Long) session.getAttribute("userId");
-
-            if (isLogined == null || !isLogined) {
-                resp.sendRedirect("/login");
-                return;
-            }
-
-            String pathInfo = req.getPathInfo();
-            Long postId = Long.parseLong(pathInfo.substring(1));
-
-            String title = req.getParameter("title");
-            String content = req.getParameter("content");
-
-            PostModifyRequest request = new PostModifyRequest(userId, postId, title, content);
-            try {
-                postService.modifyPost(request);
-            } catch (Exception e) {
-                session.setAttribute("errorMessage", e.getMessage());
-                resp.sendRedirect(req.getContextPath() + "/post/edit/" + postId);
-                return;
-            }
-
-            resp.sendRedirect("/posts/" + postId);
-        }
     }
 }
