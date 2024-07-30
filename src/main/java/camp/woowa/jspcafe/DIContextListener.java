@@ -3,6 +3,7 @@ package camp.woowa.jspcafe;
 import camp.woowa.jspcafe.db.DatabaseManager;
 import camp.woowa.jspcafe.repository.*;
 import camp.woowa.jspcafe.service.QuestionService;
+import camp.woowa.jspcafe.service.ReplyService;
 import camp.woowa.jspcafe.service.UserService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -34,5 +35,10 @@ public class DIContextListener implements ServletContextListener {
         QuestionRepository questionRepository = new MySQLQuestionRepository(conn);
         QuestionService questionService = new QuestionService(questionRepository);
         sc.setAttribute("questionService", questionService);
+
+        // ReplyRepository를 생성하고 ReplyService에 주입
+        ReplyRepository replyRepository = new MySQLReplyRepository(conn);
+        ReplyService replyService = new ReplyService(replyRepository);
+        sc.setAttribute("replyService", replyService);
     }
 }
