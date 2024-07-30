@@ -9,6 +9,7 @@ import java.util.List;
 import javax.sql.rowset.serial.SerialException;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
+import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
 import org.example.util.DataUtil;
 import org.slf4j.Logger;
@@ -27,13 +28,14 @@ public class PostRepository {
 
     public Post save(Post post) throws SQLException {
         logger.info("Saving post: {}", post);
-        String sql = "insert into posts (writer, title, contents) values (?, ?, ?)";
+        String sql = "insert into posts (writer, title, contents, status) values (?, ?, ?, ?)";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, post.getWriter());
             ps.setString(2, post.getTitle());
             ps.setString(3, post.getContents());
+            ps.setString(4, post.getPostStatus().name());
             ps.executeUpdate();
             return post;
         } catch (SQLException e) {
@@ -43,12 +45,13 @@ public class PostRepository {
     }
 
     public Post findById(Long id) throws SQLException {
-        String sql = "SELECT * FROM posts WHERE id = ?";
+        String sql = "SELECT * FROM posts WHERE id = ? AND status = ?";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, id);
+            ps.setString(2, PostStatus.AVAILABLE.name());
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -65,19 +68,21 @@ public class PostRepository {
     }
 
     public List<Post> findAll() throws SQLException {
-        String sql = "SELECT * FROM posts";
+        String sql = "SELECT * FROM posts WHERE status = ?";
         List<Post> posts = new ArrayList<>();
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                Long id = rs.getLong("id");
-                String writer = rs.getString("writer");
-                String title = rs.getString("title");
-                String contents = rs.getString("contents");
-                Post post = Post.createWithId(id, writer, title, contents);
-                posts.add(post);
+        ) {
+            ps.setString(1, PostStatus.AVAILABLE.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Long id = rs.getLong("id");
+                    String writer = rs.getString("writer");
+                    String title = rs.getString("title");
+                    String contents = rs.getString("contents");
+                    Post post = Post.createWithId(id, writer, title, contents);
+                    posts.add(post);
+                }
             }
             return posts;
         } catch (SQLException e) {
@@ -101,6 +106,24 @@ public class PostRepository {
             }
 
             return post;
+        } catch (SQLException e) {
+            logger.error("Error updating post", e);
+            throw new SQLException(e);
+        }
+    }
+
+    public void delete(Long id) throws SQLException {
+        String sql = "UPDATE posts SET status = ? WHERE id = ?";
+
+        try (Connection conn = dataUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, PostStatus.DELETED.name());
+            ps.setLong(2, id);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating post failed, no rows affected.");
+            }
         } catch (SQLException e) {
             logger.error("Error updating post", e);
             throw new SQLException(e);

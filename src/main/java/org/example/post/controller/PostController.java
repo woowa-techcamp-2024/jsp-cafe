@@ -86,6 +86,23 @@ public class PostController {
         response.getWriter().write("게시글이 성공적으로 수정되었습니다.");
     }
 
+    @RequestMapping(path = "/questions/{id}", method = HttpMethod.DELETE)
+    public void deleteQuestion(@PathVariable("id") Long id, HttpSession session, HttpServletResponse response)
+            throws SQLException, IOException {
+        PostResponse post = postService.getPostById(id);
+        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        //TODO: 요구사항 구체화 + 서비스단으로 이동이 맞다.
+        if (userDetails != null) {
+            if (post.getWriter().equals(userDetails.getName())) {
+                // 삭제처리
+                postService.deleteById(id);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setHeader("X-Redirect-Location", "/");
+                response.getWriter().write("게시글이 성공적으로 삭제되었습니다.");
+            }
+        }
+    }
+
     @RequestMapping(path = "/questions/{id}/form", method = HttpMethod.GET)
     public ModelAndView getQuestionEditForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostEditForm");
@@ -109,5 +126,6 @@ public class PostController {
         }
         return isAuthor;
     }
+
 }
 

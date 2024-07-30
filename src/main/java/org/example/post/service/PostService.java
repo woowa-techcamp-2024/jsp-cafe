@@ -37,4 +37,9 @@ public class PostService {
         Post post = Post.createWithId(postDto.getId(), postDto.getWriter(), postDto.getTitle(), postDto.getContents());
         return PostResponse.toResponse(postRepository.update(post));
     }
+
+    public void deleteById(Long id) throws SQLException {
+        // soft deleted이기 때문에 상태를 업데이트하는 쿼리 필요
+        postRepository.delete(id);
+    }
 }
