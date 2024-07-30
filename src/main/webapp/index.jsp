@@ -1,6 +1,6 @@
 <%@ page import="domain.Article" %>
 <%@ page import="java.util.List" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -13,7 +13,7 @@
             <ul class="list">
                 <%
                     List<Article> articles = (List<Article>) request.getAttribute("articles");
-                    for (int i = 0; i < articles.size(); i++){
+                    for (int i = 0; i < articles.size(); i++) {
                         Article article = articles.get(i);
 
                 %>
@@ -21,12 +21,22 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="./questions?id=<%= article.getId() %>"><%= article.getTitle() %></a>
+                                <c:choose>
+                                    <c:when test="${not empty sessionScope.loginMember}">
+                                        <a href="./questions?id=<%= article.getId() %>"><c:out
+                                                value="<%= article.getTitle() %>"/></a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:out value="<%= article.getTitle() %>"/>
+                                    </c:otherwise>
+                                </c:choose>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%= article.getCreated() %></span>
-                                <a href="users/<%= article.getWriter().getId() %>" class="author"><%= article.getWriter().getName() %></a>
+                                <a href="users/<%= article.getWriter().getId() %>"
+                                   class="author"><c:out value="<%= article.getWriter().getName() %>"/>
+                                </a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -50,9 +60,13 @@
                         <li><a href="#">»</a></li>
                     </ul>
                 </div>
+                <%
+                    if (loginUser != null) {
+                %>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
+                <% } %>
             </div>
         </div>
     </div>
