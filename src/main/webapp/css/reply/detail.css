@@ -1,0 +1,61 @@
+.reply-list{
+    margin-top: 30px;
+}
+
+.reply{
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.reply-author {
+    font-weight: bold;
+    color: #62CBC6;
+}
+
+.reply-header{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.reply-date {
+    color: #888;
+    font-size: 0.9em;
+}
+
+.reply-content {
+    margin-bottom: 10px;
+}
+
+.delete-reply {
+    padding: 5px 10px;
+    font-size: 12px;
+    float: right;
+}
+
+.reply-form {
+    margin-top: 30px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.reply-form input,
+.reply-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.reply-form textarea {
+    height: 100px;
+}
+
+#submitReply {
+    float: right;
+}
