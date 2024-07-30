@@ -31,7 +31,7 @@ class UserServiceTest {
     }
 
     @Nested
-    class sign_up_메서드는 {
+    class signUp_메서드는 {
 
         @Nested
         class 유효한_회원가입_요청 {
@@ -95,7 +95,7 @@ class UserServiceTest {
     }
 
     @Nested
-    class get_all_members_메서드는 {
+    class getAllMembers_메서드는 {
 
         @Test
         void 모든_회원을_조회한다() {
@@ -110,7 +110,7 @@ class UserServiceTest {
     }
 
     @Nested
-    class get_user_profile_메서드는 {
+    class getUserProfile_메서드는 {
 
         @Test
         void 사용자_프로필을_조회한다() {
@@ -132,7 +132,7 @@ class UserServiceTest {
     }
 
     @Nested
-    class update_user_profile_메서드는 {
+    class updateUserProfile_메서드는 {
 
         @Test
         void 사용자_프로필을_수정한다() {
