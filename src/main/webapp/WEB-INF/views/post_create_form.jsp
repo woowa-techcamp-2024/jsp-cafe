@@ -5,10 +5,12 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
-            <form name="question" method="post" action="">
+            <form name="question" method="post" action="/posts/create">
+                <input type="hidden" name="authorId" value="${sessionScope.userPrincipal.id}"/>
                 <div class="form-group">
                     <label for="author_id">글쓴이</label>
-                    <input class="form-author_id" id="author_id" name="authorId" placeholder="글쓴이"/>
+                    <input type="text" class="form-control" id="author_id"
+                           value="${sessionScope.userPrincipal.username}" placeholder="글쓴이" disabled/>
                 </div>
                 <div class="form-group">
                     <label for="title">제목</label>
