@@ -55,6 +55,21 @@ public class PostApiServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return;
         }
+
+        if (split.length == 6 && "comments".equals(split[4])) {
+            Long commentId = Long.parseLong(split[split.length - 1]);
+            Long userId = (Long) req.getSession().getAttribute("userId");
+
+            if (userId == null) {
+                resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            commentService.deleteComment(userId, commentId);
+
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }
+
     }
 
     @Override

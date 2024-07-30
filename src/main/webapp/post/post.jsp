@@ -26,6 +26,54 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/post.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.delete-post-button').on('click', function(event) {
+                event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+
+                if (!confirm('정말 삭제하시겠습니까?')) {
+                    return;
+                }
+
+                var actionUrl = $(this).closest('form').attr('action');
+
+                $.ajax({
+                    url: actionUrl,
+                    type: 'DELETE',
+                    success: function(result) {
+                        alert('게시글이 성공적으로 삭제되었습니다.');
+                        window.location.href = '${pageContext.request.contextPath}/index.jsp'; // 삭제 후 목록 페이지로 이동합니다.
+                    },
+                    error: function(xhr, status, error) {
+                        alert('게시글 삭제 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+
+            $('.delete-comment-button').on('click', function(event) {
+                event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+
+                if (!confirm('정말 삭제하시겠습니까?')) {
+                    return;
+                }
+
+                var actionUrl = $(this).closest('form').attr('action');
+
+                $.ajax({
+                    url: actionUrl,
+                    type: 'DELETE',
+                    success: function(result) {
+                        alert('댓글이 성공적으로 삭제되었습니다.');
+                        location.reload(); // 삭제 후 페이지를 새로고침합니다.
+                    },
+                    error: function(xhr, status, error) {
+                        alert('댓글 삭제 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container">
@@ -70,7 +118,7 @@
                     <form action="${pageContext.request.contextPath}/post/edit/<%= post.postId() %>" method="get" style="display: inline;">
                         <button type="submit" class="edit-post-button active">수정</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/api/delete-post/<%= post.postId() %>" method="post" style="display: inline;">
+                    <form action="${pageContext.request.contextPath}/api/posts/<%= post.postId() %>" method="post" style="display: inline;" class="delete-post-form">
                         <button type="submit" class="delete-post-button active">삭제</button>
                     </form>
                     <% } %>
@@ -95,7 +143,7 @@
                     <form action="${pageContext.request.contextPath}/comment/edit/<%= comment.commentId() %>" method="get" style="display: inline;">
                         <button type="submit" class="edit-comment-button">수정</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/api/delete-comment/<%= comment.commentId() %>" method="post" style="display: inline;">
+                    <form action="${pageContext.request.contextPath}/api/posts/<%= post.postId() %>/comments/<%= comment.commentId() %>" method="post" style="display: inline;" class="delete-comment-form">
                         <button type="submit" class="delete-comment-button">삭제</button>
                     </form>
                     <% } %>
@@ -104,7 +152,7 @@
                     }
                 %>
             </section>
-<%--           TODO (현재 댓글 작성은 되지만, ajax로 요청 보내고, 업데이트 하도록 수정 필요)--%>
+            <%-- TODO (현재 댓글 작성은 되지만, ajax로 요청 보내고, 업데이트 하도록 수정 필요)--%>
             <%
                 String commentWriter = (String) request.getAttribute("commentWriter");
             %>
@@ -114,7 +162,7 @@
                 <button type="submit" class="comment-form-button">댓글입력</button>
             </form>
             <nav class="navigation-buttons">
-                <form action="/index.jsp" method="get">
+                <form action="${pageContext.request.contextPath}/index.jsp" method="get">
                     <button type="submit" class="navigation-button">목록으로</button>
                 </form>
             </nav>
