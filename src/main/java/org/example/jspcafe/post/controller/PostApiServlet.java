@@ -52,7 +52,8 @@ public class PostApiServlet extends HttpServlet {
 
             postService.deletePost(userId, postId);
 
-            resp.sendRedirect("/posts");
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
         }
     }
 
