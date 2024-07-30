@@ -12,6 +12,7 @@ public class Question {
     private final List<Reply> replies = new ArrayList<>();
     private final Author author;
     private final ZonedDateTime createdAt;
+    private boolean deleted = false;
 
     private Question(String questionId, String title, String content, Author author, ZonedDateTime createdAt) {
         this.questionId = questionId;
@@ -38,6 +39,10 @@ public class Question {
         }
     }
 
+    public void delete() {
+        this.deleted = true;
+    }
+
     public String getQuestionId() {
         return questionId;
     }
@@ -62,6 +67,10 @@ public class Question {
         return createdAt;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -71,6 +80,7 @@ public class Question {
                 ", replies=" + replies +
                 ", author=" + author +
                 ", createdAt=" + createdAt +
+                ", deleted=" + deleted +
                 '}';
     }
 
@@ -83,14 +93,14 @@ public class Question {
             return false;
         }
         Question question = (Question) o;
-        return Objects.equals(questionId, question.questionId) && Objects.equals(title, question.title)
-                && Objects.equals(content, question.content) && Objects.equals(replies,
-                question.replies) && Objects.equals(author, question.author) && Objects.equals(
-                createdAt, question.createdAt);
+        return deleted == question.deleted && Objects.equals(questionId, question.questionId)
+                && Objects.equals(title, question.title) && Objects.equals(content, question.content)
+                && Objects.equals(replies, question.replies) && Objects.equals(author, question.author)
+                && Objects.equals(createdAt, question.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionId, title, content, replies, author, createdAt);
+        return Objects.hash(questionId, title, content, replies, author, createdAt, deleted);
     }
 }

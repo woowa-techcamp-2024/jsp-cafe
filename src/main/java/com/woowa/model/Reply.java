@@ -9,6 +9,7 @@ public class Reply {
     private final Author author;
     private final QuestionInfo questionInfo;
     private final ZonedDateTime createdAt;
+    private boolean delete;
 
     private Reply(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt) {
         this.replyId = replyId;
@@ -20,6 +21,14 @@ public class Reply {
 
     public static Reply create(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt) {
         return new Reply(replyId, content, author, questionInfo, createdAt);
+    }
+
+    public void checkAuthority(User user) {
+        author.checkAuthority(user);
+    }
+
+    public void delete() {
+        delete = true;
     }
 
     public String getReplyId() {
@@ -42,6 +51,22 @@ public class Reply {
         return createdAt;
     }
 
+    public boolean isDelete() {
+        return delete;
+    }
+
+    @Override
+    public String toString() {
+        return "Reply{" +
+                "replyId='" + replyId + '\'' +
+                ", content='" + content + '\'' +
+                ", author=" + author +
+                ", questionInfo=" + questionInfo +
+                ", createdAt=" + createdAt +
+                ", delete=" + delete +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,27 +76,13 @@ public class Reply {
             return false;
         }
         Reply reply = (Reply) o;
-        return Objects.equals(replyId, reply.replyId) && Objects.equals(content, reply.content)
-                && Objects.equals(author, reply.author) && Objects.equals(questionInfo,
-                reply.questionInfo) && Objects.equals(createdAt, reply.createdAt);
+        return delete == reply.delete && Objects.equals(replyId, reply.replyId) && Objects.equals(
+                content, reply.content) && Objects.equals(author, reply.author) && Objects.equals(
+                questionInfo, reply.questionInfo) && Objects.equals(createdAt, reply.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(replyId, content, author, questionInfo, createdAt);
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "commentId='" + replyId + '\'' +
-                ", author=" + author +
-                ", content='" + content + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
-    }
-
-    public void checkAuthority(User user) {
-        author.checkAuthority(user);
+        return Objects.hash(replyId, content, author, questionInfo, createdAt, delete);
     }
 }

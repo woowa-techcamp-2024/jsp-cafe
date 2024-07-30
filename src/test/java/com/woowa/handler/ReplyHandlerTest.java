@@ -92,7 +92,7 @@ class ReplyHandlerTest {
         }
 
         @Test
-        @DisplayName("댓글을 삭제한다.")
+        @DisplayName("댓글을 삭제 상태로 변경한다.")
         void deleteReply() {
             //given
 
@@ -100,7 +100,11 @@ class ReplyHandlerTest {
             replyHandler.deleteReply(user.getUserId(), question.getQuestionId(), reply.getReplyId());
 
             //then
-            assertThat(replyDatabase.findById(reply.getReplyId())).isEmpty();
+            assertThat(replyDatabase.findById(reply.getReplyId())).isNotEmpty()
+                    .get()
+                    .satisfies(findReply -> {
+                        assertThat(findReply.isDelete()).isTrue();
+                    });
         }
 
         @Test

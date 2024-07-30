@@ -1,6 +1,7 @@
 package com.woowa.database;
 
 import com.woowa.model.Question;
+import com.woowa.model.Reply;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +46,15 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
 
     @Override
     public Optional<Question> findByIdWithReplies(String questionId) {
-        return findById(questionId);
+        Optional<Question> optionalQuestion = findById(questionId);
+        optionalQuestion
+                .ifPresent(question -> {
+                    List<Reply> notDeleted = question.getReplies().stream()
+                            .filter(reply -> !reply.isDelete())
+                            .toList();
+                    question.getReplies().clear();
+                    question.getReplies().addAll(notDeleted);
+                });
+        return optionalQuestion;
     }
 }

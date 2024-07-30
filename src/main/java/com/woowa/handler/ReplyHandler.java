@@ -51,7 +51,8 @@ public class ReplyHandler {
         Reply reply = replyDatabase.findById(replyId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
         reply.checkAuthority(user);
-        replyDatabase.delete(reply);
+        reply.delete();
+        replyDatabase.update(reply);
         return ResponseEntity.builder()
                 .found("/questions/" + questionId);
     }

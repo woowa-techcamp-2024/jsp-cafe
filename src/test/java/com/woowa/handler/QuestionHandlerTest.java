@@ -12,6 +12,7 @@ import com.woowa.exception.AuthorizationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;
 import com.woowa.model.Question;
+import com.woowa.model.Reply;
 import com.woowa.model.User;
 import com.woowa.support.QuestionFixture;
 import com.woowa.support.ReplyFixture;
@@ -163,10 +164,6 @@ class QuestionHandlerTest {
             question = QuestionFixture.question(user);
             userDatabase.save(user);
             questionDatabase.save(question);
-            question.getReplies().addAll(List.of(
-                    ReplyFixture.reply(user, question),
-                    ReplyFixture.reply(user, question)
-            ));
         }
 
         @Test
@@ -191,6 +188,10 @@ class QuestionHandlerTest {
         @DisplayName("댓글을 함께 조회한다.")
         void withReplies() {
             //given
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question)
+            ));
 
             //when
             ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());
@@ -198,6 +199,27 @@ class QuestionHandlerTest {
             //then
             Question findQuestion = (Question) response.getModel().get("question");
             assertThat(findQuestion.getReplies()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("삭제 상태인 댓글은 조회하지 않는다.")
+        void withoutDeletedReplies() {
+            //given
+            Reply deletedReply = ReplyFixture.reply(user, question);
+            deletedReply.delete();
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question),
+                    deletedReply
+            ));
+
+            //when
+            ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());
+
+            //then
+            Question findQuestion = (Question) response.getModel().get("question");
+            assertThat(findQuestion.getReplies()).hasSize(2)
+                    .doesNotContain(deletedReply);
         }
     }
 

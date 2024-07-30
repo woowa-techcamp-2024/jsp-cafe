@@ -126,4 +126,9 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
             DBConnectionUtils.closeConnection(con, pstmt, null);
         }
     }
+
+    @Override
+    public void update(Reply reply) {
+
+    }
 }

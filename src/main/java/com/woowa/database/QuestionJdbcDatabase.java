@@ -176,7 +176,7 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
     }
 
     private List<Reply> findRepliesByQuestionId(String questionId) {
-        String sql = "select * from reply r join user u on r.user_id = u.user_id where question_id = ?";
+        String sql = "select * from reply r join user u on r.user_id = u.user_id where question_id = ? and deleted is false";
 
         Connection con = null;
         PreparedStatement pstmt = null;
