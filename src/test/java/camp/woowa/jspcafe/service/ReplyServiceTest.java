@@ -9,12 +9,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReplyServiceTest {
-    private ReplyRepository replyRepository;
     private ReplyService replyService;
 
     @BeforeEach
     void setUp() {
-        replyRepository = new InMemReplyRepository();
+        ReplyRepository replyRepository = new InMemReplyRepository();
         replyService = new ReplyService(replyRepository);
     }
 
