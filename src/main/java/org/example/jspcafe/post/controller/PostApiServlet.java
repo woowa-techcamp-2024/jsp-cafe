@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.comment.request.CommentCreateRequest;
+import org.example.jspcafe.comment.request.CommentDeleteRequest;
 import org.example.jspcafe.comment.request.CommentModifyRequest;
 import org.example.jspcafe.comment.service.CommentService;
 import org.example.jspcafe.di.ApplicationContext;
@@ -80,7 +81,13 @@ public class PostApiServlet extends HttpServlet {
                 return;
             }
 
-            commentService.deleteComment(userId, commentId);
+            try {
+                CommentDeleteRequest request = new CommentDeleteRequest(commentId, userId);
+                commentService.deleteComment(request);
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } catch (Exception e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
 
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }

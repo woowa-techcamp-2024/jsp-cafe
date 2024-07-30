@@ -5,6 +5,7 @@ import org.example.jspcafe.comment.model.Comment;
 import org.example.jspcafe.comment.repository.CommentRepository;
 import org.example.jspcafe.comment.repository.CommentVO;
 import org.example.jspcafe.comment.request.CommentCreateRequest;
+import org.example.jspcafe.comment.request.CommentDeleteRequest;
 import org.example.jspcafe.comment.request.CommentModifyRequest;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.user.model.User;
@@ -55,7 +56,10 @@ public class CommentService {
                 )).toList();
     }
 
-    public void deleteComment(Long userId, Long commentId) {
+    public void deleteComment(final CommentDeleteRequest request) {
+        final Long userId = request.userId();
+        final Long commentId = request.commentId();
+
         final Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
