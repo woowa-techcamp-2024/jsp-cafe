@@ -41,7 +41,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
     @Override
     public List<Question> findAll() {
         List<Question> questions = new ArrayList<>();
-        try (var pstmt = conn.prepareStatement("SELECT * FROM question");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM question WHERE is_deleted = FALSE");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
                 questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id")));
@@ -55,7 +55,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public Question findById(Long id) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM question WHERE id = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM question WHERE id = ? AND is_deleted = FALSE");){
             pstmt.setLong(1, id);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -90,7 +90,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (var pstmt = conn.prepareStatement("DELETE FROM question WHERE id = ?");){
+        try (var pstmt = conn.prepareStatement("UPDATE question SET is_deleted = TRUE WHERE id = ?");){
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
