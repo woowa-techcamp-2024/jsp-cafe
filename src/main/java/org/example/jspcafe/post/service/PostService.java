@@ -1,6 +1,7 @@
 package org.example.jspcafe.post.service;
 
 import org.example.jspcafe.Component;
+import org.example.jspcafe.comment.repository.CommentRepository;
 import org.example.jspcafe.post.model.Post;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
 import org.example.jspcafe.post.repository.PostRepository;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
     public void createPost(PostCreateRequest request) {
@@ -68,9 +70,11 @@ public class PostService {
 
     public PostService(
             JdbcPostRepository postRepository,
+            CommentRepository commentRepository,
             JdbcUserRepository userRepository
     ) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
         this.userRepository = userRepository;
     }
 
@@ -109,5 +113,20 @@ public class PostService {
         post.updateContent(content);
 
         postRepository.update(post);
+    }
+
+    public void deletePost(Long userId, Long postId) {
+        final Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        if (commentRepository.existsByPostId(postId)) {
+            throw new IllegalArgumentException("댓글이 존재하는 게시글은 삭제할 수 없습니다.");
+        }
+
+        if (!post.canModifyBy(userId)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        postRepository.delete(post);
     }
 }
