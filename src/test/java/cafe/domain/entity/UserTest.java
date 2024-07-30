@@ -24,7 +24,7 @@ class UserTest {
         User user = User.of(userid, name, password, email);
 
         // then
-        assertEquals(user.getUserid(), userid);
+        assertEquals(user.getUserId(), userid);
         assertEquals(user.getName(), name);
         assertEquals(user.getPassword(), password);
         assertEquals(user.getEmail(), email);
