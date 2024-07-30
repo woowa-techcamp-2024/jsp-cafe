@@ -1,11 +1,21 @@
-package codesqaud.app.dao;
+package codesqaud.app.dao.user;
 
+import codesqaud.app.dao.JdbcTemplate;
+import codesqaud.app.dao.RowMapper;
+import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+
 public class DbUserDao implements UserDao {
+    private static final Logger log = LoggerFactory.getLogger(DbUserDao.class);
+
     private static final RowMapper<User> USER_ROW_MAPPER = (resultSet) -> new User(
             resultSet.getLong("id"),
             resultSet.getString("user_id"),
@@ -22,14 +32,29 @@ public class DbUserDao implements UserDao {
 
     @Override
     public void save(User user) {
+        if (user.getId() != null) {
+            log.error("새로운 모델을 저장할 때 id를 명시적으로 지정하면 안됩니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR);
+        }
+
         String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
     }
 
     @Override
     public void update(User user) {
+        if (user.getId() == null) {
+            log.error("업데이트할 모델에 id를 지정하지 않았습니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR);
+        }
+
         String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE id = ?";
-        jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getEmail(), user.getId());
+        int updateRow = jdbcTemplate.update(sql,
+                user.getPassword(), user.getName(), user.getEmail(), user.getId());
+
+        if (updateRow == 0) {
+            throw new HttpException(SC_NOT_FOUND, "업데이트 할 qna 글을 찾지 못했습니다.");
+        }
     }
 
     @Override
@@ -46,9 +71,18 @@ public class DbUserDao implements UserDao {
     }
 
     @Override
-    public void delete(User target) {
+    public void delete(User user) {
+        if(user.getId() == null) {
+            log.error("삭제 할 모델에 id를 지정하지 않았습니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR);
+        }
+
         String sql = "DELETE FROM users WHERE id = ?";
-        jdbcTemplate.update(sql, target.getId());
+        int updateRow = jdbcTemplate.update(sql, user.getId());
+
+        if (updateRow == 0) {
+            throw new HttpException(SC_NOT_FOUND, "해당 사용자는 존재하지 않습니다.");
+        }
     }
 
     @Override

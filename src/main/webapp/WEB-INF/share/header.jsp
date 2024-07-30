@@ -6,9 +6,9 @@
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <base href="/"/>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/styles.css" rel="stylesheet">
     <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="/html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>

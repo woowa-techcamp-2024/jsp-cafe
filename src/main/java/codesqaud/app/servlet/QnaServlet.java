@@ -1,8 +1,11 @@
 package codesqaud.app.servlet;
 
-import codesqaud.app.dao.ArticleDao;
+import codesqaud.app.AuthenticationManager;
+import codesqaud.app.dao.article.ArticleDao;
+import codesqaud.app.dto.ArticleDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
+import codesqaud.app.model.User;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -18,7 +21,12 @@ import java.util.regex.Pattern;
 
 @WebServlet(urlPatterns = {"/qna/*", ""})
 public class QnaServlet extends HttpServlet {
-    private static final Pattern pattern = Pattern.compile("^/qna/([1-9][\\d]{0,9})$");
+    private static final String LIST = "/";
+    private static final String BASIC_URI = "/qna";
+    private static final String CREATE_FORM_URI = "/qna/form";
+    private static final Pattern DETAILS_URI_PATTERN = Pattern.compile("^/qna/([1-9][\\d]{0,9})$");
+    private static final String FORM_JSP = "/WEB-INF/qna/form.jsp";
+
     private ArticleDao articleDao;
 
     @Override
@@ -29,17 +37,17 @@ public class QnaServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getRequestURI().equals("/")) {
+        if (req.getRequestURI().equals(LIST)) {
             handleArticleList(req, resp);
             return;
         }
 
-        if(req.getRequestURI().equals("/qna/form")){
-            req.getRequestDispatcher("/WEB-INF/qna/form.jsp").forward(req, resp);
+        if(req.getRequestURI().equals(CREATE_FORM_URI)){
+            req.getRequestDispatcher(FORM_JSP).forward(req, resp);
             return;
         }
 
-        Matcher matcher = pattern.matcher(req.getRequestURI());
+        Matcher matcher = DETAILS_URI_PATTERN.matcher(req.getRequestURI());
         if (matcher.matches()) {
             Long id = Long.parseLong(matcher.group(1));
             handleArticleDetails(req, resp, id);
@@ -50,7 +58,7 @@ public class QnaServlet extends HttpServlet {
     }
 
     private void handleArticleList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Article> articles = articleDao.findAll();
+        List<ArticleDto> articles = articleDao.findAllAsDto();
 
         req.setAttribute("articles", articles);
         req.setAttribute("articleSize", articles.size());
@@ -60,7 +68,7 @@ public class QnaServlet extends HttpServlet {
     }
 
     private void handleArticleDetails(HttpServletRequest req, HttpServletResponse resp, Long id) throws ServletException, IOException {
-        Article article = articleDao.findById(id).orElseThrow(
+        ArticleDto article = articleDao.findByIdAsDto(id).orElseThrow(
                 () -> new HttpException(HttpServletResponse.SC_NOT_FOUND)
         );
         req.setAttribute("article", article);
@@ -70,11 +78,20 @@ public class QnaServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String authorId = req.getParameter("authorId");
+        if(req.getRequestURI().equals(BASIC_URI)) {
+            handleCreateQna(req, resp);
+            return;
+        }
+
+        super.doPost(req, resp);
+    }
+
+    private void handleCreateQna(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String title = req.getParameter("title");
         String content = req.getParameter("contents");
 
-        Article article = new Article(title, content, authorId);
+        User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
+        Article article = new Article(title, content, loginUser.getId());
         articleDao.save(article);
 
         resp.sendRedirect("/");

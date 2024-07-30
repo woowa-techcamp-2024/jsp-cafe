@@ -22,14 +22,19 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul id="nav-menu" class="nav navbar-nav navbar-right">
                 <li><a href="/">Posts</a></li>
-                <li><a href="/users/login" role="button">로그인</a></li>
-                <li><a href="/users/form" role="button">회원가입</a></li>
+                <c:if test="${isLogin eq false}">
+                    <li><a href="/users/login" role="button">로그인</a></li>
+                    <li><a href="/users/form" role="button">회원가입</a></li>
+                </c:if>
+
                 <!--
                 <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
                 -->
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <c:if test="${isLogin eq true}">
+                    <li><a href="/users/logout" role="button" onclick="logout(event)">로그아웃</a></li>
+                    <li><a href="/users/profile" role="button">개인정보수정</a></li>
+                </c:if>
             </ul>
         </div>
     </div>

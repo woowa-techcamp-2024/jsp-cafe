@@ -1,5 +1,6 @@
 package codesqaud.app.dao;
 
+import codesqaud.app.dao.article.InMemoryArticleDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import org.junit.jupiter.api.BeforeEach;

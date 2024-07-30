@@ -20,13 +20,14 @@
                 </thead>
                 <tbody>
                 <c:forEach var="user" items="${users}" varStatus="status">
-                <tr>
-                    <th scope="row"><c:out value="${status.count}"/></th>
-                    <td><a href="/users/<c:out value="${user.id}"/>"><c:out value="${user.userId}"/></a></td>
-                    <td><c:out value="${user.name}"/></td>
-                    <td><c:out value="${user.email}"/></td>
-                    <td><a href="/users/profile/<c:out value="${user.id}"/>" class="btn btn-success" role="button">수정</a></td>
-                </tr>
+                    <tr>
+                        <th scope="row"><c:out value="${status.count}"/></th>
+                        <td><a href="/users/profile"><c:out value="${user.userId}"/></a></td>
+                        <td><c:out value="${user.name}"/></td>
+                        <td><c:out value="${user.email}"/></td>
+                        <td><a href="/users/profile" class="btn btn-success" role="button">수정</a>
+                        </td>
+                    </tr>
                 </c:forEach>
                 </tbody>
             </table>
@@ -34,9 +35,6 @@
     </div>
 </div>
 
-<!-- script references -->
-<script src="../../js/jquery-2.2.0.min.js"></script>
-<script src="../../js/bootstrap.min.js"></script>
-<script src="../../js/scripts.js"></script>
+<%@include file="/WEB-INF/share/footer.jsp" %>
 </body>
 </html>

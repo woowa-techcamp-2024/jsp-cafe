@@ -1,9 +1,9 @@
 package codesqaud.mock;
 
-import codesqaud.app.dao.ArticleDao;
-import codesqaud.app.dao.InMemoryArticleDao;
-import codesqaud.app.dao.InMemoryUserDao;
-import codesqaud.app.dao.UserDao;
+import codesqaud.app.dao.article.ArticleDao;
+import codesqaud.app.dao.article.InMemoryArticleDao;
+import codesqaud.app.dao.user.InMemoryUserDao;
+import codesqaud.app.dao.user.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.descriptor.JspConfigDescriptor;
 

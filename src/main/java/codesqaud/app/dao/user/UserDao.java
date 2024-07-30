@@ -1,5 +1,6 @@
-package codesqaud.app.dao;
+package codesqaud.app.dao.user;
 
+import codesqaud.app.dao.CommonDao;
 import codesqaud.app.model.User;
 
 import java.util.Optional;

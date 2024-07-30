@@ -1,6 +1,10 @@
 package codesqaud.app.config;
 
 import codesqaud.app.dao.*;
+import codesqaud.app.dao.article.ArticleDao;
+import codesqaud.app.dao.article.DbArticleDao;
+import codesqaud.app.dao.user.DbUserDao;
+import codesqaud.app.dao.user.UserDao;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -24,20 +28,15 @@ public class ServletContextInitializer implements ServletContextListener {
         }
     }
 
-    private static void initContext(ServletContext servletContext) throws NamingException {
+    private void initContext(ServletContext servletContext) throws NamingException {
         DataSource datasource = initDataSource(servletContext);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(datasource);
 
-        initTable(jdbcTemplate);
-
-        UserDao userDao = new DbUserDao(jdbcTemplate);
-        servletContext.setAttribute("userDao", userDao);
-
-        ArticleDao articleDao = new DbArticleDao(jdbcTemplate);
-        servletContext.setAttribute("articleDao", articleDao);
+        initTable(servletContext, jdbcTemplate);
+        initComponents(servletContext, jdbcTemplate);
     }
 
-    private static DataSource initDataSource(ServletContext servletContext) throws NamingException {
+    private DataSource initDataSource(ServletContext servletContext) throws NamingException {
         Context initContext = new InitialContext();
         Context envContext = (Context) initContext.lookup("java:/comp/env");
         DataSource datasource = (DataSource) envContext.lookup("jdbc/cafeDB");
@@ -46,7 +45,29 @@ public class ServletContextInitializer implements ServletContextListener {
         return datasource;
     }
 
-    private static void initTable(JdbcTemplate jdbcTemplate) {
+    private void initTable(ServletContext servletContext, JdbcTemplate jdbcTemplate) {
+        String ddlAuto = servletContext.getInitParameter("ddl-auto");
+
+        switch (ddlAuto) {
+            case "CREATE" -> executeCreateTable(jdbcTemplate);
+            case "CREATE_DROP" -> {
+                executeDropTable(jdbcTemplate);
+                executeCreateTable(jdbcTemplate);
+            }
+        }
+    }
+
+    private static void executeDropTable(JdbcTemplate jdbcTemplate) {
+        jdbcTemplate.execute("""
+                DROP TABLE articles;
+                """);
+
+        jdbcTemplate.execute("""
+                DROP TABLE users;
+                """);
+    }
+
+    private void executeCreateTable(JdbcTemplate jdbcTemplate) {
         jdbcTemplate.execute("""
                  CREATE TABLE IF NOT EXISTS users (
                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -65,5 +86,13 @@ public class ServletContextInitializer implements ServletContextListener {
                     author_id VARCHAR (50) NOT NULL
                 );
                 """);
+    }
+
+    private void initComponents(ServletContext servletContext, JdbcTemplate jdbcTemplate) {
+        UserDao userDao = new DbUserDao(jdbcTemplate);
+        servletContext.setAttribute("userDao", userDao);
+
+        ArticleDao articleDao = new DbArticleDao(jdbcTemplate);
+        servletContext.setAttribute("articleDao", articleDao);
     }
 }
