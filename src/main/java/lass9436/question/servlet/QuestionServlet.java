@@ -31,7 +31,7 @@ public class QuestionServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 폼 데이터 추출
+		 	// 폼 데이터 추출
 		String writer = req.getParameter("writer");
 		String title = req.getParameter("title");
 		String contents = req.getParameter("contents");
@@ -66,5 +66,18 @@ public class QuestionServlet extends HttpServlet {
 		}
 
 		resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		JSONObject json = JsonUtil.parseJson(req);
+		long seq = json.getLong("seq");
+		Question question = questionRepository.findByQuestionSeq(seq);
+		long userSeq = (long) req.getSession().getAttribute("userSeq");
+		if (question.getUserSeq() != userSeq){
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
+		}
+		questionRepository.deleteByQuestionSeq(seq);
+		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 }

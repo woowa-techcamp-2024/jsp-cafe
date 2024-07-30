@@ -164,14 +164,19 @@
 
 <script>
 function deleteQuestion() {
-    fetch(`/questions/${question.questionSeq}`, {
+    const jsonData = {
+        "seq": "${question.questionSeq}"
+    };
+
+    fetch(`/questions`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(jsonData)
     }).then(response => {
-        if (response.redirected) {
-            window.location.href = response.url; // 질문 목록 페이지로 리디렉트
+        if (response.ok) {
+            window.location.href = "/"; // 질문 목록 페이지로 리디렉트
         } else {
             // 오류 처리
             alert("질문 삭제 중 오류가 발생했습니다.");
