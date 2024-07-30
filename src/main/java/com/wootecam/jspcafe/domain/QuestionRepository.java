@@ -12,4 +12,6 @@ public interface QuestionRepository {
     Optional<Question> findById(final Long id);
 
     void update(final Long id, String editedTitle, String editedContents);
+
+    void deleteById(Long id);
 }

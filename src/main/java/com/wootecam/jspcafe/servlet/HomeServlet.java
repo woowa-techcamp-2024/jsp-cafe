@@ -3,7 +3,6 @@ package com.wootecam.jspcafe.servlet;
 import com.wootecam.jspcafe.domain.Question;
 import com.wootecam.jspcafe.service.QuestionService;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

@@ -1,6 +1,5 @@
 package com.wootecam.jspcafe.exception;
 
-
 import jakarta.servlet.http.HttpServletResponse;
 
 public class BadRequestException extends CommonException {

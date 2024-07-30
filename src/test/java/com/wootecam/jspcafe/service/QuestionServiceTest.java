@@ -13,6 +13,7 @@ import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -228,6 +229,46 @@ class QuestionServiceTest extends ServiceTest {
                         Arguments.of("", "내용"),
                         Arguments.of("제목", "")
                 );
+            }
+        }
+    }
+
+    @Nested
+    class delete_메소드는 {
+
+        @Nested
+        class 만약_질문_작성자와_로그인한_사용자가_다르다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "email"));
+                userRepository.save(new User("otherUserId", "otherPassword", "otherName", "otherEmail"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+
+                // expect
+                assertThatThrownBy(() -> questionService.delete(1L, 2L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("다른 사용자의 질문은 삭제할 수 없습니다.");
+
+            }
+        }
+
+        @Nested
+        class 만약_질문_작성자와_로그인한_사용자가_같다면 {
+
+            @Test
+            void 질문을_삭제한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+
+                // when
+                questionService.delete(1L, 1L);
+                Optional<Question> optionalQuestion = questionRepository.findById(1L);
+
+                // then
+                assertThat(optionalQuestion).isEmpty();
             }
         }
     }

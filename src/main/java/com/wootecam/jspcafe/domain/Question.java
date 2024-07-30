@@ -37,6 +37,10 @@ public class Question {
         }
     }
 
+    public boolean isSameWriter(final Long userPrimaryId) {
+        return this.userPrimaryId.equals(userPrimaryId);
+    }
+
     public Long getId() {
         return id;
     }
