@@ -57,7 +57,13 @@
                     window.location.href = '/articles/' + articleId;
                 },
                 error: function(xhr, status, error) {
-                    alert('글 수정에 실패했습니다. 다시 시도해주세요.');
+                    if(xhr.status === 400){
+                        var errorResponse = JSON.parse(xhr.responseText);
+                        alert(errorResponse.error);
+                    } else if(xhr.status === 500){
+                        var errorResponse = JSON.parse(xhr.responseText);
+                        alert(errorResponse.error);
+                    }
                 }
             });
         });
