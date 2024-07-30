@@ -23,8 +23,8 @@ public class AuthenticationManager {
     }
 
     public static Optional<User> getLoginUser(HttpServletRequest request) {
-        boolean isLogin = (Boolean) request.getAttribute("isLogin");
-        if (isLogin) {
+        Object isLogin = request.getAttribute("isLogin");
+        if (Boolean.TRUE.equals(isLogin)) {
             HttpSession session = request.getSession(false);
             if (session != null) {
                 return Optional.of((User) session.getAttribute("loginUser"));
