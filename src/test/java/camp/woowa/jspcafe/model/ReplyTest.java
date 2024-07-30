@@ -2,6 +2,8 @@ package camp.woowa.jspcafe.model;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ReplyTest {
     @Test
     void testConstructor() {
