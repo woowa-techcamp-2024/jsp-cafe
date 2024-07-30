@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MemberService {
@@ -31,6 +32,9 @@ public class MemberService {
 
     public List<MemberResponseDto> getMemberList() {
         var memberList = MemberRepository.getInstance().findAll();
+        if (Objects.isNull(memberList)) {
+            return null;
+        }
         return memberList.stream()
                 .map(member -> new MemberResponseDto(member))
                 .collect(Collectors.toList());
