@@ -48,4 +48,9 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     public void update(int id, String title, String content, String userId) {
         return;
     }
+
+    @Override
+    public void deleteById(int id) {
+        return;
+    }
 }

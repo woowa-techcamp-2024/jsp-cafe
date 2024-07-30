@@ -9,4 +9,5 @@ public interface ArticleRepository {
     List<Article> findAll();
     Optional<Article> findById(int i);
     void update(int i, String title, String content, String userId);
+    void deleteById(int i);
 }

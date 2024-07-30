@@ -38,7 +38,10 @@ public class StaticResourceFilter implements Filter {
             res.sendRedirect("/static/user/form.html");
         } else if (req.getRequestURI().equals("/qna/form.html")) {
             res.sendRedirect("/static/qna/form.html");
-        } else if (req.getRequestURI().equals("/")) {
+        } else if (req.getRequestURI().equals("/error/not-same-author.html")) {
+            res.sendRedirect("/static/error/not-same-author.html");
+        }
+        else if (req.getRequestURI().equals("/")) {
             ArticleService articleService = new ArticleService();
             logger.info("articles {}", articleService.findAll());
             request.setAttribute("articles", articleService.findAll());

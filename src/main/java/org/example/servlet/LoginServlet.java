@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
             // 세션에 사용자 정보 저장
             request.getSession().setAttribute("userId", userId);
             // 사용자 프로필 페이지로 리다이렉션
-            request.getRequestDispatcher("/WEB-INF/user/welcome.jsp").forward(request, response);
+            response.sendRedirect("/");
         } else {
             // 로그인 실패
             // 로그인 페이지로 리다이렉션
