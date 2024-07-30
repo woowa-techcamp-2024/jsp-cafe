@@ -25,7 +25,7 @@
             <p>${article.content()}</p>
         </div>
         <div class="flex justify-end space-x-2">
-            <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">수정</a>
+            <a href="<c:url value="/articles/${article.id()}/form"/>" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">수정</a>
             <a href="#" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">삭제</a>
             <a href="/" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">목록</a>
         </div>
