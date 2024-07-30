@@ -15,10 +15,10 @@ import service.UserService;
 import java.io.IOException;
 
 @WebServlet("/users")
-public class CreateAccountServlet extends HttpServlet {
+public class UserServlet extends HttpServlet {
 
     private UserService userService;
-    Logger log = LoggerFactory.getLogger(CreateAccountServlet.class);
+    Logger log = LoggerFactory.getLogger(UserServlet.class);
 
     @Override
     public void init(ServletConfig config) {

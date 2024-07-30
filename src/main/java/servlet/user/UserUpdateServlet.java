@@ -19,10 +19,10 @@ import java.io.IOException;
 
 
 @WebServlet("/users/*")
-public class ProfileServlet extends HttpServlet {
+public class UserUpdateServlet extends HttpServlet {
 
     private UserService userService;
-    Logger log = LoggerFactory.getLogger(CreateAccountServlet.class);
+    Logger log = LoggerFactory.getLogger(UserServlet.class);
 
     @Override
     public void init(ServletConfig config) {
