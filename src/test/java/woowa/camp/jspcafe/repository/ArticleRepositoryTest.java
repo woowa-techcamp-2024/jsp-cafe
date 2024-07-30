@@ -2,6 +2,7 @@ package woowa.camp.jspcafe.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -315,6 +316,90 @@ class ArticleRepositoryTest {
             assertThat(orderedResults)
                     .usingRecursiveFieldByFieldElementComparator()
                     .containsExactly(article3, article2, article1);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("게시글을 업데이트하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
+    class UpdateTest {
+
+        DatabaseConnector connector = new DatabaseConnector();
+        ArticleRepository repository = new DBArticleRepository(connector);
+
+        Article originalArticle;
+        Long originalArticleId;
+
+        void setup() {
+            originalArticle = ArticleFixture.createArticle1(fixedDateTime.getNow());
+            originalArticleId = repository.save(originalArticle);
+        }
+
+        @Test
+        @DisplayName("조회수를 갱신할 수 있다")
+        void test() {
+            // given
+            setup();
+            originalArticle.upHits();
+            // when
+            repository.update(originalArticle);
+            // then
+            Article result = repository.findById(originalArticleId).orElseThrow();
+            assertThat(result.getHits()).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("제목을 갱신할 수 있다")
+        void test2() {
+            // given
+            setup();
+            String updateTitle = "제목 수정!";
+            LocalDate updatedAt = fixedDateTime.getNow().plusDays(1);
+            // when
+            Article update = Article.update(originalArticle, updateTitle, originalArticle.getContent(), updatedAt);
+            repository.update(update);
+            // then
+            Article result = repository.findById(originalArticleId).orElseThrow();
+            assertThat(result.getTitle()).isEqualTo(updateTitle);
+            assertThat(result.getUpdatedAt()).isEqualTo(updatedAt);
+            assertThat(result.getUpdatedAt()).isNotEqualTo(originalArticle.getUpdatedAt()); // 수정하기 전 게시글의 수정날짜와 다름
+        }
+
+        @Test
+        @DisplayName("내용을 갱신할 수 있다")
+        void test3() {
+            // given
+            setup();
+            String updateContent = "내용 수정!";
+            LocalDate updatedAt = fixedDateTime.getNow().plusDays(1);
+            // when
+            Article update = Article.update(originalArticle, originalArticle.getTitle(), updateContent, updatedAt);
+            repository.update(update);
+            // then
+            Article result = repository.findById(originalArticleId).orElseThrow();
+            assertThat(result.getContent()).isEqualTo(updateContent);
+            assertThat(result.getUpdatedAt()).isEqualTo(updatedAt);
+            assertThat(result.getUpdatedAt()).isNotEqualTo(originalArticle.getUpdatedAt()); // 수정하기 전 게시글의 수정날짜와 다름
+        }
+
+        @Test
+        @DisplayName("여러 필드를 갱신할 수 있다")
+        void test4() {
+            // given
+            setup();
+            String updateTitle = "제목 수정!";
+            String updateContent = "내용 수정!";
+            LocalDate updatedAt = fixedDateTime.getNow().plusDays(1);
+            // when
+            Article update = Article.update(originalArticle, updateTitle, updateContent, updatedAt);
+            repository.update(update);
+            // then
+            Article result = repository.findById(originalArticleId).orElseThrow();
+            assertThat(result.getTitle()).isEqualTo(updateTitle);
+            assertThat(result.getContent()).isEqualTo(updateContent);
+            assertThat(result.getUpdatedAt()).isEqualTo(updatedAt);
+            assertThat(result.getUpdatedAt()).isNotEqualTo(originalArticle.getUpdatedAt()); // 수정하기 전 게시글의 수정날짜와 다름
         }
 
     }
