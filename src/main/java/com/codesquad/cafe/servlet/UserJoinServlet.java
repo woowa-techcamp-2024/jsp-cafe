@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserJoinServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(UserJoinServlet.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String USER_JOIN_FORM_JSP = "/WEB-INF/views/user_join_form.jsp";
 

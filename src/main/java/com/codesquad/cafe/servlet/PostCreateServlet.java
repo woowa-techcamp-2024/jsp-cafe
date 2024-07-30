@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public class PostCreateServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(PostServlet.class);
+    private  final Logger log = LoggerFactory.getLogger(getClass());
 
     private PostRepository postRepository;
 

@@ -8,10 +8,11 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import org.h2.jdbcx.JdbcDataSource;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestDataSource {
 
-    private static Logger log = org.slf4j.LoggerFactory.getLogger(TestDataSource.class);
+    private static final Logger log = LoggerFactory.getLogger(TestDataSource.class);
 
     public static DataSource dataSource() {
         JdbcDataSource ds = new JdbcDataSource();
