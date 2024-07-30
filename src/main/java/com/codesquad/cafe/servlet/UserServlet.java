@@ -1,11 +1,15 @@
 package com.codesquad.cafe.servlet;
 
+import static com.codesquad.cafe.servlet.LoginServlet.SESSION_USER_PRINCIPAL_KEY;
+
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.model.UserPrincipal;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
@@ -14,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServlet.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private UserRepository userRepository;
 
@@ -54,14 +58,28 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Long id = Long.valueOf(req.getParameter("id"));
+            HttpSession session = req.getSession(false);
+            if (session == null || session.getAttribute(SESSION_USER_PRINCIPAL_KEY) == null) {
+                resp.sendError(405);
+            }
+            Long id = ((UserPrincipal) session.getAttribute(SESSION_USER_PRINCIPAL_KEY)).getId();
             Optional<User> user = userRepository.findById(id);
+
+            // 존재하지 않는 유저이거나 이미 탈퇴한 유저의 경우
             if (user.isEmpty() || user.get().isDeleted()) {
                 resp.sendError(400);
             }
+
+            // 유저 soft delete
             User originalUser = user.get();
             originalUser.delete();
             userRepository.save(originalUser);
+
+            //session invalidate
+            if (session != null) {
+                session.invalidate();
+            }
+
             resp.sendRedirect("/users");
         } catch (NumberFormatException e) {
             resp.sendError(404);
