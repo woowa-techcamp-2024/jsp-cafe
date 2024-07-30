@@ -56,31 +56,22 @@ public class UserController {
         return mv;
     }
 
-    @RequestMapping(method = HttpMethod.POST)
-    public ModelAndView registerUser(@RequestParam("userId") String userId,
-                                     @RequestParam("password") String password,
-                                     @RequestParam("name") String name,
-                                     @RequestParam("email") String email) throws SQLException {
-        ModelAndView mv = new ModelAndView("redirect:/users");
-
-        User user = User.createUser(userId, password, name, email);
-        userService.register(user);
-        return mv;
-    }
-
     @RequestMapping(path = "/{id}", method = HttpMethod.POST)
     public ModelAndView editUserProfile(@PathVariable("id") String profileUser,
                                         @RequestParam("userId") String userId,
                                         @RequestParam("password") String password,
                                         @RequestParam("name") String name,
                                         @RequestParam("email") String email) throws SQLException {
-        ModelAndView mv = new ModelAndView("redirect:/users");
-        User user = User.createUser(userId, password, name, email);
-        if (!profileUser.equals(userId)) {
-            throw new RuntimeException();
+        logger.info("회원가입 시도 : {}", userId);
+        ModelAndView mav = new ModelAndView("/user/UserSignup");
+        try {
+            User user = User.createUser(userId, password, name, email);
+            userService.register(user);
+            mav.addAttribute("signupError", "회원가입에 실패했습니다. 입력한 정보를 확인해주세요.");
+        } catch (SQLException e) {
+            logger.error("회원가입 처리 중 오류 발생", e);
+            mav.addAttribute("signupError", "회원가입 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }
-        userService.editUser(profileUser, user);
-
-        return mv;
+        return mav;
     }
 }

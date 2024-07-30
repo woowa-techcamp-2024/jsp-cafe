@@ -10,6 +10,7 @@ import org.example.config.annotation.Controller;
 import org.example.config.annotation.RequestMapping;
 import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
+import org.example.member.model.dao.User;
 import org.example.member.service.UserService;
 import org.example.util.session.InMemorySessionManager;
 import org.example.util.session.SessionManager;
@@ -60,5 +61,22 @@ public class AuthController {
         String sessionId = request.getSession().getId();
         sessionManager.invalidateSession(sessionId);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(path = "/signup", method = HttpMethod.GET)
+    public ModelAndView userRegisterFrom() {
+        return new ModelAndView("user/UserSignup");
+    }
+
+    @RequestMapping(path = "/signup", method = HttpMethod.POST)
+    public ModelAndView registerUser(@RequestParam("userId") String userId,
+                                     @RequestParam("password") String password,
+                                     @RequestParam("name") String name,
+                                     @RequestParam("email") String email) throws SQLException {
+        ModelAndView mv = new ModelAndView("redirect:/users");
+
+        User user = User.createUser(userId, password, name, email);
+        userService.register(user);
+        return mv;
     }
 }

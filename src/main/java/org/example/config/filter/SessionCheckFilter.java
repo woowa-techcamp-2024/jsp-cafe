@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class SessionCheckFilter implements Filter {
 
     private static final Set<String> STATIC_PATHS = Set.of("/static/", "/js/");
-    private static final Set<String> EXCLUDE_PATHS = Set.of("/", "/user/login");
+    private static final Set<String> EXCLUDE_PATHS = Set.of("/", "/user/login", "/user/signup");
 
     private static final Logger logger = LoggerFactory.getLogger(SessionCheckFilter.class);
     private final SessionManager sessionManager = InMemorySessionManager.getInstance();
@@ -43,7 +43,7 @@ public class SessionCheckFilter implements Filter {
             logger.info("login check path : {}", path);
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("user") == null) {
-                response.sendRedirect("/user/UserLogin");
+                response.sendRedirect("/user/login");
                 return;
             }
             // 세션이 있더라도 세션매니저 내부에 존재하지 않으면 로그인 페이지로 보낸다.
