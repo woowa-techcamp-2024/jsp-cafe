@@ -11,6 +11,9 @@ import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
+import codesquad.jspcafe.domain.reply.domain.Reply;
+import codesquad.jspcafe.domain.reply.repository.ReplyMemoryRepository;
+import codesquad.jspcafe.domain.reply.repository.ReplyRepository;
 import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
@@ -28,13 +31,16 @@ import org.junit.jupiter.api.Test;
 class ArticleServiceTest {
 
     private ArticleRepository articleRepository = new ArticleMemoryRepository();
+    private ReplyRepository replyRepository = new ReplyMemoryRepository();
     private UserRepository userRepository = new UserMemoryRepository();
     private final ArticleService articleService = new ArticleService(articleRepository,
-        userRepository);
+        replyRepository, userRepository);
 
     private final String expectedUserId = "userId";
     private final String expectedTitle = "title";
-    private final User expectedWriter = new User(1L, expectedUserId, "password", "name",
+    private final User expectedWriter1 = new User(1L, expectedUserId, "password", "name",
+        "test@gmail.com");
+    private final User expectedWriter2 = new User(2L, "userId2", "password", "name2",
         "test@gmail.com");
     private final String expectedContents = "contents";
     private final LocalDateTime expectedCreatedAt = LocalDateTime.now();
@@ -42,23 +48,31 @@ class ArticleServiceTest {
     private Article expectedArticle;
 
     {
-        userRepository.save(expectedWriter);
+        userRepository.save(expectedWriter1);
+        userRepository.save(expectedWriter2);
     }
 
     @BeforeEach
     void clear() {
         articleRepository = new ArticleMemoryRepository();
+        replyRepository = new ReplyMemoryRepository();
         for (Field field : articleService.getClass().getDeclaredFields()) {
-            if (field.getType() != ArticleRepository.class) {
-                continue;
+            if (field.getType() == ArticleRepository.class) {
+                field.setAccessible(true);
+                try {
+                    field.set(articleService, articleRepository);
+                } catch (IllegalAccessException ignore) {
+                }
             }
-            field.setAccessible(true);
-            try {
-                field.set(articleService, articleRepository);
-            } catch (IllegalAccessException ignore) {
+            if (field.getType() == ReplyRepository.class) {
+                field.setAccessible(true);
+                try {
+                    field.set(articleService, replyRepository);
+                } catch (IllegalAccessException ignore) {
+                }
             }
         }
-        expectedArticle = new Article(expectedTitle, expectedWriter, expectedContents,
+        expectedArticle = new Article(expectedTitle, expectedWriter1, expectedContents,
             expectedCreatedAt);
         expectedArticle.setId(expectedId);
     }
@@ -79,8 +93,8 @@ class ArticleServiceTest {
             () -> assertThat(actualResult.getId()).isNotNull(),
             () -> assertThat(actualResult)
                 .extracting("title", "writerUserId", "writerUsername", "contents")
-                .containsExactly(expectedTitle, expectedWriter.getUserId(),
-                    expectedWriter.getUsername(), expectedContents),
+                .containsExactly(expectedTitle, expectedWriter1.getUserId(),
+                    expectedWriter1.getUsername(), expectedContents),
             () -> assertThat(actualResult.getCreatedAt()).isNotNull()
         );
     }
@@ -90,7 +104,7 @@ class ArticleServiceTest {
     class whenGetArticle {
 
         @Test
-        @DisplayName("아티클이 존재하지 않으면 에외를 던진다.")
+        @DisplayName("아티클이 존재하지 않으면 예외를 던진다.")
         void getArticleByTitleFailed() {
             String expectedIdStr = Long.toString(expectedId);
             // Act & Assert
@@ -111,8 +125,8 @@ class ArticleServiceTest {
             assertThat(actualResult)
                 .extracting("id", "title", "writerUserId", "writerUsername", "contents",
                     "createdAt")
-                .containsExactly(expectedId, expectedTitle, expectedWriter.getUserId(),
-                    expectedWriter.getUsername(), expectedContents,
+                .containsExactly(expectedId, expectedTitle, expectedWriter1.getUserId(),
+                    expectedWriter1.getUsername(), expectedContents,
                     DateTimeFormatExecutor.execute(expectedCreatedAt));
         }
 
@@ -128,8 +142,8 @@ class ArticleServiceTest {
                 () -> assertThat(actualResult).hasSize(1),
                 () -> assertThat(actualResult.get(0))
                     .extracting("id", "title", "writerUserId", "writerUsername", "createdAt")
-                    .containsExactly(expectedId, expectedTitle, expectedWriter.getUserId(),
-                        expectedWriter.getUsername(),
+                    .containsExactly(expectedId, expectedTitle, expectedWriter1.getUserId(),
+                        expectedWriter1.getUsername(),
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
         }
@@ -149,7 +163,7 @@ class ArticleServiceTest {
         );
 
         @Test
-        @DisplayName("아티클이 존재하지 않으면 에외를 던진다.")
+        @DisplayName("아티클이 존재하지 않으면 예외를 던진다.")
         void updateArticleFailed() {
             // Arrange
             ArticleUpdateRequest request = ArticleUpdateRequest.of(expectedValues, 1L);
@@ -172,14 +186,14 @@ class ArticleServiceTest {
                 () -> assertThat(actualResult)
                     .extracting("id", "title", "writerUserId", "writerUsername", "contents",
                         "createdAt")
-                    .containsExactly(expectedId, expectedContents, expectedWriter.getUserId(),
-                        expectedWriter.getUsername(), expectedContents,
+                    .containsExactly(expectedId, expectedContents, expectedWriter1.getUserId(),
+                        expectedWriter1.getUsername(), expectedContents,
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
         }
 
         @Test
-        @DisplayName("수정 권한이 없으면 에외를 던진다.")
+        @DisplayName("수정 권한이 없으면 예외를 던진다.")
         void updateArticleAccessDenied() {
             // Arrange
             articleRepository.save(expectedArticle);
@@ -196,7 +210,7 @@ class ArticleServiceTest {
     class whenDeleteArticle {
 
         @Test
-        @DisplayName("아티클이 존재하지 않으면 에외를 던진다.")
+        @DisplayName("아티클이 존재하지 않으면 예외를 던진다.")
         void deleteArticleFailed() {
             // Act & Assert
             assertThatThrownBy(() -> articleService.deleteArticle(expectedId, 1L))
@@ -205,7 +219,7 @@ class ArticleServiceTest {
         }
 
         @Test
-        @DisplayName("삭제 권한이 없으면 에외를 던진다.")
+        @DisplayName("삭제 권한이 없으면 예외를 던진다.")
         void deleteArticleAccessDenied() {
             // Arrange
             articleRepository.save(expectedArticle);
@@ -225,5 +239,19 @@ class ArticleServiceTest {
             // Assert
             assertThat(articleRepository.findById(expectedId)).isEmpty();
         }
+
+        @Test
+        @DisplayName("아티클을 삭제할 때 다른 사용자의 댓글이 존재하면 예외를 던진다.")
+        void deleteArticleWithOtherUserReply() {
+            // Arrange
+            articleRepository.save(expectedArticle);
+            replyRepository.save(
+                new Reply(expectedArticle.getId(), expectedWriter2, "contents", expectedCreatedAt));
+            // Act & Assert
+            assertThatThrownBy(() -> articleService.deleteArticle(expectedId, 1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("댓글이 존재하여 삭제할 수 없습니다.");
+        }
     }
+
 }
