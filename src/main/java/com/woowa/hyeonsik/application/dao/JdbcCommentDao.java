@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class JdbcCommentDao implements CommentDao {
     private final DatabaseConnector databaseConnector;
@@ -16,12 +17,6 @@ public class JdbcCommentDao implements CommentDao {
     public JdbcCommentDao(DatabaseConnector databaseConnector) {
         this.databaseConnector = databaseConnector;
     }
-
-    // id
-    // article_id
-    // writer_id
-    // contents
-    // created_at
 
     @Override
     public void save(Reply reply) {
@@ -36,6 +31,33 @@ public class JdbcCommentDao implements CommentDao {
                 reply.getContents(),
                 String.valueOf(reply.getCreatedAt())
         ));
+    }
+
+    @Override
+    public Optional<Reply> findById(final long id) {
+        String sql = """
+                SELECT id, article_id, writer_id, contents, created_at
+                FROM comment
+                WHERE id = ?
+                """;
+
+        return databaseConnector.executeQuery(sql, List.of(String.valueOf(id)),
+            resultSet -> {
+                try {
+                    if (resultSet.next()) {
+                        Long commentId = resultSet.getLong("id");
+                        Long articlesId = resultSet.getLong("article_id");
+                        String writerId = resultSet.getString("writer_id");
+                        String contents = resultSet.getString("contents");
+                        LocalDateTime createdAt = LocalDateTimeUtil.from(resultSet.getString("created_at"));
+
+                        return Optional.of(new Reply(commentId, articlesId, writerId, contents, createdAt));
+                    }
+                } catch (SQLException e) {
+                    throw new JdbcException(e);
+                }
+                return Optional.empty();
+            });
     }
 
     @Override
