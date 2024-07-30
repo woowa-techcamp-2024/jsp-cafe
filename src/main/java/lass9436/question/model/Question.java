@@ -18,6 +18,14 @@ public class Question {
 		this.contents = contents;
 	}
 
+	public Question(long questionSeq, long userSeq, String writer, String title, String contents) {
+		this.questionSeq = questionSeq;
+		this.userSeq = userSeq;
+		this.writer = writer;
+		this.title = title;
+		this.contents = contents;
+	}
+
 	// Getters and Setters
 	public long getQuestionSeq() {
 		return questionSeq;
