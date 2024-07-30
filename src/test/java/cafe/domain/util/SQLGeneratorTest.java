@@ -40,9 +40,9 @@ class SQLGeneratorTest {
 
     private Stream<Arguments> createInsertTestData() {
         return Stream.of(
-                Arguments.of(new OneArgumentTest(), "INSERT INTO `test_tables` (`id`, `column1`) VALUES (?, ?);"),
-                Arguments.of(new TwoArgumentTest(), "INSERT INTO `test_tables` (`id`, `column1`, `column2`) VALUES (?, ?, ?);"),
-                Arguments.of(new ThreeArgumentTest(), "INSERT INTO `test_tables` (`id`, `column1`, `column2`, `column3`) VALUES (?, ?, ?, ?);")
+                Arguments.of(new OneArgumentTest(), "INSERT INTO `test_tables` (`column1`) VALUES (?);"),
+                Arguments.of(new TwoArgumentTest(), "INSERT INTO `test_tables` (`column1`, `column2`) VALUES (?, ?);"),
+                Arguments.of(new ThreeArgumentTest(), "INSERT INTO `test_tables` (`column1`, `column2`, `column3`) VALUES (?, ?, ?);")
         );
     }
 
@@ -55,7 +55,7 @@ class SQLGeneratorTest {
         String expectedSQL = sqlGenerator.generateSelectByIdSQL("test_table");
 
         // then
-        assertEquals(expectedSQL, "SELECT * FROM `test_tables` WHERE `id` = ?;");
+        assertEquals(expectedSQL, "SELECT * FROM `test_tables` WHERE `test_tableId` = ?;");
     }
 
     @Test
@@ -87,9 +87,9 @@ class SQLGeneratorTest {
 
     private Stream<Arguments> createUpdateTestData() {
         return Stream.of(
-                Arguments.of(new OneArgumentTest(), "UPDATE `test_tables` SET `column1` = ? WHERE `id` = ?;"),
-                Arguments.of(new TwoArgumentTest(), "UPDATE `test_tables` SET `column1` = ?, `column2` = ? WHERE `id` = ?;"),
-                Arguments.of(new ThreeArgumentTest(), "UPDATE `test_tables` SET `column1` = ?, `column2` = ?, `column3` = ? WHERE `id` = ?;")
+                Arguments.of(new OneArgumentTest(), "UPDATE `test_tables` SET `column1` = ? WHERE `test_tableId` = ?;"),
+                Arguments.of(new TwoArgumentTest(), "UPDATE `test_tables` SET `column1` = ?, `column2` = ? WHERE `test_tableId` = ?;"),
+                Arguments.of(new ThreeArgumentTest(), "UPDATE `test_tables` SET `column1` = ?, `column2` = ?, `column3` = ? WHERE `test_tableId` = ?;")
         );
     }
 
