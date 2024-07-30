@@ -11,26 +11,28 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
-@WebFilter({"/questions/*", "/questions", "/questionPage"})
+@WebFilter({"/questions", "/questionPage"})
 public class AuthenticationFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws
 		IOException,
 		ServletException {
-		if (servletRequest instanceof HttpServletRequest req && servletResponse instanceof HttpServletResponse resp) {
-			HttpSession session = req.getSession(false);
-			if (session != null) {
-				String userId = (String) session.getAttribute("userId");
-				if (userId != null) {
-					filterChain.doFilter(req, resp);
-					return;
-				}
-				resp.sendRedirect("/userPage?action=login");
+		HttpServletRequest req = (HttpServletRequest) servletRequest;
+		HttpServletResponse resp = (HttpServletResponse) servletResponse;
+		String fullUri = req.getRequestURI() + "?" + req.getQueryString();
+		try {
+			// 글 목록 페이지는 로그인을 하지 않아도 보여줌
+			if ("/questionPage?action=list".equals(fullUri)) {
+				filterChain.doFilter(req, resp);
 				return;
 			}
+
+			// 그 외의 페이지는 로그인하지 않으면 볼 수 없음
+			long userSeq = (long) req.getSession().getAttribute("userSeq");
+			filterChain.doFilter(req, resp);
+		} catch (RuntimeException e) {
 			resp.sendRedirect("/userPage?action=login");
 		}
 	}
