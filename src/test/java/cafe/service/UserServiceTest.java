@@ -5,32 +5,26 @@ import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
 import cafe.domain.util.DatabaseConnector;
 import cafe.domain.util.H2Connector;
-import cafe.dto.UserDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class UserServiceTest {
     private static UserDatabase userDatabase;
-    private static SessionDatabase sessionDatabase;
     private static UserService userService;
 
     @BeforeAll
     static void setUp() {
         DatabaseConnector databaseConnector = new H2Connector();
         userDatabase = new UserDatabase(databaseConnector);
-        sessionDatabase = new SessionDatabase();
-        userService = new UserService(userDatabase, sessionDatabase);
+        userService = new UserService(userDatabase);
     }
 
     @AfterEach
     void tearDown() {
         userDatabase.deleteAll();
-        sessionDatabase.deleteAll();
     }
 
     @Test
@@ -71,34 +65,6 @@ class UserServiceTest {
     void 조회_시_아이디에_해당하는_유저가_없다면_예외가_발생한다() {
         // given, when, then
         assertThrows(IllegalArgumentException.class, () -> userService.find("/users/id"));
-    }
-
-    @Test
-    void 세션_아이디로_유저를_조회한다() {
-        // given
-        String id = "id";
-        String name = "name";
-        String password = "password";
-        String email = "email@email";
-        String sessionId = "sessionId";
-
-        userService.save(id, name, password, email);
-        sessionDatabase.insert(new UserDto(sessionId, User.of(id, name, password, email)));
-
-        // when
-        UserDto userDto = userService.findBySession("sessionId");
-
-        // then
-        assertEquals(id, userDto.getUser().getUserId());
-        assertEquals(name, userDto.getUser().getName());
-        assertEquals(password, userDto.getUser().getPassword());
-        assertEquals(email, userDto.getUser().getEmail());
-    }
-
-    @Test
-    void 조회_시_세션_아이디에_해당하는_유저가_없다면_예외가_발생한다() {
-        // given, when, then
-        assertThrows(IllegalArgumentException.class, () -> userService.findBySession("sessionId"));
     }
 
     @Test
