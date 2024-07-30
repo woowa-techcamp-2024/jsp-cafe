@@ -29,8 +29,8 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">${contentResponse.createdAt}</span>
-                                <a href="/users/${contentResponse.writer}"
-                                   class="author"><c:out value="${contentResponse.writer}"/>
+                                <a href="/users/${contentResponse.writerUserId}"
+                                   class="author"><c:out value="${contentResponse.writerUsername}"/>
                                 </a>
 
                             </div>
@@ -56,7 +56,7 @@
                         </ul>
                     </div>
                     <div class="col-md-3 qna-write">
-                        <a href="${pageContext.request.contextPath}/qna/form.html"
+                        <a href="${pageContext.request.contextPath}/questions"
                            class="btn btn-primary pull-right"
                            role="button">질문하기</a>
                     </div>

@@ -76,7 +76,7 @@
                 <c:if test="${empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/users/login"
                            role="button">로그인</a></li>
-                    <li><a href="${pageContext.request.contextPath}/user/form.html"
+                    <li><a href="${pageContext.request.contextPath}/users/signup"
                            role="button">회원가입</a></li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">

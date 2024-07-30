@@ -54,12 +54,12 @@ public class UserInfoServlet extends HttpServlet {
             UserCommonResponse userCommonResponse = userService.getUserById(userId);
             req.setAttribute("userId", userCommonResponse.getUserId());
             req.getRequestDispatcher("/WEB-INF/jsp/userUpdateForm.jsp").forward(req, resp);
-        } else {
-            String userId = pathInfo.substring(1);
-            UserCommonResponse userCommonResponse = userService.getUserById(userId);
-            req.setAttribute("user", userCommonResponse);
-            req.getRequestDispatcher("/WEB-INF/jsp/userProfile.jsp").forward(req, resp);
+            return;
         }
+        String userId = pathInfo.substring(1);
+        UserCommonResponse userCommonResponse = userService.getUserById(userId);
+        req.setAttribute("user", userCommonResponse);
+        req.getRequestDispatcher("/WEB-INF/jsp/userProfile.jsp").forward(req, resp);
     }
 
     /**

@@ -3,8 +3,10 @@ package codesquad.jspcafe.servlet;
 import codesquad.jspcafe.common.ApplicationProperties;
 import codesquad.jspcafe.common.database.JDBCConnectionManager;
 import codesquad.jspcafe.domain.article.repository.ArticleJdbcRepository;
+import codesquad.jspcafe.domain.article.repository.ArticleRepository;
 import codesquad.jspcafe.domain.article.service.ArticleService;
 import codesquad.jspcafe.domain.user.repository.UserJdbcRepository;
+import codesquad.jspcafe.domain.user.repository.UserRepository;
 import codesquad.jspcafe.domain.user.service.UserService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -27,10 +29,11 @@ public class DefaultServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        sce.getServletContext().setAttribute("userService",
-            new UserService(new UserJdbcRepository(connectionManager)));
-        sce.getServletContext().setAttribute("articleService",
-            new ArticleService(new ArticleJdbcRepository(connectionManager)));
+        UserRepository userRepository = new UserJdbcRepository(connectionManager);
+        ArticleRepository articleRepository = new ArticleJdbcRepository(connectionManager);
+        sce.getServletContext().setAttribute("userService", new UserService(userRepository));
+        sce.getServletContext()
+            .setAttribute("articleService", new ArticleService(articleRepository, userRepository));
     }
 
     @Override

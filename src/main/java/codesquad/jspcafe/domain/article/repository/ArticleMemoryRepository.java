@@ -24,6 +24,18 @@ public class ArticleMemoryRepository implements ArticleRepository {
     }
 
     @Override
+    public Article update(Article article) {
+        map.put(article.getId(), article);
+        return article;
+    }
+
+    @Override
+    public Long delete(Article article) {
+        map.remove(article.getId());
+        return article.getId();
+    }
+
+    @Override
     public Optional<Article> findById(Long id) {
         return Optional.ofNullable(map.get(id));
     }

@@ -40,7 +40,8 @@ public class ExceptionHandlingFilter extends HttpFilter {
     }
 
     /**
-     * 예외를 처리하여 에러 페이지(/WEB-INF/jsp/error.jsp)로 포워딩합니다. <br> 예외 상태 코드와 메시지를 설정하여 에러 페이지로 포워딩합니다.
+     * 예외를 처리하여 에러 페이지로 포워딩합니다. <br> GET 또는 POST 요청인 경우 에러 페이지로 포워딩하고, 그 외의 경우 상태 코드와 메시지를 반환합니다.
+     * <br> 이 외의 경우에 대해서는 상태 코드와 응답 바디로 메시지를 반환합니다.
      *
      * @param req 클라이언트가 필터에 요청한 내용을 포함하는 {@link HttpServletRequest} 객체
      * @param res 필터가 클라이언트에게 보내는 응답을 포함하는 {@link HttpServletResponse} 객체
@@ -51,9 +52,14 @@ public class ExceptionHandlingFilter extends HttpFilter {
     private void handleException(HttpServletRequest req, HttpServletResponse res, Exception e)
         throws ServletException, IOException {
         log.error(e.getMessage());
-        req.setAttribute("message", e.getMessage());
-        req.setAttribute("statusCode", verifyStatusCode(e));
-        req.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(req, res);
+        if (req.getMethod().equals("GET") || req.getMethod().equals("POST")) {
+            req.setAttribute("message", e.getMessage());
+            req.setAttribute("statusCode", verifyStatusCode(e));
+            req.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(req, res);
+            return;
+        }
+        res.setStatus(verifyStatusCode(e));
+        res.getWriter().write(e.getMessage());
     }
 
     /**

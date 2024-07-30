@@ -1,25 +1,31 @@
 package codesquad.jspcafe.domain.article.domain;
 
+import codesquad.jspcafe.domain.user.domain.User;
 import java.time.LocalDateTime;
 
 public class Article {
 
     private Long id;
-    private final String title;
-    private final String writer;
-    private final String contents;
+    private String title;
+    private final User writer;
+    private String contents;
     private final LocalDateTime createdAt;
 
-    public Article(String title, String writer, String contents, LocalDateTime createdAt) {
+    public Article(String title, User writer, String contents, LocalDateTime createdAt) {
         this.title = verifyTitle(title);
         this.writer = verifyWriter(writer);
         this.contents = verifyContents(contents);
         this.createdAt = createdAt;
     }
 
-    public Article(Long id, String title, String writer, String contents, LocalDateTime createdAt) {
+    public Article(Long id, String title, User writer, String contents, LocalDateTime createdAt) {
         this(title, writer, contents, createdAt);
         this.id = id;
+    }
+
+    public void updateValues(String title, String contents) {
+        this.title = verifyTitle(title);
+        this.contents = verifyContents(contents);
     }
 
     public Long getId() {
@@ -34,7 +40,7 @@ public class Article {
         return title;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
@@ -53,8 +59,8 @@ public class Article {
         return title;
     }
 
-    private String verifyWriter(String writer) {
-        if (writer == null || writer.isBlank()) {
+    private User verifyWriter(User writer) {
+        if (writer == null) {
             throw new IllegalArgumentException("글쓴이는 필수 입력값입니다.");
         }
         return writer;

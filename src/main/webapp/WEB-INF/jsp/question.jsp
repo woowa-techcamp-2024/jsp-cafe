@@ -28,9 +28,9 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/${articleCommonResponse.writer}"
+                            <a href="/users/${articleCommonResponse.writerUserId}"
                                class="article-author-name"><c:out
-                                    value="${articleCommonResponse.writer}"/>
+                                    value="${articleCommonResponse.writerUsername}"/>
                             </a>
                             <a href="/questions/${articleCommonResponse.id}"
                                class="article-header-time" title="퍼머링크">
@@ -49,10 +49,8 @@
                                    href="/questions/${articleCommonResponse.id}/form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete"
-                                      action="/questions/${articleCommonResponse.id}"
-                                      method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
+                                <form id="questionDelete" class="form-delete"
+                                      action="/questions/${articleCommonResponse.id}" method="POST">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
@@ -196,3 +194,28 @@
 <jsp:include page="/WEB-INF/jsp/component/scripts.jsp"/>
 </body>
 </html>
+
+<script>
+  $(document).ready(function () {
+    $('#questionDelete').on('submit', function (e) {
+      e.preventDefault();
+
+      let form = $(this);
+      let actionUrl = form.attr('action');
+
+      $.ajax({
+        url: actionUrl,
+        type: 'DELETE',
+        success: function () {
+          window.location.href = '/index.html';
+        },
+        error: function (xhr, status, error) {
+          let errorMessage = xhr.responseText;
+          if (confirm(status + ": " + errorMessage)) {
+            window.location.href = '/questions/' + ${articleCommonResponse.id};
+          }
+        }
+      });
+    })
+  })
+</script>
