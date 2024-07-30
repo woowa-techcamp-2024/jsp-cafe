@@ -41,7 +41,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
 
     @Override
     public Reply save(Reply reply) {
-        String insertQuery = "INSERT INTO replies (article, user, contents, created_at, deleted_at) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO replies (article, user, contents, created_at) VALUES (?, ?, ?, ?)";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery,
                 Statement.RETURN_GENERATED_KEYS)) {
