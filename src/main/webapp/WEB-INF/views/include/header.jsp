@@ -44,18 +44,21 @@
                data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <c:choose>
-                    <c:when test="${empty sessionScope.userPrincipal}">
-                        <a href="/users">
-                            <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
-                            사용자 목록
-                        </a>
-                        <a href="/user/${sessionScope.userPrincipal.id}">
+                <li>
+                    <a href="/users/list">
+                        <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
+                        사용자 목록
+                    </a>
+                </li>
+
+                <c:if test="${not empty sessionScope.userPrincipal}">
+                    <li>
+                        <a href="/users/${sessionScope.userPrincipal.id}">
                             <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
                             Profile
                         </a>
-                    </c:when>
-                </c:choose>
+                    </li>
+                </c:if>
             </ul>
 
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
