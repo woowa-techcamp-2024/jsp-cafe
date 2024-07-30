@@ -6,9 +6,7 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
             <c:if test="${not empty error}">
-                <script type="text/javascript">
-                    alert("${error}");
-                </script>
+                <div class="alert alert-danger" role="alert">${error}</div>
             </c:if>
             <form name="question" method="post" action="/users/join">
                 <div class="form-group">
