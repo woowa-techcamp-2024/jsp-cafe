@@ -15,7 +15,7 @@ public class SignInSessionFilter extends HttpFilter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        String sessionid = getSessionId(req);
+        String sessionid = ((HttpServletRequest) req).getSession(true).getId();
         SessionService sessionService = (SessionService) req.getServletContext().getAttribute("sessionService");
         req.setAttribute("sign-in", false);
 
@@ -25,18 +25,5 @@ public class SignInSessionFilter extends HttpFilter {
             req.setAttribute("sign-in", true);
         }
         chain.doFilter(req, res);
-    }
-
-    private String getSessionId(ServletRequest servletRequest) {
-        Cookie[] cookies = ((HttpServletRequest) servletRequest).getCookies();
-        if (cookies == null) {
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("JSESSIONID")) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 }
