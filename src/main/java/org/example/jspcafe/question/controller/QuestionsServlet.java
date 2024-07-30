@@ -7,14 +7,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.jspcafe.question.Question;
 import org.example.jspcafe.question.repository.QuestionRepository;
-import org.example.jspcafe.user.service.UserService;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(name = "QuestionServlet", value = "/questions")
+import static org.example.jspcafe.common.RequestUtil.extractPathVariable;
+
+@WebServlet(name = "QuestionServlet", value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
 
     private QuestionRepository questionRepository;
@@ -27,21 +26,8 @@ public class QuestionsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Question> all = questionRepository.getAll();
-        System.out.println(all.size());
-        req.setAttribute("questions", all);
-        req.getRequestDispatcher("/qna/list.jsp").forward(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String writer = req.getParameter("writer");
-        String title = req.getParameter("title");
-        String contents = req.getParameter("contents");
-
-        Question question = new Question(writer, title, contents);
-        questionRepository.save(question);
-
-        resp.sendRedirect("/");
+        Long id = extractPathVariable(req);
+        req.setAttribute("question", questionRepository.findById(id));
+        req.getRequestDispatcher("/qna/show.jsp").forward(req, resp);
     }
 }

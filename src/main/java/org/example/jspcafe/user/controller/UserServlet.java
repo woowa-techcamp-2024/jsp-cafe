@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static org.example.jspcafe.common.RequestUtil.extractPathVariable;
 import static org.example.jspcafe.common.StringUtils.isNumeric;
 
 @WebServlet(name = "UserServlet", value = "/users/*")
@@ -50,22 +51,5 @@ public class UserServlet extends HttpServlet {
         res.addHeader("Location", "/users/" + id);
     }
 
-    private static Long extractPathVariable(HttpServletRequest req) throws IOException {
-        String pathInfo = getPathInfo(req);
 
-        String substring = pathInfo.substring(1);
-        if (!isNumeric(substring)) {
-            throw new IllegalArgumentException("Invalid pathInfo");
-        }
-
-        return Long.valueOf(substring);
-    }
-
-    private static String getPathInfo(HttpServletRequest req) {
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.length() <= 1) {
-            throw new IllegalArgumentException("Invalid pathInfo");
-        }
-        return pathInfo;
-    }
 }
