@@ -15,6 +15,7 @@
                 <thead>
                 <tr>
                     <th>id</th>
+                    <th>userId</th>
                     <th>password</th>
                     <th>name</th>
                     <th>email</th>
@@ -32,6 +33,8 @@
                             <%= user.getId() %>
                         </a>
                     </th>
+                    <td><%= user.getUserId() %>
+                    </td>
                     <td><%= user.getPassword() %>
                     </td>
                     <td><%= user.getName() %>
