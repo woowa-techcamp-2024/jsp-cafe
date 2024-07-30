@@ -28,9 +28,9 @@ public class InMemoryArticleDaoTest {
     public void setUp() {
         articleDao = new InMemoryArticleDao();
 
-        article1 = new Article("title1", "content1", "author1");
-        article2 = new Article( "title2", "content2", "author2");
-        article3 = new Article( "title3", "content3", "author3");
+        article1 = new Article("title1", "content1", 1L);
+        article2 = new Article( "title2", "content2", 1L);
+        article3 = new Article( "title3", "content3", 1L);
     }
 
     @Nested
@@ -121,7 +121,7 @@ public class InMemoryArticleDaoTest {
 
         for (int i = 0; i < numThreads; i++) {
             futures.add(executor.submit(() -> {
-                Article article = new Article( "title", "content", "author1");
+                Article article = new Article( "title", "content", 1L);
                 articleDao.save(article);
                 articleDao.delete(article);
                 return null;
@@ -142,7 +142,7 @@ public class InMemoryArticleDaoTest {
 
         @BeforeEach
         void setUp() {
-            article = new Article("title", "contents", "authorId");
+            article = new Article("title", "contents", 1L);
         }
 
         @Test
@@ -171,20 +171,6 @@ public class InMemoryArticleDaoTest {
             assertThatThrownBy(() -> article.setContents(""))
                     .isInstanceOf(HttpException.class)
                     .hasMessageContaining("내용은 null이거나 비어있을 수 없습니다.");
-        }
-
-        @Test
-        void 작성자_ID가_null이면_예외가_발생한다() {
-            assertThatThrownBy(() -> article.setAuthorId(null))
-                    .isInstanceOf(HttpException.class)
-                    .hasMessageContaining("작성자 ID는 null이거나 비어있을 수 없습니다.");
-        }
-
-        @Test
-        void 작성자_ID가_빈_문자열이면_예외가_발생한다() {
-            assertThatThrownBy(() -> article.setAuthorId(""))
-                    .isInstanceOf(HttpException.class)
-                    .hasMessageContaining("작성자 ID는 null이거나 비어있을 수 없습니다.");
         }
     }
 }
