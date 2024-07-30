@@ -421,5 +421,21 @@ class QuestionHandlerTest {
                 assertThat(reply.isDeleted()).isTrue();
             });
         }
+
+        @Test
+        @DisplayName("다른 사용자의 삭제된 댓글은 무시한다.")
+        void deletedQuestion_WhenContainsDeletedReply() {
+            //given
+            User anotherUser = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
+            Reply reply = ReplyFixture.reply(anotherUser, question);
+            reply.delete();
+            question.getReplies().add(reply);
+
+            //when
+            ResponseEntity response = questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(question.isDeleted()).isTrue();
+        }
     }
 }

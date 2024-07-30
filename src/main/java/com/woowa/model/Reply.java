@@ -34,7 +34,7 @@ public class Reply {
     }
 
     public void checkAuthority(Author author) {
-        if(this.author.equals(author)) {
+        if(deleted || this.author.equals(author)) {
             return;
         }
         throw new AuthorizationException("작성자가 다른 댓글은 삭제할 수 없습니다.");
