@@ -1,6 +1,8 @@
 package org.example.jspcafe.post.service;
 
 import org.example.jspcafe.AbstractRepositoryTestSupport;
+import org.example.jspcafe.comment.model.Comment;
+import org.example.jspcafe.comment.repository.JdbcCommentRepository;
 import org.example.jspcafe.post.model.Post;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
 import org.example.jspcafe.post.request.PostCreateRequest;
@@ -21,7 +23,64 @@ class PostServiceTest extends AbstractRepositoryTestSupport {
 
     private JdbcPostRepository postRepository = new JdbcPostRepository(super.connectionManager);
     private JdbcUserRepository userRepository = new JdbcUserRepository(super.connectionManager);
-    private PostService postService = new PostService(postRepository, userRepository);
+    private JdbcCommentRepository commentRepository = new JdbcCommentRepository(super.connectionManager);
+    private PostService postService = new PostService(postRepository, commentRepository, userRepository);
+
+    @DisplayName("본인의 게시글을 삭제할 수 있다.")
+    @Test
+    void deletePost() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        postService.deletePost(userId, post.getPostId());
+
+        // then
+        assertThat(postRepository.findById(post.getPostId()))
+                .isEmpty();
+    }
+
+    @DisplayName("본인의 게시글이 아니면 예외가 발생한다.")
+    @Test
+    void deletePostWithInvalidUser() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        Long invalidUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> postService.deletePost(invalidUserId, post.getPostId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("삭제 권한이 없습니다.");
+
+    }
+
+    @DisplayName("댓글이 존재하면 게시글을 삭제할 수 없다.")
+    @Test
+    void deletePostWithComment() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        commentRepository.save(new Comment(post.getPostId(), userId, "content", LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when & then
+        assertThatThrownBy(() -> postService.deletePost(userId, post.getPostId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("댓글이 존재하는 게시글은 삭제할 수 없습니다.");
+
+    }
 
     @DisplayName("게시글을 생성할 수 있다.")
     @Test
