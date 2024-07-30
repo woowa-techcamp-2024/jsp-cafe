@@ -1,6 +1,7 @@
 package org.example.demo.repository;
 
 import org.example.demo.db.DbConfig;
+import org.example.demo.domain.Comment;
 import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
 import org.example.demo.model.PostCreateDao;
@@ -15,23 +16,24 @@ import java.util.Optional;
 
 public class PostRepository {
     private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
-    private static PostRepository instance;
     private DbConfig dbConfig;
-    private UserRepository userRepository;
 
-    public PostRepository(DbConfig dbConfig, UserRepository userRepository) {
+    public PostRepository(DbConfig dbConfig) {
         this.dbConfig = dbConfig;
-        this.userRepository = userRepository;
     }
 
     public Optional<Post> getPost(Long postId) {
-        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN users u ON p.writer_id = u.id WHERE p.id = ?";
+        String sql = "SELECT p.*, u.user_id, u.name, c.id AS comment_id, c.contents AS comment_contents, c.created_at AS comment_created_at\n" +
+                "FROM posts p\n" +
+                "JOIN users u ON p.writer_id = u.id\n" +
+                "LEFT JOIN comments c ON p.id = c.post_id\n" +
+                "WHERE p.id = ?;\n";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, postId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return Optional.of(createPostFromResultSet(rs));
+                return Optional.of(createPostWithCommentsFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,10 +45,8 @@ public class PostRepository {
         String sql = "INSERT INTO posts (writer_id, title, contents, created_at) VALUES (?, ?, ?, ?)";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            User user = userRepository.getUserByUserId(dao.getWriter())
-                    .orElseThrow(() -> new IllegalArgumentException("user not found"));
 
-            pstmt.setLong(1, user.getId());
+            pstmt.setLong(1, dao.getWriter());
             pstmt.setString(2, dao.getTitle());
             pstmt.setString(3, dao.getContents());
             pstmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
@@ -64,7 +64,7 @@ public class PostRepository {
 
     public List<Post> getPosts() {
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id ORDER BY p.created_at DESC";
+        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id WHERE p.is_present = true ORDER BY p.created_at DESC";
 
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -92,9 +92,50 @@ public class PostRepository {
                 writer,
                 rs.getString("title"),
                 rs.getString("contents"),
-                rs.getTimestamp("created_at").toLocalDateTime()
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                null
         );
     }
+
+    private Post createPostWithCommentsFromResultSet(ResultSet rs) throws SQLException {
+        User writer = new User(
+                rs.getLong("writer_id"),
+                rs.getString("user_id"),
+                null,
+                rs.getString("name"),
+                null
+        );
+
+        Long postId = rs.getLong("id");
+        List<Comment> comments = new ArrayList<>();
+
+        // Post 정보 설정
+        Post post = new Post(
+                postId,
+                writer,
+                rs.getString("title"),
+                rs.getString("contents"),
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                comments
+        );
+
+        // Comment 정보 설정
+        do {
+            Long commentId = rs.getLong("comment_id");
+            if (commentId != 0) {
+                Comment comment = new Comment(
+                        commentId,
+                        postId,
+                        rs.getString("comment_contents"),
+                        rs.getTimestamp("comment_created_at").toLocalDateTime()
+                );
+                comments.add(comment);
+            }
+        } while (rs.next());
+
+        return post;
+    }
+
 
     public void updatePost(Long id, String title, String contents) {
         String sql = "UPDATE posts SET title = ?, contents = ? WHERE id = ?";
@@ -110,12 +151,24 @@ public class PostRepository {
     }
 
     public void deletePost(Long id) {
-        String sql = "DELETE FROM posts WHERE id = ?";
+        String postSql = "UPDATE posts SET is_present = false WHERE id = ?";
+        String commentSql = "UPDATE comments SET is_present = false WHERE post_id = ?";
+
         try (Connection conn = dbConfig.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(postSql)) {
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
+            logger.error("Error deleting post", e);
+            e.printStackTrace();
+        }
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(commentSql)) {
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Error deleting comments", e);
             e.printStackTrace();
         }
     }
