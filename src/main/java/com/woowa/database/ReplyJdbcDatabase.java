@@ -111,7 +111,7 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
 
     @Override
     public void delete(Reply reply) {
-        String sql = "delete from reply where reply_id=?";
+        String sql = "update reply set deleted = true where reply_id=?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -125,10 +125,5 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
         } finally {
             DBConnectionUtils.closeConnection(con, pstmt, null);
         }
-    }
-
-    @Override
-    public void update(Reply reply) {
-
     }
 }

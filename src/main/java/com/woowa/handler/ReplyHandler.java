@@ -52,7 +52,7 @@ public class ReplyHandler {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
         reply.checkAuthority(user);
         reply.delete();
-        replyDatabase.update(reply);
+        replyDatabase.delete(reply);
         return ResponseEntity.builder()
                 .found("/questions/" + questionId);
     }

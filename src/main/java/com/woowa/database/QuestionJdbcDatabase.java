@@ -81,6 +81,7 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
     public List<Question> findAllOrderByCreatedAt(int page, int size) {
         String sql = "select * from question q"
                 + " join user u on u.user_id = q.user_id"
+                + " where deleted is false"
                 + " order by created_at desc"
                 + " limit ? offset ?";
 

@@ -27,11 +27,6 @@ public class ReplyMemoryDatabase implements ReplyDatabase {
 
     @Override
     public void delete(Reply reply) {
-        replies.remove(reply.getReplyId());
-    }
-
-    @Override
-    public void update(Reply reply) {
 
     }
 }
