@@ -31,7 +31,7 @@ public class InMemoryUserDao implements UserDao {
 
         userIdIndex.compute(user.getUserId(), (id, existingUserId) -> {
             if(existingUserId != null) {
-                throw new HttpException(SC_CONFLICT, "id가 중복되었습니다.");
+                throw new HttpException(SC_BAD_REQUEST, "id가 중복되었습니다.");
             }
             user.setId(ID_GENERATOR.incrementAndGet());
             users.put(user.getId(), user);
