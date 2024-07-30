@@ -1,20 +1,19 @@
 package codesqaud.app.servlet;
 
+import codesqaud.TestDataSource;
 import codesqaud.app.dao.user.UserDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
 import codesqaud.mock.*;
 import jakarta.servlet.ServletException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import static codesqaud.util.LoginUtils.getLoginUser;
-import static codesqaud.util.LoginUtils.login;
+import static codesqaud.util.LoginUtils.signupAndLogin;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -30,13 +29,20 @@ public class UserServletTest {
 
 
     @BeforeEach
-    void setUp() throws ServletException {
+    void setUp() throws ServletException, SQLException {
+        TestDataSource.create();
+
         userServlet = new UserServlet();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         config = new MockServletConfig();
         userDao = (UserDao) config.getServletContext().getAttribute("userDao");
         userServlet.init(config);
+    }
+
+    @AfterEach
+    void destroy() {
+        TestDataSource.drop();
     }
 
     /**
@@ -145,7 +151,7 @@ public class UserServletTest {
         @Test
         @DisplayName("프로필 수정 폼으로 포워딩된다.")
         void given() throws ServletException, IOException {
-            login(config, request);
+            signupAndLogin(config, request);
             request.setRequestURI("/users/profile");
 
             userServlet.doGet(request, response);
@@ -192,7 +198,7 @@ public class UserServletTest {
         @DisplayName("비밀번호 인증을 먼저 하지 않으면 사용자 정보를 수정할 수 없다")
         void given_tryChaneEmailAndPasswordWithoutPasswordChecking_then_cannotUpdate() throws ServletException, IOException {
             //when
-            login(config, request);
+            signupAndLogin(config, request);
             request.setParameter("name", "Updated Name");
             request.setParameter("email", "updated@example.com");
             request.setRequestURI("/users/profile");
@@ -209,7 +215,7 @@ public class UserServletTest {
         @DisplayName("비밀번호 인증에 성공하면 session에 checkPassword attribute가 생성된다.")
         void given_correctPassword_when_processPasswordChecking_then_setCheckPasswordAttributeInSession() throws ServletException, IOException {
             //given
-            login(config, request);
+            signupAndLogin(config, request);
             request.setParameter("password", getLoginUser().getPassword());
             request.setRequestURI("/users/profile");
 
@@ -226,7 +232,7 @@ public class UserServletTest {
         @DisplayName("비밀번호 인증 후 수정사항을 입력해서 name과 email을 수정할 수 있다.")
         void given_checkPasswordAndUpdateFields_when_processProfileUpdate_then_updatedUser() throws ServletException, IOException {
             //given
-            login(config, request);
+            signupAndLogin(config, request);
             processCheckPassword();
             request.setParameter("name", "Updated Name");
             request.setParameter("email", "updated@example.com");
@@ -305,7 +311,7 @@ public class UserServletTest {
         @DisplayName("로그아웃되고 세션이 무효화된다.")
         void given_login_when_logout_then_removeSession() throws ServletException, IOException {
             //given
-            login(config, request);
+            signupAndLogin(config, request);
             request.setRequestURI("/users/logout");
 
             //when
