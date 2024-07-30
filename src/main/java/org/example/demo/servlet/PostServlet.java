@@ -23,10 +23,13 @@ public class PostServlet extends HttpServlet {
         router = new Router();
         router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/?$", postHandler::handleGetPost);
         router.addRoute(HttpMethod.POST, "^/posts/?$", postHandler::handleCreatePost);
+        router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/edit/?$", postHandler::handleEditPost);
+        router.addRoute(HttpMethod.PUT, "^/posts/(\\d+)/?$", postHandler::handleUpdatePost);
+        router.addRoute(HttpMethod.DELETE, "^/posts/(\\d+)/?$", postHandler::handleDeletePost);
     }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!router.route(request, response)) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);

@@ -105,4 +105,28 @@ public class PostRepository {
                 rs.getTimestamp("created_at").toLocalDateTime()
         );
     }
+
+    public void updatePost(Long id, String title, String contents) {
+        String sql = "UPDATE posts SET title = ?, contents = ? WHERE id = ?";
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.setString(2, contents);
+            pstmt.setLong(3, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePost(Long id) {
+        String sql = "DELETE FROM posts WHERE id = ?";
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
