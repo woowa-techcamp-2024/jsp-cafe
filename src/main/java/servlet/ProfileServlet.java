@@ -1,6 +1,7 @@
 package servlet;
 
 import domain.User;
+import exception.TomcatException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -8,9 +9,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
+import utils.AuthUtils;
 
 import java.io.IOException;
 
@@ -38,6 +41,13 @@ public class ProfileServlet extends HttpServlet {
         req.setAttribute("user", user);
 
         if (pathParts.length != 2) {
+            HttpSession session = req.getSession(false);
+            if (!AuthUtils.isLoginUser(session)) {
+                resp.sendRedirect("/user/login.jsp");
+                return;
+            } else if (!((User)session.getAttribute("loginMember")).getId().equals(userId)) {
+                throw new TomcatException("다른 사용자의 정보를 수정할 수 없습니다.");
+            }
             req.getRequestDispatcher("/user/updateForm.jsp").forward(req, resp);
             return;
         }
