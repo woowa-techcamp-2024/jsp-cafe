@@ -1,5 +1,5 @@
 <%@ page import="domain.User" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
 <%@ include file="../header.jsp" %>
@@ -19,9 +19,11 @@
                             <%
                                 User user = (User) request.getAttribute("user");
                             %>
-                            <h4 class="media-heading"><%= user.getName() %></h4>
+                            <h4 class="media-heading"><c:out value="<%= user.getName() %>"/></h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;<%= user.getEmail() %> </a>
+                                <a href="#" class="btn btn-xs btn-default"><span
+                                        class="glyphicon glyphicon-envelope"></span>&nbsp;<%= user.getEmail() %>
+                                </a>
                             </p>
                         </div>
                     </div>
