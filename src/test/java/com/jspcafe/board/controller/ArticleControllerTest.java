@@ -6,6 +6,7 @@ import com.jspcafe.board.model.ArticleDao;
 import com.jspcafe.test_util.*;
 import com.jspcafe.user.model.User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -107,5 +108,38 @@ class ArticleControllerTest {
 
         // Then
         assertEquals("/WEB-INF/views/board/article_form.jsp", request.getForwardedPath());
+    }
+
+    @Test
+    void 게시글_수정폼을_요청할_수_있다() throws ServletException, IOException {
+        // Given
+        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        articleDao.save(article);
+        request.setPathInfo("/" + article.id() + "/form");
+        HttpSession session = request.getSession();
+        session.setAttribute("userInfo", User.create("test@test", "테스트 작성자", "testPassword"));
+
+        // When
+        articleController.doGet(request, response);
+
+        // Then
+        assertEquals("/WEB-INF/views/board/article_modify_form.jsp", request.getForwardedPath());
+    }
+
+    @Test
+    void 게시글_수정을_할_수_있다() throws ServletException, IOException {
+        // Given
+        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        articleDao.save(article);
+        request.setPathInfo("/" + article.id());
+        request.setBody("{\"title\":\"updateTitle\",\"content\":\"updateContent\"}");
+
+        // When
+        articleController.doPut(request, response);
+
+        // Then
+        Article updateArticle = articleService.findById(article.id());
+        assertEquals("updateTitle", updateArticle.title());
+        assertEquals("updateContent", updateArticle.content());
     }
 }

@@ -3,6 +3,7 @@ package com.jspcafe.board.controller;
 import com.jspcafe.board.model.Article;
 import com.jspcafe.board.service.ArticleService;
 import com.jspcafe.user.model.User;
+import com.jspcafe.util.HttpUtils;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = {"/", "/articles/*"})
 public class ArticleController extends HttpServlet {
@@ -32,8 +34,11 @@ public class ArticleController extends HttpServlet {
             articleList(req, resp);
             return;
         }
+        if (path.endsWith("/form")) {
+            articleForm(req, resp);
+            return;
+        }
         switch (path) {
-            case "/form" -> forward("article_form", req, resp);
             default -> articleDetail(req, resp);
         }
     }
@@ -41,6 +46,11 @@ public class ArticleController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         writeArticle(req, resp);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        modifyArticle(req, resp);
     }
 
     private void forward(String fileName, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -51,6 +61,24 @@ public class ArticleController extends HttpServlet {
         List<Article> articles = articleService.findAll();
         req.setAttribute("articles", articles);
         forward("board", req, resp);
+    }
+
+    private void articleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getPathInfo()
+                .replace("/form", "")
+                .replace("/", "");
+        if (id.isEmpty() || id.isBlank()) {
+            forward("article_form", req, resp);
+            return;
+        }
+        Article article = articleService.findById(id);
+        User user = getUser(req);
+        if (!article.nickname().equals(user.nickname())) {
+            resp.sendRedirect("/users/login");
+            return;
+        }
+        req.setAttribute("article", article);
+        forward("article_modify_form", req, resp);
     }
 
     private void writeArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -71,5 +99,12 @@ public class ArticleController extends HttpServlet {
     private User getUser(HttpServletRequest req) {
         HttpSession session = req.getSession();
         return (User) session.getAttribute("userInfo");
+    }
+
+    private void modifyArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getPathInfo().replace("/", "");
+        Map<String, Object> data = HttpUtils.getJsonRequestBody(req);
+        articleService.update(id, (String) data.get("title"), (String) data.get("content"));
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
