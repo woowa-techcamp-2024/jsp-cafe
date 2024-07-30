@@ -6,6 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,7 +25,10 @@ public class AuthenticationFilter extends HttpFilter {
         boolean signIn = (boolean) req.getAttribute("sign-in");
         boolean auth = Arrays.stream(authenticatedPatterns).anyMatch(pattern -> pattern.matcher(uri).matches());
 
-        if (!signIn && auth) throw new ServletException("Unauthorized access");
+        if (!signIn && auth) {
+            ((HttpServletResponse) res).sendRedirect("/users/sign-in");
+            return;
+        }
         chain.doFilter(req, res);
     }
 }
