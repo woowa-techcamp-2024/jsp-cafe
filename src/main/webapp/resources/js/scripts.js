@@ -47,5 +47,5 @@ function addReplyToDOM(reply) {
         </article>
     `;
 
-  $('#replyCreate').prepend(replyHtml);
+  $('#top_holder').prepend(replyHtml);
 }

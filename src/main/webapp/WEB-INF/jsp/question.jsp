@@ -66,6 +66,7 @@
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count">의견</p>
                         <div class="qna-comment-slipp-articles">
+                            <div id="top_holder"></div>
                             <c:forEach var="reply" items="${replies}">
                                 <article class="article" id="answer-${reply.id}">
                                     <div class="article-header">
@@ -163,12 +164,6 @@
           addReplyToDOM(response);
           let textarea = document.querySelector('#replyCreate textarea');
           textarea.value = '';
-        },
-        error: function (xhr, status, error) {
-          let errorMessage = xhr.responseText;
-          if (confirm(status + ": " + errorMessage)) {
-            window.location.href = '/questions/' + ${articleCommonResponse.id};
-          }
         }
       });
     });
