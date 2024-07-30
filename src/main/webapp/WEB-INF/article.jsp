@@ -28,7 +28,7 @@
         <div class="panel-heading">
             <h2 class="panel-title">댓글</h2>
         </div>
-        <div class="panel-body">
+        <div class="panel-body replies">
             <c:forEach var="reply" items="${replies}">
                 <div class="reply">
                     <p><strong>${reply.authorId}:</strong> ${reply.content}
@@ -57,49 +57,85 @@
 </div>
 <script>
   document.getElementById('deleteButton').addEventListener('click', function() {
-    fetch('<c:url value="/question/${article.articleId}"/>', {
-      method: 'DELETE'
-    }).then(response => {
-      if (response.ok) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '<c:url value="/question/${article.articleId}"/>', true);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
         window.location.href = '/';
       } else {
         window.location.href = '/error/not-same-author.html';
       }
-    });
+    };
+    xhr.send();
   });
 
   document.getElementById('replyForm').addEventListener('submit', function(event) {
     event.preventDefault();
     const content = document.getElementById('replyContent').value;
     const articleId = ${article.articleId};
-    fetch('<c:url value="/reply"/>', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ content: content, articleId: articleId })
-    }).then(response => {
-      if (response.ok) {
-        location.reload();
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '<c:url value="/reply"/>', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (xhr.status === 201 || xhr.status === 200) {
+        const articleId = ${article.articleId};
+        const xhrReplies = new XMLHttpRequest();
+        xhrReplies.open('GET', '/question/' + articleId + '/replies', true);
+        xhrReplies.onload = function() {
+          if (xhrReplies.status === 200) {
+            const responseJson = JSON.parse(xhrReplies.responseText);
+            const repliesHtml = responseJson.replies.map(reply => `
+              <div class="reply">
+                <p><strong><c:out value="\${reply.authorId}"/></strong>: <c:out value="\${reply.content}"/>
+                <button class="btn btn-danger btn-sm delete-reply-button" data-reply-id="<c:out value="\${reply.replyId}"/>" style="margin-left: 10px;">Delete</button>
+                </p>
+              </div>
+            `).join('');
+            document.querySelector('.replies').innerHTML = repliesHtml;
+          } else {
+            alert('댓글 목록 갱신에 실패했습니다.');
+          }
+        };
+        xhrReplies.send();
       } else {
         alert('댓글 작성에 실패했습니다.');
       }
-    });
+    };
+    xhr.send(JSON.stringify({ content: content, articleId: articleId }));
   });
 
-  document.querySelectorAll('.delete-reply-button').forEach(button => {
-    button.addEventListener('click', function() {
-      const replyId = this.getAttribute('data-reply-id');
-      fetch("/reply/" + replyId, {
-        method: 'DELETE'
-      }).then(response => {
-        if (response.ok) {
-          location.reload();
+  document.querySelector('.replies').addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-reply-button')) {
+      const replyId = event.target.getAttribute('data-reply-id');
+      const xhr = new XMLHttpRequest();
+      xhr.open('DELETE', '/reply/' + replyId, true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const articleId = ${article.articleId};
+          const xhrReplies = new XMLHttpRequest();
+          xhrReplies.open('GET', '/question/' + articleId + '/replies', true);
+          xhrReplies.onload = function() {
+            if (xhrReplies.status === 200) {
+              const responseJson = JSON.parse(xhrReplies.responseText);
+              const repliesHtml = responseJson.replies.map(reply => `
+                <div class="reply">
+                  <p><strong><c:out value="\${reply.authorId}"/></strong>: <c:out value="\${reply.content}"/>
+                  <button class="btn btn-danger btn-sm delete-reply-button" data-reply-id="<c:out value="\${reply.replyId}"/>" style="margin-left: 10px;">Delete</button>
+                  </p>
+                </div>
+              `).join('');
+              document.querySelector('.replies').innerHTML = repliesHtml;
+            } else {
+              alert('댓글 목록 갱신에 실패했습니다.');
+            }
+          };
+          xhrReplies.send();
         } else {
           alert('댓글 삭제에 실패했습니다.');
         }
-      });
-    });
+      };
+      xhr.send();
+    }
   });
 </script>
 </body>

@@ -47,7 +47,13 @@ public class SingleArticleServlet extends HttpServlet {
         }
 
         List<Reply> replyList = replyService.findRepliesByArticleId(article.getArticleId());
+        logger.info("uri: {}", request.getRequestURI());
         if(request.getRequestURI().endsWith("/replies")){
+            logger.info("replies: {}", articleId);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            String json = new JSONObject().put("replies", replyList).toString();
+            response.getWriter().write(json);
             return;
         }
 
