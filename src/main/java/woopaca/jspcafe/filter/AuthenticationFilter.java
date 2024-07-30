@@ -3,7 +3,6 @@ package woopaca.jspcafe.filter;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -11,16 +10,14 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import woopaca.jspcafe.service.AuthService;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 @WebFilter("*")
 public class AuthenticationFilter implements Filter {
 
-    private final RequestMatchers includeMatchers = new RequestMatchers();
-
-    private AuthService authService;
+    private final RequestMatchers includeMatchers = new RequestMatchers(new HashSet<>());
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -28,9 +25,6 @@ public class AuthenticationFilter implements Filter {
         includeMatchers.addMatcher("GET", "/users/*");
         includeMatchers.addMatcher("GET", "/users/profile/*");
         includeMatchers.addMatcher("POST", "/users/profile/*");
-
-        ServletContext servletContext = filterConfig.getServletContext();
-        this.authService = (AuthService) servletContext.getAttribute("authService");
     }
 
     @Override
