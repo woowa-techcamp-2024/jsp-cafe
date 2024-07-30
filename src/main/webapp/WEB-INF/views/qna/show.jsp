@@ -199,6 +199,9 @@
                 url: "/questions/edit/${currentQuestion.id}",
                 type: 'GET',
 
+                success: function () {
+                    window.location.href = this.url;
+                },
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
