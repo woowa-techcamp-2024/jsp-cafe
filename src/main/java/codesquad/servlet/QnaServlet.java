@@ -1,5 +1,6 @@
 package codesquad.servlet;
 
+import codesquad.servlet.annotation.authentication.Authorized;
 import codesquad.servlet.dao.ArticleQueryDao;
 import codesquad.servlet.dto.ArticleResponse;
 import jakarta.servlet.ServletConfig;
@@ -34,6 +35,10 @@ public class QnaServlet extends HttpServlet {
         articleQueryDao = (ArticleQueryDao) servletContext.getAttribute("articleQueryDao");
     }
 
+    /**
+     * 질문 정보 요청
+     */
+    @Authorized
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("requesting article info");

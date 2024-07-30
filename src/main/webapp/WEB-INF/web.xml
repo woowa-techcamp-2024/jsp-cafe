@@ -19,6 +19,14 @@
         <filter-name>methodOverrideFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>codesquad.filter.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <resource-ref>
         <description>DB Connection</description>
         <res-ref-name>jdbc/cafe-db</res-ref-name>

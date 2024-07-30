@@ -2,6 +2,7 @@ package codesquad.servlet;
 
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
+import codesquad.servlet.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,11 @@ public class UserServlet extends HttpServlet {
         userDao = (UserDao) servletContext.getAttribute("userDao");
     }
 
+    /**
+     * 유저 수정 폼 요청
+     * 유저 정보 요청
+     */
+    @Authorized
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();

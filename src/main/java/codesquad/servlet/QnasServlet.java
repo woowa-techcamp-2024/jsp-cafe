@@ -2,6 +2,7 @@ package codesquad.servlet;
 
 import codesquad.domain.article.Article;
 import codesquad.domain.article.ArticleDao;
+import codesquad.servlet.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,10 @@ public class QnasServlet extends HttpServlet {
         articleDao = (ArticleDao) servletContext.getAttribute("articleDao");
     }
 
+    /**
+     * 질문 등록 요청
+     */
+    @Authorized
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("uploading article");
