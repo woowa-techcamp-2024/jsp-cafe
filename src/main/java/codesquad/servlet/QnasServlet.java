@@ -2,6 +2,7 @@ package codesquad.servlet;
 
 import codesquad.domain.article.Article;
 import codesquad.domain.article.ArticleDao;
+import codesquad.domain.user.User;
 import codesquad.servlet.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -35,7 +36,7 @@ public class QnasServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("uploading article");
         String title = req.getParameter("title");
-        String writer = req.getParameter("writer");
+        String writer = ((User) req.getSession().getAttribute("loginUser")).getUserId();
         String content = req.getParameter("contents");
 
         articleDao.save(new Article(title, writer, content));
