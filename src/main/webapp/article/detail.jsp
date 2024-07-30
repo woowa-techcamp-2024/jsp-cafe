@@ -13,6 +13,7 @@
     <title>게시글 상세보기</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/article/detail.css">
+    <link rel="stylesheet" href="/css/reply/detail.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
