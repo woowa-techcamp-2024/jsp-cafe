@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 상세</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -26,10 +27,26 @@
         </div>
         <div class="flex justify-end space-x-2">
             <a href="<c:url value="/articles/${article.id()}/form"/>" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">수정</a>
-            <a href="#" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">삭제</a>
+            <button id="deleteButton" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">삭제</button>
             <a href="/" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">목록</a>
         </div>
     </div>
 </main>
+<script>
+    document.getElementById('deleteButton').addEventListener('click', async function(e) {
+        e.preventDefault();
+
+        if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+            try {
+                const response = await axios.delete('<c:url value="/articles/${article.id()}"/>');
+                alert('게시글이 성공적으로 삭제되었습니다.');
+                window.location.href = '/';  // 메인 페이지로 리다이렉트
+            } catch (error) {
+                alert('게시글 삭제에 실패했습니다. 다시 시도해주세요.');
+                console.error('Error:', error);
+            }
+        }
+    });
+</script>
 </body>
 </html>
