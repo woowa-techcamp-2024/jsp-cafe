@@ -17,6 +17,7 @@ public class AuthenticationFilter extends HttpFilter {
             Pattern.compile("/users/.*/edit"),
             Pattern.compile("/users/sign-out"),
             Pattern.compile("/articles/.*")
+            //TODO: 댓글 경로 추가
     };
 
     @Override
