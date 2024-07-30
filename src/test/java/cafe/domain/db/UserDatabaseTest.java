@@ -95,4 +95,42 @@ class UserDatabaseTest {
         assertEquals(user.getPassword(), "newPassword");
         assertEquals(user.getEmail(), "newEmail@newEmail");
     }
+
+    @Test
+    void 아이디에_맞는_유저를_삭제한다() {
+        // given
+        String id = "id";
+        String name = "name";
+        String password = "password";
+        String email = "email@email";
+
+        // when
+        userDatabase.insert(User.of(id, name, password, email));
+        userDatabase.deleteById(id);
+
+        // then
+        assertNull(userDatabase.selectById(id));
+    }
+
+    @Test
+    void 모든_유저를_삭제한다() {
+        // given
+        String id1 = "id1";
+        String name1 = "name1";
+        String password1 = "password1";
+        String email1 = "email1@email1";
+
+        String id2 = "id2";
+        String name2 = "name2";
+        String password2 = "password2";
+        String email2 = "email2@email2";
+        userDatabase.insert(User.of(id1, name1, password1, email1));
+        userDatabase.insert(User.of(id2, name2, password2, email2));
+
+        // when
+        userDatabase.deleteAll();
+
+        // then
+        assertEquals(userDatabase.selectAll().size(), 0);
+    }
 }

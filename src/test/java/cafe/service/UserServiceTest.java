@@ -128,4 +128,18 @@ class UserServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 userService.update("/users/id", name, "newPassword", "newEmail@newEmail", "wrongPassword"));
     }
+
+    @Test
+    void 경로의_아이디와_유저가_같은_지_확인한다() {
+        // given
+        String id = "id";
+        String name = "name";
+        String password = "password";
+        String email = "email@email";
+        userService.save(id, name, password, email);
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () ->
+                userService.verifyUserId(User.of(id, name, password, email), "/users/id1"));
+    }
 }

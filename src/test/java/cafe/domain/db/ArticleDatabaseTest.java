@@ -96,4 +96,43 @@ class ArticleDatabaseTest {
         assertEquals(article.getTitle(), "newTitle");
         assertEquals(article.getContents(), "newContents");
     }
+
+    @Test
+    void 아이디에_맞는_글을_삭제한다() {
+        // given
+        String id = "id";
+        String writer = "writer";
+        String title = "title";
+        String contents = "contents";
+        articleDatabase.insert(Article.of(id, writer, title, contents));
+
+        // when
+        articleDatabase.deleteById(id);
+
+        // then
+        assertNull(articleDatabase.selectById(id));
+    }
+
+    @Test
+    void 모든_글을_삭제한다() {
+        // given
+        String id1 = "id1";
+        String writer1 = "writer1";
+        String title1 = "title1";
+        String contents1 = "contents1";
+
+        String id2 = "id2";
+        String writer2 = "writer2";
+        String title2 = "title2";
+        String contents2 = "contents2";
+
+        articleDatabase.insert(Article.of(id1, writer1, title1, contents1));
+        articleDatabase.insert(Article.of(id2, writer2, title2, contents2));
+
+        // when
+        articleDatabase.deleteAll();
+
+        // then
+        assertEquals(articleDatabase.selectAll().size(), 0);
+    }
 }

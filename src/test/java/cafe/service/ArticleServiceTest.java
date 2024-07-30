@@ -2,6 +2,7 @@ package cafe.service;
 
 import cafe.domain.db.ArticleDatabase;
 import cafe.domain.entity.Article;
+import cafe.domain.entity.User;
 import cafe.domain.util.DatabaseConnector;
 import cafe.domain.util.H2Connector;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +39,7 @@ class ArticleServiceTest {
         articleService.save(articleId, writer, title, contents);
 
         // then
-        Article article = articleService.find(articleId);
+        Article article = articleDatabase.selectById(articleId);
         assertEquals(writer, article.getWriter());
         assertEquals(title, article.getTitle());
         assertEquals(contents, article.getContents());
@@ -56,7 +57,7 @@ class ArticleServiceTest {
         // when
         String uri = "/articles/id";
         String id = uri.split("/")[2];
-        var article = articleService.find(id);
+        var article = articleDatabase.selectById(id);
 
         // then
         assertEquals(writer, article.getWriter());
@@ -67,7 +68,7 @@ class ArticleServiceTest {
     @Test
     void 아이디에_해당하는_글이_없다면_예외가_발생한다() {
         // given, when, then
-        assertThrows(IllegalArgumentException.class, () -> articleService.find("id"));
+        assertThrows(IllegalArgumentException.class, () -> articleService.find("/users/id"));
     }
 
     @Test
@@ -88,5 +89,19 @@ class ArticleServiceTest {
 
         // then
         assertEquals(2, articles.size());
+    }
+
+    @Test
+    void 경로의_아이디와_글이_같은_지_확인한다() {
+        // given
+        String articleId = "id";
+        String writer = "writer";
+        String title = "title";
+        String contents = "contents";
+        articleService.save(articleId, writer, title, contents);
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () ->
+                articleService.verifyArticleId(User.of(writer, "name", "password", "email@email"), "/articles/id1"));
     }
 }
