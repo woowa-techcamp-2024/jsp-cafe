@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySQLReplyRepository implements ReplyRepository {
     private final Connection conn;
@@ -56,5 +58,20 @@ public class MySQLReplyRepository implements ReplyRepository {
     @Override
     public void deleteAll() {
 
+    }
+
+    @Override
+    public List<Reply> findByQuestionId(Long questionId) {
+        List<Reply> replies = new ArrayList<>();
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE question_id = ?")) {
+            pstmt.setLong(1, questionId);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()) {
+                replies.add(new Reply(rs.getLong("id"), rs.getString("content"), rs.getLong("question_id"), rs.getString("writer"), rs.getLong("writer_id")));
+            }
+            return replies;
+        } catch (SQLException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }
