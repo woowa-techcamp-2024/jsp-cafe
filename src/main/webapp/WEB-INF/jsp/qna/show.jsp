@@ -142,19 +142,16 @@
                     const answer = response[i];
                     let replyUtils = '';
                     if (answer.writerId === ${sessionScope.user.id}) {
-                        replyUtils= `<div class="article-util">
-                                <ul class="article-util-list">
-                                    <li>
-                                        <a class="link-modify-article" href="/api/qna/updateAnswer/${answer.id}">수정</a>
-                                    </li>
-                                    <li>
-                                        <form class="delete-answer-form" action="/api/questions/${questionId}/answers/${answer.id}" method="POST">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                             <button type="submit" class="delete-answer-button">삭제</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                                </div>`;
+                        replyUtils = `<div class="article-util">
+                            <ul class="article-util-list">
+                                <li>
+                                    <a class="link-modify-article" href="/api/qna/updateAnswer/\${answer.id}">수정</a>
+                                </li>
+                                <li>
+                                    <button type="button" class="delete-answer-button" onclick="deleteReply(\${answer.id})">삭제</button>
+                                </li>
+                            </ul>
+                        </div>`;
                     }
                     html += template.format(answer.writer, '2024-08-31', answer.content, replyUtils);
                 }
@@ -169,6 +166,27 @@
                 alert('Error:' + errorMessage);
             }
         });
+    }
+
+    const deleteReply = (replyId) => {
+        if (confirm("댓글을 삭제하시겠습니까?")) {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/replies/' + replyId,
+                type: 'DELETE',
+                success: function(response) {
+                    if (response['result'] === 'success') {
+                        retrieveReplies();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
+                    if (xhr.status === 403 && xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert('Error:' + errorMessage);
+                }
+            });
+        }
     }
     $(document).ready(() => {
         retrieveReplies();
