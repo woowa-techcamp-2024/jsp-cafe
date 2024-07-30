@@ -89,10 +89,10 @@ public class PostControllerTest {
     public void testDoProcessGet() throws ServletException, IOException {
         // Insert a post into the database
         Map<String, String[]> body = new HashMap<>();
-        body.put("writer", new String[]{"writer1"});
         body.put("title", new String[]{"title1"});
         body.put("contents", new String[]{"contents1"});
         PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+        postDto.setWriter("User One");
         Post savePost = PostRepository.getInstance().save(postDto);
 
         // Simulate GET request with query parameters
@@ -111,7 +111,7 @@ public class PostControllerTest {
 
         PostResponseDto post = (PostResponseDto) request.getAttribute("post");
         assertNotNull(post);
-        assertEquals("writer1", post.getWriter());
+        assertEquals("User One", post.getWriter());
         assertEquals("/qna/show.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
     }
 
@@ -150,6 +150,7 @@ public class PostControllerTest {
         ((CustomHttpServletRequest) request).addParameter("writer", "testWriter");
         ((CustomHttpServletRequest) request).addParameter("title", "testTitle");
         ((CustomHttpServletRequest) request).addParameter("contents", "testContents");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
         postController.doProcess(request, response);
 
@@ -160,7 +161,7 @@ public class PostControllerTest {
         // Verify the post was created
         Post post = PostRepository.getInstance().findById(all.get(0).getId());
         assertNotNull(post);
-        assertEquals("testWriter", post.getWriter());
+        assertEquals("User One", post.getWriter());
         assertEquals("testTitle", post.getTitle());
         assertEquals("testContents", post.getContents());
     }

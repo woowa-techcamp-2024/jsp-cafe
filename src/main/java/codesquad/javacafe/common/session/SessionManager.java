@@ -19,4 +19,9 @@ public class SessionManager {
 			throw ClientErrorCode.UNAUTHORIZED_USER.customException("Unauthorized user info = "+memberInfo);
 		}
 	}
+
+	public String getMemberName(HttpServletRequest req, String key) {
+		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
+		return memberInfo.getName();
+	}
 }

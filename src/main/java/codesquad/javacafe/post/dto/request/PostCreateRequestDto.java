@@ -10,9 +10,12 @@ public class PostCreateRequestDto {
     private String contents;
 
     public PostCreateRequestDto(Map<String, String[]> body) {
-        this.writer = body.get("writer")[0];
         this.title = body.get("title")[0];
         this.contents = body.get("contents")[0];
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
     @Override

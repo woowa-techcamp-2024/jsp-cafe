@@ -62,10 +62,11 @@ public class PostRepositoryTest {
 
     private PostCreateRequestDto createPostDto(String writer, String title, String contents) {
         Map<String, String[]> body = new HashMap<>();
-        body.put("writer", new String[]{writer});
         body.put("title", new String[]{title});
         body.put("contents", new String[]{contents});
-        return new PostCreateRequestDto(body);
+        PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+        postDto.setWriter(writer);
+        return postDto;
     }
 
     @Test

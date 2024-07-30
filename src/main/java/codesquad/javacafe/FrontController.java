@@ -3,7 +3,9 @@ package codesquad.javacafe;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import codesquad.javacafe.common.exception.HttpStatus;
 import codesquad.javacafe.post.controller.PostPageController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +61,9 @@ public class FrontController extends HttpServlet {
 			req.setAttribute("exception", exception);
 			var dispatcher = req.getRequestDispatcher("/WEB-INF/error/customError.jsp");
 			try {
+				if (Objects.equals(exception.getHttpStatus(), HttpStatus.UNAUTHORIZED)) {
+					dispatcher = req.getRequestDispatcher("/user/login.jsp");
+				}
 				dispatcher.forward(req, res);
 			} catch (Exception e) {
 				log.error("[FrontController Dispatch Error] message = ", e.getMessage());

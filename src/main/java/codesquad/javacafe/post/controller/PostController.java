@@ -57,6 +57,9 @@ public class PostController implements SubController {
     private void createPost(HttpServletRequest req) {
         var body = req.getParameterMap();
         var postDto = new PostCreateRequestDto(body);
+        var writer = SessionManager.getInstance().getMemberName(req, "loginInfo");
+        postDto.setWriter(writer);
+        System.out.println("PostDto = "+postDto);
         log.info("[PostController createPost] postRequestDto: {}", postDto);
         PostService.getInstance().createPost(postDto);
     }
