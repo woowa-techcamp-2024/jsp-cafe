@@ -1,21 +1,14 @@
 package org.example.util.session;
 
 import jakarta.servlet.http.HttpSession;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class InMemorySessionManager implements SessionManager {
 
-    private final Map<String, HttpSession> sessions = new HashMap<>();
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Duration sessionTimeout = Duration.ofMinutes(30);
+    private final ConcurrentHashMap<String, HttpSession> sessions = new ConcurrentHashMap<>();
 
     private static final class InstanceHolder {
         private static final SessionManager INSTANCE = new InMemorySessionManager();
@@ -25,61 +18,45 @@ public class InMemorySessionManager implements SessionManager {
         return InstanceHolder.INSTANCE;
     }
 
-
     private InMemorySessionManager() {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(this::cleanExpiredSessions, 0, 1, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(this::cleanInactiveSessions, 0, 1, TimeUnit.MINUTES);
     }
 
     @Override
     public HttpSession getSession(String sessionId) {
-        lock.readLock().lock();
-        try {
-            HttpSession session = sessions.get(sessionId);
-            if (session != null && session instanceof Session) {
-                ((Session) session).access();
-            }
-            return session;
-        } finally {
-            lock.readLock().unlock();
-        }
+        return sessions.get(sessionId);
     }
 
     @Override
     public HttpSession addSessionToManager(HttpSession session) {
-        lock.writeLock().lock();
-        try {
-            sessions.put(session.getId(), session);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        sessions.put(session.getId(), session);
         return session;
     }
 
-
     @Override
     public void invalidateSession(String sessionId) {
-        lock.writeLock().lock();
-        try {
-            HttpSession session = sessions.remove(sessionId);
-            if (session != null) {
+        HttpSession session = sessions.remove(sessionId);
+        if (session != null) {
+            try {
                 session.invalidate();
+            } catch (IllegalStateException e) {
+                // 세션이 이미 무효화된 경우 무시
             }
-        } finally {
-            lock.writeLock().unlock();
         }
     }
 
-    private void cleanExpiredSessions() {
-        Instant now = Instant.now();
+    private void cleanInactiveSessions() {
         sessions.entrySet().removeIf(entry -> {
             HttpSession session = entry.getValue();
-            if (session instanceof Session) {
-                Session customSession = (Session) session;
-                Duration sessionAge = Duration.between(customSession.getLastAccess(), now);
-                return sessionAge.compareTo(sessionTimeout) > 0;
+            try {
+                // 세션에 접근을 시도하여 유효한지 확인
+                session.getLastAccessedTime();
+                return false; // 세션이 유효함
+            } catch (IllegalStateException e) {
+                // 세션이 이미 무효화된 경우
+                return true; // 맵에서 제거
             }
-            return false;
         });
     }
 }
