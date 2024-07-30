@@ -90,9 +90,18 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (var pstmt = conn.prepareStatement("UPDATE question SET is_deleted = TRUE WHERE id = ?");){
+        try {
+            conn.setAutoCommit(false);
+            var pstmt = conn.prepareStatement("UPDATE question SET is_deleted = TRUE WHERE id = ?");
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
+
+            var pstmt2 = conn.prepareStatement("UPDATE reply SET is_deleted = TRUE WHERE question_id = ?");
+            pstmt2.setLong(1, id);
+            pstmt2.executeUpdate();
+
+            conn.commit();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
