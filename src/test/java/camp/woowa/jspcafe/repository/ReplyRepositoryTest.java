@@ -54,4 +54,20 @@ class ReplyRepositoryTest {
         // then
         assertEquals(iteration, reply.size());
     }
+
+    @Test
+    void testDeleteById() {
+        // given
+        Long questionId = 1L;
+        Long writerId = 1L;
+        String writer = "writer";
+        String content = "content";
+
+        // when
+        Long id = replyRepository.save(new Reply(content, questionId, writer, writerId));
+        replyRepository.deleteById(id);
+
+        // then
+        assertEquals(0, replyRepository.findByQuestionId(questionId).size());
+    }
 }
