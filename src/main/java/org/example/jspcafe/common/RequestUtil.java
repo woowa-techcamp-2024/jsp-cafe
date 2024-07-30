@@ -7,7 +7,7 @@ import java.io.IOException;
 import static org.example.jspcafe.common.StringUtils.isNumeric;
 
 public class RequestUtil {
-    public static Long extractPathVariable(HttpServletRequest req) throws IOException {
+    public static Long extractLongPathVariable(HttpServletRequest req) throws IOException {
         String pathInfo = getPathInfo(req);
 
         String substring = pathInfo.substring(1);
