@@ -9,7 +9,8 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
-            <form id="questionForm" name="question">
+            <form id="questionForm" name="question" method="post" action="/qna/${article.id}">
+                <input type="hidden" name="_method" value="PUT" />
                 <div class="form-group">
                     <label for="writer">글쓴이</label>
                     <input class="form-control" id="writer" name="authorId" disabled
@@ -35,29 +36,29 @@
 </div>
 
 <%@include file="/WEB-INF/share/footer.jsp" %>
-<script>
-    $(document).ready(function () {
-        $('#questionForm').on('submit', function (event) {
-            event.preventDefault();
+<%--<script>--%>
+<%--    $(document).ready(function () {--%>
+<%--        $('#questionForm').on('submit', function (event) {--%>
+<%--            event.preventDefault();--%>
 
-            var formData = $(this).serialize();
+<%--            var formData = $(this).serialize();--%>
 
 
-            $.ajax({
-                url: '/qna/${article.id}',
-                type: 'PUT',
-                data: formData, // 폼 데이터를 전송합니다.
-                success: function(response) {
-                    window.location.href = '/qna/${article.id}';
-                },
-                error: function(xhr, status, error) {
-                    document.open();
-                    document.write(xhr.responseText);
-                    document.close();
-                }
-            });
-        });
-    });
-</script>
+<%--            $.ajax({--%>
+<%--                url: '/qna/${article.id}',--%>
+<%--                type: 'PUT',--%>
+<%--                data: formData, // 폼 데이터를 전송합니다.--%>
+<%--                success: function(response) {--%>
+<%--                    window.location.href = '/qna/${article.id}';--%>
+<%--                },--%>
+<%--                error: function(xhr, status, error) {--%>
+<%--                    document.open();--%>
+<%--                    document.write(xhr.responseText);--%>
+<%--                    document.close();--%>
+<%--                }--%>
+<%--            });--%>
+<%--        });--%>
+<%--    });--%>
+<%--</script>--%>
 </body>
 </html>
