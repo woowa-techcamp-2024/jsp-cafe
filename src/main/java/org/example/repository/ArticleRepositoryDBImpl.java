@@ -6,9 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.example.util.LoggerUtil;
+import org.slf4j.Logger;
 
 public class ArticleRepositoryDBImpl implements ArticleRepository {
     private static ArticleRepository instance;
+    private final Logger logger = LoggerUtil.getLogger();
 
 
     private ArticleRepositoryDBImpl() {
@@ -37,7 +40,7 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to save article", e);
         }
         return article;
     }
@@ -60,7 +63,7 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
                 articles.add(article);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to find articles", e);
         }
         return articles;
     }
@@ -83,8 +86,23 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to find article", e);
         }
         return Optional.ofNullable(article);
+    }
+
+    @Override
+    public void update(int id, String title, String content, String userId) {
+        String sql = "UPDATE articles SET title = ?, content = ? WHERE article_id = ? AND author = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.setString(2, content);
+            pstmt.setInt(3, id);
+            pstmt.setString(4, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Failed to update article", e);
+        }
     }
 }

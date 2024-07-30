@@ -39,4 +39,8 @@ public class Article {
     public String getAuthor() {
         return author;
     }
+
+    public boolean isOwner(String userId) {
+        return author.equals(userId);
+    }
 }

@@ -18,8 +18,35 @@
         <div class="panel-body">
             <p><strong>Author:</strong> ${article.author}</p>
             <p>글내용: ${article.content}</p>
+            <button id="editButton" class="btn btn-warning">Edit</button>
+            <button id="deleteButton" class="btn btn-danger">Delete</button>
         </div>
     </div>
 </div>
+<script>
+  document.getElementById('editButton').addEventListener('click', function() {
+    fetch('<c:url value="/question/${article.articleId}/updateForm">', {
+      method: 'GET',
+    }).then(response => {
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        alert('Failed to edit the article.');
+      }
+    });
+  });
+
+  document.getElementById('deleteButton').addEventListener('click', function() {
+    fetch('<c:url value="/question/${article.articleId}"/>', {
+      method: 'DELETE'
+    }).then(response => {
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        alert('Failed to delete the article.');
+      }
+    });
+  });
+</script>
 </body>
 </html>
