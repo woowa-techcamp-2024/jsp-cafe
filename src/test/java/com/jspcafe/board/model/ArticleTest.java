@@ -61,4 +61,20 @@ class ArticleTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new Article(id, title, nickname, content, now, now));
     }
+
+    @Test
+    void 수정할_경우_내용을_수정하고_수정날짜를_현재날짜로_변경한다() {
+        // Given
+        Article article = new Article("testId", "testTitle", "testNickname", "test test...",
+                LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2));
+
+        // When
+        Article updateArticle = article.update("updateTitle", "updateContent");
+
+        // Then
+        assertEquals(article.id(), updateArticle.id());
+        assertEquals("updateTitle", updateArticle.title());
+        assertEquals("updateContent", updateArticle.content());
+        assertEquals(LocalDateTime.now().getDayOfYear(), updateArticle.updateAt().getDayOfYear());
+    }
 }
