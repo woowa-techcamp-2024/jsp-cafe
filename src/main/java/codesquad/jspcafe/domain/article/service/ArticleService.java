@@ -52,6 +52,14 @@ public class ArticleService {
         return ArticleCommonResponse.from(articleRepository.update(article));
     }
 
+    public void deleteArticle(Long articleId, Long userId) throws AccessDeniedException {
+        Article article = findArticleById(articleId);
+        if (!Objects.equals(article.getWriter().getId(), userId)) {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
+        articleRepository.delete(article);
+    }
+
     private Article findArticleById(Long id) {
         return articleRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("아티클이 존재하지 않습니다."));

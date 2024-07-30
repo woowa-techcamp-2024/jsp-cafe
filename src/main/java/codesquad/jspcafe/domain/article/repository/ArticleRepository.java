@@ -10,6 +10,8 @@ public interface ArticleRepository {
 
     Article update(Article article);
 
+    Long delete(Article article);
+
     Optional<Article> findById(Long id);
 
     List<Article> findAll();

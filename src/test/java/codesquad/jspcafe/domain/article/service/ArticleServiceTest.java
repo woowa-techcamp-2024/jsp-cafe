@@ -190,4 +190,40 @@ class ArticleServiceTest {
                 .hasMessage("수정 권한이 없습니다.");
         }
     }
+
+    @Nested
+    @DisplayName("아티클을 삭제할 때")
+    class whenDeleteArticle {
+
+        @Test
+        @DisplayName("아티클이 존재하지 않으면 에외를 던진다.")
+        void deleteArticleFailed() {
+            // Act & Assert
+            assertThatThrownBy(() -> articleService.deleteArticle(expectedId, 1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("아티클이 존재하지 않습니다.");
+        }
+
+        @Test
+        @DisplayName("삭제 권한이 없으면 에외를 던진다.")
+        void deleteArticleAccessDenied() {
+            // Arrange
+            articleRepository.save(expectedArticle);
+            // Act & Assert
+            assertThatThrownBy(() -> articleService.deleteArticle(expectedId, 2L))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("삭제 권한이 없습니다.");
+        }
+
+        @Test
+        @DisplayName("아티클을 삭제한다.")
+        void deleteArticleSuccess() throws AccessDeniedException {
+            // Arrange
+            articleRepository.save(expectedArticle);
+            // Act
+            articleService.deleteArticle(expectedId, 1L);
+            // Assert
+            assertThat(articleRepository.findById(expectedId)).isEmpty();
+        }
+    }
 }

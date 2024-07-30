@@ -27,6 +27,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
             writer    BIGINT NOT NULL,
             contents  TEXT         NOT NULL,
             createdAt DATETIME,
+            deletedAt DATETIME,
             FOREIGN KEY(writer) REFERENCES users (id)
         );""";
 
@@ -61,7 +62,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public Article update(Article article) {
-        String updateQuery = "UPDATE articles SET title = ?, contents = ? WHERE id = ?";
+        String updateQuery = "UPDATE articles SET title = ?, contents = ? WHERE id = ? AND deletedAt IS NULL";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, article.getTitle());
@@ -75,8 +76,21 @@ public class ArticleJdbcRepository implements ArticleRepository {
     }
 
     @Override
+    public Long delete(Article article) {
+        String deleteQuery = "UPDATE articles SET deletedAt = NOW() WHERE id = ?";
+        try (Connection connection = connectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+            preparedStatement.setLong(1, article.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return article.getId();
+    }
+
+    @Override
     public Optional<Article> findById(Long id) {
-        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.id = ? AND a.writer = u.id";
+        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.id = ? AND a.writer = u.id AND a.deletedAt IS NULL";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
             preparedStatement.setLong(1, id);
@@ -106,7 +120,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
     @Override
     public List<Article> findAll() {
         List<Article> articles = new ArrayList<>();
-        String findAllQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id";
+        String findAllQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id AND a.deletedAt IS NULL";
         try (Connection connection = connectionManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findAllQuery)) {
