@@ -3,6 +3,10 @@ package woopaca.jspcafe.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import woopaca.jspcafe.error.BadRequestException;
+import woopaca.jspcafe.error.ForbiddenException;
+import woopaca.jspcafe.error.NotFoundException;
+import woopaca.jspcafe.error.UnauthorizedException;
 import woopaca.jspcafe.fixture.TestUserRepository;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.User;
@@ -52,7 +56,7 @@ class UserServiceTest {
             void 이메일이_비어있으면_예외가_발생한다() {
                 SignUpRequest signUpRequest = new SignUpRequest("", "new", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 이메일은 비어있을 수 없습니다.");
             }
 
@@ -60,7 +64,7 @@ class UserServiceTest {
             void 닉네임이_비어있으면_예외가_발생한다() {
                 SignUpRequest signUpRequest = new SignUpRequest("new", "", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 닉네임은 비어있을 수 없습니다.");
             }
 
@@ -68,7 +72,7 @@ class UserServiceTest {
             void 비밀번호가_비어있으면_예외가_발생한다() {
                 SignUpRequest signUpRequest = new SignUpRequest("new", "new", "");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 비밀번호는 비어있을 수 없습니다.");
             }
 
@@ -78,7 +82,7 @@ class UserServiceTest {
 
                 SignUpRequest signUpRequest = new SignUpRequest("test", "new", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 이미 사용 중인 이메일입니다.");
             }
 
@@ -88,7 +92,7 @@ class UserServiceTest {
 
                 SignUpRequest signUpRequest = new SignUpRequest("new", "test", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다.");
             }
         }
@@ -126,7 +130,7 @@ class UserServiceTest {
         void 사용자_프로필을_조회할_수_없는_경우_예외가_발생한다() {
             Long userId = -1L;
             assertThatThrownBy(() -> userService.getUserProfile(userId))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(NotFoundException.class)
                     .hasMessage("[ERROR] 사용자를 찾을 수 없습니다.");
         }
     }
@@ -153,7 +157,7 @@ class UserServiceTest {
             UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("new", "test2");
             Authentication authentication = new Authentication(user1, LocalDateTime.now());
             assertThatThrownBy(() -> userService.updateUserProfile(user2.getId(), updateProfileRequest, authentication))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(ForbiddenException.class)
                     .hasMessage("[ERROR] 다른 사용자의 프로필을 수정할 수 없습니다.");
         }
 
@@ -164,7 +168,7 @@ class UserServiceTest {
 
             UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("new", "invalid");
             assertThatThrownBy(() -> userService.updateUserProfile(user.getId(), updateProfileRequest, new Authentication(user, LocalDateTime.now())))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(UnauthorizedException.class)
                     .hasMessage("[ERROR] 비밀번호가 일치하지 않습니다.");
         }
 
@@ -177,7 +181,7 @@ class UserServiceTest {
 
             UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("test2", "test1");
             assertThatThrownBy(() -> userService.updateUserProfile(user1.getId(), updateProfileRequest, new Authentication(user1, LocalDateTime.now())))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(BadRequestException.class)
                     .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다.");
         }
 

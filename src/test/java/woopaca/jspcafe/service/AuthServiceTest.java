@@ -3,6 +3,7 @@ package woopaca.jspcafe.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import woopaca.jspcafe.error.UnauthorizedException;
 import woopaca.jspcafe.fixture.TestUserRepository;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.User;
@@ -47,7 +48,7 @@ class AuthServiceTest {
             void 존재하지_않는_사용자이면_예외가_발생한다() {
                 LoginRequest loginRequest = new LoginRequest("test", "test");
                 assertThatThrownBy(() -> authService.authenticate(loginRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("[ERROR] 로그인 실패.");
             }
 
@@ -56,7 +57,7 @@ class AuthServiceTest {
                 userRepository.save(new User("test", "test", "test"));
                 LoginRequest loginRequest = new LoginRequest("test", "invalid");
                 assertThatThrownBy(() -> authService.authenticate(loginRequest))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("[ERROR] 로그인 실패.");
             }
         }

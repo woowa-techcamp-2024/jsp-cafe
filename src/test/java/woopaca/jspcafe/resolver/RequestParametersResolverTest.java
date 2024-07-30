@@ -2,6 +2,7 @@ package woopaca.jspcafe.resolver;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import woopaca.jspcafe.error.BadRequestException;
 
 import java.util.Map;
 
@@ -35,7 +36,7 @@ class RequestParametersResolverTest {
             void 요청_파라미터에_값이_없으면_예외가_발생한다() {
                 Map<String, String[]> parameters = Map.of("invalid", new String[]{});
                 assertThatThrownBy(() -> RequestParametersResolver.resolve(parameters, TestRecord.class))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 파라미터에 `key` 값이 없습니다.");
             }
         }
