@@ -23,12 +23,6 @@ public class UserServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setAttribute("users", userRepository.findAll());
-		req.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(req, resp);
-	}
-
-	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 요청 파라미터 읽기
 		String userId = req.getParameter("userId");
@@ -41,7 +35,7 @@ public class UserServlet extends HttpServlet {
 		User save = userRepository.save(user);
 
 		// 유저목록으로 리다이렉트
-		resp.sendRedirect("/users");
+		resp.sendRedirect("/userPage?action=list");
 	}
 }
 

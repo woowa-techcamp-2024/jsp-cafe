@@ -5,23 +5,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lass9436.user.model.UserRepository;
 
 @WebServlet("/userPage")
 public class UserPageServlet extends HttpServlet {
 
+    private UserRepository userRepository;
     private Map<String, BiFunction<HttpServletRequest, HttpServletResponse, String>> actionMethodMap;
     private final String path = "/WEB-INF/user";
 
     @Override
-    public void init() {
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
         actionMethodMap = new HashMap<>();
         actionMethodMap.put("register", this::handleRegister);
         actionMethodMap.put("login-failed", this::handleLoginFailed);
+        actionMethodMap.put("list", this::handleList);
     }
 
     @Override
@@ -30,7 +36,7 @@ public class UserPageServlet extends HttpServlet {
             String action = req.getParameter("action");
             BiFunction<HttpServletRequest, HttpServletResponse, String> actionMethod = getHandler(action);
             String viewPath = actionMethod.apply(req, resp);
-            req.getRequestDispatcher(viewPath).forward(req, resp);
+            req.getRequestDispatcher(path + viewPath).forward(req, resp);
         } catch (RuntimeException e) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
@@ -43,10 +49,15 @@ public class UserPageServlet extends HttpServlet {
     }
 
     private String handleRegister(HttpServletRequest req, HttpServletResponse resp) {
-        return path + "/register.jsp";
+        return "/register.jsp";
     }
 
     private String handleLoginFailed(HttpServletRequest req, HttpServletResponse resp) {
-        return path + "/loginFailed.jsp";
+        return "/loginFailed.jsp";
+    }
+
+    private String handleList(HttpServletRequest req, HttpServletResponse resp) {
+        req.setAttribute("users", userRepository.findAll());
+        return "/list.jsp";
     }
 }
