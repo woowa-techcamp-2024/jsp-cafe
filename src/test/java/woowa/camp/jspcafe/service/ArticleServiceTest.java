@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
+import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.fixture.ArticleFixture;
 import woowa.camp.jspcafe.fixture.UserFixture;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
@@ -261,7 +262,7 @@ class ArticleServiceTest {
             articleRepository.save(article);
             // when then
             assertThatThrownBy(() -> articleService.findUpdateArticle(updateRequestUser, article.getId()))
-                    .isInstanceOf(ArticleException.class);
+                    .isInstanceOf(UnAuthorizationException.class);
         }
 
     }
@@ -305,7 +306,7 @@ class ArticleServiceTest {
             ArticleUpdateRequest updateRequest = new ArticleUpdateRequest("Updated Title", "Updated Content");
             // when then
             assertThatThrownBy(() -> articleService.updateArticle(updateRequestUser, article.getId(), updateRequest))
-                    .isInstanceOf(ArticleException.class);
+                    .isInstanceOf(UnAuthorizationException.class);
         }
 
     }
