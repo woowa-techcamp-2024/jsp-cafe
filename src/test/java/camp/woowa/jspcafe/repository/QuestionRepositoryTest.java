@@ -20,7 +20,7 @@ class QuestionRepositoryTest {
     }
 
     @Test
-    void TestSave() {
+    void testSave() {
         // given
         String title = "title";
         String content = "content";
@@ -35,7 +35,7 @@ class QuestionRepositoryTest {
     }
 
     @Test
-    void findAll() {
+    void testFindAll() {
         // given
         String title = "title";
         String content = "content";
@@ -52,7 +52,7 @@ class QuestionRepositoryTest {
     }
 
     @Test
-    void findById() {
+    void testFindById() {
         // given
         String title = "title";
         String content = "content";
@@ -66,5 +66,10 @@ class QuestionRepositoryTest {
         assertEquals(title, question.getTitle());
         assertEquals(content, question.getContent());
         assertEquals(writer, question.getWriter());
+    }
+
+    @Test
+    void testUpdate() {
+
     }
 }
