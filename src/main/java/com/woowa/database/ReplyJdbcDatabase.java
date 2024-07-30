@@ -75,11 +75,55 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
 
     @Override
     public Optional<Reply> findById(String replyId) {
-        return Optional.empty();
+        String sql = "select * from reply r join user u on r.user_id=u.user_id where r.reply_id=?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, replyId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Reply reply = Reply.create(
+                        rs.getString("reply_id"),
+                        rs.getString("content"),
+                        new Author(
+                                rs.getString("user_id"),
+                                rs.getString("nickname")
+                        ),
+                        new QuestionInfo(
+                                rs.getString("question_id"),
+                                ""
+                        ),
+                        ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
+                );
+                return Optional.of(reply);
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외 발생", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
+        }
     }
 
     @Override
     public void delete(Reply reply) {
+        String sql = "delete from reply where reply_id=?";
 
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, reply.getReplyId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외 발생", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, null);
+        }
     }
 }
