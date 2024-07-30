@@ -29,9 +29,9 @@ public class UserDb {
         return (long) users.size();
     }
 
-    public static Optional<User> getUserByUserId(String writer) {
+    public static Optional<User> getUserByUserId(Long writer) {
         return users.values().stream()
-                .filter(user -> user.getUserId().equals(writer))
+                .filter(user -> user.getId().equals(writer))
                 .findAny();
     }
 

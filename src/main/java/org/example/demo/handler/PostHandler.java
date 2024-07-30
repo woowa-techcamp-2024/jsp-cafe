@@ -36,7 +36,7 @@ public class PostHandler {
     public void handleCreatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException, ServletException {
         authValidator.checkLoggedIn(request, response);
 
-        String writer = getUserIdFromSession(request);
+        Long writer = getUserIdFromSession(request);
         String title = request.getParameter("title");
         String contents = request.getParameter("contents");
 
@@ -49,7 +49,7 @@ public class PostHandler {
         authValidator.checkLoggedIn(request, response);
         Long postId = Long.parseLong(pathVariables.get(0));
         Post post = checkPostExistence(postId);
-        Long userId = Long.parseLong(getUserIdFromSession(request));
+        Long userId = getUserIdFromSession(request);
 
         authValidator.checkIdenticalUser(request, userId, post);
 
@@ -61,7 +61,7 @@ public class PostHandler {
         authValidator.checkLoggedIn(request, response);
         Long postId = Long.parseLong(pathVariables.get(0));
         Post post = checkPostExistence(postId);
-        Long userId = Long.parseLong(getUserIdFromSession(request));
+        Long userId = getUserIdFromSession(request);
 
         authValidator.checkIdenticalUser(request, userId, post);
 
@@ -76,7 +76,7 @@ public class PostHandler {
         authValidator.checkLoggedIn(request, response);
         Long postId = Long.parseLong(pathVariables.get(0));
         Post post = checkPostExistence(postId);
-        Long userId = Long.parseLong(getUserIdFromSession(request));
+        Long userId = getUserIdFromSession(request);
 
         authValidator.checkIdenticalUser(request, userId, post);
 
@@ -93,7 +93,7 @@ public class PostHandler {
         return postRepository.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
     }
 
-    private String getUserIdFromSession(HttpServletRequest request) {
-        return (String) request.getSession().getAttribute("user");
+    private Long getUserIdFromSession(HttpServletRequest request) {
+        return (Long) request.getSession().getAttribute("user");
     }
 }
