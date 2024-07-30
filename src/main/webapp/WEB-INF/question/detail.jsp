@@ -43,6 +43,7 @@
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
+                            <c:if test="${question.writer == sessionScope.userName}">
                             <li>
                                 <a class="link-modify-article" href="/questions/update/${question.questionSeq}">수정</a>
                             </li>
@@ -52,6 +53,7 @@
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
+                            </c:if>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>
                             </li>
