@@ -12,8 +12,8 @@
                     <input class="form-control" id="userId" name="userId" value="${user.userId}" readonly/>
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" value="${user.password}" placeholder="비밀번호"/>
+                    <label for="password">비밀 번호 확인</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호"/>
                 </div>
                 <div class="form-group">
                     <label for="nickname">이름</label>

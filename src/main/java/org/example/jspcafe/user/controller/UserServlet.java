@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.jspcafe.user.User;
 import org.example.jspcafe.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,18 +38,22 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        User user = (User)req.getSession().getAttribute("user");
         Long id = extractLongPathVariable(req);
 
-        String userId = req.getParameter("userId");
-        String nickname = req.getParameter("nickname");
-        String password = req.getParameter("password");
-        String email = req.getParameter("email");
+        if(user == null || id == null || !user.getId().equals(id)) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            res.setContentType("text/html");
+            res.getWriter().println("You are not logged in");
+        }
 
-        userService.updateUser(id, userId, nickname, password, email);
+        String nickname = req.getParameter("nickname");
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+
+        userService.updateUser(id, nickname, password, email);
 
         res.setStatus(HttpServletResponse.SC_OK);
         res.addHeader("Location", "/users/" + id);
     }
-
-
 }

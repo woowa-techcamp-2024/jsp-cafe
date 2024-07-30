@@ -6,6 +6,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.user.User;
 import org.example.jspcafe.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,15 +34,18 @@ class UserServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private UserService userService;
+    @Mock
+    private HttpSession session;
 
     private UserServlet userServlet;
 
     @BeforeEach
-    void setUp() throws ServletException {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
 
         when(servletConfig.getServletContext()).thenReturn(servletContext);
         when(servletContext.getAttribute("UserService")).thenReturn(userService);
+        when(request.getSession()).thenReturn(session);
 
         userServlet = new UserServlet();
         userServlet.init(servletConfig);
@@ -108,18 +112,19 @@ class UserServletTest {
         @DisplayName("성공적으로 처리하면 유저가 업데이트 되고 /user/{user.id}로 redirect 된다")
         void testDoPut() throws IOException {
             // Given
-            Long userId = 1L;
+            Long id = 1L;
             when(request.getPathInfo()).thenReturn("/1");
             when(request.getParameter("userId")).thenReturn("updatedUser");
             when(request.getParameter("nickname")).thenReturn("Updated User");
             when(request.getParameter("password")).thenReturn("newPassword");
             when(request.getParameter("email")).thenReturn("updated@example.com");
+            when(request.getSession().getAttribute("user")).thenReturn(new User(id, "testUser", "password", "Test User", "test@example.com"));
 
             // When
             userServlet.doPut(request, response);
 
             // Then
-            verify(userService).updateUser(userId, "updatedUser", "Updated User", "newPassword", "updated@example.com");
+            verify(userService).updateUser(id, "Updated User",  "newPassword", "updated@example.com");
             verify(response).setStatus(HttpServletResponse.SC_OK);
             verify(response).addHeader("Location", "/users/1");
         }
