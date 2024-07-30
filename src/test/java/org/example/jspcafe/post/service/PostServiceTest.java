@@ -6,6 +6,7 @@ import org.example.jspcafe.comment.repository.JdbcCommentRepository;
 import org.example.jspcafe.post.model.Post;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
 import org.example.jspcafe.post.request.PostCreateRequest;
+import org.example.jspcafe.post.request.PostModifyRequest;
 import org.example.jspcafe.post.response.PostListResponse;
 import org.example.jspcafe.post.response.PostResponse;
 import org.example.jspcafe.user.model.User;
@@ -82,6 +83,100 @@ class PostServiceTest extends AbstractRepositoryTestSupport {
                 .isEmpty();
     }
 
+    @DisplayName("게시글을 수정할 수 있다.")
+    @Test
+    void modifyPost() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        String modifiedTitle = "modifiedTitle";
+        String modifiedContent = "modifiedContent";
+
+        PostModifyRequest request = new PostModifyRequest(userId, post.getPostId(), modifiedTitle, modifiedContent);
+
+        // when
+        postService.modifyPost(request);
+
+        // then
+        assertThat(postRepository.findById(post.getPostId())).isPresent()
+                .get()
+                .extracting("title.value", "content.value")
+                .containsExactly(modifiedTitle, modifiedContent);
+    }
+
+    @DisplayName("getPostById를 요청하면 게시글을 조회할 수 있다.")
+    @Test
+    void getPostById() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        Post foundPost = postService.getPostById(post.getPostId());
+
+        // then
+        assertThat(foundPost).isNotNull()
+                .extracting("title.value", "content.value")
+                .containsExactly(title, content);
+    }
+
+    @DisplayName("없는 포스트에 대해 getPostById를 요청하면 예외가 발생한다.")
+    @Test
+    void getPostByIdWithInvalidPost() {
+        // given
+        Long invalidPostId = 1L;
+
+        // when & then
+        assertThatThrownBy(() -> postService.getPostById(invalidPostId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게시글을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("없는 게시글을 수정하려는 경우 예외가 발생한다.")
+    @Test
+    void modifyPostWithInvalidPost() {
+        // given
+        Long userId = 1L;
+        Long invalidPostId = 2L;
+        String modifiedTitle = "modifiedTitle";
+        String modifiedContent = "modifiedContent";
+
+        PostModifyRequest request = new PostModifyRequest(userId, invalidPostId, modifiedTitle, modifiedContent);
+
+        // when & then
+        assertThatThrownBy(() -> postService.modifyPost(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게시글을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("본인 게시글이 아닌 경우 수정할 수 없다.")
+    @Test
+    void modifyPostWithInvalidUser() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        Long invalidUserId = 2L;
+        String modifiedTitle = "modifiedTitle";
+        String modifiedContent = "modifiedContent";
+
+        PostModifyRequest request = new PostModifyRequest(invalidUserId, post.getPostId(), modifiedTitle, modifiedContent);
+
+        // when & then
+        assertThatThrownBy(() -> postService.modifyPost(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("수정 권한이 없습니다.");
+    }
 
     @DisplayName("게시글 주인의 댓글만 있으면 게시글과 댓글을 모두 삭제할 수 있다.")
     @Test
