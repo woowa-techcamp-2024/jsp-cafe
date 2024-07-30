@@ -17,7 +17,7 @@ public class ErrorController extends HttpServlet {
         req.setAttribute("errorCode", errorCode);
         resp.setStatus(Integer.parseInt(errorCode));
         switch (errorCode) {
-            case "302" -> req.setAttribute("errorMessage", "권한이 없습니다.");
+            case "403" -> req.setAttribute("errorMessage", "권한이 없습니다.");
             case "404" -> req.setAttribute("errorMessage", "페이지를 찾을 수 없습니다.");
             case "500" -> req.setAttribute("errorMessage", "서버에서 문제가 발생했습니다.");
             default -> req.setAttribute("errorMessage", "문제가 발생했습니다.");

@@ -42,8 +42,12 @@
                 alert('게시글이 성공적으로 삭제되었습니다.');
                 window.location.href = '/';  // 메인 페이지로 리다이렉트
             } catch (error) {
-                alert('게시글 삭제에 실패했습니다. 다시 시도해주세요.');
                 console.error('Error:', error);
+                if (error.response) {
+                    // 서버가 2xx 범위를 벗어나는 상태 코드로 응답한 경우
+                    const errorCode = error.response.status;
+                    window.location.href = '/error/' + errorCode;
+                }
             }
         }
     });

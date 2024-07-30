@@ -79,7 +79,7 @@ public class ArticleController extends HttpServlet {
         Article article = articleService.findById(id);
         User user = getUser(req);
         if (!article.nickname().equals(user.nickname())) {
-            resp.sendRedirect("/users/login");
+            resp.sendRedirect("/error/403");
             return;
         }
         req.setAttribute("article", article);

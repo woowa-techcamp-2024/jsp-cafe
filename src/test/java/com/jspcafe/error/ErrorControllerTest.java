@@ -23,7 +23,7 @@ class ErrorControllerTest {
     }
 
     @Test
-    void 에러_302페이지를_반환한다() throws ServletException, IOException {
+    void 에러_403페이지를_반환한다() throws ServletException, IOException {
         // Given
         request.setPathInfo("/302");
 
@@ -31,7 +31,7 @@ class ErrorControllerTest {
         errorController.doGet(request, response);
 
         // Then
-        assertEquals(302, response.getStatus());
+        assertEquals(403, response.getStatus());
         assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
     }
 
