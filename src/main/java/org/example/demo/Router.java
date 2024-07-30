@@ -18,7 +18,7 @@ public class Router {
         routes.add(new Route(method, urlPattern, handler));
     }
 
-    public boolean route(HttpServletRequest request, HttpServletResponse response){
+    public boolean route(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getRequestURI().substring(request.getContextPath().length());
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
 

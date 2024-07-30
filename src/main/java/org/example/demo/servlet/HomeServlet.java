@@ -14,7 +14,7 @@ public class HomeServlet extends HttpServlet {
     private PostRepository postRepository;
 
     @Override
-    public void init() throws ServletException{
+    public void init() throws ServletException {
         System.out.println("init home servlet!");
         this.postRepository = PostRepository.getInstance();
     }

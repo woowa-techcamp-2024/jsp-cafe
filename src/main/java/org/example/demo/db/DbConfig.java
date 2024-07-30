@@ -75,7 +75,7 @@ public class DbConfig {
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             return reader.lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {
-            throw new InternalServerError("Failed to read schema.sql file"+ e.getMessage());
+            throw new InternalServerError("Failed to read schema.sql file" + e.getMessage());
         }
     }
 }

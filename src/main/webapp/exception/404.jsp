@@ -8,6 +8,7 @@
 %>
 <body>
 <h1>404 - Not Found</h1>
-<p><%=message%></p>
+<p><%=message%>
+</p>
 </body>
 </html>

@@ -3,7 +3,6 @@ package org.example.demo.repository;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
-import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
 
 import java.sql.*;

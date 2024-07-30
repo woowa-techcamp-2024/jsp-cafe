@@ -3,9 +3,9 @@
 <%@ page pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
-<jsp:include page="/components/header.jsp" />
+<jsp:include page="/components/header.jsp"/>
 <body>
-<jsp:include page="/components/nav.jsp" />
+<jsp:include page="/components/nav.jsp"/>
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
@@ -20,9 +20,12 @@
                             User user = (User) request.getAttribute("user");
                         %>
                         <div class="media-body">
-                            <h4 class="media-heading"><%= user.getName()%></h4>
+                            <h4 class="media-heading"><%= user.getName()%>
+                            </h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp <%= user.getEmail()%></a>
+                                <a href="#" class="btn btn-xs btn-default"><span
+                                        class="glyphicon glyphicon-envelope"></span>&nbsp <%= user.getEmail()%>
+                                </a>
                             </p>
                         </div>
                     </div>
@@ -33,7 +36,7 @@
 </div>
 
 <!-- script references -->
-<jsp:include page="/components/footer.jsp" />
+<jsp:include page="/components/footer.jsp"/>
 
-	</body>
+</body>
 </html>

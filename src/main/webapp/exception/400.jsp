@@ -8,6 +8,7 @@
     String message = (String) request.getAttribute("error");
 %>
 <h1>400 - Illegal Argument Exception</h1>
-<p><%=message%></p>
+<p><%=message%>
+</p>
 </body>
 </html>
