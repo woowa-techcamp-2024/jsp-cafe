@@ -15,6 +15,10 @@ public class Reply {
         this.writerId = writerId;
     }
 
+    public Reply(String content, Long questionId, String writer, Long writerId) {
+        this(null, content, questionId, writer, writerId);
+    }
+
 
     public Long getId() {
         return id;
