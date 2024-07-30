@@ -104,7 +104,7 @@ public class UserHandler {
             return;
         }
 
-        request.getSession().setAttribute("user", user.get().getUserId());
+        request.getSession().setAttribute("user", user.get().getId());
         response.sendRedirect("/users/" + user.get().getId());
     }
 
