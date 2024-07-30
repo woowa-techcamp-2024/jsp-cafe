@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public class AuthFilter implements MappingFilter {
     private static final String[] AUTH_WHITELIST = {
+            "/",
             "/questions",
             "/user/login",
             "/user/register",
