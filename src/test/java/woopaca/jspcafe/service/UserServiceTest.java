@@ -4,12 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import woopaca.jspcafe.fixture.TestUserRepository;
+import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.request.UpdateProfileRequest;
 import woopaca.jspcafe.servlet.dto.response.MembersResponse;
 import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,6 +128,66 @@ class UserServiceTest {
             assertThatThrownBy(() -> userService.getUserProfile(userId))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("[ERROR] 사용자를 찾을 수 없습니다.");
+        }
+    }
+
+    @Nested
+    class update_user_profile_메서드는 {
+
+        @Test
+        void 사용자_프로필을_수정한다() {
+            User user = new User("test", "test", "test");
+            userRepository.save(user);
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("new", "test");
+            userService.updateUserProfile(user.getId(), updateProfileRequest, new Authentication(user, LocalDateTime.now()));
+        }
+
+        @Test
+        void 다른_사용자의_프로필을_수정하려는_경우_예외가_발생한다() {
+            User user1 = new User("test1", "test1", "test1");
+            User user2 = new User("test2", "test2", "test2");
+            userRepository.save(user1);
+            userRepository.save(user2);
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("new", "test2");
+            Authentication authentication = new Authentication(user1, LocalDateTime.now());
+            assertThatThrownBy(() -> userService.updateUserProfile(user2.getId(), updateProfileRequest, authentication))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("[ERROR] 다른 사용자의 프로필을 수정할 수 없습니다.");
+        }
+
+        @Test
+        void 비밀번호가_일치하지_않으면_예외가_발생한다() {
+            User user = new User("test", "test", "test");
+            userRepository.save(user);
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("new", "invalid");
+            assertThatThrownBy(() -> userService.updateUserProfile(user.getId(), updateProfileRequest, new Authentication(user, LocalDateTime.now())))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("[ERROR] 비밀번호가 일치하지 않습니다.");
+        }
+
+        @Test
+        void 닉네임이_중복되면_예외가_발생한다() {
+            User user1 = new User("test1", "test1", "test1");
+            User user2 = new User("test2", "test2", "test2");
+            userRepository.save(user1);
+            userRepository.save(user2);
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("test2", "test1");
+            assertThatThrownBy(() -> userService.updateUserProfile(user1.getId(), updateProfileRequest, new Authentication(user1, LocalDateTime.now())))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다.");
+        }
+
+        @Test
+        void 닉네임이_변경되지_않으면_수정하지_않는다() {
+            User user = new User("test", "test", "test");
+            userRepository.save(user);
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest("test", "test");
+            userService.updateUserProfile(user.getId(), updateProfileRequest, new Authentication(user, LocalDateTime.now()));
         }
     }
 }
