@@ -14,6 +14,19 @@ CREATE TABLE IF NOT EXISTS posts
     writer_id  BIGINT       NOT NULL,
     title      VARCHAR(255) NOT NULL,
     contents   TEXT         NOT NULL,
+    is_present BOOLEAN      NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP    NOT NULL,
+    FOREIGN KEY (writer_id) REFERENCES `users` (id)
+);
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id    BIGINT       NOT NULL,
+    writer_id  BIGINT       NOT NULL,
+    contents   TEXT         NOT NULL,
+    is_present BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP    NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES `posts` (id),
     FOREIGN KEY (writer_id) REFERENCES `users` (id)
 );
