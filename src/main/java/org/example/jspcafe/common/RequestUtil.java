@@ -1,6 +1,8 @@
 package org.example.jspcafe.common;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.example.jspcafe.user.User;
 
 import java.io.IOException;
 
@@ -27,5 +29,10 @@ public class RequestUtil {
             throw new IllegalArgumentException("Invalid pathInfo");
         }
         return pathInfo;
+    }
+
+    public static User getUserFromSession(HttpServletRequest req) {
+        HttpSession session = req.getSession(false); // false: 세션이 없으면 null을 반환
+        return  (User) (session != null ? session.getAttribute("user") : null);
     }
 }
