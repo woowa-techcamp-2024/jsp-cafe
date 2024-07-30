@@ -3,6 +3,7 @@ package org.example.demo;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.aop.AopValidator;
 import org.example.demo.exception.InternalServerError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,19 @@ import java.util.regex.Pattern;
 
 public class Router {
     private final Logger logger = LoggerFactory.getLogger(Router.class);
-    private List<Route> routes = new ArrayList<>();
+    private List<Route> routes;
+    private AopValidator aopValidator;
+
+    public Router(AopValidator aopValidator) {
+        this.routes = new ArrayList<>();
+        this.aopValidator = aopValidator;
+    }
 
     public void addRoute(HttpMethod method, String urlPattern, RouteHandler handler) {
         routes.add(new Route(method, urlPattern, handler));
     }
 
-    public boolean route(HttpServletRequest request, HttpServletResponse response) {
+    public boolean route(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getRequestURI().substring(request.getContextPath().length());
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
 
@@ -36,6 +43,11 @@ public class Router {
             if (route.method == method) {
                 Matcher matcher = Pattern.compile(route.urlPattern).matcher(path);
                 if (matcher.matches()) {
+                    // aop 에 따른 검증 로직
+                    if (!aopValidator.validate(route.handler, request, response)) {
+                        return false;
+                    }
+
                     List<String> params = new ArrayList<>();
                     for (int i = 1; i <= matcher.groupCount(); i++) {
                         params.add(matcher.group(i));
@@ -53,17 +65,5 @@ public class Router {
             }
         }
         return false;
-    }
-
-    private static class Route {
-        HttpMethod method;
-        String urlPattern;
-        RouteHandler handler;
-
-        Route(HttpMethod method, String urlPattern, RouteHandler handler) {
-            this.method = method;
-            this.urlPattern = urlPattern;
-            this.handler = handler;
-        }
     }
 }
