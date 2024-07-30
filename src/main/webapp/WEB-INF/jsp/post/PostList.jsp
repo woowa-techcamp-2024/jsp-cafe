@@ -21,7 +21,7 @@
                         <div class="wrap">
                             <div class="main">
                                 <strong class="subject">
-                                    <a href="questions?id=${post.id}">${post.title}</a>
+                                    <a href="questions/${post.id}">${post.title}</a>
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
@@ -43,15 +43,15 @@
                     <!-- 페이지네이션 -->
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="../qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="js/jquery-2.2.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
+<script src="<c:url value='/js/jquery-2.2.0.min.js'/>"></script>
+<script src="<c:url value='/js/bootstrap.min.js'/>"></script>
+<script src="<c:url value='/js/scripts.js'/>"></script>
 </body>
 </html>
