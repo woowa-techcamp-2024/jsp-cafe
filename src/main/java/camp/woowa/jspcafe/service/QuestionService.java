@@ -30,6 +30,8 @@ public class QuestionService {
             throw new IllegalArgumentException("You are not authorized to update this question.");
         }
 
-        questionRepository.update(id, updatedTitle, updatedContent);
+        target.update(updatedTitle, updatedContent);
+
+        questionRepository.update(target);
     }
 }
