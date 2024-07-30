@@ -4,12 +4,12 @@ import cafe.users.User;
 import cafe.users.repository.UserRepository;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -68,10 +68,10 @@ public class IntegrationTest {
     }
 
     @Test
-    public void testUserServlet() throws IOException, InterruptedException, URISyntaxException {
+    public void testQuestionsServlet() throws IOException, InterruptedException, URISyntaxException {
         var client = java.net.http.HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:" + port + "/users"))
+                .uri(new URI("http://localhost:" + port + "/questions"))
                 .GET()
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -87,7 +87,7 @@ public class IntegrationTest {
         String confirmPassword = password;
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:" + port + "/users"))
+                .uri(new URI("http://localhost:" + port + "/user/register"))
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
                 .POST(HttpRequest.BodyPublishers.ofString(
                         String.format("userId=%s&" +
@@ -121,7 +121,7 @@ public class IntegrationTest {
         User user = factory.userRepository().save(new User(userId, email, username, password));
         Long id = user.getId();
 
-        var client = HttpClient.newHttpClient();
+        var client = getLoginClient();
         var request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:" + port + "/users/" + id))
                 .GET()
@@ -138,7 +138,7 @@ public class IntegrationTest {
         String title = "질문 제목" + System.currentTimeMillis();
         String content = "질문 내용" + System.currentTimeMillis();
 
-        var client = HttpClient.newHttpClient();
+        var client = getLoginClient();
         var request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:" + port + "/question/write"))
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -149,7 +149,7 @@ public class IntegrationTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(302, response.statusCode());
-        assertEquals("/questions", response.headers().firstValue("Location").orElse(null));
+        assertTrue(response.headers().firstValue("Location").orElse(null).startsWith("/questions/"));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class IntegrationTest {
         String title = "질문 제목" + System.currentTimeMillis();
         String content = "";
 
-        var client = HttpClient.newHttpClient();
+        var client = getLoginClient();
         var request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/question/write"))
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -184,7 +184,7 @@ public class IntegrationTest {
         String newPassword = "new" + password;
         String newConfirmPassword = newPassword;
 
-        var client = HttpClient.newHttpClient();
+        var client = getLoginClient();
         var request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/users/edit/" + user.getId()))
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -258,7 +258,11 @@ public class IntegrationTest {
         String password = "password" + System.currentTimeMillis();
         User user = factory.userRepository().save(new User(userId, email, username, password));
 
-        var client = HttpClient.newHttpClient();
+        CookieManager cookieManager = new CookieManager();
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        var client = HttpClient.newBuilder()
+                .cookieHandler(cookieManager)
+                .build();
         var request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/user/login"))
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -288,6 +292,237 @@ public class IntegrationTest {
 
         assertEquals(302, response.statusCode());
         assertEquals("/", response.headers().firstValue("Location").orElse(null));
+    }
+
+    @Nested
+    class 로그인하지_않은_사용자는 {
+
+        @Test
+        void 게시글의_목록을_볼_수_있다() throws IOException, InterruptedException {
+            HttpClient client = HttpClient.newHttpClient();
+
+            var request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:" + port + "/questions"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+        }
+
+        @Test
+        void 게시글의_세부내용을_볼_수_없다() throws IOException, InterruptedException {
+            HttpClient client = HttpClient.newHttpClient();
+
+            var request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:" + port + "/questions/1"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(302, response.statusCode());
+            assertEquals("/user/login", response.headers().firstValue("Location").orElse(null));
+        }
+
+        @Test
+        void 게시글을_작성할_수_없다() throws IOException, InterruptedException {
+            HttpClient client = HttpClient.newHttpClient();
+
+            var request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:" + port + "/question/write"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(302, response.statusCode());
+            assertEquals("/user/login", response.headers().firstValue("Location").orElse(null));
+        }
+    }
+
+    @Nested
+    class 로그인한_사용자는 {
+
+        @Test
+        void 게시글의_목록을_볼_수_있다() throws IOException, InterruptedException {
+            HttpClient client = getLoginClient();
+
+            var request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:" + port + "/questions"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+        }
+
+        @Test
+        void 게시글의_세부내용을_볼_수_있다() throws IOException, InterruptedException {
+            HttpClient client = getLoginClient();
+
+            var request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:" + port + "/questions/1"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+        }
+
+        @Test
+        void 게시글을_작성할_수_있다() throws IOException, InterruptedException {
+            HttpClient client = getLoginClient();
+
+            var request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:" + port + "/question/write"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+        }
+
+        @Nested
+        class 본인의_게시글을 {
+            HttpClient loginClient;
+
+            @BeforeEach
+            void setUp() throws IOException, InterruptedException {
+                loginClient = getLoginClient();
+            }
+
+            Long get_본인의_게시글_id() throws IOException, InterruptedException {
+                String title = "질문 제목" + System.currentTimeMillis();
+                String content = "질문 내용" + System.currentTimeMillis();
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/question/write"))
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .POST(HttpRequest.BodyPublishers.ofString(
+                                String.format("title=%s&content=%s", title, content)
+                        ))
+                        .build();
+                HttpResponse<String> response = null;
+                try {
+                    response = loginClient.send(request, HttpResponse.BodyHandlers.ofString());
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                assertEquals(302, response.statusCode());
+                assertTrue(response.headers().firstValue("Location").orElse(null).startsWith("/questions/"));
+
+                String location = response.headers().firstValue("Location").orElse(null);
+                return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
+            }
+
+            @Test
+            void 수정할_수_있다() throws IOException, InterruptedException {
+                Long id = get_본인의_게시글_id();
+                String title = "질문 제목" + System.currentTimeMillis();
+                String content = "질문 내용" + System.currentTimeMillis();
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/questions/" + id))
+                        .header("Content-Type", "application/json")
+                        .header("Accept", "application/json")
+                        .PUT(HttpRequest.BodyPublishers.ofString(
+                                String.format("""
+                                        {
+                                            "title": "%s",
+                                            "content": "%s"
+                                        }
+                                        """, title, content)
+                        ))
+                        .build();
+                HttpResponse<String> response = loginClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                assertEquals(200, response.statusCode());
+            }
+
+            @Test
+            void 삭제할_수_있다() throws IOException, InterruptedException {
+                Long id = get_본인의_게시글_id();
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/questions/" + id))
+                        .header("Accept", "application/json")
+                        .DELETE()
+                        .build();
+                HttpResponse<String> response = loginClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                assertEquals(200, response.statusCode());
+            }
+        }
+
+        @Nested
+        class 타인의_게시글을 {
+
+            Long get_타인의_게시글_id() throws IOException, InterruptedException {
+                String title = "질문 제목" + System.currentTimeMillis();
+                String content = "질문 내용" + System.currentTimeMillis();
+
+                HttpClient client = getLoginClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/question/write"))
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .POST(HttpRequest.BodyPublishers.ofString(
+                                String.format("title=%s&content=%s", title, content)
+                        ))
+                        .build();
+                HttpResponse<String> response = null;
+                try {
+                    response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                assertEquals(302, response.statusCode());
+                assertTrue(response.headers().firstValue("Location").orElse(null).startsWith("/questions/"));
+
+                String location = response.headers().firstValue("Location").orElse(null);
+                return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
+            }
+
+            @Test
+            void 수정할_수_없다() throws IOException, InterruptedException {
+                Long id = get_타인의_게시글_id();
+                String title = "질문 제목" + System.currentTimeMillis();
+                String content = "질문 내용" + System.currentTimeMillis();
+
+                HttpClient client = getLoginClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/questions/" + id))
+                        .header("Content-Type", "application/json")
+                        .header("Accept", "application/json")
+                        .PUT(HttpRequest.BodyPublishers.ofString(
+                                String.format("""
+                                        {
+                                            "title": "%s",
+                                            "content": "%s"
+                                        }
+                                        """, title, content)
+                        ))
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                assertEquals(403, response.statusCode());
+            }
+
+            @Test
+            void 삭제할_수_없다() throws IOException, InterruptedException {
+                Long id = get_타인의_게시글_id();
+
+                HttpClient client = getLoginClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/questions/" + id))
+                        .header("Accept", "application/json")
+                        .DELETE()
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                assertEquals(403, response.statusCode());
+            }
+        }
     }
 
 }
