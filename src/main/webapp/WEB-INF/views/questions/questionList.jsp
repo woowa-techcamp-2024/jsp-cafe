@@ -22,14 +22,7 @@
                     style="cursor: pointer;">
                     <td><c:out value="${article.title}"/></td>
                     <td>
-                        <c:choose>
-                            <c:when test="${article.userId == 0}">
-                                Unknown
-                            </c:when>
-                            <c:otherwise>
-                                <c:out value="${article.userId}"/>
-                            </c:otherwise>
-                        </c:choose>
+                        <c:out value="${article.userName}"/>
                     </td>
                     <td><c:out value="${article.createdDate}"/></td>
                 </tr>

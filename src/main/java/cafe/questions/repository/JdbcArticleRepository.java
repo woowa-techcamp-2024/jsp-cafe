@@ -67,7 +67,13 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public List<Article> findAll() {
-        String sql = "SELECT * FROM articles WHERE deleted_at IS NULL ORDER BY id DESC";
+        String sql = """
+                SELECT a.*, u.username 
+                FROM articles a
+                LEFT JOIN users u ON a.user_id = u.id
+                WHERE a.deleted_at IS NULL
+                ORDER BY a.id DESC
+                """;
         try (Connection connection = connectionPool.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -76,6 +82,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                 articles.add(new Article(
                         resultSet.getLong("id"),
                         resultSet.getLong("user_id"),
+                        resultSet.getString("username"), // Fetching the username
                         resultSet.getString("title"),
                         resultSet.getString("content"),
                         resultSet.getTimestamp("created_date"),
@@ -90,7 +97,12 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public Article findById(Long id) {
-        String sql = "SELECT * FROM articles WHERE id = ? AND deleted_at IS NULL";
+        String sql = """
+                SELECT a.*, u.username
+                FROM articles a
+                LEFT JOIN users u ON a.user_id = u.id
+                WHERE a.id = ? AND a.deleted_at IS NULL
+                """;
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -99,6 +111,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                     return new Article(
                             resultSet.getLong("id"),
                             resultSet.getLong("user_id"),
+                            resultSet.getString("username"), // Fetching the username
                             resultSet.getString("title"),
                             resultSet.getString("content"),
                             resultSet.getTimestamp("created_date"),
@@ -111,6 +124,7 @@ public class JdbcArticleRepository implements ArticleRepository {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void deleteAll() {

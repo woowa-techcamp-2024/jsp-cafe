@@ -6,14 +6,7 @@
     <div class="col-md-8">
         <h2 class="mt-5"><c:out value="${article.title}"/></h2>
         <p class="text-muted">By
-            <c:choose>
-                <c:when test="${not empty user}">
-                    <c:out value="${user.username}"/>
-                </c:when>
-                <c:otherwise>
-                    Unknown
-                </c:otherwise>
-            </c:choose>
+            <c:out value="${article.userName}"/>
             on <c:out value="${article.createdDate}"/></p>
         <hr>
         <p><c:out value="${article.content}"/></p>
