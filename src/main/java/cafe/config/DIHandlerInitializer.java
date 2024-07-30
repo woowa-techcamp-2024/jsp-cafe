@@ -2,6 +2,8 @@ package cafe.config;
 
 import cafe.controller.handler.articles.*;
 import cafe.controller.handler.DefaultHandler;
+import cafe.controller.handler.comments.CommentCreateHandler;
+import cafe.controller.handler.comments.CommentDeleteHandler;
 import cafe.controller.handler.users.UserInfoEditHandler;
 import cafe.controller.handler.users.UserInfoHandler;
 import cafe.controller.handler.users.UserInfoListHandler;
@@ -19,6 +21,7 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("defaultHandler", new DefaultHandler(servletContext));
         userHandlerInit(servletContext);
         articleHandlerInit(servletContext);
+        commentHandlerInit(servletContext);
     }
 
     private void userHandlerInit(ServletContext servletContext) {
@@ -36,5 +39,10 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("articleCreateHandler", new ArticleCreateHandler(servletContext));
         servletContext.setAttribute("articleUpdateHandler", new ArticleUpdateHandler(servletContext));
         servletContext.setAttribute("articleDeleteHandler", new ArticleDeleteHandler(servletContext));
+    }
+
+    private void commentHandlerInit(ServletContext servletContext) {
+        servletContext.setAttribute("commentCreateHandler", new CommentCreateHandler(servletContext));
+        servletContext.setAttribute("commentDeleteHandler", new CommentDeleteHandler(servletContext));
     }
 }
