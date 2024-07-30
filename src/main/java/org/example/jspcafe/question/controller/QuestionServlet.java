@@ -10,9 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.jspcafe.question.Question;
 import org.example.jspcafe.question.repository.QuestionRepository;
 import org.example.jspcafe.question.service.QuestionService;
+import org.example.jspcafe.user.User;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.example.jspcafe.common.RequestUtil.getUserFromSession;
 
 @WebServlet("/questions")
 public class QuestionServlet extends HttpServlet {
@@ -35,11 +38,20 @@ public class QuestionServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String writer = req.getParameter("writer");
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        User user = getUserFromSession(req);
+
+        if (user == null) {
+            resp.sendRedirect("/login");
+        }
+
         String title = req.getParameter("title");
         String contents = req.getParameter("contents");
-        Question question = new Question(writer, title, contents);
+        Question question = Question.builder()
+                .userId(user.getId())
+                .title(title)
+                .contents(contents)
+                .build();
         Long id = questionService.saveQuestion(question);
         resp.sendRedirect("/questions/" + id);
     }
