@@ -28,6 +28,10 @@ public class UserService {
         return UserResponseDto.toResponse(userRepository.save(user));
     }
 
+    public UserResponseDto getUserFromUserId(String userId) throws SQLException, IllegalArgumentException {
+        return UserResponseDto.toResponse(userRepository.findUserByUserId(userId));
+    }
+
     public boolean existsByUserId(String userId) throws SQLException {
         return userRepository.existsByUserId(userId);
     }
