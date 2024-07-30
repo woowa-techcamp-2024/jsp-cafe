@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.repository;
 
+import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuestionRepositoryTest {
     QuestionRepository questionRepository;
@@ -88,5 +90,20 @@ class QuestionRepositoryTest {
         Question question = questionRepository.findById(id);
         assertEquals(updatedTitle, question.getTitle());
         assertEquals(updatedContent, question.getContent());
+    }
+
+    @Test
+    void testDeleteById() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionRepository.save(title, content, writer, 1L);
+
+        // when
+        questionRepository.deleteById(id);
+
+        // then
+        assertEquals(0, questionRepository.findAll().size());
     }
 }
