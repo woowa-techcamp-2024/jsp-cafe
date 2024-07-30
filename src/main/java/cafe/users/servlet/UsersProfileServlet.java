@@ -30,7 +30,7 @@ public class UsersProfileServlet extends MappingHttpServlet {
         User user = userRepository.findById(id);
         log.info("User: " + user);
         if (user == null) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         req.setAttribute("user", user);
