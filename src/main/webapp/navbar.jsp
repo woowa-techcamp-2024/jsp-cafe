@@ -1,10 +1,11 @@
 <%@ page import="org.example.jspcafe.user.User" %>
+<%@ page import="static org.example.jspcafe.common.RequestUtil.getUserFromSession" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 
 <%
     // 세션에서 사용자 정보 가져오기
-    User user = (User) request.getSession().getAttribute("user");
+    User loginUser = getUserFromSession(request);
 %>
 
 <nav class="navbar navbar-fixed-top header">
@@ -56,14 +57,16 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/questions">Posts</a></li>
-                <% if (user != null) { %>
+                <% if (loginUser != null) { %>
                 <li>
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" role="button">로그아웃</a>
                     <form id="logout-form" action="/auth/logout" method="post" style="display: none;">
                         <!-- 필요한 경우 CSRF 토큰 등 추가 -->
                     </form>
                 </li>
-                <li><a href="/users/<c:out value="${user.id}"/>" role="button">개인정보수정</a></li>
+                <li>
+                    <a href="<c:url value='/users/${loginUser.id}'/>" role="button">개인정보수정</a>
+                </li>
                 <% } else { %>
                 <li><a href="/auth/" role="button">로그인</a></li>
                 <li><a href="/user/form.jsp" role="button">회원가입</a></li>
