@@ -1,4 +1,4 @@
-package servlet;
+package servlet.user;
 
 import domain.User;
 import exception.TomcatException;

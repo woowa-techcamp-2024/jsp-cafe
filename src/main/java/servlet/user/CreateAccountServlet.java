@@ -1,4 +1,4 @@
-package servlet;
+package servlet.user;
 
 import dto.UsersDao;
 import jakarta.servlet.ServletConfig;
