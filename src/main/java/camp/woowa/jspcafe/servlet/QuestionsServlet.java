@@ -5,6 +5,7 @@ import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.service.QuestionService;
 import camp.woowa.jspcafe.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,7 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet(value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
@@ -72,13 +75,22 @@ public class QuestionsServlet extends HttpServlet {
 
         User w = findByUserIdOrThrow(user.getUserId());// Check if the user exists
 
-        String title = req.getParameter("title");
-        String content = req.getParameter("content");
+        // PUT request json body to Object
+        try (BufferedReader reader = req.getReader()){
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> dataMap = mapper.readValue(reader, Map.class);
 
-        questionService.update(questionId, title, content, w.getId());
+            String title = dataMap.get("title");
+            String content = dataMap.get("content");
+
+            questionService.update(questionId, title, content, w.getId());
+        } catch (IOException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read request body");
+        }
 
         try {
-            resp.sendRedirect("/");
+            resp.setContentType("application/json");
+            resp.getWriter().write("{\"result\":\"success\"}");
         } catch (IOException e) {
             log("Redirect Error", e);
         }
