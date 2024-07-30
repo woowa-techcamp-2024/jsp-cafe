@@ -38,7 +38,8 @@ public class DefaultServletContextListener implements ServletContextListener {
         ReplyRepository replyRepository = new ReplyJdbcRepository(connectionManager);
         ServletContext sc = sce.getServletContext();
         sc.setAttribute("userService", new UserService(userRepository));
-        sc.setAttribute("articleService", new ArticleService(articleRepository, userRepository));
+        sc.setAttribute("articleService",
+            new ArticleService(articleRepository, replyRepository, userRepository));
         sc.setAttribute("replyService", new ReplyService(userRepository, replyRepository));
     }
 

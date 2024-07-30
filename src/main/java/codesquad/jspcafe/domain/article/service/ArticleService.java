@@ -5,6 +5,8 @@ import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
+import codesquad.jspcafe.domain.reply.domain.Reply;
+import codesquad.jspcafe.domain.reply.repository.ReplyRepository;
 import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.nio.file.AccessDeniedException;
@@ -17,10 +19,13 @@ import java.util.Objects;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final ReplyRepository replyRepository;
     private final UserRepository userRepository;
 
-    public ArticleService(ArticleRepository articleRepository, UserRepository userRepository) {
+    public ArticleService(ArticleRepository articleRepository, ReplyRepository replyRepository,
+        UserRepository userRepository) {
         this.articleRepository = articleRepository;
+        this.replyRepository = replyRepository;
         this.userRepository = userRepository;
     }
 
@@ -57,6 +62,11 @@ public class ArticleService {
         if (!Objects.equals(article.getWriter().getId(), userId)) {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
+        List<Reply> replies = replyRepository.findByArticleId(articleId);
+        if (!replies.stream().allMatch(reply -> reply.getWriter().getId().equals(userId))) {
+            throw new IllegalArgumentException("댓글이 존재하여 삭제할 수 없습니다.");
+        }
+        replies.forEach(replyRepository::delete);
         articleRepository.delete(article);
     }
 
