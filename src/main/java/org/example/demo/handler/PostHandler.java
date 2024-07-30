@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class PostHandler {
     private static final Logger logger = LoggerFactory.getLogger(PostHandler.class);
@@ -34,10 +33,9 @@ public class PostHandler {
     }
 
     public void handleGetPost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
-        Long postId = Long.parseLong(pathVariables.get(0));
-        Post post = postRepository.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
-
         authValidator.checkLoggedIn(request, response);
+        Long postId = Long.parseLong(pathVariables.get(0));
+        Post post = checkPostExistence(postId);
 
         request.setAttribute("post", post);
         request.getRequestDispatcher("/WEB-INF/post/show.jsp").forward(request, response);
@@ -46,7 +44,7 @@ public class PostHandler {
     public void handleCreatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException, ServletException {
         authValidator.checkLoggedIn(request, response);
 
-        String writer = (String) request.getSession().getAttribute("user");
+        String writer = getUserIdFromSession(request);
         String title = request.getParameter("title");
         String contents = request.getParameter("contents");
 
@@ -57,10 +55,9 @@ public class PostHandler {
 
     public void handleEditPost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         authValidator.checkLoggedIn(request, response);
-
-        Long id = Long.parseLong(pathVariables.get(0));
-        Post post = postRepository.getPost(id).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
-        Long userId = (Long) request.getSession().getAttribute("user");
+        Long postId = Long.parseLong(pathVariables.get(0));
+        Post post = checkPostExistence(postId);
+        Long userId = Long.parseLong(getUserIdFromSession(request));
 
         authValidator.checkIdenticalUser(request, userId, post);
 
@@ -68,36 +65,43 @@ public class PostHandler {
         request.getRequestDispatcher("/WEB-INF/post/edit.jsp").forward(request, response);
     }
 
-    public void handleUpdatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
-        Long id = Long.parseLong(pathVariables.get(0));
-        String title = request.getParameter("title");
-        String contents = request.getParameter("contents");
-
-        Post post = postRepository.getPost(id).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
-        Long userId = (Long) request.getSession().getAttribute("user");
+    public void handleUpdatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException, ServletException {
+        authValidator.checkLoggedIn(request, response);
+        Long postId = Long.parseLong(pathVariables.get(0));
+        Post post = checkPostExistence(postId);
+        Long userId = Long.parseLong(getUserIdFromSession(request));
 
         authValidator.checkIdenticalUser(request, userId, post);
 
-        postRepository.updatePost(id, title, contents);
+        String title = request.getParameter("title");
+        String contents = request.getParameter("contents");
+        postRepository.updatePost(postId, title, contents);
 
-        response.sendRedirect("/posts/" + id);
+        response.sendRedirect("/posts/" + postId);
     }
 
     public void handleDeletePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException, ServletException {
         authValidator.checkLoggedIn(request, response);
-
-        Long id = Long.parseLong(pathVariables.get(0));
-        Post post = postRepository.getPost(id).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
-        Long userId = (Long) request.getSession().getAttribute("user");
+        Long postId = Long.parseLong(pathVariables.get(0));
+        Post post = checkPostExistence(postId);
+        Long userId = Long.parseLong(getUserIdFromSession(request));
 
         authValidator.checkIdenticalUser(request, userId, post);
 
-        postRepository.deletePost(id);
+        postRepository.deletePost(postId);
 
         response.sendRedirect("/");
     }
 
     public void handlePostForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         request.getRequestDispatcher("/WEB-INF/post/form.jsp").forward(request, response);
+    }
+
+    private Post checkPostExistence(Long postId) {
+        return postRepository.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
+    }
+
+    private String getUserIdFromSession(HttpServletRequest request) {
+        return (String) request.getSession().getAttribute("user");
     }
 }
