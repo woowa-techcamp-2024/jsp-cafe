@@ -37,7 +37,8 @@
                         <ul class="article-util-list">
                             <c:if test="${sessionScope.userId == question.writer}">
                                 <li>
-                                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                                    <a class="link-modify-article"
+                                       href="/questions/${question.questionId}?edit=true">수정</a>
                                 </li>
                                 <li>
                                     <button id="delete-question-btn" class="delete-answer-button"

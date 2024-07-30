@@ -9,14 +9,16 @@ function getAPI(url, successCallback, failCallback) {
         error: function (xhr, status, error) {
             console.error('Error:', error);
             failCallback();
-        }``
+        }
     });
 }
 
-function putAPI(url, successPath) {
+function postAPI(url, data, successPath) {
     $.ajax({
         url: url,
-        type: 'PUT',
+        type: 'POST',
+        contentType: 'application/x-www-form-urlencoded',
+        data: data,
         success: function (response) {
             console.log('Success:', response);
             window.location.href = successPath;
@@ -24,7 +26,24 @@ function putAPI(url, successPath) {
         error: function (xhr, status, error) {
             console.error('Error:', error);
             alert('에러 발생: ' + xhr.responseJSON.error);
-        }``
+        }
+    });
+}
+
+function putAPI(url, data, successPath) {
+    $.ajax({
+        url: url,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            console.log('Success:', response);
+            window.location.href = successPath;
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            alert('에러 발생: ' + xhr.responseJSON.error);
+        }
     });
 }
 

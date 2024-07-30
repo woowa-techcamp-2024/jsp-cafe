@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import org.example.cafe.common.endpoint.Endpoint;
+import org.example.cafe.common.endpoint.PathEndPoint;
 import org.slf4j.Logger;
 
 /**
@@ -26,7 +28,9 @@ public class AuthenticationFilter implements Filter {
     private static final Logger log = getLogger(AuthenticationFilter.class);
     private static final List<Endpoint> ENDPOINT_PATTERNS = List.of(
             new Endpoint("GET", "/questions"),
+            new PathEndPoint("GET", "/questions/*", "edit=true"),
             new Endpoint("POST", "/questions"),
+            new Endpoint("PUT", "/questions/*"),
             new Endpoint("DELETE", "/questions/*"),
             new Endpoint("POST", "/users/*"),
             new Endpoint("GET", "/logout"));
@@ -61,24 +65,11 @@ public class AuthenticationFilter implements Filter {
     }
 
     private boolean canMatch(HttpServletRequest request) {
-        return ENDPOINT_PATTERNS.stream().anyMatch(pattern -> {
-            if (pattern.path.endsWith("/") || pattern.path.endsWith("*")) {
-                String comparePath = pattern.path.endsWith("*")
-                        ? pattern.path.substring(0, pattern.path.length() - 1)
-                        : pattern.path;
-                return request.getRequestURI().startsWith(comparePath)
-                        && request.getMethod().equals(pattern.method);
-            }
-            return request.getRequestURI().equals(pattern.path)
-                    && request.getMethod().equals(pattern.method);
-        });
+        return ENDPOINT_PATTERNS.stream()
+                .anyMatch(pattern -> pattern.match(request));
     }
 
     private boolean isSessionValid(HttpSession session) {
         return session != null && session.getAttribute("userId") != null;
-    }
-
-    private record Endpoint(String method,
-                            String path) {
     }
 }

@@ -1,11 +1,11 @@
 package org.example.cafe.utils;
 
-public final class PathVariableExtractUtils {
+public final class PathTokenExtractUtils {
 
-    private PathVariableExtractUtils() {
+    private PathTokenExtractUtils() {
     }
 
-    public static <T> T extractAsteriskValue(String path, int index, Class<T> type) {
+    public static <T> T extractValueByIndex(String path, int index, Class<T> type) {
         String[] pathParts = path.split("/");
         String value = pathParts[index];
 

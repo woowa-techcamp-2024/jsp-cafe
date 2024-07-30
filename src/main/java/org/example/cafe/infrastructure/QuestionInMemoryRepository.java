@@ -30,6 +30,11 @@ public class QuestionInMemoryRepository implements QuestionRepository {
     }
 
     @Override
+    public void update(Question question) {
+        storage.put(question.getQuestionId(), question);
+    }
+
+    @Override
     public void delete(Long id) {
         storage.remove(id);
     }

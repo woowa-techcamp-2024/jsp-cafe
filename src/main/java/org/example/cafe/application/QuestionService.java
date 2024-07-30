@@ -2,6 +2,7 @@ package org.example.cafe.application;
 
 import java.util.List;
 import org.example.cafe.application.dto.QuestionCreateDto;
+import org.example.cafe.application.dto.QuestionUpdateDto;
 import org.example.cafe.common.error.BadAuthenticationException;
 import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.Question;
@@ -31,6 +32,16 @@ public class QuestionService {
         }
 
         return question;
+    }
+
+    public void updateQuestion(String loginUserId, QuestionUpdateDto questionUpdateDto) {
+        Question question = questionRepository.findById(questionUpdateDto.questionId());
+        if (question == null) {
+            throw new DataNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        validWriter(loginUserId, question);
+        questionRepository.update(questionUpdateDto.toQuestion(loginUserId));
     }
 
     public void deleteQuestion(String loginUserId, Long id) {

@@ -22,6 +22,16 @@ public class Question {
     public Question(Long questionId,
                     String title,
                     String content,
+                    String writer) {
+        this.questionId = questionId;
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
+
+    public Question(Long questionId,
+                    String title,
+                    String content,
                     String writer,
                     LocalDateTime createdAt) {
         this.questionId = questionId;
