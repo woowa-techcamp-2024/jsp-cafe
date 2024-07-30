@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.service;
 
+import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.QuestionRepository;
 
@@ -27,11 +29,20 @@ public class QuestionService {
     public void update(Long id, String updatedTitle, String updatedContent, long writerId) {
         Question target = findById(id);
         if (target.getWriterId() != writerId) { // 수정 권한 검증
-            throw new IllegalArgumentException("You are not authorized to update this question.");
+            throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to update this question.");
         }
 
         target.update(updatedTitle, updatedContent);
 
         questionRepository.update(target);
+    }
+
+    public void deleteById(Long id, long writerId) {
+        Question target = findById(id);
+        if (target.getWriterId() != writerId) { // 삭제 권한 검증
+            throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to delete this question.");
+        }
+
+        questionRepository.deleteById(id);
     }
 }
