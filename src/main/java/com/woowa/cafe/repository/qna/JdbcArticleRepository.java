@@ -22,13 +22,14 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public Long save(final Article article) {
         try (Connection connection = this.dataSource.getConnection()) {
-            String sql = "INSERT INTO articles (writer_id, title, contents, create_at, modified_at) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO articles (writer_id, title, contents, reply_count, create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, article.getWriterId());
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContents());
-            pstmt.setTimestamp(4, Timestamp.valueOf(article.getCreatedAt()));
-            pstmt.setTimestamp(5, Timestamp.valueOf(article.getUpdatedAt()));
+            pstmt.setLong(4, article.getReplyCount());
+            pstmt.setTimestamp(5, Timestamp.valueOf(article.getCreatedAt()));
+            pstmt.setTimestamp(6, Timestamp.valueOf(article.getUpdatedAt()));
 
             pstmt.executeUpdate();
 
@@ -58,6 +59,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                         resultSet.getString("writer_id"),
                         resultSet.getString("title"),
                         resultSet.getString("contents"),
+                        resultSet.getLong("reply_count"),
                         resultSet.getTimestamp("create_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime()));
             }
@@ -81,6 +83,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                         resultSet.getString("writer_id"),
                         resultSet.getString("title"),
                         resultSet.getString("contents"),
+                        resultSet.getLong("reply_count"),
                         resultSet.getTimestamp("create_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime());
                 articles.add(article);
@@ -95,12 +98,13 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public Optional<Article> update(final Article article) {
         try (Connection connection = this.dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE articles SET writer_id = ?, title = ?, contents = ?, modified_at = ? WHERE article_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE articles SET writer_id = ?, title = ?, contents = ?, reply_count = ?, modified_at = ? WHERE article_id = ?");
             pstmt.setString(1, article.getWriterId());
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContents());
-            pstmt.setTimestamp(4, Timestamp.valueOf(article.getUpdatedAt()));
-            pstmt.setLong(5, article.getId());
+            pstmt.setLong(4, article.getReplyCount());
+            pstmt.setTimestamp(5, Timestamp.valueOf(article.getUpdatedAt()));
+            pstmt.setLong(6, article.getId());
 
             pstmt.executeUpdate();
 
