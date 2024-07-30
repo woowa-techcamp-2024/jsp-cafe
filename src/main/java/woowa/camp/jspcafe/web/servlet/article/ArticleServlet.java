@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
@@ -38,25 +39,23 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("ArticleServlet doGet start");
+        try {
+            String contextPath = req.getContextPath();
+            Map<String, String> pathVariables =
+                    extractPathVariables(contextPath + "/articles/{id}", req.getRequestURI());
 
-        String pathInfo = req.getPathInfo();
-        log.info("pathInfo - {}", pathInfo);
-
-        String contextPath = req.getContextPath();
-        Map<String, String> pathVariables = extractPathVariables(contextPath + "/articles/{id}", req.getRequestURI());
-        if (pathVariables.containsKey("id")) {
-            Long id = Long.parseLong(pathVariables.get("id"));
-            log.info("id - {}", id);
-            ArticleDetailsResponse articleDetails = articleService.findArticleDetails(id);
-            req.setAttribute("article", articleDetails);
-
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/show.jsp");
-            requestDispatcher.forward(req, resp);
-
-            log.info("게시글! - {}", articleDetails);
-            return;
+            if (pathVariables.containsKey("id")) {
+                handleDetailArticle(req, resp, pathVariables);
+                return;
+            }
+            handleArticles(req, resp);
+        } catch (ArticleException e) {
+            log.warn("[ArticleException]", e);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
+    }
 
+    private void handleArticles(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int currentPage = 1;
         int totalPage = 10;
         String pageParam = req.getParameter("page");
@@ -75,5 +74,17 @@ public class ArticleServlet extends HttpServlet {
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/index.jsp");
         requestDispatcher.forward(req, resp);
         log.debug("ArticleServlet doGet end");
+    }
+
+    private void handleDetailArticle(HttpServletRequest req, HttpServletResponse resp,
+                                     Map<String, String> pathVariables)
+            throws ServletException, IOException {
+
+        Long id = Long.parseLong(pathVariables.get("id"));
+        ArticleDetailsResponse articleDetails = articleService.findArticleDetails(id);
+        req.setAttribute("article", articleDetails);
+
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/show.jsp");
+        requestDispatcher.forward(req, resp);
     }
 }
