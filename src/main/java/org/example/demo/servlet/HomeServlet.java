@@ -15,16 +15,12 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        System.out.println("init home servlet!");
         this.postRepository = PostRepository.getInstance();
     }
 
     // 홈 화면
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("home servlet!!!");
-        System.out.println("postRepository = " + postRepository.getPosts());
-
         request.setAttribute("posts", postRepository.getPosts());
 
         request.getRequestDispatcher("/index.jsp").forward(request, response);

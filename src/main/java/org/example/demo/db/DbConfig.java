@@ -1,6 +1,8 @@
 package org.example.demo.db;
 
 import org.example.demo.exception.InternalServerError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,6 +14,7 @@ import java.sql.Statement;
 import java.util.stream.Collectors;
 
 public class DbConfig {
+    private static final Logger logger = LoggerFactory.getLogger(DbConfig.class);
     private String jdbcUrl;
     private String user;
     private String password;
@@ -28,7 +31,7 @@ public class DbConfig {
     }
 
     private void initializeDatabase() {
-        System.out.println("initializing database...");
+        logger.info("initializing database...");
         try {
             // JDBC 드라이버 로드
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -37,9 +40,6 @@ public class DbConfig {
             // 데이터베이스 연결 (기본 연결)
             try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
                  Statement stmt = conn.createStatement()) {
-
-//                // 데이터베이스가 없는 경우 생성
-//                stmt.execute("CREATE DATABASE IF NOT EXISTS test");
 
                 // 스키마 파일 읽기
                 String schema = readSchemaFile();
@@ -52,7 +52,7 @@ public class DbConfig {
                     }
                 }
 
-                System.out.println("Database initialized successfully.");
+                logger.info("Database initialized successfully.");
             }
 
         } catch (Exception e) {
