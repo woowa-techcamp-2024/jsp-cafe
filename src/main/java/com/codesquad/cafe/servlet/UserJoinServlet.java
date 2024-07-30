@@ -33,6 +33,7 @@ public class UserJoinServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserJoinRequest user = RequestParamModelMapper.map(req.getParameterMap(), UserJoinRequest.class);
+        user.validate();
 
         log.debug("user: {}", user);
 
@@ -49,7 +50,7 @@ public class UserJoinServlet extends HttpServlet {
             return;
         }
 
-        resp.sendRedirect("/users");
+        resp.sendRedirect("/users/list");
     }
 
 }

@@ -71,6 +71,7 @@ public class PostServlet extends HttpServlet {
         try {
             Long postId = parsePathVariable(req.getPathInfo());
             PostUpdateRequest requestDto = RequestParamModelMapper.map(req.getParameterMap(), PostUpdateRequest.class);
+            requestDto.validate();
 
             // find original post
             Optional<Post> optionalPost = postRepository.findById(postId);

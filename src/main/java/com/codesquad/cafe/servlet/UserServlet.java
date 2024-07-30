@@ -1,6 +1,6 @@
 package com.codesquad.cafe.servlet;
 
-import static com.codesquad.cafe.servlet.LoginServlet.SESSION_USER_PRINCIPAL_KEY;
+import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
 
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.User;
@@ -30,19 +30,15 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            Long id = parsePathVariable(req.getPathInfo());
-            Optional<User> user = userRepository.findById(id);
-            if (user.isEmpty()) {
-                resp.sendError(404);
-                return;
-            }
-            req.setAttribute("user", user.get());
-
-            req.getRequestDispatcher("/WEB-INF/views/user_profile.jsp").forward(req, resp);
-        } catch (NumberFormatException e) {
+        Long id = parsePathVariable(req.getPathInfo());
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
             resp.sendError(404);
+            return;
         }
+        req.setAttribute("user", user.get());
+
+        req.getRequestDispatcher("/WEB-INF/views/user_profile.jsp").forward(req, resp);
     }
 
     @Override
@@ -57,33 +53,32 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            HttpSession session = req.getSession(false);
-            if (session == null || session.getAttribute(SESSION_USER_PRINCIPAL_KEY) == null) {
-                resp.sendError(405);
-            }
-            Long id = ((UserPrincipal) session.getAttribute(SESSION_USER_PRINCIPAL_KEY)).getId();
-            Optional<User> user = userRepository.findById(id);
-
-            // 존재하지 않는 유저이거나 이미 탈퇴한 유저의 경우
-            if (user.isEmpty() || user.get().isDeleted()) {
-                resp.sendError(400);
-            }
-
-            // 유저 soft delete
-            User originalUser = user.get();
-            originalUser.delete();
-            userRepository.save(originalUser);
-
-            //session invalidate
-            if (session != null) {
-                session.invalidate();
-            }
-
-            resp.sendRedirect("/users");
-        } catch (NumberFormatException e) {
-            resp.sendError(404);
+        UserPrincipal userPrincipal = getUserPrincipal(req);
+        if (userPrincipal == null) {
+            resp.sendError(401);
+            return;
         }
+
+        Optional<User> user = userRepository.findById(userPrincipal.getId());
+
+        // 존재하지 않는 유저이거나 이미 탈퇴한 유저의 경우
+        if (user.isEmpty() || user.get().isDeleted()) {
+            resp.sendError(400);
+            return;
+        }
+
+        // 유저 soft delete
+        User originalUser = user.get();
+        originalUser.delete();
+        userRepository.save(originalUser);
+
+        //session invalidate
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        resp.sendRedirect("/users/list");
     }
 
     private Long parsePathVariable(String pathInfo) {
