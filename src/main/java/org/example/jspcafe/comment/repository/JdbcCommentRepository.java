@@ -237,6 +237,6 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
                 rs.getString("content"),
                 rs.getTimestamp("created_at").toLocalDateTime()
         );
-        return putId(rs.getLong("post_id"), comment);
+        return putId(rs.getLong("comment_id"), comment);
     }
 }
