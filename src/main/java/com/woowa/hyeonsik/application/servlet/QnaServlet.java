@@ -5,22 +5,18 @@ import com.woowa.hyeonsik.application.domain.Article;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet({"/questions", ""})
 public class QnaServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
-    private ArticleService articleService;
+    private final ArticleService articleService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        articleService = (ArticleService) getServletContext().getAttribute("articleService");  // <- FIXME 컴파일 타임에 오타 에러를 발견할 수 없음
+    public QnaServlet(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     @Override

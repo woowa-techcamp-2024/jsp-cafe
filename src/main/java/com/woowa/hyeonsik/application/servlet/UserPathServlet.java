@@ -1,26 +1,23 @@
 package com.woowa.hyeonsik.application.servlet;
 
 import com.woowa.hyeonsik.application.domain.User;
+import com.woowa.hyeonsik.application.exception.AuthorizationException;
+import com.woowa.hyeonsik.application.exception.LoginRequiredException;
 import com.woowa.hyeonsik.application.service.UserService;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet("/users/*")
 public class UserPathServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UserPathServlet.class);
-    private UserService userService;
+    private final UserService userService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        userService = (UserService) getServletContext().getAttribute("userService");
+    public UserPathServlet(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -35,6 +32,7 @@ public class UserPathServlet extends HttpServlet {
 
         if (requestURI.endsWith("/form")) {
             // 회원정보 수정
+            authorizeUserAccess(request, userId);
             SendPageUtil.forward("/template/user/updateForm.jsp", this.getServletContext(), request, response);
         } else {
             // 회원정보 확인
@@ -44,11 +42,16 @@ public class UserPathServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // URI에서 유저ID를 가져온다.
         String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/users/".length());
         String[] split = requestURI.split("/");
         String userId = split[0];
         logger.debug("특정 유저의 정보를 수정합니다. UserID: {}", userId);
 
+        // 적절한 접근이지 세션을 통해 확인한다.
+        authorizeUserAccess(request, userId);
+
+        // 유저 정보 업데이트
         String password = request.getParameter("password");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -59,5 +62,18 @@ public class UserPathServlet extends HttpServlet {
 
         request.setAttribute("user", user);
         SendPageUtil.forward("/template/user/updateForm.jsp", this.getServletContext(), request, response);
+    }
+
+    private void authorizeUserAccess(final HttpServletRequest request, final String userId) {
+        final HttpSession session = request.getSession(false);
+        final User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            throw new LoginRequiredException("로그인이 필요한 작업입니다.");
+        }
+
+        // 다른 사용자의 정보를 수정하려는 경우 예외 발생
+        if (!sessionUser.getUserId().equals(userId)) {
+            throw new AuthorizationException("다른 사용자 정보에 접근할 수 없습니다.");
+        }
     }
 }
