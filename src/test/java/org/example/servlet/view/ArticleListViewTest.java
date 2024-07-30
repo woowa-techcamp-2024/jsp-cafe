@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import org.example.constance.AliveStatus;
 import org.example.constance.DataHandler;
 import org.example.domain.Article;
 import org.example.mock.TestArticleDataHandler;
@@ -48,8 +49,9 @@ public class ArticleListViewTest {
     public void testDoGetWithArticles() throws ServletException, IOException {
         // Given
         List<Article> articles = Arrays.asList(
-                new Article(1L, "Title 1", "Content 1", "Author 1", LocalDateTime.now(), 1L),
-                new Article(2L, "Title 2", "Content 2", "Author 2", LocalDateTime.now().minusDays(1), 2L)
+                new Article(1L, "Title 1", "Content 1", "Author 1", LocalDateTime.now(), AliveStatus.ALIVE, 1L),
+                new Article(2L, "Title 2", "Content 2", "Author 2", LocalDateTime.now().minusDays(1), AliveStatus.ALIVE,
+                        2L)
         );
         for (Article article : articles) {
             articleDataHandler.insert(article);

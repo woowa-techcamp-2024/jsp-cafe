@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import org.example.constance.AliveStatus;
 import org.example.constance.DataHandler;
 import org.example.domain.Article;
 import org.example.mock.TestArticleDataHandler;
@@ -47,7 +48,8 @@ public class ArticleDetailViewTest {
     public void testDoGetWithExistingArticle() throws ServletException, IOException {
         // Given
         Long articleId = 1L;
-        Article article = new Article(articleId, "Test Title", "Test Content", "Test Author", LocalDateTime.now(), 1L);
+        Article article = new Article(articleId, "Test Title", "Test Content", "Test Author", LocalDateTime.now(),
+                AliveStatus.ALIVE, 1L);
         articleDataHandler.insert(article);
         request.setPathInfo("/" + articleId);
         requestDispatcher = new TestRequestDispatcher("/article/detail.jsp");
