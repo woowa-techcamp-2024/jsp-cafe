@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReplyServiceTest {
+class ReplyServiceTest {
     private ReplyRepository replyRepository;
     private ReplyService replyService;
 
