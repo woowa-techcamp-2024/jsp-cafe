@@ -100,6 +100,16 @@ public class EndToEndTest {
         return connection;
     }
 
+    private static HttpURLConnection createDeleteConnection(String path) throws IOException {
+        URL url = new URL("http://localhost:" + localPort + path);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestMethod("DELETE");
+
+        return connection;
+    }
+
     private static String getResponse(HttpURLConnection con) throws IOException {
         InputStream inputStream = con.getInputStream();
         return new String(inputStream.readAllBytes());
@@ -118,6 +128,15 @@ public class EndToEndTest {
 
         HttpURLConnection con = createPostConnection(path);
         con.setRequestProperty("Cookie", cookie);
+        return con;
+    }
+
+    private static HttpURLConnection createDeleteLoginedConnection(String path, User user) throws Exception {
+        String cookie = login(user);
+
+        HttpURLConnection con = createDeleteConnection(path);
+        con.setRequestProperty("Cookie", cookie);
+
         return con;
     }
 
@@ -168,6 +187,58 @@ public class EndToEndTest {
     @Nested
     class STEP_1 {
 
+        @Test
+        void 존재하지_않는_회원의_프로필은_조회할_수_없다() throws Exception {
+            //given
+            userRepository.save(new User("없는유저1", "testPass", "testUser1", "testEmail1@test.com"));
+
+            con = createGetConnection("/users/" + URLEncoder.encode("테스트유저1", StandardCharsets.UTF_8));
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("사용자를 찾을 수 없습니다.");
+            });
+        }
+
+        @Test
+        void 사용자는_회원_목록을_조회할_수_있다() throws Exception {
+            //given
+            userRepository.save(new User("testUser1", "testPass", "testUser1", "testEmail1@test.com"));
+            userRepository.save(new User("testUser2", "testPass", "testUser2", "testEmail2@test.com"));
+
+            con = createGetConnection("/users");
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("testUser1", "testUser2");
+            });
+        }
+
+        @Test
+        void 사용자는_회원의_프로필을_조회할_수_있다() throws Exception {
+            //given
+            userRepository.save(new User("테스트유저1", "testPass", "testUser1", "testEmail1@test.com"));
+
+            con = createGetConnection("/users/" + URLEncoder.encode("테스트유저1", StandardCharsets.UTF_8));
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("테스트유저1", "testEmail1@test.com");
+            });
+        }
+
         @Nested
         class 회원가입한다 {
 
@@ -212,58 +283,6 @@ public class EndToEndTest {
                     assertThat(getResponse(con)).contains("이미 사용 중인 아이디입니다");
                 });
             }
-        }
-
-        @Test
-        void 사용자는_회원_목록을_조회할_수_있다() throws Exception {
-            //given
-            userRepository.save(new User("testUser1", "testPass", "testUser1", "testEmail1@test.com"));
-            userRepository.save(new User("testUser2", "testPass", "testUser2", "testEmail2@test.com"));
-
-            con = createGetConnection("/users");
-
-            //when
-            con.connect();
-
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(200);
-                assertThat(getResponse(con)).contains("testUser1", "testUser2");
-            });
-        }
-
-        @Test
-        void 사용자는_회원의_프로필을_조회할_수_있다() throws Exception {
-            //given
-            userRepository.save(new User("테스트유저1", "testPass", "testUser1", "testEmail1@test.com"));
-
-            con = createGetConnection("/users/" + URLEncoder.encode("테스트유저1", StandardCharsets.UTF_8));
-
-            //when
-            con.connect();
-
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(200);
-                assertThat(getResponse(con)).contains("테스트유저1", "testEmail1@test.com");
-            });
-        }
-
-        @Test
-        void 존재하지_않는_회원의_프로필은_조회할_수_없다() throws Exception {
-            //given
-            userRepository.save(new User("없는유저1", "testPass", "testUser1", "testEmail1@test.com"));
-
-            con = createGetConnection("/users/" + URLEncoder.encode("테스트유저1", StandardCharsets.UTF_8));
-
-            //when
-            con.connect();
-
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(200);
-                assertThat(getResponse(con)).contains("해당하는 사용자 정보가 없습니다.");
-            });
         }
     }
 
@@ -448,7 +467,7 @@ public class EndToEndTest {
             }
 
             @Test
-            void 비밀번호가_일치하지_않는다면_401_에러를_반환한다() throws Exception {
+            void 비밀번호가_일치하지_않는다면_에러_페이지로_이동한다() throws Exception {
                 //given
                 User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
                 userRepository.save(user);
@@ -475,83 +494,149 @@ public class EndToEndTest {
     @Nested
     class STEP_5 {
 
-        @Test
-        void 로그인하지_않은_사용자는_게시글_작성_폼_요청_시_로그인_페이지로_이동한다() throws IOException {
-            //given
-            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-            userRepository.save(user);
+        @Nested
+        class 게시글을_작성한다 {
+            @Test
+            void 로그인하지_않은_사용자는_게시글_작성_폼_요청_시_로그인_페이지로_이동한다() throws IOException {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
 
-            con = createGetConnection("/questions");
+                con = createGetConnection("/questions");
 
-            //when
-            con.connect();
+                //when
+                con.connect();
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/login");
-            });
-        }
-
-        @Test
-        void 로그인하지_않은_사용자는_게시글_작성_시_로그인_페이지로_이동한다() throws IOException {
-            //given
-            con = createPostConnection("/questions");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String urlParameters = "title=test&contents=test";
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-
-            //when
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(postData);
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/login");
+                });
             }
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/login");
-            });
-        }
+            @Test
+            void 로그인하지_않은_사용자는_게시글_작성_시_로그인_페이지로_이동한다() throws IOException {
+                //given
+                con = createPostConnection("/questions");
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "title=test&contents=test";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 
-        @Test
-        void 로그인한_사용자는_게시글_작성_폼을_요청할_수_있다() throws Exception {
-            //given
-            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-            userRepository.save(user);
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
 
-            con = createGetLoginedConnection("/questions", user);
-
-            //when
-            con.connect();
-
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(200);
-            });
-        }
-
-        @Test
-        void 로그인한_사용자는_게시글을_작성할_수_있다() throws Exception {
-            //given
-            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
-            userRepository.save(user);
-
-            //given
-            con = createPostLoginedConnection("/questions", user);
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String urlParameters = "title=test&contents=test";
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-
-            //when
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(postData);
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/login");
+                });
             }
 
-            //then
-            assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/");
-            });
+            @Test
+            void 로그인한_사용자는_게시글_작성_폼을_요청할_수_있다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                con = createGetLoginedConnection("/questions", user);
+
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                });
+            }
+
+            @Test
+            void 로그인한_사용자는_게시글을_작성할_수_있다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+
+                //given
+                con = createPostLoginedConnection("/questions", user);
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                String urlParameters = "title=test&contents=test";
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+                //when
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(302);
+                    assertThat(con.getHeaderField("Location")).isEqualTo("/");
+                });
+            }
+        }
+
+        @Nested
+        class 게시글을_삭제한다 {
+
+            @Test
+            void 로그인하지_않은_사용자는_게시글_삭제_요청_시_401_에러가_발생한다() throws IOException {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+                Question question = new Question("title", "content", user.getUserId());
+                Long savedQuestionId = questionRepository.save(question);
+
+                con = createDeleteConnection("/questions/" + savedQuestionId);
+
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(401);
+                });
+            }
+
+            @Test
+            void 작성자가_아닌_사용자가_게시글_삭제_요청_시_에러_페이지로_이동한다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                User other = new User("testUser2", "testPass", "testUser2", "test2@example.com");
+                userRepository.save(user);
+                userRepository.save(other);
+                Question question = new Question("title", "content", user.getUserId());
+                Long savedQuestionId = questionRepository.save(question);
+
+                con = createDeleteLoginedConnection("/questions/" + savedQuestionId, other);
+
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(403);
+                });
+            }
+
+            @Test
+            void 작성자인_사용자는_게시글을_삭제할_수_있다() throws Exception {
+                //given
+                User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+                userRepository.save(user);
+                Question question = new Question("title", "content", user.getUserId());
+                Long savedQuestionId = questionRepository.save(question);
+
+                con = createDeleteLoginedConnection("/questions/" + savedQuestionId, user);
+
+                //when
+                con.connect();
+
+                //then
+                assertAll(() -> {
+                    assertThat(con.getResponseCode()).isEqualTo(200);
+                });
+            }
         }
     }
 }

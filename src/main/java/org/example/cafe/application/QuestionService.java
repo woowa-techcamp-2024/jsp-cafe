@@ -2,6 +2,7 @@ package org.example.cafe.application;
 
 import java.util.List;
 import org.example.cafe.application.dto.QuestionCreateDto;
+import org.example.cafe.common.error.BadAuthenticationException;
 import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.QuestionRepository;
@@ -30,5 +31,21 @@ public class QuestionService {
         }
 
         return question;
+    }
+
+    public void deleteQuestion(String loginUserId, Long id) {
+        Question question = questionRepository.findById(id);
+        if (question == null) {
+            throw new DataNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        validWriter(loginUserId, question);
+        questionRepository.delete(id);
+    }
+
+    public void validWriter(String loginUserId, Question question) {
+        if (question.isValidWriter(loginUserId)) {
+            throw new BadAuthenticationException("작성자만 수정, 삭제할 수 있습니다.");
+        }
     }
 }

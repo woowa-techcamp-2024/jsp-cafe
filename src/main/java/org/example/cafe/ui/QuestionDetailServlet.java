@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.example.cafe.application.QuestionService;
 import org.example.cafe.domain.Question;
+import org.example.cafe.utils.PathVariableExtractUtils;
 import org.slf4j.Logger;
 
 @WebServlet("/questions/*")
@@ -45,5 +46,16 @@ public class QuestionDetailServlet extends BaseServlet {
 
         request.setAttribute("question", question);
         request.getRequestDispatcher("/WEB-INF/qna/detail.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long questionId = PathVariableExtractUtils.extractAsteriskValue(request.getRequestURI(), 2, Long.class);
+
+        assert request.getSession().getAttribute("userId") != null;
+        String loginUserId = (String) request.getSession().getAttribute("userId");
+
+        questionService.deleteQuestion(loginUserId, questionId);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

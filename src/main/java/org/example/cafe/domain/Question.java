@@ -31,6 +31,12 @@ public class Question {
         this.createdAt = createdAt;
     }
 
+    public boolean isValidWriter(String loginUserId) {
+        return loginUserId != null && !loginUserId.equals(writer);
+    }
+
+    // ----------------------------------------------------------------------------- Getter
+
     public Long getQuestionId() {
         return questionId;
     }

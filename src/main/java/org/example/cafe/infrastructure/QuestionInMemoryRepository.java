@@ -29,6 +29,11 @@ public class QuestionInMemoryRepository implements QuestionRepository {
         return new ArrayList<>(storage.values());
     }
 
+    @Override
+    public void delete(Long id) {
+        storage.remove(id);
+    }
+
     public void deleteAll() {
         storage.clear();
     }

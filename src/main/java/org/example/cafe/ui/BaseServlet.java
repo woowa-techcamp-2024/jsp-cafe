@@ -25,12 +25,13 @@ public class BaseServlet extends HttpServlet {
             if ("GET".equals(request.getMethod()) || "POST".equals(request.getMethod())) {
                 request.setAttribute("errorMessage", e.getMessage());
                 request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+                return;
+            }
+
+            if (e instanceof CafeException ce) {
+                response.sendError(ce.getStatusCode(), ce.getMessage());
             } else {
-                if (e instanceof CafeException ce) {
-                    response.sendError(ce.getStatusCode(), ce.getMessage());
-                } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서비스에 장애가 발생했습니다.");
-                }
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서비스에 장애가 발생했습니다.");
             }
         }
     }
