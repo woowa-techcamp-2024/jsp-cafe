@@ -27,6 +27,11 @@ public class AuthServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/user/login.jsp").forward(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = getPathInfo(req);
         String path = pathInfo.split("\\/")[1];
@@ -36,12 +41,12 @@ public class AuthServlet extends HttpServlet {
             String password = req.getParameter("password");
             User user = userService.findByIdAndPw(userId, password);
             req.getSession().setAttribute("user", user);
-            resp.sendRedirect("");
+            resp.sendRedirect("/");
             return;
         }
         if (path.equals("logout")) {
             req.getSession().invalidate();  // 세션 무효화
-            resp.sendRedirect("");
+            resp.sendRedirect("/");
             return;
         }
 
