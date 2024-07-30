@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.example.jspcafe.common.RequestUtil.extractPathVariable;
-import static org.example.jspcafe.common.StringUtils.isNumeric;
+import static org.example.jspcafe.common.RequestUtil.extractLongPathVariable;
 
 @WebServlet(name = "UserServlet", value = "/users/*")
 public class UserServlet extends HttpServlet {
@@ -31,14 +30,14 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        Long id = extractPathVariable(req);
+        Long id = extractLongPathVariable(req);
         req.setAttribute("user", userService.findById(id));
         req.getRequestDispatcher("/user/edit.jsp").forward(req, res);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        Long id = extractPathVariable(req);
+        Long id = extractLongPathVariable(req);
 
         String userId = req.getParameter("userId");
         String nickname = req.getParameter("nickname");
