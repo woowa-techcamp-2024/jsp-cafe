@@ -24,6 +24,7 @@ public class QnaPathServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 게시글 ID 가져오기
         String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/questions/".length());
         String[] split = requestURI.split("/");
         long questionId = Long.parseLong(split[0]);
@@ -51,15 +52,15 @@ public class QnaPathServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 게시글 정보 JSON 가져오기
-        Map<String, Object> parse = JsonParser.parse(request.getReader());
-        String title = (String) parse.get("title");
-        String contents = (String) parse.get("contents");
-
         // 게시글 ID 가져오기
         String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/questions/".length());
         String[] split = requestURI.split("/");
         long articleId = Long.parseLong(split[0]);
+
+        // 게시글 정보 JSON 가져오기
+        Map<String, Object> parse = JsonParser.parse(request.getReader());
+        String title = (String) parse.get("title");
+        String contents = (String) parse.get("contents");
         logger.debug("게시글을 수정합니다. qnaID: {}, title: {}, contents: {}", articleId, title, contents);
 
         // 인증 확인
@@ -75,5 +76,23 @@ public class QnaPathServlet extends HttpServlet {
 
         // 반환
 //        SendPageUtil.redirect("/questions/" + articleId, getServletContext(), response);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 게시글 ID 가져오기
+        String requestURI = request.getRequestURI().substring(getServletContext().getContextPath().length() + "/questions/".length());
+        String[] split = requestURI.split("/");
+        long articleId = Long.parseLong(split[0]);
+        logger.debug("게시글 삭제 요청을 수행합니다. 글번호: {}", articleId);
+
+        // 인증 확인
+        final HttpSession session = request.getSession(false);
+        final User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            throw new LoginRequiredException("로그인이 필요한 작업입니다.");
+        }
+
+        articleService.remove(articleId, sessionUser.getUserId());
     }
 }

@@ -31,10 +31,7 @@
                                     <a class="link-modify-article" href="${pageContext.request.contextPath}/questions/${article.id}/form">수정</a>
                                 </li>
                                 <li>
-                                    <form class="form-delete" action="/questions/${article.id}" method="POST">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <button class="link-delete-article" type="submit">삭제</button>
-                                    </form>
+                                    <button type="button" onclick="sendDelete()" class="delete-answer-button">삭제</button>
                                 </li>
                                 <li>
                                     <a class="link-modify-article" href="${pageContext.request.contextPath}">목록</a>
@@ -118,14 +115,35 @@
                     <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
+                    <button type="button" onclick="sendDelete()" class="delete-answer-button">삭제</button>
                 </li>
             </ul>
         </div>
     </article>
+</script>
+
+<script>
+    function sendDelete() {
+        var data = {
+            title: $("#title").val(),
+            contents: $("#contents").val()
+        };
+        $.ajax({
+            url: '${pageContext.request.contextPath}/questions/${article.id}',
+            type: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log('Success:', response);
+                alert("게시글 삭제 성공!");
+                window.location.href = '${pageContext.request.contextPath}';
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+                alert("게시글 삭제에 실패했습니다.");
+            }
+        });
+    }
 </script>
 
 <div>

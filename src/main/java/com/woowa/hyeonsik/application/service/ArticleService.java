@@ -38,4 +38,16 @@ public class ArticleService {
 
         articleDao.update(article);
     }
+
+    public void remove(long articleId, String userId) {
+        Optional<Article> foundArticle = articleDao.findByArticleId(articleId);
+        if (!foundArticle.isPresent()) {
+            throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
+        }
+        if (!foundArticle.get().getWriter().equals(userId)) {
+            throw new AuthorizationException("유저 정보가 일치하지 않습니다.");
+        }
+
+        articleDao.removeByArticleId(articleId);
+    }
 }

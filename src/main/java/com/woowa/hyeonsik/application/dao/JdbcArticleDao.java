@@ -104,4 +104,14 @@ public class JdbcArticleDao implements ArticleDao {
 
         databaseConnector.execute(sql, List.of(article.getTitle(), article.getContents(), String.valueOf(article.getId())));
     }
+
+    @Override
+    public void removeByArticleId(long articleId) {
+        String sql = """
+                DELETE FROM article 
+                WHERE article_id = ?
+                """;
+
+        databaseConnector.execute(sql, List.of(String.valueOf(articleId)));
+    }
 }
