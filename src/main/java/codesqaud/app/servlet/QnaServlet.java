@@ -105,6 +105,7 @@ public class QnaServlet extends HttpServlet {
         );
 
         req.setAttribute("article", article);
+        req.setAttribute("isMine", AuthenticationManager.isMe(req, article.getAuthor().getId()));
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(SHOW_JSP);
         requestDispatcher.forward(req, resp);
     }
@@ -151,23 +152,50 @@ public class QnaServlet extends HttpServlet {
         authorizeArticle(req, article.getAuthorId());
 
         processArticleUpdate(req, article);
-
-        resp.setStatus(SC_OK);
+        resp.sendRedirect("/qna/" + id);
     }
 
     private void processArticleUpdate(HttpServletRequest req, Article article) throws IOException {
-        Map<String, String> parameters = BodyParseUtils.parseBody(req);
-        String title = parameters.get("title");
-        String contents = parameters.get("contents");
+        String title = req.getParameter("title");
+        String contents = req.getParameter("contents");
         article.setTitle(title);
         article.setContents(contents);
 
         articleDao.update(article);
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Matcher matcher;
+
+        matcher = SPECIFIC_URI_PATTERN.matcher(req.getRequestURI());
+        if (matcher.matches()) {
+            Long id = Long.parseLong(matcher.group(1));
+            handleArticleDelete(req, resp, id);
+            return;
+        }
+
+        super.doDelete(req, resp);
+    }
+
+    private void handleArticleDelete(HttpServletRequest req, HttpServletResponse resp, Long id) throws IOException {
+        Article article = findArticleByIdOrElseThrow(id);
+        authorizeArticle(req, article.getAuthorId());
+
+        articleDao.delete(article);
+
+        resp.sendRedirect("/");
+    }
+
+    private Article findArticleByIdOrElseThrow(Long id) {
+        return articleDao.findById(id).orElseThrow(
+                () -> new HttpException(SC_NOT_FOUND)
+        );
+    }
+
     private void authorizeArticle(HttpServletRequest req, Long authorId) {
         if (!AuthenticationManager.isMe(req, authorId)) {
-            throw new HttpException(SC_FORBIDDEN, "본인이 작성한 게시글만 수정할 수 있습니다.");
+            throw new HttpException(SC_FORBIDDEN, "본인이 작성한 게시글이 아닙니다.");
         }
     }
 }
