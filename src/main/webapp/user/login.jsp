@@ -20,7 +20,7 @@
                 <label for="password">비밀번호</label>
                 <input name="password" type="password" placeholder="비밀번호를 입력해주세요">
             </div>
-            <button type="submit" class="btn-submit">로그인</button>
+            <button type="submit" class="btn">로그인</button>
         </form>
         <p>아직 회원가입을 안하셨나요? <a href="/users/register">회원가입하기</a></p>
     </main>

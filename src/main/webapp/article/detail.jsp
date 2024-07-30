@@ -9,6 +9,7 @@
     <title>게시글 상세보기</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/article/detail.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <%
@@ -29,9 +30,31 @@
                 </p>
             </div>
             <div class="action-buttons">
-                <button class="btn-submit" onclick="window.history.back();">이전 페이지로 돌아가기</button>
+                <a class="btn" href="/">글 목록으로 돌아가기</a>
+                <a href="/articles/update-form/<%= article.getArticleId() %>"  class="btn">글 수정하기</a>
+                <button class="btn" id="deleteArticle">글 삭제하기</button>
             </div>
         </main>
     </div>
+    <script>
+    $(document).ready(function() {
+        $('#deleteArticle').click(function() {
+            if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
+                var articleId = <%= article.getArticleId() %>;
+                console.log("click " + articleId)
+                $.ajax({
+                    url: '/api/articles/' + articleId,
+                    type: 'DELETE',
+                       success: function(response) {
+                       window.location.href = '/';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('글 삭제에 실패했습니다(작성자만 삭제 가능합니다): ' + error);
+                    }
+                });
+            }
+        });
+    });
+    </script>
 </body>
 </html>

@@ -21,7 +21,7 @@
                     <label for="content">내용</label>
                     <textarea id="content" name="content" placeholder="글의 내용을 입력하세요"></textarea>
                 </div>
-                <button type="submit" class="btn-submit">작성 완료</button>
+                <button type="submit" class="btn">작성 완료</button>
             </form>
         </main>
     </div>

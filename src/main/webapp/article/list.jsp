@@ -43,7 +43,7 @@
             </table>
             <div class="action-buttons">
                 <a href="/articles/register">
-                    <button class="btn-submit">글쓰기</button>
+                    <button class="btn">글쓰기</button>
                 </a>
             </div>
         </main>
