@@ -12,26 +12,56 @@ public class Reply {
     private Long questionId;
     private LocalDateTime createdAt;
 
-    public Reply(String writer,
-                 String content,
-                 Long questionId) {
-        this.writer = writer;
-        this.content = content;
-        this.questionId = questionId;
+    private Reply(ReplyBuilder builder) {
+        this.replyId = builder.replyId;
+        this.writer = builder.writer;
+        this.content = builder.content;
+        this.isDeleted = builder.isDeleted;
+        this.questionId = builder.questionId;
+        this.createdAt = builder.createdAt;
     }
 
-    public Reply(Long replyId,
-                 String writer,
-                 String content,
-                 Boolean isDeleted,
-                 Long questionId,
-                 LocalDateTime createdAt) {
-        this.replyId = replyId;
-        this.writer = writer;
-        this.content = content;
-        this.isDeleted = isDeleted;
-        this.questionId = questionId;
-        this.createdAt = createdAt;
+    public static class ReplyBuilder {
+        private Long replyId;
+        private String writer;
+        private String content;
+        private Boolean isDeleted = false; // Default value
+        private Long questionId;
+        private LocalDateTime createdAt = LocalDateTime.now(); // Default value
+
+        public ReplyBuilder replyId(Long replyId) {
+            this.replyId = replyId;
+            return this;
+        }
+
+        public ReplyBuilder writer(String writer) {
+            this.writer = writer;
+            return this;
+        }
+
+        public ReplyBuilder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public ReplyBuilder isDeleted(Boolean isDeleted) {
+            this.isDeleted = isDeleted;
+            return this;
+        }
+
+        public ReplyBuilder questionId(Long questionId) {
+            this.questionId = questionId;
+            return this;
+        }
+
+        public ReplyBuilder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Reply build() {
+            return new Reply(this);
+        }
     }
 
     //------------------------------------------------------------------------- Getter

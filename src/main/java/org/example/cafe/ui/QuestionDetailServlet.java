@@ -8,10 +8,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import org.example.cafe.application.QuestionService;
+import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.dto.QuestionUpdateDto;
 import org.example.cafe.common.error.BadAuthenticationException;
 import org.example.cafe.domain.Question;
+import org.example.cafe.domain.Reply;
 import org.example.cafe.utils.JsonDataBinder;
 import org.example.cafe.utils.PathTokenExtractUtils;
 import org.slf4j.Logger;
@@ -22,11 +25,13 @@ public class QuestionDetailServlet extends BaseServlet {
     private static final Logger log = getLogger(QuestionDetailServlet.class);
 
     private QuestionService questionService;
+    private ReplyService replyService;
     private ObjectMapper objectMapper;
 
     @Override
     public void init() {
         this.questionService = (QuestionService) getServletContext().getAttribute("QuestionService");
+        this.replyService = (ReplyService) getServletContext().getAttribute("ReplyService");
         this.objectMapper = (ObjectMapper) getServletContext().getAttribute("ObjectMapper");
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
@@ -57,8 +62,10 @@ public class QuestionDetailServlet extends BaseServlet {
     private void forwardQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId)
             throws ServletException, IOException {
         Question question = questionService.findById(questionId);
+        List<Reply> replies = replyService.findRepliesByQuestionId(questionId);
 
         request.setAttribute("question", question);
+        request.setAttribute("replies", replies);
         request.getRequestDispatcher("/WEB-INF/qna/detail.jsp").forward(request, response);
     }
 

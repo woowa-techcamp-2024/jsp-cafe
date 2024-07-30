@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.example.cafe.common.error.CafeException;
 import org.example.cafe.domain.Reply;
+import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
 import org.example.cafe.infrastructure.database.DbConnector;
 
@@ -59,12 +60,13 @@ public class ReplyJdbcRepository implements ReplyRepository {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Reply(resultSet.getLong("reply_id"),
-                            resultSet.getString("writer"),
-                            resultSet.getString("content"),
-                            resultSet.getBoolean("is_deleted"),
-                            resultSet.getLong("question_id"),
-                            resultSet.getTimestamp("created_at").toLocalDateTime());
+                    return new ReplyBuilder()
+                            .replyId(resultSet.getLong("reply_id"))
+                            .writer(resultSet.getString("writer"))
+                            .content(resultSet.getString("content"))
+                            .isDeleted(resultSet.getBoolean("is_deleted"))
+                            .questionId(resultSet.getLong("question_id"))
+                            .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime()).build();
                 }
                 return null;
             }
@@ -83,12 +85,13 @@ public class ReplyJdbcRepository implements ReplyRepository {
                 List<Reply> result = new ArrayList<>();
 
                 while (resultSet.next()) {
-                    result.add(new Reply(resultSet.getLong("reply_id"),
-                            resultSet.getString("writer"),
-                            resultSet.getString("content"),
-                            resultSet.getBoolean("is_deleted"),
-                            resultSet.getLong("question_id"),
-                            resultSet.getTimestamp("created_at").toLocalDateTime()));
+                    result.add(new ReplyBuilder()
+                            .replyId(resultSet.getLong("reply_id"))
+                            .writer(resultSet.getString("writer"))
+                            .content(resultSet.getString("content"))
+                            .isDeleted(resultSet.getBoolean("is_deleted"))
+                            .questionId(resultSet.getLong("question_id"))
+                            .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime()).build());
                 }
 
                 return result;
