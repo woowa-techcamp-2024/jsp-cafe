@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
+import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostResponse;
 import org.example.post.repository.PostRepository;
@@ -30,7 +31,11 @@ public class PostService {
     }
 
     public PostResponse getPostById(long id) throws SQLException {
-        return PostResponse.toResponse(postRepository.findById(id));
+        Post post = postRepository.findById(id);
+        if (post.getPostStatus() == PostStatus.DELETED) {
+            throw new IllegalArgumentException("Post with id " + id + " is deleted");
+        }
+        return PostResponse.toResponse(post);
     }
 
     public PostResponse updatePost(PostResponse postDto) throws SQLException {
@@ -39,7 +44,7 @@ public class PostService {
     }
 
     public void deleteById(Long id) throws SQLException {
-        // soft deleted이기 때문에 상태를 업데이트하는 쿼리 필요
+        // TODO: 댓글이 존재한다면 삭제 불가능 한 비즈니스 로직 추가
         postRepository.delete(id);
     }
 }
