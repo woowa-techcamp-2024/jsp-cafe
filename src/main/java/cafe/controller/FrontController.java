@@ -28,6 +28,8 @@ public class FrontController extends HttpServlet {
         handlers.put("article", (Handler) servletContext.getAttribute("articleHandler"));
         handlers.put("articleList", (Handler) servletContext.getAttribute("articleListHandler"));
         handlers.put("articleCreate", (Handler) servletContext.getAttribute("articleCreateHandler"));
+        handlers.put("articleUpdate", (Handler) servletContext.getAttribute("articleUpdateHandler"));
+        handlers.put("articleDelete", (Handler) servletContext.getAttribute("articleDeleteHandler"));
     }
 
     @Override
@@ -100,7 +102,15 @@ public class FrontController extends HttpServlet {
                 handlers.get("articleCreate").handle(req, resp);
                 return;
             }
-            default: handlers.get("article").handle(req, resp);
+            default: {
+                if (uriParts.length == 3) {
+                    handlers.get("article").handle(req, resp);
+                }
+                else {
+                    if (uriParts[3].equals("update")) handlers.get("articleUpdate").handle(req, resp);
+                    else if (uriParts[3].equals("delete")) handlers.get("articleDelete").handle(req, resp);
+                }
+            }
         }
     }
 }

@@ -1,9 +1,7 @@
 package cafe.config;
 
-import cafe.controller.handler.articles.ArticleCreateHandler;
-import cafe.controller.handler.articles.ArticleHandler;
+import cafe.controller.handler.articles.*;
 import cafe.controller.handler.DefaultHandler;
-import cafe.controller.handler.articles.ArticleListHandler;
 import cafe.controller.handler.users.UserInfoEditHandler;
 import cafe.controller.handler.users.UserInfoHandler;
 import cafe.controller.handler.users.UserInfoListHandler;
@@ -36,5 +34,7 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("articleHandler", new ArticleHandler(servletContext));
         servletContext.setAttribute("articleListHandler", new ArticleListHandler(servletContext));
         servletContext.setAttribute("articleCreateHandler", new ArticleCreateHandler(servletContext));
+        servletContext.setAttribute("articleUpdateHandler", new ArticleUpdateHandler(servletContext));
+        servletContext.setAttribute("articleDeleteHandler", new ArticleDeleteHandler(servletContext));
     }
 }

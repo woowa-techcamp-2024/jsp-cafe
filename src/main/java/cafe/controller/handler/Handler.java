@@ -18,6 +18,14 @@ public interface Handler {
                 doPost(req, resp);
                 return;
             }
+            case "PUT": {
+                doPut(req, resp);
+                return;
+            }
+            case "DELETE": {
+                doDelete(req, resp);
+                return;
+            }
             default: throw new IllegalArgumentException("Unsupported method: " + method);
         }
     }
@@ -28,5 +36,13 @@ public interface Handler {
 
     default void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         throw new IllegalArgumentException("Unsupported method: POST");
+    }
+
+    default void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        throw new IllegalArgumentException("Unsupported method: PUT");
+    }
+
+    default void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        throw new IllegalArgumentException("Unsupported method: DELETE");
     }
 }

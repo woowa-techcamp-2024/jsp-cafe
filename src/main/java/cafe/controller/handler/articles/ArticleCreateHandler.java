@@ -1,7 +1,9 @@
 package cafe.controller.handler.articles;
 
 import cafe.controller.handler.Handler;
+import cafe.domain.entity.User;
 import cafe.service.ArticleService;
+import cafe.service.SessionService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -12,9 +14,11 @@ import java.io.IOException;
 
 public class ArticleCreateHandler implements Handler {
     private final ArticleService articleService;
+    private final SessionService sessionService;
 
     public ArticleCreateHandler(ServletContext context) {
         articleService = (ArticleService) context.getAttribute("articleService");
+        sessionService = (SessionService) context.getAttribute("sessionService");
     }
 
     @Override
@@ -25,11 +29,12 @@ public class ArticleCreateHandler implements Handler {
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String writer = req.getParameter("writer");
+        String session = req.getSession(true).getId();
+        User writer = sessionService.findUserBySession(session);
         String title = req.getParameter("title");
         String contents = req.getParameter("contents");
 
-        articleService.save(writer, title, contents);
+        articleService.save(writer.getUserId(), title, contents);
         resp.sendRedirect("/");
     }
 }
