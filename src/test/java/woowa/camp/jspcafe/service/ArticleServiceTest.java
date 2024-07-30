@@ -19,10 +19,12 @@ import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
+import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
@@ -225,10 +227,99 @@ class ArticleServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("수정할 게시글을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
+    class FindUpdateArticleTest {
+
+        @Test
+        @DisplayName("[Success] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 일치하면 조회에 성공한다")
+        void successWhenEmailMatches() {
+            // given
+            User user = setupUser();
+            Article article = setupArticle();
+            // when
+            ArticleUpdateResponse response = articleService.findUpdateArticle(user, article.getId());
+            // then
+            assertThat(response).isNotNull();
+            assertThat(response.getId()).isEqualTo(article.getId());
+            assertThat(response.getTitle()).isEqualTo(article.getTitle());
+            assertThat(response.getContent()).isEqualTo(article.getContent());
+        }
+
+        @Test
+        @DisplayName("[Exception] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 다르면 예외가 발생한다")
+        void test2() {
+            // given
+            User user1 = new User("email@naver.com", "닉네임1", "123", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            User updateRequestUser = new User("email1@naver.com", "닉네임2", "12345", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            Article article = new Article(user1.getId(), "제목", "내용", 0, fixedDateTime.getNow(), fixedDateTime.getNow());
+            articleRepository.save(article);
+            // when then
+            assertThatThrownBy(() -> articleService.findUpdateArticle(updateRequestUser, article.getId()))
+                    .isInstanceOf(ArticleException.class);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("게시글을 수정하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
+    class UpdateArticleTest {
+
+        @Test
+        @DisplayName("[Success] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 일치하면 수정에 성공한다")
+        void test() {
+            // given
+            User user = setupUser();
+            Article article = setupArticle();
+            ArticleUpdateRequest updateRequest = new ArticleUpdateRequest("Updated Title", "Updated Content");
+            // when
+            articleService.updateArticle(user, article.getId(), updateRequest);
+
+            // then
+            Article updatedArticle = articleRepository.findById(article.getId()).orElseThrow();
+            assertThat(updatedArticle.getTitle()).isEqualTo(updateRequest.title());
+            assertThat(updatedArticle.getContent()).isEqualTo(updateRequest.content());
+            assertThat(updatedArticle.getUpdatedAt()).isEqualTo(fixedDateTime.getNow());
+            assertThat(updatedArticle.getHits()).isEqualTo(0);  // 수정 시 조회수는 변동 없음
+        }
+
+        @Test
+        @DisplayName("[Exception] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 다르면 예외가 발생한다")
+        void test2() {
+            // given
+            User user1 = new User("email@naver.com", "닉네임1", "123", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            User updateRequestUser = new User("email1@naver.com", "닉네임2", "12345", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            Article article = new Article(user1.getId(), "제목", "내용", 0, fixedDateTime.getNow(), fixedDateTime.getNow());
+            articleRepository.save(article);
+
+            ArticleUpdateRequest updateRequest = new ArticleUpdateRequest("Updated Title", "Updated Content");
+            // when then
+            assertThatThrownBy(() -> articleService.updateArticle(updateRequestUser, article.getId(), updateRequest))
+                    .isInstanceOf(ArticleException.class);
+        }
+
+    }
+
     private User setupUser() {
         User user1 = UserFixture.createUser1();
         userRepository.save(user1);
         return user1;
+    }
+
+    private Article setupArticle() {
+        Article article = ArticleFixture.createArticle1(fixedDateTime.getNow());
+        articleRepository.save(article);
+        return article;
     }
 
 }
