@@ -1,30 +1,28 @@
 package org.example.jspcafe.question;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import lombok.Builder;
+import org.example.jspcafe.user.User;
 
-import static org.example.jspcafe.common.DateTimeUtil.getCurrentDateTimeString;
+import javax.sql.RowSet;
+import java.time.LocalDateTime;
 
 public class Question {
     private Long id;
-    private String writer;
+    private Long userId;
+    private User user;
     private String title;
     private String contents;
-    private String date;
+    private LocalDateTime lastModifiedDate;
 
-    public Question(Long id, String writer, String title, String contents, String date) {
+
+    @Builder
+    private Question(Long id, Long userId, User user, String title, String contents, LocalDateTime lastModifiedDate) {
         this.id = id;
-        this.writer = writer;
+        this.userId = userId;
+        this.user = user;
         this.title = title;
         this.contents = contents;
-        this.date = date;
-    }
-
-    public Question(String writer, String title, String contents) {
-        this.date = getCurrentDateTimeString();
-        this.writer = writer;
-        this.title = title;
-        this.contents = contents;
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -33,14 +31,6 @@ public class Question {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
     }
 
     public String getTitle() {
@@ -59,11 +49,23 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getDate() {
-        return date;
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
