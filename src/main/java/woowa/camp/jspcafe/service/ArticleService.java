@@ -89,6 +89,15 @@ public class ArticleService {
         return ArticleUpdateResponse.from(article);
     }
 
+    public void updateArticle(User user, Long articleId, ArticleUpdateRequest request) {
+        Article article = findArticle(articleId);
+        User author = findAuthor(article.getAuthorId());
+        validateUpdatable(user, author);
+
+        Article updateArticle = Article.update(article, request.title(), request.content(), dateTimeProvider.getNow());
+        articleRepository.update(updateArticle);
+    }
+
     private void validateUpdatable(User user, User author) {
         String userEmail = user.getEmail();
         String authorEmail = author.getEmail();

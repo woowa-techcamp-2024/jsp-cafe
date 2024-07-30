@@ -52,4 +52,37 @@ public class ArticleEditServlet extends HttpServlet {
         log.debug("ArticleEditServlet doGet end");
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("ArticleEditServlet doPost start");
+
+        String method = req.getParameter("_method");
+        if ("PUT".equalsIgnoreCase(method)) {
+            doPut(req, resp);
+            return;
+        }
+
+        log.debug("ArticleEditServlet doPost end");
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("ArticleEditServlet doPut start");
+
+        HttpSession session = req.getSession();
+        User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
+
+        Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/articles/edit/{articleId}",
+                req.getRequestURI());
+        Long articleId = Long.parseLong(pathVariables.get("articleId"));
+
+        String title = req.getParameter("title");
+        String content = req.getParameter("content");
+        ArticleUpdateRequest articleUpdateRequest = new ArticleUpdateRequest(title, content);
+        articleService.updateArticle(sessionUser, articleId, articleUpdateRequest);
+
+        resp.sendRedirect(req.getContextPath() + "/articles/" + articleId);
+        log.debug("ArticleEditServlet doPut end");
+    }
+
 }
