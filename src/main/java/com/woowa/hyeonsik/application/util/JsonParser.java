@@ -4,7 +4,9 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 
 import java.io.Reader;
+import java.math.BigInteger;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JsonParser {
     private JsonParser() {}
@@ -25,10 +27,34 @@ public class JsonParser {
      */
     public static Map<String, Object> parse(Reader stream) {
         try {
-            return new JSONParser(stream).parseObject();
+            Map<String, Object> rawMap = new JSONParser(stream).parseObject();
+            return convertValues(rawMap);
         } catch (ParseException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("JSON 포맷이 잘못되었습니다.", e);
         }
+    }
+
+    private static Map<String, Object> convertValues(Map<String, Object> rawMap) {
+        return rawMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> convertValue(entry.getValue())
+                ));
+    }
+
+    private static Object convertValue(Object value) {
+        if (value instanceof BigInteger) {  // FIXME BigInt 사용하지 않도록
+            BigInteger bigInt = (BigInteger) value;
+            if (bigInt.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) <= 0
+                    && bigInt.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) >= 0) {
+                return bigInt.intValue();
+            } else {
+                return bigInt.longValue();
+            }
+        } else if (value instanceof Map) {
+            return convertValues((Map<String, Object>) value);
+        }
+        return value;
     }
 }
