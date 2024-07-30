@@ -54,11 +54,22 @@ public class CommentService {
         return comments.stream()
                 .map(comment -> new CommentResponse(
                         comment.commentId(),
-                        comment.postId(),
                         comment.userId(),
+                        comment.postId(),
                         comment.nickname(),
                         comment.content(),
                         comment.createdAt()
                 )).toList();
+    }
+
+    public void deleteComment(Long userId, Long commentId) {
+        final Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+
+        if (!comment.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("댓글을 삭제할 권한이 없습니다.");
+        }
+        
+        commentRepository.delete(comment);
     }
 }
