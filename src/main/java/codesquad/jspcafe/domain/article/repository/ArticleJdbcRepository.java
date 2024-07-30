@@ -60,6 +60,21 @@ public class ArticleJdbcRepository implements ArticleRepository {
     }
 
     @Override
+    public Article update(Article article) {
+        String updateQuery = "UPDATE articles SET title = ?, contents = ? WHERE id = ?";
+        try (Connection connection = connectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, article.getTitle());
+            preparedStatement.setString(2, article.getContents());
+            preparedStatement.setLong(3, article.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return article;
+    }
+
+    @Override
     public Optional<Article> findById(Long id) {
         String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.id = ? AND a.writer = u.id";
         try (Connection connection = connectionManager.getConnection();

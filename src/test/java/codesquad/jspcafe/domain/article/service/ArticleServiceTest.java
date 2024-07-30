@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.article.domain.Article;
+import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
@@ -14,6 +15,7 @@ import codesquad.jspcafe.domain.user.domain.User;
 import codesquad.jspcafe.domain.user.repository.UserMemoryRepository;
 import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +96,7 @@ class ArticleServiceTest {
             // Act & Assert
             assertThatThrownBy(() -> articleService.getArticleById(expectedIdStr))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("아티클이 존재하지 않습니다!");
+                .hasMessage("아티클이 존재하지 않습니다.");
         }
 
         @Test
@@ -130,6 +132,62 @@ class ArticleServiceTest {
                         expectedWriter.getUsername(),
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("아티클을 수정할 때")
+    class whenUpdateArticle {
+
+        private final String expectedUpdateTitle = "updateTitle";
+        private final String expectedUpdateContents = "updateContents";
+
+        private final Map<String, String[]> expectedValues = Map.of(
+            "id", new String[]{String.valueOf(expectedId)},
+            "title", new String[]{expectedContents},
+            "contents", new String[]{expectedContents}
+        );
+
+        @Test
+        @DisplayName("아티클이 존재하지 않으면 에외를 던진다.")
+        void updateArticleFailed() {
+            // Arrange
+            ArticleUpdateRequest request = ArticleUpdateRequest.of(expectedValues, 1L);
+            // Act & Assert
+            assertThatThrownBy(() -> articleService.updateArticle(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("아티클이 존재하지 않습니다.");
+        }
+
+        @Test
+        @DisplayName("아티클이 존재하면 아티클을 수정한다.")
+        void updateArticleSuccess() throws AccessDeniedException {
+            // Arrange
+            articleRepository.save(expectedArticle);
+            ArticleUpdateRequest request = ArticleUpdateRequest.of(expectedValues, 1L);
+            // Act
+            ArticleCommonResponse actualResult = articleService.updateArticle(request);
+            // Assert
+            assertAll(
+                () -> assertThat(actualResult)
+                    .extracting("id", "title", "writerUserId", "writerUsername", "contents",
+                        "createdAt")
+                    .containsExactly(expectedId, expectedContents, expectedWriter.getUserId(),
+                        expectedWriter.getUsername(), expectedContents,
+                        DateTimeFormatExecutor.execute(expectedCreatedAt))
+            );
+        }
+
+        @Test
+        @DisplayName("수정 권한이 없으면 에외를 던진다.")
+        void updateArticleAccessDenied() {
+            // Arrange
+            articleRepository.save(expectedArticle);
+            ArticleUpdateRequest request = ArticleUpdateRequest.of(expectedValues, 2L);
+            // Act & Assert
+            assertThatThrownBy(() -> articleService.updateArticle(request))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("수정 권한이 없습니다.");
         }
     }
 }
