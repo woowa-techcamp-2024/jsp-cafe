@@ -1,6 +1,7 @@
 package com.woowa.hyeonsik.application.servlet;
 
 import com.woowa.hyeonsik.application.domain.User;
+import com.woowa.hyeonsik.application.exception.AuthorizationException;
 import com.woowa.hyeonsik.application.exception.LoginRequiredException;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.application.domain.Article;
@@ -42,6 +43,11 @@ public class QnaPathServlet extends HttpServlet {
         request.setAttribute("article", foundArticle);
 
         if (requestURI.endsWith("/form")) {
+            // 다른 사용자의 글을 수정하려는 경우 예외 발생
+            if (!sessionUser.getUserId().equals(foundArticle.getWriter())) {
+                throw new AuthorizationException("다른 사용자 글에 접근할 수 없습니다.");
+            }
+
             // 게시글 수정 Form
             SendPageUtil.forward("/template/qna/form.jsp", getServletContext(), request, response);
         } else {

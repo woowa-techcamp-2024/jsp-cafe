@@ -51,7 +51,8 @@ public class ExceptionHandlingFilter implements Filter {
             SendPageUtil.redirect("/error/error.jsp", httpRequest.getServletContext(), httpResponse);
         } catch (AuthorizationException e) {
             logger.debug("인가 실패 - 접근 권한이 없음");
-            SendPageUtil.redirect("/auth/login.jsp", httpRequest.getServletContext(), httpResponse);
+            request.setAttribute("error_message", e.getMessage());
+            httpResponse.sendError(403, e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.debug("잘못된 요청입니다. 내용: {}", e.getMessage());
             request.setAttribute("error_message", e.getMessage());
