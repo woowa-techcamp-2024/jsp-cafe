@@ -106,6 +106,19 @@ public class MysqlArticleDao implements ArticleDao{
         }
     }
 
+    @Override
+    public void deleteById(Long id) {
+        try(Connection conn = manager.getConnection()){
+            String sql = "delete from article where id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, id);
+
+            pstmt.executeUpdate();
+        }catch(SQLException e){
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
     private Article mappingArticle(ResultSet rs) throws SQLException {
         Long id = rs.getLong("id");
         String writer = rs.getString("writer");

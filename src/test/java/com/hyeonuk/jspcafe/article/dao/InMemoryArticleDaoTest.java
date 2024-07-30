@@ -139,4 +139,22 @@ class InMemoryArticleDaoTest {
             assertFalse(foundArticle.isPresent());
         }
     }
+
+    @Nested
+    @DisplayName("deleteById 메서드는")
+    class DeleteById{
+        @Test
+        @DisplayName("존재하는 article id면 삭제한다.")
+        void deleteArticleByIdSuccess() throws Exception{
+            //given
+            Article article = new Article(1l,"writer","title","contents");
+            articleDao.save(article);
+
+            //when
+            articleDao.deleteById(article.getId());
+
+            //then
+            assertTrue(articleDao.findById(article.getId()).isEmpty());
+        }
+    }
 }

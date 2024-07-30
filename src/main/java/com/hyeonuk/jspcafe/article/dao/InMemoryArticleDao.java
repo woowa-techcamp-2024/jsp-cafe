@@ -41,4 +41,9 @@ public class InMemoryArticleDao implements ArticleDao{
                 .filter(article->article.getId().equals(id))
                 .findFirst();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        store.remove(id);
+    }
 }
