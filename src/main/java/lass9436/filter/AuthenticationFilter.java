@@ -28,10 +28,10 @@ public class AuthenticationFilter implements Filter {
 					filterChain.doFilter(req, resp);
 					return;
 				}
-				resp.sendRedirect("/users/login");
+				resp.sendRedirect("/userPage?action=login");
 				return;
 			}
-			resp.sendRedirect("/users/login");
+			resp.sendRedirect("/userPage?action=login");
 		}
 	}
 

@@ -24,7 +24,7 @@
                     if (userId == null) {
                 %>
                 <li class="active"><a href="../index.jsp">Posts</a></li>
-                <li><a href="/users/login" role="button">로그인</a></li>
+                <li><a href="/userPage?action=login" role="button">로그인</a></li>
                 <li><a href="/userPage?action=register" role="button">회원가입</a></li>
                 <%
                 } else {

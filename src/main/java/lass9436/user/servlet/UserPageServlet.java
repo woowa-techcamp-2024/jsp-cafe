@@ -1,7 +1,6 @@
 package lass9436.user.servlet;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -24,16 +23,16 @@ public class UserPageServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
+        userRepository = (UserRepository) config.getServletContext().getAttribute("userRepository");
         actionMethodMap = Map.of(
         "register", this::handleRegister,
+        "login", this::handleLogin,
         "login-failed", this::handleLoginFailed,
         "list", this::handleList,
         "detail", this::handleDetail,
         "update", this::handleUpdate
         );
     }
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,7 +46,7 @@ public class UserPageServlet extends HttpServlet {
         }
     }
 
-    private BiFunction<HttpServletRequest, HttpServletResponse, String> getHandler(String action){
+    private BiFunction<HttpServletRequest, HttpServletResponse, String> getHandler(String action) {
         if (action == null || action.isEmpty()) throw new IllegalArgumentException("action is null or empty");
         if (!actionMethodMap.containsKey(action)) throw new IllegalArgumentException("unknown action: " + action);
         return actionMethodMap.get(action);
@@ -55,6 +54,10 @@ public class UserPageServlet extends HttpServlet {
 
     private String handleRegister(HttpServletRequest req, HttpServletResponse resp) {
         return "/register.jsp";
+    }
+
+    private String handleLogin(HttpServletRequest req, HttpServletResponse resp) {
+        return "/login.jsp";
     }
 
     private String handleLoginFailed(HttpServletRequest req, HttpServletResponse resp) {

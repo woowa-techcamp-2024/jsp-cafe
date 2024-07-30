@@ -23,11 +23,6 @@ public class UserLoginServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/user/login.jsp").forward(req, resp);
-    }
-
-    @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("userId");
         String password = req.getParameter("password");
