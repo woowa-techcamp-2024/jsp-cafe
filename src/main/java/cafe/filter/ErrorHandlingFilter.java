@@ -1,22 +1,17 @@
 package cafe.filter;
 
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.logging.Logger;
 
 public class ErrorHandlingFilter implements MappingFilter {
-
-    @Override
-    public List<String> mappings() {
-        return List.of("/*");
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    private static final Logger log = Logger.getLogger(ErrorHandlingFilter.class.getName());
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -25,15 +20,20 @@ public class ErrorHandlingFilter implements MappingFilter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         try {
             chain.doFilter(request, response);
+            if (!httpResponse.isCommitted() &&
+                    httpResponse.getStatus() >= 400 &&
+                    httpRequest.getHeaders("Accept").nextElement().split(",")[0].trim().equals("text/html")
+            ) {
+                httpRequest.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(httpRequest, httpResponse);
+            }
         } catch (Exception e) {
-
-            httpRequest.setAttribute("errorMessage", e.getMessage());
-            httpRequest.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(httpRequest, httpResponse);
+            if (!httpResponse.isCommitted() &&
+                    httpResponse.getStatus() >= 400 &&
+                    httpRequest.getHeaders("Accept").nextElement().split(",")[0].trim().equals("text/html")
+            ) {
+                httpRequest.setAttribute("errorMessage", e.getMessage());
+                httpRequest.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(httpRequest, httpResponse);
+            }
         }
-    }
-
-    @Override
-    public void destroy() {
-        // 필터 종료 코드 (필요한 경우)
     }
 }
