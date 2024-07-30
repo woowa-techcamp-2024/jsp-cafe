@@ -21,6 +21,8 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
     public static ArticleRepository getInstance() {
         if (instance == null) {
             instance = new ArticleRepositoryDBImpl();
+            instance.save(new Article("title1", "content1", "test"));
+            instance.save(new Article("title2", "content2", "test"));
         }
         return instance;
     }
