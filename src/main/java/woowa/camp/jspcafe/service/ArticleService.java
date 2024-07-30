@@ -16,7 +16,7 @@ import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
 import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 public class ArticleService {
 

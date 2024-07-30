@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.utils.time;
+package woowa.camp.jspcafe.infra.time;
 
 import java.time.LocalDate;
 

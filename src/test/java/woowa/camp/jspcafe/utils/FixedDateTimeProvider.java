@@ -1,7 +1,7 @@
 package woowa.camp.jspcafe.utils;
 
 import java.time.LocalDate;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 public class FixedDateTimeProvider implements DateTimeProvider {
 

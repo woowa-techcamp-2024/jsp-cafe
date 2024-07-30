@@ -10,7 +10,7 @@ import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 import woowa.camp.jspcafe.service.dto.UserResponse;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 public class UserService {
 
