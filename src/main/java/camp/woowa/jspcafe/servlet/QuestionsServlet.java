@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -29,12 +30,20 @@ public class QuestionsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+
+        if (session == null) {
+            resp.sendRedirect("/user/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+
+        User w = findByUserIdOrThrow(user.getUserId());// Check if the user exists
+
         String title = req.getParameter("title");
         String content = req.getParameter("content");
-        String writer = req.getParameter("writer");
-
-
-        User w = findByUserIdOrThrow(writer);// Check if the user exists
+        String writer = w.getUserId();
 
         questionService.save(title, content, writer, w.getId());
 
