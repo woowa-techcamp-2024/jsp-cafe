@@ -5,6 +5,7 @@ import org.example.jspcafe.comment.model.Comment;
 import org.example.jspcafe.comment.repository.CommentRepository;
 import org.example.jspcafe.comment.repository.CommentVO;
 import org.example.jspcafe.comment.request.CommentCreateRequest;
+import org.example.jspcafe.comment.request.CommentModifyRequest;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.repository.UserRepository;
@@ -41,14 +42,6 @@ public class CommentService {
         );
     }
 
-    public CommentService(
-            CommentRepository commentRepository,
-            UserRepository userRepository
-    ) {
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-    }
-
     public List<CommentResponse> findCommentsJoinUser(Long postId) {
         final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId);
         return comments.stream()
@@ -73,7 +66,11 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public void modifyComment(Long userId, Long commentId, String content) {
+    public void modifyComment(final CommentModifyRequest request) {
+        final Long userId = request.userId();
+        final Long commentId = request.commentId();
+        final String content = request.content();
+
         final Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
@@ -83,5 +80,14 @@ public class CommentService {
 
         comment.modifyContent(content);
         commentRepository.update(comment);
+    }
+
+
+    public CommentService(
+            CommentRepository commentRepository,
+            UserRepository userRepository
+    ) {
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 }

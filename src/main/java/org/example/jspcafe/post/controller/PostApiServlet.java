@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.comment.request.CommentCreateRequest;
+import org.example.jspcafe.comment.request.CommentModifyRequest;
 import org.example.jspcafe.comment.service.CommentService;
 import org.example.jspcafe.di.ApplicationContext;
 import org.example.jspcafe.post.request.PostModifyRequest;
@@ -181,7 +182,9 @@ public class PostApiServlet extends HttpServlet {
                 return;
             }
 
-            commentService.modifyComment(userId, commentId, content);
+
+            CommentModifyRequest request = new CommentModifyRequest(commentId, userId, content);
+            commentService.modifyComment(request);
 
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return;
