@@ -1,5 +1,6 @@
 package org.example.jspcafe.post.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import org.example.jspcafe.post.request.PostModifyRequest;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.post.service.PostService;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -61,6 +63,7 @@ public class PostApiServlet extends HttpServlet {
             return;
         }
 
+        // /api/posts/{postId}/comments/{commentId}
         if (split.length == 6 && "comments".equals(split[4])) {
             Long commentId = Long.parseLong(split[split.length - 1]);
             Long userId = (Long) req.getSession().getAttribute("userId");
@@ -78,13 +81,64 @@ public class PostApiServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String[] split = req.getRequestURI().split("/");
+
+        // /api/posts/{postId}/comments
+        if (split.length == 5 && split[4].equals("comments")) {
+            Long postId = Long.parseLong(split[split.length - 2]);
+            final CommentResponse[] comments = commentService.findCommentsJoinUser(postId).toArray(CommentResponse[]::new);
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            PrintWriter out = resp.getWriter();
+            String jsonResponse = objectMapper.writeValueAsString(comments);
+            out.print(jsonResponse);
+            out.flush();
+            return;
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String[] split = req.getRequestURI().split("/");
+
+        // /api/posts/{postId}/comments/{commentId}
+        if (split.length == 6 && split[4].equals("comments")) {
+            Long commentId = Long.parseLong(split[split.length - 1]);
+            Long userId = (Long) req.getSession().getAttribute("userId");
+
+            StringBuilder jsonBuffer = new StringBuilder();
+            String line;
+            try (BufferedReader reader = req.getReader()) {
+                while ((line = reader.readLine()) != null) {
+                    jsonBuffer.append(line);
+                }
+            }
+            // JSON 데이터를 파싱하여 content 필드를 추출합니다.
+            String jsonString = jsonBuffer.toString();
+            JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+            String content = jsonNode.get("content").asText();
+
+            if (userId == null) {
+                resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            commentService.modifyComment(userId, commentId, content);
+
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] split = req.getRequestURI().split("/");
 
         // /api/posts/{postId}/comments
         if (split.length == 5 && split[4].equals("comments")) {
             Long postId = Long.parseLong(split[split.length - 2]);
-            String content = req.getParameter("content");
             Long userId = (Long) req.getSession().getAttribute("userId");
 
             if (userId == null) {
@@ -92,6 +146,18 @@ public class PostApiServlet extends HttpServlet {
                 return;
             }
 
+            StringBuilder jsonBuffer = new StringBuilder();
+            String line;
+            try (BufferedReader reader = req.getReader()) {
+                while ((line = reader.readLine()) != null) {
+                    jsonBuffer.append(line);
+                }
+            }
+            // JSON 데이터를 파싱하여 content 필드를 추출합니다.
+            String jsonString = jsonBuffer.toString();
+            JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+            String content = jsonNode.get("content").asText();
             CommentCreateRequest request = new CommentCreateRequest(postId, userId, content);
             final CommentResponse comment = commentService.createComment(request);
 
