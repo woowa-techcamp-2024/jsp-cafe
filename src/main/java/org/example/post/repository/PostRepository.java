@@ -56,7 +56,7 @@ public class PostRepository {
                     String title = rs.getString("title");
                     String contents = rs.getString("contents");
 
-                    Post post = Post.create(writer, title, contents);
+                    Post post = Post.createWithId(id, writer, title, contents);
                     return post;
                 }
             }

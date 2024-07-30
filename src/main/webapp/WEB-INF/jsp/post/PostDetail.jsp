@@ -27,7 +27,6 @@
                         <div class="article-header-text">
                             <a href="/users/${post.writer}" class="article-author-name">${post.writer}</a>
                             <a href="/questions/${post.id}" class="article-header-time" title="퍼머링크">
-                                <!-- 작성 시간을 표시할 수 있다면 여기에 추가 -->
                                 <i class="icon-link"></i>
                             </a>
                         </div>
