@@ -156,32 +156,45 @@ public class UserServlet extends HttpServlet {
 
         User user = new User(userId, password, name, email);
         userDao.save(user);
-        resp.setStatus(SC_FOUND);
         resp.sendRedirect("/users");
     }
 
     private void handleProfileUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         HttpSession session = AuthenticationManager.getAuthSession(req);
+
+        if (!isCheckedPassword(session)) {
+            processPasswordCheck(req, resp, session);
+        } else {
+            processProfileUpdate(req, resp, session);
+        }
+    }
+
+    private boolean isCheckedPassword(HttpSession session) {
+        Object checkPassword = session.getAttribute("checkPassword");
+        return Boolean.TRUE.equals(checkPassword);
+    }
+
+    private void processPasswordCheck(HttpServletRequest req, HttpServletResponse resp, HttpSession session) throws ServletException, IOException {
         User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
 
-        String checkPasswordAttribute = "checkPassword";
-        Object checkPassword = session.getAttribute(checkPasswordAttribute);
-
-        if (Boolean.TRUE.equals(checkPassword)) {
-            loginUser.setEmail(req.getParameter("email"));
-            loginUser.setName(req.getParameter("name"));
-            session.removeAttribute(checkPasswordAttribute);
-            userDao.update(loginUser);
-            resp.sendRedirect("/users/profile/" + loginUser.getId());
+        String password = req.getParameter("password");
+        if (!loginUser.getPassword().equals(password)) {
+            session.setAttribute("checkPassword", false);
+            req.setAttribute("isFailed", true);
         } else {
-            String password = req.getParameter("password");
-            if (!loginUser.getPassword().equals(password)) {
-                session.setAttribute(checkPasswordAttribute, false);
-                req.setAttribute("isFailed", true);
-            } else {
-                session.setAttribute(checkPasswordAttribute, true);
-            }
-            req.getRequestDispatcher("/WEB-INF/user/profile_form.jsp").forward(req, resp);
+            session.setAttribute("checkPassword", true);
         }
+        req.getRequestDispatcher("/WEB-INF/user/profile_form.jsp").forward(req, resp);
+    }
+
+    private void processProfileUpdate(HttpServletRequest req, HttpServletResponse resp, HttpSession session) throws IOException {
+        User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
+
+        loginUser.setEmail(req.getParameter("email"));
+        loginUser.setName(req.getParameter("name"));
+
+        session.removeAttribute("checkPassword");
+        userDao.update(loginUser);
+        resp.sendRedirect("/users/profile/" + loginUser.getId());
     }
 }
