@@ -209,6 +209,28 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
     }
 
     @Override
+    public List<Comment> findAllByPostId(Long postId) {
+        String sql = "SELECT * FROM comments WHERE post_id = ? AND deleted_at IS NULL";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, postId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                List<Comment> comments = new ArrayList<>();
+                while (rs.next()) {
+                    comments.add(mapRowToComment(rs));
+                }
+                return comments;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Comment 조회 중 오류 발생", e);
+        }
+    }
+
+    @Override
     public boolean existsByPostId(Long postId) {
         String sql = "SELECT EXISTS(SELECT 1 FROM comments WHERE post_id = ? AND deleted_at IS NULL)";
 
