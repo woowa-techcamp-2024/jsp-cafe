@@ -2,10 +2,12 @@ package com.codesquad.cafe.servlet;
 
 import static com.codesquad.cafe.TestUtil.assertErrorPageResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
+import com.codesquad.cafe.TestUtil;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.Post;
@@ -74,6 +76,30 @@ class IndexServletTest extends E2ETestBase {
         assertTrue(html.contains("사용자 목록"));
         assertTrue(html.contains("로그인"));
         assertTrue(html.contains("회원가입"));
+        assertTrue(html.contains("전체 글 " + posts.size()));
+    }
+
+    @Test
+    @DisplayName("기본 페이지를 반환한다. - 로그인 O")
+    void testDoGetAuthenticated() throws IOException {
+        //when
+        HttpResponse loginResponse = post("/login",
+                "username=" + user.getUsername() + "&password=" + user.getPassword());
+        String sessionId = TestUtil.getSessionIdFromSetCookieHeader(
+                loginResponse.getFirstHeader("Set-Cookie").getValue());
+        SavedHttpResponse response = get(path, sessionId);
+        String html = response.getBody();
+
+        //then
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals("text/html;charset=UTF-8", response.getContentType());
+
+        assertTrue(html.contains("사용자 목록"));
+        assertTrue(html.contains("Profile"));
+        assertFalse(html.contains("로그인"));
+        assertFalse(html.contains("회원가입"));
+        assertTrue(html.contains("로그아웃"));
+        assertTrue(html.contains("개인정보수정"));
 
         assertTrue(html.contains("전체 글 " + posts.size()));
     }
@@ -90,7 +116,6 @@ class IndexServletTest extends E2ETestBase {
         //then
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals("text/html;charset=UTF-8", response.getContentType());
-        assertTrue(html.contains("사용자 목록"));
         assertTrue(html.contains("로그인"));
         assertTrue(html.contains("회원가입"));
         assertTrue(html.contains("전체 글 " + posts.size()));
@@ -104,11 +129,10 @@ class IndexServletTest extends E2ETestBase {
     }
 
     public static Stream<Arguments> testDoGetPageParam() {
-        userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
         return Stream.of(
                 Arguments.of(path + "?pageNum=1&pageSize=2", List.of("title4", "title3"), List.of("title2", "title1")),
                 Arguments.of(path + "?pageNum=2&pageSize=2", List.of("title2", "title1"), List.of("title4", "title3"))
-                );
+        );
     }
 
     @DisplayName("잘못된 pageParam 요청시 에러를 반환한다.")

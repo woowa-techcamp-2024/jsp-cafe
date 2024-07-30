@@ -121,8 +121,12 @@ public abstract class E2ETestBase {
 
     // path should start with "/"
     protected SavedHttpResponse get(String path) throws IOException {
-        try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(new HttpGet("http://localhost:" + port + path));) {
+
+        HttpGet httpGet = new HttpGet("http://localhost:" + port + path);
+        try (CloseableHttpClient client = HttpClients.custom()
+                .setRedirectStrategy(neverRedirectStrategy)
+                .build();
+             CloseableHttpResponse response = client.execute(httpGet)) {
             response.getStatusLine();
             response.getAllHeaders();
             response.getEntity();

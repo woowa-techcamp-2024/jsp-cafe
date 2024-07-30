@@ -56,7 +56,7 @@ class UserJoinServletTest extends E2ETestBase {
 
         //then
         assertEquals(302, response.getStatusLine().getStatusCode());
-        assertEquals("/users", response.getFirstHeader("Location").getValue());
+        assertEquals("/users/list", response.getFirstHeader("Location").getValue());
     }
 
     @Test

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
+import com.codesquad.cafe.TestUtil;
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.User;
 import java.io.IOException;
@@ -59,7 +60,7 @@ class LoginServletTest extends E2ETestBase {
     @DisplayName("로그인에 성공하면 세션에 userPrincipal이 저장되고 로그아웃 개인정보 수정 버튼이 표시된다.")
     void tesLogin() throws IOException {
         //when
-        HttpResponse response = post(path, createFormDatat(user.getUsername(), user.getPassword()));
+        HttpResponse response = post(path, createFormData(user.getUsername(), user.getPassword()));
 
         //then
         assertEquals(302, response.getStatusLine().getStatusCode());
@@ -68,10 +69,26 @@ class LoginServletTest extends E2ETestBase {
     }
 
     @Test
+    @DisplayName("세션에 redirectAfterLogin이 있다면 요청 페이지로 리다이렉트한다.")
+    void tesRedirectAfterLogin() throws IOException {
+        //given
+        String originalRequestUrl = "/posts/create";
+        HttpResponse post = post(originalRequestUrl, "authorId=1L&title=제목&content=내용");
+        String sessionId = TestUtil.getSessionIdFromSetCookieHeader(
+                post.getFirstHeader("Set-Cookie").getValue());
+        //when
+        HttpResponse response = post(path, createFormData(user.getUsername(), user.getPassword()), sessionId);
+
+        //then
+        assertEquals(302, response.getStatusLine().getStatusCode());
+        assertEquals(originalRequestUrl, response.getFirstHeader("Location").getValue());
+    }
+
+    @Test
     @DisplayName("비밀번호가 틀리면 로그인 폼으로 이동하고 로그인 실패 경고 메시지를 표시한다.")
     void testLoginFailWrongPassword() throws IOException, URISyntaxException {
         //when
-        HttpResponse response = post(path, createFormDatat(user.getUsername(), "wrong password"));
+        HttpResponse response = post(path, createFormData(user.getUsername(), "wrong password"));
         String html = EntityUtils.toString(response.getEntity());
 
         //then
@@ -87,7 +104,7 @@ class LoginServletTest extends E2ETestBase {
     @DisplayName("아이디가 null이면 로그인 폼으로 이동하고 로그인 실패 경고 메시지를 표시한다.")
     void testLoginFailNullUsername() throws IOException {
         //when
-        HttpResponse response = post(path, createFormDatat(null, user.getPassword()));
+        HttpResponse response = post(path, createFormData(null, user.getPassword()));
         String html = EntityUtils.toString(response.getEntity());
 
         //then
@@ -101,9 +118,9 @@ class LoginServletTest extends E2ETestBase {
 
     @Test
     @DisplayName("비밀번호가 null이면 로그인 폼으로 이동하고 로그인 실패 경고 메시지를 표시한다.")
-    void testLoginFailNullPassword() throws IOException, URISyntaxException {
+    void testLoginFailNullPassword() throws IOException {
         //when
-        HttpResponse response = post(path, createFormDatat(user.getUsername(), null));
+        HttpResponse response = post(path, createFormData(user.getUsername(), null));
         String html = EntityUtils.toString(response.getEntity());
 
         //then
@@ -147,14 +164,38 @@ class LoginServletTest extends E2ETestBase {
         assertTrue(html.contains("password"));
     }
 
-    private String createFormDatat(String username, String password) {
-        return new StringBuilder()
-                .append("username")
-                .append("=")
-                .append(username)
-                .append("&password=")
-                .append(password)
-                .toString();
+    @Test
+    @DisplayName("탈퇴한 유저로 로그인시 실패한다.")
+    void testLoginFailDeletedUser() throws IOException {
+        //given
+        user.delete();
+        userRepository.save(user);
+
+        //when
+        HttpResponse response = post(path, createFormData(user.getUsername(), user.getPassword()));
+        String html = EntityUtils.toString(response.getEntity());
+
+        //then
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals("text/html;charset=UTF-8", response.getEntity().getContentType().getValue());
+        assertTrue(html.contains("<form name=\"login\" method=\"post\" action=\"/login\">"));
+        assertTrue(html.contains("탈퇴한 유저입니다."));
+        assertTrue(html.contains("username"));
+        assertTrue(html.contains("password"));
+    }
+
+    private String createFormData(String username, String password) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("username");
+        sb.append("=");
+        if (username != null) {
+            sb.append(username);
+        }
+        sb.append("&password=");
+        if (password != null) {
+            sb.append(password);
+        }
+        return sb.toString();
     }
 
 }
