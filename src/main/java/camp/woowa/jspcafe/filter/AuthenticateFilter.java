@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/qna/form","/qna/show/*"})
+@WebFilter(urlPatterns = {"/qna/*"})
 public class AuthenticateFilter extends HttpFilter {
     private static final String REDIRECT_LOGIN = "/user/login";
     private UserService userService;
