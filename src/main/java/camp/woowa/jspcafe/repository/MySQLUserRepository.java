@@ -19,7 +19,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public Long save(User user) {
-        try (var pstmt = conn.prepareStatement("INSERT INTO user (userId, password, name, email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+        try (var pstmt = conn.prepareStatement("INSERT INTO user (user_id, password, name, email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
             pstmt.setString(1, user.getUserId());
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getName());
@@ -91,7 +91,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public boolean isExistedByUserId(String userId) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE userId = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE user_id = ?");){
             pstmt.setString(1, userId);
             var rs = pstmt.executeQuery();
             return rs.next();
@@ -102,7 +102,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public User findByUserId(String w) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE userId = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE user_id = ?");){
             pstmt.setString(1, w);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
