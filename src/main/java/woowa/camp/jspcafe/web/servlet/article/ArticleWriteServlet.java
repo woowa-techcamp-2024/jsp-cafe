@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.web.servlet;
+package woowa.camp.jspcafe.web.servlet.article;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;

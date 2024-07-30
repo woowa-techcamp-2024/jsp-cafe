@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.web.servlet;
+package woowa.camp.jspcafe.web.servlet.article;
 
 import static woowa.camp.jspcafe.utils.PathVariableExtractor.extractPathVariables;
 
@@ -7,6 +7,7 @@ import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
 
 @WebServlet(name = "articleServlet", value = {"/articles/*", ""})
-public class ArticleServlet extends HelloWorldServlet {
+public class ArticleServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(ArticleServlet.class);
     private ArticleService articleService;
