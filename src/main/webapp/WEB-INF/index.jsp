@@ -57,9 +57,15 @@
                       <li><a href="#">»</a></li>
                 </ul>
               </div>
+              <%
+                  if (userId != null) {
+              %>
               <div class="col-md-3 qna-write">
                   <a href="/questionPage?action=register" class="btn btn-primary pull-right" role="button">질문하기</a>
               </div>
+              <%
+                  }
+              %>
           </div>
         </div>
     </div>
