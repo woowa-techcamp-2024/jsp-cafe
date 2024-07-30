@@ -27,8 +27,7 @@ public class QuestionEditHttpServlet extends AbstractHttpServlet {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
-            resp.sendRedirect("/users/sign-in");
-            return;
+            throw new CommonException("로그인을 해야 합니다.", HttpServletResponse.SC_UNAUTHORIZED);
         }
         Long questionId = parseSuffixPathVariable(req.getPathInfo());
         Question question = questionService.readQuestionToEdit(questionId, signInUser.getId());
@@ -49,8 +48,7 @@ public class QuestionEditHttpServlet extends AbstractHttpServlet {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
-            resp.sendRedirect("/users/sign-in");
-            return;
+            throw new CommonException("로그인을 해야 합니다.", HttpServletResponse.SC_UNAUTHORIZED);
         }
         Long id = parseSuffixPathVariable(req.getPathInfo());
         Map<String, String> parameters = HttpBodyParser.parse(req.getReader().readLine());

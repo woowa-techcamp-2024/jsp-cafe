@@ -18,12 +18,11 @@ public class QuestionDeleteServlet extends AbstractHttpServlet {
     }
 
     @Override
-    protected void doDelete(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
+    protected void doDelete(final HttpServletRequest req, final HttpServletResponse resp) {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
-            responseError(req, resp, new CommonException("로그인을 해야 합니다.", HttpServletResponse.SC_UNAUTHORIZED));
-            return;
+            throw new CommonException("로그인을 해야 합니다.", HttpServletResponse.SC_UNAUTHORIZED);
         }
         Long questionId = parseSuffixPathVariable(req.getPathInfo());
 

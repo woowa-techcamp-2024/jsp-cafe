@@ -41,7 +41,8 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/edit/${currentQuestion.id}">수정</a>
+                                <a id="edit-form-link" class="link-modify-article"
+                                   href="/questions/edit/${currentQuestion.id}">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete">
@@ -183,6 +184,21 @@
                 success: function () {
                     window.location.href = '/';
                 },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = '/';
+                }
+            });
+        })
+
+        $('#edit-form-link').on('click', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/questions/edit/${currentQuestion.id}",
+                type: 'GET',
+
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
