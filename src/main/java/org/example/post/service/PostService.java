@@ -32,4 +32,9 @@ public class PostService {
     public PostResponse getPostById(long id) throws SQLException {
         return PostResponse.toResponse(postRepository.findById(id));
     }
+
+    public PostResponse updatePost(PostResponse postDto) throws SQLException {
+        Post post = Post.createWithId(postDto.getId(), postDto.getWriter(), postDto.getTitle(), postDto.getContents());
+        return PostResponse.toResponse(postRepository.update(post));
+    }
 }
