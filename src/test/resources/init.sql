@@ -11,6 +11,7 @@ CREATE TABLE users (
 
 CREATE TABLE articles (
     id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
     title VARCHAR(200) NOT NULL,
     nickname VARCHAR(50),
     content CLOB NOT NULL,

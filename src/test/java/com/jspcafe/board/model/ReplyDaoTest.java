@@ -24,7 +24,7 @@ class ReplyDaoTest {
     @Test
     void 댓글을_정상적으로_저장한다() {
         // Given
-        Article article = Article.create("testTitle", "testName", "test content");
+        Article article = Article.create("testUserId", "testTitle", "testName", "test content");
         articleDao.save(article);
         Reply reply = Reply.create(article.id(), "testUserId", "testNickname", "test reply content");
 
@@ -39,7 +39,7 @@ class ReplyDaoTest {
     @Test
     void 특정_게시글의_모든_댓글을_조회한다() {
         // Given
-        Article article = Article.create("testTitle", "testName", "test content");
+        Article article = Article.create("testUserId", "testTitle", "testName", "test content");
         articleDao.save(article);
         Reply reply1 = Reply.create(article.id(), "testUserId1", "testNickname1", "test reply content 1");
         Reply reply2 = Reply.create(article.id(), "testUserId2", "testNickname2", "test reply content 2");
@@ -58,7 +58,7 @@ class ReplyDaoTest {
     @Test
     void 댓글을_정상적으로_수정한다() {
         // Given
-        Article article = Article.create("testTitle", "testName", "test content");
+        Article article = Article.create("testUserId", "testTitle", "testName", "test content");
         articleDao.save(article);
         Reply reply = Reply.create(article.id(), "testUserId", "testNickname", "original content");
         replyDao.save(reply);
@@ -78,7 +78,7 @@ class ReplyDaoTest {
     @Test
     void 댓글을_정상적으로_소프트_삭제한다() {
         // Given
-        Article article = Article.create("testTitle", "testName", "test content");
+        Article article = Article.create("testUserId", "testTitle", "testName", "test content");
         articleDao.save(article);
         Reply reply = Reply.create(article.id(), "testUserId", "testNickname", "test reply content");
         replyDao.save(reply);

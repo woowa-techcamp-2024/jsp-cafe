@@ -78,7 +78,7 @@ public class ArticleController extends HttpServlet {
         }
         Article article = articleService.findById(id);
         User user = getUser(req);
-        if (!article.nickname().equals(user.nickname())) {
+        if (!article.userId().equals(user.id())) {
             resp.sendRedirect("/error/403");
             return;
         }
@@ -90,7 +90,7 @@ public class ArticleController extends HttpServlet {
         String title = req.getParameter("title");
         String content = req.getParameter("content");
         User user = getUser(req);
-        articleService.write(title, user.nickname(), content);
+        articleService.write(user.id(), title, user.nickname(), content);
         resp.sendRedirect("/");
     }
 
@@ -117,11 +117,11 @@ public class ArticleController extends HttpServlet {
         String id = req.getPathInfo().replace("/", "");
         Article article = articleService.findById(id);
         User user = getUser(req);
-        if (!article.nickname().equals(user.nickname())) {
+        if (!article.userId().equals(user.id())) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-        articleService.delete(id);
+        articleService.delete(id, user.id());
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 }

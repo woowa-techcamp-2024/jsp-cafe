@@ -13,8 +13,8 @@ public class ArticleService {
         this.articleDao = articleDao;
     }
 
-    public String write(final String title, final String nickname, final String content) {
-        Article article = Article.create(title, nickname, content);
+    public String write(final String userId, final String title, final String nickname, final String content) {
+        Article article = Article.create(userId, title, nickname, content);
         articleDao.save(article);
         return article.id();
     }
@@ -34,7 +34,7 @@ public class ArticleService {
         articleDao.update(updateArticle);
     }
 
-    public void delete(final String id) {
-        articleDao.delete(id);
+    public void delete(final String id, final String userId) {
+        articleDao.delete(id, userId);
     }
 }

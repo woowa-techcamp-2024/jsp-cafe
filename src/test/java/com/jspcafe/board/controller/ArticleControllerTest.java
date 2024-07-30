@@ -45,8 +45,8 @@ class ArticleControllerTest {
     void 게시글_목록을_조회할_수_있다() throws ServletException, IOException {
         // Given
         List<Article> articles = Arrays.asList(
-                Article.create("제목1", "작성자1", "내용1"),
-                Article.create("제목2", "작성자2", "내용2")
+                Article.create("testUserId1", "제목1", "작성자1", "내용1"),
+                Article.create("testUserId2", "제목2", "작성자2", "내용2")
         );
         for (Article article : articles) {
             articleDao.save(article);
@@ -66,7 +66,7 @@ class ArticleControllerTest {
     @Test
     void 특정_게시글을_조회할_수_있다() throws ServletException, IOException {
         // Given
-        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        Article article = Article.create("testUserId", "테스트 제목", "테스트 작성자", "테스트 내용");
         articleDao.save(article);
         request.setPathInfo("/" + article.id());
 
@@ -114,11 +114,12 @@ class ArticleControllerTest {
     @Test
     void 게시글_수정폼을_요청할_수_있다() throws ServletException, IOException {
         // Given
-        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        User user = User.create("test@test", "테스트 작성자", "testPassword");
+        Article article = Article.create(user.id(), "테스트 제목", "테스트 작성자", "테스트 내용");
         articleDao.save(article);
         request.setPathInfo("/" + article.id() + "/form");
         HttpSession session = request.getSession();
-        session.setAttribute("userInfo", User.create("test@test", "테스트 작성자", "testPassword"));
+        session.setAttribute("userInfo", user);
 
         // When
         articleController.doGet(request, response);
@@ -130,7 +131,7 @@ class ArticleControllerTest {
     @Test
     void 게시글_수정을_할_수_있다() throws ServletException, IOException {
         // Given
-        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        Article article = Article.create("testUserId", "테스트 제목", "테스트 작성자", "테스트 내용");
         articleDao.save(article);
         request.setPathInfo("/" + article.id());
         request.setBody("{\"title\":\"updateTitle\",\"content\":\"updateContent\"}");
@@ -147,11 +148,12 @@ class ArticleControllerTest {
     @Test
     void 게시글_작성자가_게시물을_삭제할_수_있다() throws ServletException, IOException {
         // Given
-        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        User user = User.create("test@test", "테스트 작성자", "testPassword");
+        Article article = Article.create(user.id(), "테스트 제목", "테스트 작성자", "테스트 내용");
         articleDao.save(article);
         request.setPathInfo("/" + article.id());
         HttpSession session = request.getSession();
-        session.setAttribute("userInfo", User.create("test@test", "테스트 작성자", "testPassword"));
+        session.setAttribute("userInfo", user);
 
         // When
         articleController.doDelete(request, response);
@@ -163,11 +165,13 @@ class ArticleControllerTest {
     @Test
     void 게시글_작성자가_아닐시_삭제할_수_없다() throws ServletException, IOException {
         // Given
-        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        User user = User.create("test@test", "테스트 작성자", "testPassword");
+        Article article = Article.create(user.id(), "테스트 제목", "테스트 작성자", "테스트 내용");
         articleDao.save(article);
         request.setPathInfo("/" + article.id());
         HttpSession session = request.getSession();
-        session.setAttribute("userInfo", User.create("test@test", "Wrong Nickname", "testPassword"));
+        User otherUser = User.create("test2@test", "테스트 작성자2", "testPassword2");
+        session.setAttribute("userInfo", otherUser);
 
         // When
         articleController.doDelete(request, response);
