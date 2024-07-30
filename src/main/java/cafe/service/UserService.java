@@ -41,4 +41,11 @@ public class UserService {
             throw new IllegalArgumentException("Password is incorrect!");
         }
     }
+
+    public void verifyUserId(User user, String requestURI) {
+        String userId = requestURI.split("/")[2];
+        if (!user.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("다른 사용자 정보를 수정할 수 없습니다.");
+        }
+    }
 }
