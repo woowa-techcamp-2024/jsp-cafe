@@ -12,12 +12,9 @@
 </head>
 <body>
 <div id="container">
-  <div id="header">
-    <a id="greeting" href="/">찬우 카페</a>
-    <a id="login-button" href="/users/login">로그인/회원가입</a>
-  </div>
+  <jsp:include page="${pageContext.request.contextPath}/common/header.jsp" />
   <div id="back-header">
-    <a id="back-button" href="/users">
+    <a id="back-button" href="${pageContext.request.contextPath}/users">
       <img src="${pageContext.request.contextPath}/static/assets/arrow-left.svg" alt="">
     </a>
   </div>
@@ -28,7 +25,11 @@
   <div id="nickname"><c:out value="${profile.nickname()}" /></div>
   <div id="email"><c:out value="${profile.email()}" /></div>
   <div id="sign-up-date"><c:out value="${profile.signUpAt()}" /></div>
-  <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
+  <c:choose>
+    <c:when test="${sessionScope.authentication.isPrincipal(profile.id())}">
+      <a id="profile-button" href="/users/profile/${profile.id()}">프로필 수정</a>
+    </c:when>
+  </c:choose>
 </div>
 </body>
 </html>

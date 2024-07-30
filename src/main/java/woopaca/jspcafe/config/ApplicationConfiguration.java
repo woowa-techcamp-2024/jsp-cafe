@@ -6,42 +6,23 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import woopaca.jspcafe.database.DatabaseInitializer;
 import woopaca.jspcafe.database.JdbcTemplate;
-import woopaca.jspcafe.repository.PostMySQLRepository;
-import woopaca.jspcafe.repository.PostRepository;
-import woopaca.jspcafe.repository.UserMySQLRepository;
-import woopaca.jspcafe.repository.UserRepository;
-import woopaca.jspcafe.service.PostService;
-import woopaca.jspcafe.service.UserService;
 
 @WebListener
 public class ApplicationConfiguration implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DatabaseInitializer.initialize(jdbcTemplate());
+        DatabaseInitializer.initialize(InstanceFactory.jdbcTemplate());
 
         ServletContext servletContext = sce.getServletContext();
-        servletContext.setAttribute("userService", userService());
-        servletContext.setAttribute("postService", postService());
+        servletContext.setAttribute("userService", InstanceFactory.userService());
+        servletContext.setAttribute("postService", InstanceFactory.postService());
+        servletContext.setAttribute("authService", InstanceFactory.authService());
     }
 
-    private UserService userService() {
-        return new UserService(userRepository());
-    }
-
-    private UserRepository userRepository() {
-        return new UserMySQLRepository(jdbcTemplate());
-    }
-
-    private PostService postService() {
-        return new PostService(postRepository(), userRepository());
-    }
-
-    private PostRepository postRepository() {
-        return new PostMySQLRepository(jdbcTemplate());
-    }
-
-    private JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate();
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        JdbcTemplate jdbcTemplate = InstanceFactory.jdbcTemplate();
+        jdbcTemplate.shutdownConnectionPool();
     }
 }

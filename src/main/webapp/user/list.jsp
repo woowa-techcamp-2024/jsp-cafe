@@ -11,10 +11,7 @@
 </head>
 <body>
 <div id="container">
-  <div id="header">
-    <a id="greeting" href="/">찬우 카페</a>
-    <a id="login-button" href="/users/login">로그인/회원가입</a>
-  </div>
+  <jsp:include page="${pageContext.request.contextPath}/common/header.jsp" />
   <div id="posts-container">
     <div id="info-card">
       <div>멤버 리스트</div>

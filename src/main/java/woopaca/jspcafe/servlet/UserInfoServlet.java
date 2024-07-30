@@ -39,9 +39,6 @@ public class UserInfoServlet extends HttpServlet {
                     .forward(request, response);
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            log.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서버 오류");
         }
     }
 }

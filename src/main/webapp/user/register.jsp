@@ -12,14 +12,14 @@
 </head>
 <body>
 <div id="container">
-  <div id="header">
-    <a id="greeting" href="/">찬우 카페</a>
-    <a id="login-button" href="/users/login">로그인/회원가입</a>
-  </div>
-  <form id="user-form" method="post" action="/users/signup">
+  <jsp:include page="${pageContext.request.contextPath}/common/header.jsp" />
+  <form id="user-form" method="post" action="${pageContext.request.contextPath}/users/signup">
     <div id="form-title">
       회원가입
     </div>
+    <c:if test="${not empty  error}">
+      <div id="error-box"><c:out value="${error}" /></div>
+    </c:if>
     <div class="form-element">
       <div class="form-label">이메일</div>
       <input autofocus required type="email" id="username" name="username" placeholder="이메일을 입력해주세요">

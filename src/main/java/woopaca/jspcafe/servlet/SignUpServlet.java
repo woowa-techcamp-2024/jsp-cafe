@@ -40,17 +40,17 @@ public class SignUpServlet extends HttpServlet {
      * 회원가입 진행
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             Map<String, String[]> parameters = request.getParameterMap();
             SignUpRequest signUpRequest = RequestParametersResolver.resolve(parameters, SignUpRequest.class);
             userService.signUp(signUpRequest);
             response.sendRedirect("/users");
         } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            log.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서버 오류");
+            request.setAttribute("error", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            request.getRequestDispatcher("/user/register.jsp")
+                    .forward(request, response);
         }
     }
 }

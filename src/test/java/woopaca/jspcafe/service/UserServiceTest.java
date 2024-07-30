@@ -3,9 +3,11 @@ package woopaca.jspcafe.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import woopaca.jspcafe.fixture.TestRepositoryFixture;
-import woopaca.jspcafe.servlet.dto.response.MembersResponse;
+import woopaca.jspcafe.fixture.TestUserRepository;
+import woopaca.jspcafe.model.User;
+import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
+import woopaca.jspcafe.servlet.dto.response.MembersResponse;
 import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
 import java.util.List;
@@ -17,10 +19,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserServiceTest {
 
     UserService userService;
+    UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(TestRepositoryFixture.testUserRepository());
+        userRepository = new TestUserRepository();
+        userService = new UserService(userRepository);
     }
 
     @Nested
@@ -32,8 +36,9 @@ class UserServiceTest {
             @Test
             void 정상적으로_회원가입에_성공한다() {
                 SignUpRequest signUpRequest = new SignUpRequest("new", "new", "new");
-                userService.signUp(signUpRequest);
-                assertThatNoException().isThrownBy(() -> userService.signUp(signUpRequest));
+                assertThatNoException()
+                        .isThrownBy(() -> userService.signUp(signUpRequest));
+                assertThat(userRepository.findAll()).hasSize(1);
             }
         }
 
@@ -66,7 +71,9 @@ class UserServiceTest {
 
             @Test
             void 이미_사용중인_이메일이면_예외가_발생한다() {
-                SignUpRequest signUpRequest = new SignUpRequest("test@email.com", "new", "new");
+                userRepository.save(new User("test", "test", "test"));
+
+                SignUpRequest signUpRequest = new SignUpRequest("test", "new", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("[ERROR] 이미 사용 중인 이메일입니다.");
@@ -74,10 +81,12 @@ class UserServiceTest {
 
             @Test
             void 이미_사용중인_닉네임이면_예외가_발생한다() {
+                userRepository.save(new User("test", "test", "test"));
+
                 SignUpRequest signUpRequest = new SignUpRequest("new", "test", "new");
                 assertThatThrownBy(() -> userService.signUp(signUpRequest))
                         .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다. nickname: test");
+                        .hasMessage("[ERROR] 이미 사용 중인 닉네임입니다.");
             }
         }
     }
@@ -87,6 +96,10 @@ class UserServiceTest {
 
         @Test
         void 모든_회원을_조회한다() {
+            userRepository.save(new User("test1", "test1", "test1"));
+            userRepository.save(new User("test2", "test2", "test2"));
+            userRepository.save(new User("test3", "test3", "test3"));
+
             List<MembersResponse> members = userService.getAllMembers();
             assertThat(members).isNotNull();
             assertThat(members).hasSize(3);
@@ -98,8 +111,10 @@ class UserServiceTest {
 
         @Test
         void 사용자_프로필을_조회한다() {
-            Long userId = 111L;
-            UserProfile userProfile = userService.getUserProfile(userId);
+            User user = new User("test", "test", "test");
+            userRepository.save(user);
+
+            UserProfile userProfile = userService.getUserProfile(user.getId());
             assertThat(userProfile).isNotNull();
             assertThat(userProfile.nickname()).isEqualTo("test");
         }

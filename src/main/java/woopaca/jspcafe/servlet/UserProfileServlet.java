@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.UserService;
 import woopaca.jspcafe.servlet.dto.request.UpdateProfileRequest;
@@ -38,11 +40,18 @@ public class UserProfileServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UpdateProfileRequest updateProfileRequest =
-                RequestParametersResolver.resolve(request.getParameterMap(), UpdateProfileRequest.class);
-        String pathInfo = request.getPathInfo();
-        Long userId = Long.parseLong(pathInfo.substring(1));
-        userService.updateUserProfile(userId, updateProfileRequest);
-        response.sendRedirect("/users/" + userId);
+        try {
+            UpdateProfileRequest updateProfileRequest =
+                    RequestParametersResolver.resolve(request.getParameterMap(), UpdateProfileRequest.class);
+            String pathInfo = request.getPathInfo();
+            Long userId = Long.parseLong(pathInfo.substring(1));
+
+            HttpSession session = request.getSession();
+            Authentication authentication = (Authentication) session.getAttribute("authentication");
+            userService.updateUserProfile(userId, updateProfileRequest, authentication);
+            response.sendRedirect("/users/" + userId);
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
     }
 }

@@ -69,3 +69,15 @@
   color: #14212B;
   font-size: 0.9em;
 }
+
+#error-box {
+  color: #862727;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  background-color: #FFD2D2;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  border: #F17B7B 1px solid;
+}
