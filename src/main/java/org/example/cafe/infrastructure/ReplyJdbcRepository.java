@@ -19,7 +19,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
     private static final String SELECT_BY_QUESTION_ID = "SELECT * FROM REPLY WHERE question_id = ? and is_deleted = false";
     private static final String SELECT_BY_ID = "SELECT * FROM REPLY WHERE reply_id = ? and is_deleted = false";
     private static final String DELETE = "DELETE FROM REPLY";
-    private static final String UPDATE_BY_ID = "UPDATE REPLY SET content = ?, writer = ?, question_id = ?, is_delete = ? WHERE question_id = ?";
+    private static final String UPDATE_BY_ID = "UPDATE REPLY SET content = ?, writer = ?, question_id = ?, is_deleted = ? WHERE reply_id = ?";
 
     private final DbConnector dbConnector;
 
@@ -109,7 +109,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
             preparedStatement.setString(2, reply.getWriter());
             preparedStatement.setLong(3, reply.getQuestionId());
             preparedStatement.setBoolean(4, reply.getIsDeleted());
-            preparedStatement.setLong(5, reply.getQuestionId());
+            preparedStatement.setLong(5, reply.getReplyId());
 
             int row = preparedStatement.executeUpdate();
             if (row != 1) {

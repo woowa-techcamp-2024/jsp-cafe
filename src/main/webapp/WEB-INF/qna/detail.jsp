@@ -79,7 +79,9 @@
                                         <ul class="article-util-list">
                                             <c:if test="${sessionScope.userId == reply.writer}">
                                                 <li>
-                                                    <button id="delete-reply-btn" class="delete-answer-button">삭제
+                                                    <button id="delete-reply-btn" class="delete-answer-button"
+                                                            onclick="deleteReply(${reply.replyId}, ${question.questionId})">
+                                                        삭제
                                                     </button>
                                                 </li>
                                             </c:if>

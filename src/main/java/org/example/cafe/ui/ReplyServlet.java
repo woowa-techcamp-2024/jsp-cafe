@@ -10,9 +10,10 @@ import java.io.IOException;
 import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.dto.ReplyCreateDto;
 import org.example.cafe.utils.JsonDataBinder;
+import org.example.cafe.utils.PathTokenExtractUtils;
 import org.slf4j.Logger;
 
-@WebServlet(name = "ReplySerlvet", urlPatterns = {"/replies/", "/replies"})
+@WebServlet(name = "ReplyServlet", urlPatterns = {"/replies/*", "/replies"})
 public class ReplyServlet extends BaseServlet {
 
     private static final Logger log = getLogger(ReplyServlet.class);
@@ -38,5 +39,17 @@ public class ReplyServlet extends BaseServlet {
         replyService.createReply(replyCreateDto, userId);
 
         response.sendRedirect("/questions/" + replyCreateDto.questionId());
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+        Long replyId = PathTokenExtractUtils.extractValueByIndex(request.getRequestURI(), 2, Long.class);
+
+        assert request.getSession(false) != null;
+        String loginUserId = (String) request.getSession(false).getAttribute("userId");
+
+        replyService.deleteReply(replyId, loginUserId);
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

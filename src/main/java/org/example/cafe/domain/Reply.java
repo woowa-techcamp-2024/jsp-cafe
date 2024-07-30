@@ -21,6 +21,16 @@ public class Reply {
         this.createdAt = builder.createdAt;
     }
 
+    public boolean isValidWriter(String loginUserId) {
+        return loginUserId != null && !loginUserId.equals(writer);
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    // ------------------------------------------------------------------------ Builder
+
     public static class ReplyBuilder {
         private Long replyId;
         private String writer;

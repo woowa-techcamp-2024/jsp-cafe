@@ -1,6 +1,8 @@
 package org.example.cafe.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.example.cafe.e2e.HttpUrlConnectionUtils.createDeleteConnection;
+import static org.example.cafe.e2e.HttpUrlConnectionUtils.createDeleteLoginedConnection;
 import static org.example.cafe.e2e.HttpUrlConnectionUtils.createGetConnection;
 import static org.example.cafe.e2e.HttpUrlConnectionUtils.createGetLoginedConnection;
 import static org.example.cafe.e2e.HttpUrlConnectionUtils.createPostConnection;
@@ -136,6 +138,84 @@ class Step6 extends TomcatBaseTestEnvironment {
             assertAll(() -> {
                 assertThat(con.getResponseCode()).isEqualTo(302);
                 assertThat(con.getHeaderField("Location")).isEqualTo("/questions/" + savedQuestionId);
+            });
+        }
+    }
+
+    @Nested
+    class 댓글을_삭제한다 {
+
+        @Test
+        void 로그인하지_않은_사용자가_댓글_삭제_시_401_에러를_반환한다() throws IOException {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+            Question question = new Question("title", "content", user.getUserId());
+            Long savedQuestionId = questionRepository.save(question);
+            Reply reply = new ReplyBuilder()
+                    .writer(user.getUserId())
+                    .content("reply1")
+                    .questionId(savedQuestionId).build();
+            Long saveReplyId = replyRepository.save(reply);
+
+            con = createDeleteConnection("/replies/" + saveReplyId);
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(401);
+            });
+        }
+
+        @Test
+        void 작성자가_아닌_사용자가_댓글_삭제_시_403_에러를_반환한다() throws Exception {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            User other = new User("testUser2", "testPass", "testUser2", "test2@exmaple.com");
+            userRepository.save(user);
+            userRepository.save(other);
+            Question question = new Question("title", "content", user.getUserId());
+            Long savedQuestionId = questionRepository.save(question);
+            Reply reply = new ReplyBuilder()
+                    .writer(user.getUserId())
+                    .content("reply1")
+                    .questionId(savedQuestionId).build();
+            Long saveReplyId = replyRepository.save(reply);
+
+            con = createDeleteLoginedConnection("/replies/" + saveReplyId, other);
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(403);
+            });
+        }
+
+        @Test
+        void 작성자는_댓글을_삭제할_수_있다() throws Exception {
+            //given
+            User user = new User("testUser1", "testPass", "testUser1", "test@example.com");
+            userRepository.save(user);
+            Question question = new Question("title", "content", user.getUserId());
+            Long savedQuestionId = questionRepository.save(question);
+            Reply reply = new ReplyBuilder()
+                    .writer(user.getUserId())
+                    .content("reply1")
+                    .questionId(savedQuestionId).build();
+            Long saveReplyId = replyRepository.save(reply);
+
+            con = createDeleteLoginedConnection("/replies/" + saveReplyId, user);
+
+            //when
+            con.connect();
+
+            //then
+            assertAll(() -> {
+                assertThat(con.getResponseCode()).isEqualTo(200);
             });
         }
     }
