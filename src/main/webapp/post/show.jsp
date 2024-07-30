@@ -28,10 +28,10 @@
                             <a href="/users/<%=post.getWriter().getId()%>"
                                class="article-author-name"><%=post.getWriter().getName()%>
                             </a>
-                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                            <p>
                                 <%=post.getCreatedAt()%>
                                 <i class="icon-link"></i>
-                            </a>
+                            </p>
                         </div>
                     </div>
                     <div class="article-doc">
@@ -40,10 +40,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/posts/<%=post.getId()%>/edit">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/posts/<%=post.getId()%>" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -112,10 +112,10 @@
                                     <ul class="article-util-list">
                                         <li>
                                             <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
+                                               href="/posts/<%=post.getId()%>/edit">수정</a>
                                         </li>
                                         <li>
-                                            <form class="form-delete" action="/questions/413/answers/1405"
+                                            <form class="form-delete" action="/posts/<%=post.getId()%>" method="POST">
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
@@ -139,35 +139,35 @@
     </div>
 </div>
 
-<script type="text/template" id="answerTemplate">
-    <article class="article">
-        <div class="article-header">
-            <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-            </div>
-            <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
-            </div>
-        </div>
-        <div class="article-doc comment-doc">
-            {2}
-        </div>
-        <div class="article-util">
-            <ul class="article-util-list">
-                <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </article>
-</script>
+<%--<script type="text/template" id="answerTemplate">--%>
+<%--    <article class="article">--%>
+<%--        <div class="article-header">--%>
+<%--            <div class="article-header-thumb">--%>
+<%--                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">--%>
+<%--            </div>--%>
+<%--            <div class="article-header-text">--%>
+<%--                <a href="#" class="article-author-name">{0}</a>--%>
+<%--                <div class="article-header-time">{1}</div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--        <div class="article-doc comment-doc">--%>
+<%--            {2}--%>
+<%--        </div>--%>
+<%--        <div class="article-util">--%>
+<%--            <ul class="article-util-list">--%>
+<%--                <li>--%>
+<%--                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>--%>
+<%--                </li>--%>
+<%--                <li>--%>
+<%--                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">--%>
+<%--                        <input type="hidden" name="_method" value="DELETE">--%>
+<%--                        <button type="submit" class="delete-answer-button">삭제</button>--%>
+<%--                    </form>--%>
+<%--                </li>--%>
+<%--            </ul>--%>
+<%--        </div>--%>
+<%--    </article>--%>
+<%--</script>--%>
 
 <jsp:include page="/components/footer.jsp"/>
 </body>
