@@ -30,6 +30,11 @@ public class QuestionWriteServlet extends MappingHttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getSession().getAttribute("user");
+        if (user == null) {
+            resp.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
         String title = req.getParameter("title");
         String content = req.getParameter("content");
 
@@ -41,9 +46,7 @@ public class QuestionWriteServlet extends MappingHttpServlet {
             return;
         }
 
-        // TODO: 사용자 id 를 어떻게 가져올 것인가?
-        User user = (User) req.getSession().getAttribute("user");
-        articleRepository.save(new Article(user == null ? null : user.getId(), title, content));
-        resp.sendRedirect(req.getContextPath() + "/questions");
+        Article save = articleRepository.save(new Article(user.getId(), title, content));
+        resp.sendRedirect(req.getContextPath() + "/questions/" + save.getId());
     }
 }

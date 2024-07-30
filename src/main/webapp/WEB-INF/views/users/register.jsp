@@ -8,7 +8,7 @@
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
         </c:if>
-        <form action="${pageContext.request.contextPath}/users" method="post">
+        <form action="${pageContext.request.contextPath}/user/register" method="post">
             <div class="mb-3">
                 <label for="userId" class="form-label">User ID</label>
                 <input type="text" class="form-control" id="userId" name="userId"

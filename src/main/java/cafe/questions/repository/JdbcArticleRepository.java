@@ -122,4 +122,16 @@ public class JdbcArticleRepository implements ArticleRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM articles WHERE id = ?";
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

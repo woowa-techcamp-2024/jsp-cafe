@@ -2,6 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/WEB-INF/views/header.jsp" %>
 <div class="container mt-5">
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
+    </c:if>
     <div class="alert alert-danger" role="alert">
         <h4 class="alert-heading">An error occurred!</h4>
         <p>Error Code: <c:out value="${requestScope['javax.servlet.error.status_code']}"/></p>
