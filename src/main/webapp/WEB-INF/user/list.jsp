@@ -31,7 +31,7 @@
                       <td>${user.userId}</td>
                       <td>${user.name}</td>
                       <td>${user.email}</td>
-                      <td><a href="/users/update/${user.userSeq}" class="btn btn-success" role="button">수정</a></td>
+                      <td><a href="/userPage?action=update&seq=${user.userSeq}" class="btn btn-success" role="button">수정</a></td>
                   </tr>
               </c:forEach>
               </tbody>

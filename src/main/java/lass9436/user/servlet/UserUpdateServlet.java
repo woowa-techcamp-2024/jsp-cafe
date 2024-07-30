@@ -23,20 +23,6 @@ public class UserUpdateServlet extends HttpServlet {
 	}
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String pathInfo = req.getPathInfo();
-		long userSeq = Long.parseLong(pathInfo.split("/")[1]);
-		User user = userRepository.findByUserSeq(userSeq);
-		if (user == null) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found.");
-			return;
-		}
-
-		req.setAttribute("user", user);
-		req.getRequestDispatcher("/WEB-INF/user/update.jsp").forward(req, resp);
-	}
-
-	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String[] pathParts = req.getPathInfo().split("/");
 		long userSeq = Long.parseLong(pathParts[1]);

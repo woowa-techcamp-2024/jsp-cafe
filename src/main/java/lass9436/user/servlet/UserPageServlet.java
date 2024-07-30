@@ -29,9 +29,11 @@ public class UserPageServlet extends HttpServlet {
         "register", this::handleRegister,
         "login-failed", this::handleLoginFailed,
         "list", this::handleList,
-        "detail", this::handleDetail
+        "detail", this::handleDetail,
+        "update", this::handleUpdate
         );
     }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -70,4 +72,12 @@ public class UserPageServlet extends HttpServlet {
         req.setAttribute("user", user);
         return "/detail.jsp";
     }
+
+    private String handleUpdate(HttpServletRequest req, HttpServletResponse resp) {
+        long seq = Long.parseLong(req.getParameter("seq"));
+        User user = userRepository.findByUserSeq(seq);
+        req.setAttribute("user", user);
+        return "/update.jsp";
+    }
+
 }
