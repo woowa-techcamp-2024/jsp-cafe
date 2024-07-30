@@ -103,7 +103,7 @@ class ReplyHandlerTest {
             assertThat(replyDatabase.findById(reply.getReplyId())).isNotEmpty()
                     .get()
                     .satisfies(findReply -> {
-                        assertThat(findReply.isDelete()).isTrue();
+                        assertThat(findReply.isDeleted()).isTrue();
                     });
         }
 

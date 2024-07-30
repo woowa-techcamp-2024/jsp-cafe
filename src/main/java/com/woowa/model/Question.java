@@ -40,6 +40,12 @@ public class Question {
     }
 
     public void delete() {
+        for (Reply reply : replies) {
+            reply.checkAuthority(author);
+        }
+        for (Reply reply : replies) {
+            reply.delete();
+        }
         this.deleted = true;
     }
 

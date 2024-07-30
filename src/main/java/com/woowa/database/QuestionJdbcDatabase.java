@@ -151,19 +151,29 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
 
     @Override
     public void delete(Question question) {
-        String sql = "delete from question where question_id = ?";
-
         Connection con = null;
-        PreparedStatement pstmt = null;
+        PreparedStatement pstmt1 = null;
+        PreparedStatement pstmt2 = null;
         try {
             con = DBConnectionUtils.getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, question.getQuestionId());
-            pstmt.executeUpdate();
+            DBConnectionUtils.startTransaction(con);
+
+            String sql = "update question set deleted = true where question_id = ?";
+            pstmt1 = con.prepareStatement(sql);
+            pstmt1.setString(1, question.getQuestionId());
+            pstmt1.executeUpdate();
+
+            sql = "update reply set deleted = true where question_id = ?";
+            pstmt2 = con.prepareStatement(sql);
+            pstmt2.setString(1, question.getQuestionId());
+            pstmt2.executeUpdate();
+            DBConnectionUtils.commit(con);
         } catch (SQLException e) {
+            DBConnectionUtils.rollback(con);
             throw new IllegalArgumentException("SQL 예외", e);
         } finally {
-            DBConnectionUtils.closeConnection(con, pstmt, null);
+            DBConnectionUtils.closeConnection(null, pstmt2, null);
+            DBConnectionUtils.closeConnection(con, pstmt1, null);
         }
     }
 
@@ -188,19 +198,7 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
             pstmt.setString(1, questionId);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                replies.add(Reply.create(
-                        rs.getString("reply_id"),
-                        rs.getString("content"),
-                        new Author(
-                                rs.getString("user_id"),
-                                rs.getString("nickname")
-                        ),
-                        new QuestionInfo(
-                                questionId,
-                                ""
-                        ),
-                        ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
-                ));
+                replies.add(mapToReply(questionId, rs));
             }
             return replies;
         } catch (SQLException e) {
@@ -208,5 +206,53 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
         } finally {
             DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
+    }
+
+    @Override
+    public Optional<Question> findByIdWithRepliesContainsDeleted(String questionId) {
+        Optional<Question> optionalQuestion = findById(questionId);
+        optionalQuestion.ifPresent(
+                question -> question.getReplies()
+                        .addAll(findRepliesContainsDeletedByQuestionId(questionId)));
+        return optionalQuestion;
+    }
+
+    private List<Reply> findRepliesContainsDeletedByQuestionId(String questionId) {
+        String sql = "select * from reply r join user u on r.user_id = u.user_id where question_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Reply> replies = new ArrayList<>();
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, questionId);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                replies.add(mapToReply(questionId, rs));
+            }
+            return replies;
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
+        }
+    }
+
+    private Reply mapToReply(String questionId, ResultSet rs) throws SQLException {
+        return Reply.create(
+                rs.getString("reply_id"),
+                rs.getString("content"),
+                new Author(
+                        rs.getString("user_id"),
+                        rs.getString("nickname")
+                ),
+                new QuestionInfo(
+                        questionId,
+                        ""
+                ),
+                ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
+        );
     }
 }

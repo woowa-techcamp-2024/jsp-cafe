@@ -109,8 +109,9 @@ class QuestionHandlerTest {
         void questionsOrderByCreatedAt() {
             //given
             User user = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
-            for(int i=0; i<10; i++) {
-                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content", Author.from(user),
+            for (int i = 0; i < 10; i++) {
+                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content",
+                        Author.from(user),
                         ZonedDateTime.now().plusHours(i));
                 questionDatabase.save(question);
             }
@@ -123,7 +124,7 @@ class QuestionHandlerTest {
             assertThat(questions).isNotNull()
                     .asInstanceOf(LIST)
                     .hasSize(10)
-                    .map(question -> ((Question)question).getCreatedAt())
+                    .map(question -> ((Question) question).getCreatedAt())
                     .isSortedAccordingTo(Comparator.reverseOrder());
         }
 
@@ -132,8 +133,9 @@ class QuestionHandlerTest {
         void pagination() {
             //given
             User user = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
-            for(int i=0; i<20; i++) {
-                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content", Author.from(user),
+            for (int i = 0; i < 20; i++) {
+                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content",
+                        Author.from(user),
                         ZonedDateTime.now().plusHours(i));
                 questionDatabase.save(question);
             }
@@ -381,6 +383,43 @@ class QuestionHandlerTest {
 
             //then
             assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+
+        @Test
+        @DisplayName("예외(Authorization): 다른 사용자의 댓글이 포함되어 있으면")
+        void authorization_ContainsOtherUserReplies() {
+            //given
+            User anotherUser = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(anotherUser, question)
+            ));
+
+            //when
+            Exception exception = catchException(
+                    () -> questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId()));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+
+        @Test
+        @DisplayName("다른 사용자의 댓글이 포함되어 있지 않으면 삭제한다.")
+        void deleteQuestion_WhenNotContainsOtherUserReplies() {
+            //given
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question)
+            ));
+
+            //when
+            ResponseEntity response = questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(question.isDeleted()).isTrue();
+            assertThat(question.getReplies()).allSatisfy(reply -> {
+                assertThat(reply.isDeleted()).isTrue();
+            });
         }
     }
 }

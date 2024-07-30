@@ -50,11 +50,16 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
         optionalQuestion
                 .ifPresent(question -> {
                     List<Reply> notDeleted = question.getReplies().stream()
-                            .filter(reply -> !reply.isDelete())
+                            .filter(reply -> !reply.isDeleted())
                             .toList();
                     question.getReplies().clear();
                     question.getReplies().addAll(notDeleted);
                 });
         return optionalQuestion;
+    }
+
+    @Override
+    public Optional<Question> findByIdWithRepliesContainsDeleted(String questionId) {
+        return findById(questionId);
     }
 }

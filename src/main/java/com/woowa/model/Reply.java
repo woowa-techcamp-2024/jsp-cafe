@@ -1,5 +1,6 @@
 package com.woowa.model;
 
+import com.woowa.exception.AuthorizationException;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -9,7 +10,7 @@ public class Reply {
     private final Author author;
     private final QuestionInfo questionInfo;
     private final ZonedDateTime createdAt;
-    private boolean delete;
+    private boolean deleted;
 
     private Reply(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt) {
         this.replyId = replyId;
@@ -27,8 +28,15 @@ public class Reply {
         author.checkAuthority(user);
     }
 
+    public void checkAuthority(Author author) {
+        if(this.author.equals(author)) {
+            return;
+        }
+        throw new AuthorizationException("작성자가 다른 댓글은 삭제할 수 없습니다.");
+    }
+
     public void delete() {
-        delete = true;
+        deleted = true;
     }
 
     public String getReplyId() {
@@ -51,8 +59,8 @@ public class Reply {
         return createdAt;
     }
 
-    public boolean isDelete() {
-        return delete;
+    public boolean isDeleted() {
+        return deleted;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class Reply {
                 ", author=" + author +
                 ", questionInfo=" + questionInfo +
                 ", createdAt=" + createdAt +
-                ", delete=" + delete +
+                ", delete=" + deleted +
                 '}';
     }
 
@@ -76,13 +84,13 @@ public class Reply {
             return false;
         }
         Reply reply = (Reply) o;
-        return delete == reply.delete && Objects.equals(replyId, reply.replyId) && Objects.equals(
+        return deleted == reply.deleted && Objects.equals(replyId, reply.replyId) && Objects.equals(
                 content, reply.content) && Objects.equals(author, reply.author) && Objects.equals(
                 questionInfo, reply.questionInfo) && Objects.equals(createdAt, reply.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(replyId, content, author, questionInfo, createdAt, delete);
+        return Objects.hash(replyId, content, author, questionInfo, createdAt, deleted);
     }
 }
