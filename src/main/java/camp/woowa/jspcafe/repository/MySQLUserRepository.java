@@ -43,7 +43,7 @@ public class MySQLUserRepository implements UserRepository{
             pstmt.setLong(1, userId);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+                return new User(rs.getLong("id"), rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,7 +57,7 @@ public class MySQLUserRepository implements UserRepository{
         try (var pstmt = conn.prepareStatement("SELECT * FROM user");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email")));
+                users.add(new User(rs.getLong("id"), rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email")));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,10 +106,10 @@ public class MySQLUserRepository implements UserRepository{
             pstmt.setString(1, w);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+                return new User(rs.getLong("id"), rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
             }
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return null;
     }

@@ -44,7 +44,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
         try (var pstmt = conn.prepareStatement("SELECT * FROM question");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
-                questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writerId")));
+                questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id")));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -59,7 +59,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
             pstmt.setLong(1, id);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writerId"));
+                return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id"));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
