@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lass9436.question.model.Question;
 import lass9436.question.model.QuestionRepository;
 
 @WebServlet("/questionPage")
@@ -60,7 +61,8 @@ public class QuestionPageServlet extends HttpServlet {
 
 	private String handleDetail(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
-		// seq에 해당하는 질문을 가져와서 request attribute에 설정하는 로직 추가
+		Question question = questionRepository.findByQuestionSeq(seq);
+		req.setAttribute("question", question);
 		return "/detail.jsp";
 	}
 

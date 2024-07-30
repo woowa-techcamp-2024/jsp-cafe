@@ -25,7 +25,7 @@
                         </div>
                         <div class="article-header-text">
                             <a href="/users/${question.userSeq}" class="article-author-name">${question.writer}</a>
-                            <a href="/questions/${question.questionSeq}" class="article-header-time" title="퍼머링크">
+                            <a href="/questionPage?action=detail&seq=${question.questionSeq}" class="article-header-time" title="퍼머링크">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
                             </a>

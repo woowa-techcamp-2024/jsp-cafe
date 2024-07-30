@@ -21,7 +21,7 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="/questions/${question.questionSeq}">${question.title}</a>
+                              <a href="/questionPage?action=detail&seq=${question.questionSeq}">${question.title}</a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
