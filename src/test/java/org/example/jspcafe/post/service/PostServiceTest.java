@@ -63,9 +63,29 @@ class PostServiceTest extends AbstractRepositoryTestSupport {
 
     }
 
-    @DisplayName("댓글이 존재하면 게시글을 삭제할 수 없다.")
+
+    @DisplayName("게시글에 댓글이 없는 경우 게시글을 삭제할 수 있다.")
     @Test
-    void deletePostWithComment() {
+    void deletePostWithoutComment() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        postService.deletePost(userId, post.getPostId());
+
+        // then
+        assertThat(postRepository.findById(post.getPostId()))
+                .isEmpty();
+    }
+
+
+    @DisplayName("게시글 주인의 댓글만 있으면 게시글과 댓글을 모두 삭제할 수 있다.")
+    @Test
+    void deletePostWithOwnerComment() {
         // given
         Long userId = 1L;
         String title = "title";
@@ -74,6 +94,31 @@ class PostServiceTest extends AbstractRepositoryTestSupport {
         Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
 
         commentRepository.save(new Comment(post.getPostId(), userId, "content", LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        postService.deletePost(userId, post.getPostId());
+
+        // then
+        assertAll(
+                () -> assertThat(postRepository.findById(post.getPostId()))
+                        .isEmpty(),
+                () -> assertThat(commentRepository.findAllByPostId(post.getPostId()))
+                        .isEmpty()
+        );
+    }
+
+    @DisplayName("다른 사용자의 댓글이 존재하면 게시글을 삭제할 수 없다.")
+    @Test
+    void deletePostWithComment() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Long otherUserId = 2L;
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        commentRepository.save(new Comment(post.getPostId(), otherUserId, "content", LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
 
         // when & then
         assertThatThrownBy(() -> postService.deletePost(userId, post.getPostId()))
