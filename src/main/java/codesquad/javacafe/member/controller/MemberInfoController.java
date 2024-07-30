@@ -27,7 +27,7 @@ public class MemberInfoController implements SubController {
             case "GET" : {
                 var userId = req.getParameter("userId");
                 req.setAttribute("userId", userId);
-                SessionManager.getInstance().loginCheck(req,"loginInfo", userId);
+                SessionManager.getInstance().loginCheck(req,"loginInfo");
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/memberInfo.jsp");
                 dispatcher.forward(req, res);
                 break;
@@ -47,7 +47,7 @@ public class MemberInfoController implements SubController {
     private void updateMember(HttpServletRequest req) {
         var body = req.getParameterMap();
         var memberDto = new MemberUpdateRequestDto(body);
-        SessionManager.getInstance().loginCheck(req,"loginInfo", memberDto.getUserId());
+        SessionManager.getInstance().loginCheck(req,"loginInfo");
         MemberService.getInstance().updateMember(memberDto);
     }
 }

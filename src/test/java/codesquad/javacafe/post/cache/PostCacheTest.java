@@ -44,14 +44,15 @@ class PostCacheTest {
     @Test
     @DisplayName("캐시 히트는 항상 디스크 IO 보다 빠르다")
     void cacheTest() throws SQLException, ServletException, IOException {
-        Member member = new Member("user1", "password", "User One");
-        MemberRepository.getInstance().save(member);
         cacheSetUp();
 
         // post 하나 저장
         Map<String, String[]> body = new HashMap<>();
         HttpServletRequest request = new CustomHttpServletRequest();
         HttpServletResponse response = new CustomHttpServletResponse();
+
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
         request.setAttribute("userId","user1");
         request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
@@ -69,6 +70,7 @@ class PostCacheTest {
         for (int i = 0; i < 1000; i++) {
             ((CustomHttpServletRequest) request).setMethod("GET");
             ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
+            System.out.println(request.getAttribute("userId"));
             postController.doProcess(request, response);
 
         }
@@ -141,7 +143,7 @@ class PostCacheTest {
         Statement statement = connection.createStatement();
 
         // Create the post table
-        String createTableSql = "CREATE TABLE post (" +
+        String createTableSql = "CREATE TABLE if not exists post (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "post_writer VARCHAR(255), " +
                 "post_title VARCHAR(255), " +
@@ -150,6 +152,14 @@ class PostCacheTest {
                 ")";
         statement.execute(createTableSql);
 
+        String createMemberTableSql = "CREATE TABLE if not exists member (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "member_id VARCHAR(255), " +
+                "member_password VARCHAR(255), " +
+                "member_name VARCHAR(255)" +
+                ")";
+        statement.execute(createMemberTableSql);
+
         statement.close();
         connection.close();
     }
@@ -157,6 +167,10 @@ class PostCacheTest {
     private void clearTable() throws SQLException {
         var sql = "DELETE FROM post";
         try (var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+        sql = "DELETE FROM member";
+        try(var statement = connection.createStatement()) {
             statement.execute(sql);
         }
     }

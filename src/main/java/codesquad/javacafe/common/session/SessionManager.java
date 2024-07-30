@@ -12,13 +12,11 @@ public class SessionManager {
 		return instance;
 	}
 
-	public void loginCheck(HttpServletRequest req, String key, String userId) {
+	public void loginCheck(HttpServletRequest req, String key) {
 		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
-		System.out.println("memberInfo = "+memberInfo + " userId = "+userId);
+
 		if (memberInfo == null) {
 			throw ClientErrorCode.UNAUTHORIZED_USER.customException("Unauthorized user info = "+memberInfo);
-		} else if (!Objects.equals(memberInfo.getUserId(), userId)) {
-			throw ClientErrorCode.ACCESS_DENIED.customException("Access Denied User Info = "+memberInfo);
 		}
 	}
 }

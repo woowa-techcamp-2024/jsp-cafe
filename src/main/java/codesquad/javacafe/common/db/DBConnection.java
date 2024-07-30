@@ -15,7 +15,7 @@ public class DBConnection {
     private DBConnection(){}
     static{
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}

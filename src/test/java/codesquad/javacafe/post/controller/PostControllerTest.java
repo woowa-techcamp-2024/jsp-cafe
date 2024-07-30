@@ -1,6 +1,11 @@
 package codesquad.javacafe.post.controller;
 
 import codesquad.javacafe.common.db.DBConnection;
+import codesquad.javacafe.common.exception.ClientErrorCode;
+import codesquad.javacafe.common.exception.CustomException;
+import codesquad.javacafe.common.session.MemberInfo;
+import codesquad.javacafe.member.entity.Member;
+import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 import codesquad.javacafe.post.entity.Post;
@@ -57,6 +62,14 @@ public class PostControllerTest {
                 ")";
         statement.execute(createTableSql);
 
+        String createMemberTableSql = "CREATE TABLE if not exists member (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "member_id VARCHAR(255), " +
+                "member_password VARCHAR(255), " +
+                "member_name VARCHAR(255)" +
+                ")";
+        statement.execute(createMemberTableSql);
+
         statement.close();
         connection.close();
     }
@@ -66,10 +79,44 @@ public class PostControllerTest {
         try (var statement = connection.createStatement()) {
             statement.execute(sql);
         }
+        sql = "DELETE FROM member";
+        try(var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     @Test
     public void testDoProcessGet() throws ServletException, IOException {
+        // Insert a post into the database
+        Map<String, String[]> body = new HashMap<>();
+        body.put("writer", new String[]{"writer1"});
+        body.put("title", new String[]{"title1"});
+        body.put("contents", new String[]{"contents1"});
+        PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+        Post savePost = PostRepository.getInstance().save(postDto);
+
+        // Simulate GET request with query parameters
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+
+        ((CustomHttpServletRequest) request).setMethod("GET");
+        ((CustomHttpServletRequest) request).addParameter("postId",savePost.getId()+"");
+
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
+        request.setAttribute("userId","user1");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
+
+        postController.doProcess(request, response);
+
+        PostResponseDto post = (PostResponseDto) request.getAttribute("post");
+        assertNotNull(post);
+        assertEquals("writer1", post.getWriter());
+        assertEquals("/qna/show.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
+    }
+
+    @Test
+    public void testDoProcessGetWithNonLogin() throws ServletException, IOException {
         // Insert a post into the database
         Map<String, String[]> body = new HashMap<>();
         body.put("writer", new String[]{"writer1"});
@@ -85,12 +132,12 @@ public class PostControllerTest {
         ((CustomHttpServletRequest) request).setMethod("GET");
         ((CustomHttpServletRequest) request).addParameter("postId","1");
 
-        postController.doProcess(request, response);
 
-        PostResponseDto post = (PostResponseDto) request.getAttribute("post");
-        assertNotNull(post);
-        assertEquals("writer1", post.getWriter());
-        assertEquals("/qna/show.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            postController.doProcess(request, response);
+        });
+
+        assertEquals(ClientErrorCode.UNAUTHORIZED_USER.getHttpStatus(), exception.getHttpStatus());
     }
 
     @Test

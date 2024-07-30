@@ -25,9 +25,9 @@ public class PostController implements SubController {
         log.info("[PostController doProcess] method: {}", method);
         switch (method) {
             case "GET":{
-                var userId = req.getParameter("userId");
+                var userId = (String)req.getAttribute("userId");
                 log.debug("UserId = {}",userId);
-                SessionManager.getInstance().loginCheck(req,"loginInfo", userId);
+                SessionManager.getInstance().loginCheck(req,"loginInfo");
 
                 var body = Long.parseLong(req.getParameterMap().get("postId")[0]);
                 log.debug("[PostController doProcess] body: {}", body);

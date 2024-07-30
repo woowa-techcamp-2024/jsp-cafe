@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import codesquad.javacafe.post.controller.PostPageController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ public class FrontController extends HttpServlet {
 		subControllers.put("/users/info", new MemberInfoController());
 		subControllers.put("/post", new PostController());
 		subControllers.put("/auth", new AuthController());
+		subControllers.put("/post/page", new PostPageController());
 	}
 
 	@Override
