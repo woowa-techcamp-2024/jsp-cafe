@@ -62,4 +62,17 @@ public class ArticleDetailsResponse {
     public String getContent() {
         return content;
     }
+
+    @Override
+    public String toString() {
+        return "ArticleDetailsResponse{" +
+                "articleId=" + articleId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", hits=" + hits +
+                ", createdAt=" + createdAt +
+                ", authorId=" + authorId +
+                ", authorNickname='" + authorNickname + '\'' +
+                '}';
+    }
 }

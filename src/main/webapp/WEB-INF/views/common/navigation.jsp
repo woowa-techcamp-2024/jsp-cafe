@@ -1,71 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-<nav class="navbar navbar-fixed-top header">
-    <div class="col-md-12">
-        <div class="navbar-header">
+<%
+    // Retrieve the userId from the cookies
+    String userId = null;
+    if (request.getCookies() != null) {
+        for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+            if ("WOOWA_SESSIONID".equals(cookie.getName())) {
+                userId = cookie.getValue();
+                break;
+            }
+        }
+    }
+%>
 
-            <a href="${pageContext.request.contextPath}/" class="navbar-brand">HELLO, 우테캠!</a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
-                <i class="glyphicon glyphicon-search"></i>
-            </button>
-
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse1">
-            <form class="navbar-form pull-left">
-                <div class="input-group" style="max-width:470px;">
-                    <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default btn-primary" type="submit"><i
-                                class="glyphicon glyphicon-search"></i></button>
-                    </div>
-                </div>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="https://slipp.net" target="_blank">SLiPP</a></li>
-                        <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
-                    </ul>
-                </li>
-                <li><a href="${pageContext.request.contextPath}/users"><i class="glyphicon glyphicon-user"></i></a></li>
-            </ul>
-        </div>
+<nav>
+    <div class="navbar-right">
+        <c:choose>
+            <c:when test="${empty sessionScope.WOOWA_SESSIONID}">
+                <a href="${pageContext.request.contextPath}/users/login">로그인</a>
+                <a href="${pageContext.request.contextPath}/users/registration">회원가입</a>
+            </c:when>
+            <c:otherwise>
+                <a href="${pageContext.request.contextPath}/users">멤버리스트</a>
+                <a href="${pageContext.request.contextPath}/users/<%= userId %>">마이페이지</a>
+                <a href="${pageContext.request.contextPath}/users/edit/<%= userId %>">개인정보수정</a>
+                <form action="${pageContext.request.contextPath}/users/logout" method="post">
+                    <button type="submit">로그아웃</button>
+                </form>
+            </c:otherwise>
+        </c:choose>
     </div>
 </nav>
-<div class="navbar navbar-default" id="subnav">
-    <div class="col-md-12">
-        <div class="navbar-header">
-            <a href="#" style="margin-left:15px;" class="navbar-btn btn btn-default btn-plus dropdown-toggle"
-               data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i
-                    class="glyphicon glyphicon-chevron-down"></i></small></a>
-            <ul class="nav dropdown-menu">
-                <li><a href="${pageContext.request.contextPath}/user/profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
-                    Profile</a></li>
-                <li class="nav-divider"></li>
-                <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
-            </ul>
-
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse2">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
-                <li><a href="${pageContext.request.contextPath}/users" role="button">멤버리스트</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/login.html" role="button">로그인</a></li>
-                <li><a href="${pageContext.request.contextPath}/users/registration" role="button">회원가입</a></li>
-                <!--
-                <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
-                <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
-                -->
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
-            </ul>
-        </div>
-    </div>
-</div>

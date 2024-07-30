@@ -1,27 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<jsp:include page="../common/header.jsp"/>
 
-<html>
-<%@ include file="../common/header.jsp" %>
-<body>
-<%@ include file="../common/navigation.jsp" %>
+<!-- 새로운 CSS 파일 링크 추가 -->
 
-<div class="container" id="main">
-    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
-        <div class="panel panel-default content-main">
-            <form name="question" method="post" action="${pageContext.request.contextPath}/articles/write">
-                <div class="form-group">
-                    <label for="title">제목</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
-                </div>
-                <div class="form-group">
-                    <label for="content">내용</label>
-                    <textarea name="content" id="content" rows="5" class="form-control"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success clearfix pull-right">작성 완료</button>
-                <div class="clearfix" />
-            </form>
-        </div>
-    </div>
+<div class="write-article-container">
+    <h1>글쓰기</h1>
+    <form name="article" method="post" action="${pageContext.request.contextPath}/articles/write" class="write-article-form">
+        <input type="text" id="title" name="title" placeholder="글의 제목을 입력하세요"/>
+        <textarea name="content" id="content" placeholder="글의 내용을 입력하세요"></textarea>
+        <button type="submit">작성 완료</button>
+    </form>
 </div>
 
 <%@ include file="../common/footer.jsp" %>

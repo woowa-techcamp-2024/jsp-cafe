@@ -29,6 +29,10 @@ public class User {
         }
     }
 
+    public boolean isCorrectUser(String email, String password) {
+        return this.email.equals(email) && this.password.equals(password);
+    }
+
     /**
      * only allowed in repository
      */

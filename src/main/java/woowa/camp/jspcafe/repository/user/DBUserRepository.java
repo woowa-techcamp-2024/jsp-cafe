@@ -93,6 +93,31 @@ public class DBUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        if (email == null) {
+            return Optional.empty();
+        }
+
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRowToUser(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding user by Email", e);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public User update(User user, UserUpdateRequest userUpdateRequest) {
         String sql = "UPDATE users SET nickname = ?, password = ? WHERE id = ?";
 

@@ -8,12 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import woowa.camp.jspcafe.domain.Article;
 
-public class InMemoryArticleRepository implements ArticleRepository {
+public class InMemoryArticleRepository {
 
     private final Map<Long, Article> articles = new ConcurrentHashMap<>();
     private final AtomicLong id = new AtomicLong();
 
-    @Override
     public Long save(Article article) {
         long currentId = this.id.incrementAndGet();
         article.setId(currentId);
@@ -21,7 +20,6 @@ public class InMemoryArticleRepository implements ArticleRepository {
         return currentId;
     }
 
-    @Override
     public Optional<Article> findById(Long id) {
         if (id == null) {
             return Optional.empty();
@@ -29,19 +27,16 @@ public class InMemoryArticleRepository implements ArticleRepository {
         return Optional.ofNullable(articles.get(id));
     }
 
-    @Override
     public Optional<Article> findPrevious(Long currentId) {
         long previousId = currentId - 1;
         return Optional.ofNullable(articles.get(previousId));
     }
 
-    @Override
     public Optional<Article> findNext(Long currentId) {
         long nextId = currentId + 1;
         return Optional.ofNullable(articles.get(nextId));
     }
 
-    @Override
     public List<Article> findByOffsetPagination(int offset, int limit) {
         List<Article> orderedCreatedAtDesc = articles.values().stream()
                 .sorted(Comparator.comparing(Article::getCreatedAt).reversed()

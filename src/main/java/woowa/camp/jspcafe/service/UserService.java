@@ -61,4 +61,17 @@ public class UserService {
         return UserResponse.of(userRepository.update(user, userUpdateRequest));
     }
 
+    public User authenticateUser(String email, String password) {
+        User user = findByEmail(email);
+        if (user.isCorrectUser(email, password)) {
+            return user;
+        }
+        throw new UserException("이메일과 비밀번호가 일치하지 않습니다");
+    }
+
+    private User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("존재하지 않는 이메일입니다"));
+    }
+
 }
