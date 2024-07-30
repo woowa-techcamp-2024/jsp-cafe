@@ -1,10 +1,13 @@
 <%@ page isErrorPage="true" %>
 <html>
 <head>
-    <title>Page Not Found</title>
+    <title>Not Found</title>
 </head>
+<%
+    String message = (String) request.getAttribute("error");
+%>
 <body>
-<h1>404 - Page Not Found</h1>
-<p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+<h1>404 - Not Found</h1>
+<p><%=message%></p>
 </body>
 </html>

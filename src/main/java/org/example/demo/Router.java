@@ -34,6 +34,9 @@ public class Router {
                         route.handler.handle(request, response, params);
                     } catch (IOException | ServletException e) {
                         throw new InternalServerError(e.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
                     }
                     return true;
                 }
