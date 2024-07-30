@@ -23,14 +23,7 @@
           <form name="question" method="post" action="/questions">
               <div class="form-group">
                   <label for="writer">글쓴이</label>
-                  <c:choose>
-                      <c:when test="${not empty sessionScope.userName}">
-                          <input readonly class="form-control" id="writer" name="writer" placeholder="글쓴이" value="<c:out value='${sessionScope.userName}'/>"/>
-                      </c:when>
-                      <c:otherwise>
-                          <input readonly class="form-control" id="writer" name="writer" placeholder="글쓴이" value="guest"/>
-                      </c:otherwise>
-                  </c:choose>
+                  <input readonly class="form-control" id="writer" name="writer" placeholder="글쓴이" value="<c:out value='${sessionScope.userName}'/>"/>
               </div>
               <div class="form-group">
                   <label for="title">제목</label>

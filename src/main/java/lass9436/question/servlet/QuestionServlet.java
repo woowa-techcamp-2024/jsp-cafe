@@ -33,12 +33,6 @@ public class QuestionServlet extends HttpServlet {
 		String title = req.getParameter("title");
 		String contents = req.getParameter("contents");
 
-		if ("guest".equals(writer)) {
-			questionRepository.save(new Question(null, writer, title, contents));
-			resp.sendRedirect("/");
-			return;
-		}
-
 		String userId = (String) req.getSession().getAttribute("userId");
 		User user = userRepository.findByUserId(userId);
 
