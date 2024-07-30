@@ -11,7 +11,7 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 	@Override
 	public Question save(Question question) {
 		String query;
-		if (question.getQuestionSeq() != null && question.getQuestionSeq() > 0) {
+		if (question.getQuestionSeq() > 0) {
 			query = "UPDATE questions SET userSeq = ?, writer = ?, title = ?, contents = ? WHERE questionSeq = ?";
 		} else {
 			query = "INSERT INTO questions (userSeq, writer, title, contents) VALUES (?, ?, ?, ?)";
@@ -19,22 +19,18 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 
 		try (Connection connection = Database.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-			if (question.getUserSeq() != null) {
-				statement.setLong(1, question.getUserSeq());
-			} else {
-				statement.setNull(1, java.sql.Types.BIGINT);
-			}
+			statement.setLong(1, question.getUserSeq());
 			statement.setString(2, question.getWriter());
 			statement.setString(3, question.getTitle());
 			statement.setString(4, question.getContents());
 
-			if (question.getQuestionSeq() != null && question.getQuestionSeq() > 0) {
+			if (question.getQuestionSeq() > 0) {
 				statement.setLong(5, question.getQuestionSeq());
 			}
 
 			statement.executeUpdate();
 
-			if (question.getQuestionSeq() == null || question.getQuestionSeq() == 0) {
+			if (question.getQuestionSeq() == 0) {
 				ResultSet generatedKeys = statement.getGeneratedKeys();
 				if (generatedKeys.next()) {
 					question.setQuestionSeq(generatedKeys.getLong(1));
