@@ -161,7 +161,11 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Error:', error);
+                let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
+                if (xhr.status === 403 && xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                alert('Error:' + errorMessage);
             }
         });
     }
