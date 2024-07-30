@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+
 @DisplayName("Article 엔티티 테스트")
 class ArticleTest {
 
@@ -18,7 +20,7 @@ class ArticleTest {
 		String contents = "contents";
 
 		// when
-		Article article = new Article(id, writer, title, contents);
+		Article article = new Article(id, writer, title, contents, LocalDateTime.now());
 
 		// then
 		assertThat(article.getId()).isEqualTo(id);
@@ -31,7 +33,7 @@ class ArticleTest {
 	@DisplayName("아티클 ID 업데이트")
 	void updateArticleId() {
 		// given
-		Article article = new Article(null, "writer", "title", "contents");
+		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now());
 		Long newId = 2L;
 
 		// when

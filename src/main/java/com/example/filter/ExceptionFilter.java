@@ -42,8 +42,6 @@ public class ExceptionFilter implements Filter {
 		request.setAttribute("message", e.getMessage());
 		response.setStatus(e.getStatus());
 		request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
-		// response.setStatus(e.getStatus());
-		// response.sendRedirect("/error.jsp");
 	}
 
 	private void handleGenericException(Exception e, HttpServletRequest request, HttpServletResponse response)
@@ -53,6 +51,5 @@ public class ExceptionFilter implements Filter {
 		request.setAttribute("message", "Internal Server Error");
 		response.setStatus(500);
 		request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
-		// response.sendRedirect("/error.jsp");
 	}
 }

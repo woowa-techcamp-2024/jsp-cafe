@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +45,7 @@ class ArticleServiceTest {
 	void getArticle() {
 		// given
 		Long articleId = 1L;
-		Article article = new Article(articleId, "user1", "title", "contents");
+		Article article = new Article(articleId, "user1", "title", "contents", LocalDateTime.now());
 		when(articleDatabase.findById(articleId)).thenReturn(Optional.of(article));
 
 		// when

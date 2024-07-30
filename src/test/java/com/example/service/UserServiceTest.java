@@ -5,6 +5,8 @@ import com.example.dto.LoginRequest;
 import com.example.dto.SignupRequest;
 import com.example.dto.UserUpdateRequest;
 import com.example.entity.User;
+import com.example.exception.BaseException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,8 +52,8 @@ class UserServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> userService.signup(request))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("id already exists");
+			.isInstanceOf(BaseException.class)
+			.hasMessageContaining("user already exists");
 	}
 
 	@Test
@@ -120,8 +122,8 @@ class UserServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> userService.getUser(userId))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("User not found");
+			.isInstanceOf(BaseException.class)
+			.hasMessageContaining("user not found");
 	}
 
 	@Test
@@ -150,8 +152,8 @@ class UserServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> userService.updateUser(userId, request))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("User not found");
+			.isInstanceOf(BaseException.class)
+			.hasMessageContaining("user not found");
 	}
 
 	@Test
@@ -165,7 +167,7 @@ class UserServiceTest {
 
 		// when & then
 		assertThatThrownBy(() -> userService.updateUser(userId, request))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("bad request");
+			.isInstanceOf(BaseException.class)
+			.hasMessageContaining("invalid password");
 	}
 }

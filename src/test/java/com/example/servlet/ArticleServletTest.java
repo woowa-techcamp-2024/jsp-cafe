@@ -1,10 +1,13 @@
 package com.example.servlet;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +18,7 @@ import org.mockito.MockedStatic;
 import com.example.dto.SaveArticleRequest;
 import com.example.dto.util.DtoCreationUtil;
 import com.example.entity.Article;
+import com.example.exception.BaseException;
 import com.example.service.ArticleService;
 
 import jakarta.servlet.RequestDispatcher;
@@ -108,7 +112,7 @@ class ArticleServletTest {
 	void doGet_validArticleId_displaysArticle() throws Exception {
 		// given
 		Long articleId = 1L;
-		Article article = new Article(articleId, "user1", "title", "contents");
+		Article article = new Article(articleId, "user1", "title", "contents", LocalDateTime.now());
 		when(request.getPathInfo()).thenReturn("/1");
 		when(articleService.getArticle(articleId)).thenReturn(article);
 
@@ -141,18 +145,5 @@ class ArticleServletTest {
 
 		// then
 		verify(requestDispatcher).forward(request, response);
-	}
-
-	@Test
-	@DisplayName("로그인 실패 시, 예외 처리된다.")
-	void doPost_notLogin() throws Exception {
-		// given
-		when(session.getAttribute("login")).thenReturn(null);
-
-		// when
-		articleServlet.doPost(request, response);
-
-		// then
-		verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 }

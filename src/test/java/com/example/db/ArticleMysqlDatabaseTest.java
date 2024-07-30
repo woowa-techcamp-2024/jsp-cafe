@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,7 @@ class ArticleMysqlDatabaseTest {
 	@DisplayName("아티클을 데이터베이스에 추가할 수 있다")
 	void insertArticle() throws SQLException {
 		// given
-		Article article = new Article(null, "writer", "title", "contents");
+		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now());
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
 		// when
@@ -69,6 +70,7 @@ class ArticleMysqlDatabaseTest {
 		when(resultSet.getString("userId")).thenReturn("writer");
 		when(resultSet.getString("title")).thenReturn("title");
 		when(resultSet.getString("contents")).thenReturn("contents");
+		when(resultSet.getTimestamp("createdAt")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
 
 		// when
 		Optional<Article> foundArticle = articleDatabase.findById(id);
@@ -93,6 +95,7 @@ class ArticleMysqlDatabaseTest {
 		when(resultSet.getString("userId")).thenReturn("writer1", "writer2");
 		when(resultSet.getString("title")).thenReturn("title1", "title2");
 		when(resultSet.getString("contents")).thenReturn("contents1", "contents2");
+		when(resultSet.getTimestamp("createdAt")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
 
 		// when
 		List<Article> articles = articleDatabase.findAll();
@@ -107,16 +110,15 @@ class ArticleMysqlDatabaseTest {
 	void updateArticle() throws SQLException {
 		// given
 		Long id = 1L;
-		Article article = new Article(id, "writer", "title", "contents");
+		Article article = new Article(id, "writer", "title", "contents", LocalDateTime.now());
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
 		// when
 		articleDatabase.update(id, article);
 
 		// then
-		verify(preparedStatement).setString(1, article.getUserId());
-		verify(preparedStatement).setString(2, article.getTitle());
-		verify(preparedStatement).setString(3, article.getContents());
+		verify(preparedStatement).setString(1, article.getTitle());
+		verify(preparedStatement).setString(2, article.getContents());
 		verify(preparedStatement).setLong(4, id);
 		verify(preparedStatement).executeUpdate();
 	}
