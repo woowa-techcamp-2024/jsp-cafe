@@ -36,7 +36,7 @@ public class InMemoryArticleRepository implements ArticleRepository {
 
     @Override
     public Optional<Article> update(final Article question) {
-        return Optional.empty();
+        return Optional.ofNullable(questions.replace(question.getId(), question));
     }
 
     @Override

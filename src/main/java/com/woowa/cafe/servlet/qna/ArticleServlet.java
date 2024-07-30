@@ -1,6 +1,8 @@
 package com.woowa.cafe.servlet.qna;
 
+import com.woowa.cafe.dto.article.ArticleDto;
 import com.woowa.cafe.dto.article.SaveArticleDto;
+import com.woowa.cafe.exception.HttpException;
 import com.woowa.cafe.service.ArticleService;
 import com.woowa.cafe.utils.HttpMessageUtils;
 import jakarta.servlet.ServletException;
@@ -42,8 +44,23 @@ public class ArticleServlet extends HttpServlet {
 
         String[] path = req.getPathInfo().split("/");
         Long articleId = Long.parseLong(path[1]);
+
+        if (path.length == 3 && path[2].equals("form")) {
+            ArticleDto article = articleService.findById(articleId);
+            if (checkWriter(req, resp, article)) {
+                req.setAttribute("article", article);
+                req.getRequestDispatcher("/WEB-INF/views/qna/updateForm.jsp").forward(req, resp);
+                return;
+            }
+            throw new HttpException(HttpServletResponse.SC_FORBIDDEN, "다른 사람이 수정할 수 없습니다.");
+        }
+
         req.setAttribute("article", articleService.findById(articleId));
         req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp").forward(req, resp);
+    }
+
+    private boolean checkWriter(final HttpServletRequest req, final HttpServletResponse resp, final ArticleDto article) throws ServletException, IOException {
+        return article.writerId().equals(req.getSession().getAttribute("memberId"));
     }
 
     @Override
@@ -54,5 +71,26 @@ public class ArticleServlet extends HttpServlet {
         articleService.save(SaveArticleDto.from(bodyFormData), memberId);
 
         resp.sendRedirect("/");
+    }
+
+    @Override
+    protected void doPut(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        log.info(req.toString());
+
+        String[] path = req.getPathInfo().split("/");
+        Long articleId = Long.parseLong(path[1]);
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+        Map<String, String> bodyFormData = HttpMessageUtils.getBodyFormData(req);
+        log.info("bodyFormData: {}", bodyFormData.toString());
+        articleService.update(articleId, SaveArticleDto.from(bodyFormData), memberId);
+
+        resp.sendRedirect("/question/" + articleId);
+    }
+
+    @Override
+    protected void doDelete(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        super.doDelete(req, resp);
     }
 }

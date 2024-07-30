@@ -31,6 +31,12 @@ public class Article {
         this.updatedAt = updatedAt;
     }
 
+    public void update(final String title, final String contents) {
+        this.title = title;
+        this.contents = contents;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void setId(final Long id) {
         this.id = id;
     }
@@ -52,6 +58,11 @@ public class Article {
     }
 
     public String getFormattedCreatedAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(createdAt);
+    }
+
+    public String getFormattedUpdatedAt() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return formatter.format(createdAt);
     }

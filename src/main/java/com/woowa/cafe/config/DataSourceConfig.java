@@ -2,7 +2,6 @@ package com.woowa.cafe.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 
 import javax.sql.DataSource;

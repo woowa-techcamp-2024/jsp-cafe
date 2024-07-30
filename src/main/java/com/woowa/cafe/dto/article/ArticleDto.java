@@ -6,7 +6,7 @@ import com.woowa.cafe.domain.Member;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ArticleDto(Long articleId, String title, String contents, String createdAt, String writerId,
+public record ArticleDto(Long articleId, String title, String contents, String updatedAt, String writerId,
                          String writerName) {
 
     public static List<ArticleDto> mapToList(final List<Article> articles, final List<Member> members) {
@@ -25,6 +25,6 @@ public record ArticleDto(Long articleId, String title, String contents, String c
 
     public static ArticleDto of(final Article article, final Member member) {
         return new ArticleDto(article.getId(), article.getTitle(), article.getContents(),
-                article.getFormattedCreatedAt(), member.getMemberId(), member.getName());
+                article.getFormattedUpdatedAt(), member.getMemberId(), member.getName());
     }
 }

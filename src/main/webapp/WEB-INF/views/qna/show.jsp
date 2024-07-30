@@ -27,7 +27,7 @@
                                class="article-author-name"><%= article.writerName()%>
                                 ></a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                <%= article.createdAt()%>
+                                <%= article.updatedAt()%>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -38,7 +38,7 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="<%="/question/" + article.articleId() +"/form"%>">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="/questions/423" method="POST">

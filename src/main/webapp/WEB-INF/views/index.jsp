@@ -26,7 +26,7 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time"><%= article.createdAt()%></span>
+                                <span class="time"><%= article.updatedAt()%></span>
                                 <a href="<%= "/user/" + article.writerId()%>"
                                    class="author"><%= article.writerName()%>
                                 </a>
