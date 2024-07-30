@@ -32,6 +32,18 @@ public class Init implements ServletContextListener {
                 author     VARCHAR(255) NOT NULL,
                 deleted BOOLEAN DEFAULT FALSE
             );
+            
+            -- 댓글 테이블 삭제 (이미 존재하는 경우)
+            DROP TABLE IF EXISTS replies;
+            
+            -- 댓글 테이블 생성
+            CREATE TABLE replies(
+                reply_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+                article_id BIGINT NOT NULL,
+                content    TEXT NOT NULL,
+                author     VARCHAR(255) NOT NULL,
+                deleted    BOOLEAN DEFAULT FALSE
+            );
             """;
 
         DatabaseManager.executeSqlScript(sqlScript);

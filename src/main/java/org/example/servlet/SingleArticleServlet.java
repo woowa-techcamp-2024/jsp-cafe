@@ -7,10 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import org.example.entity.Article;
+import org.example.entity.Reply;
 import org.example.service.ArticleService;
 import org.example.exception.NotSameAuthorException;
+import org.example.service.ReplyService;
 import org.example.util.BodyParser;
 import org.example.util.LoggerUtil;
 import org.example.util.SessionUtil;
@@ -21,6 +24,7 @@ import org.slf4j.Logger;
 public class SingleArticleServlet extends HttpServlet {
 
     private final ArticleService articleService = new ArticleService();
+    private final ReplyService replyService = new ReplyService();
     private final Logger logger = LoggerUtil.getLogger();
 
     @Override
@@ -42,7 +46,13 @@ public class SingleArticleServlet extends HttpServlet {
             return;
         }
 
+        List<Reply> replyList = replyService.findRepliesByArticleId(article.getArticleId());
+        if(request.getRequestURI().endsWith("/replies")){
+            return;
+        }
+
         request.setAttribute("article", article);
+        request.setAttribute("replies", replyList);
         request.getRequestDispatcher("/WEB-INF/article.jsp").forward(request, response);
     }
 
@@ -95,8 +105,9 @@ public class SingleArticleServlet extends HttpServlet {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
 
-        if (path.endsWith("/updateForm")) {
+        if (path.endsWith("/updateForm") || path.endsWith("/replies")) {
             path = path.replace("/updateForm", "");
+            path = path.replace("/replies", "");
         }
 
         String[] pathSplit = path.split("/");
