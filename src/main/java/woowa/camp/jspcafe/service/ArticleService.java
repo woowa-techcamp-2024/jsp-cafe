@@ -85,7 +85,7 @@ public class ArticleService {
     public ArticleUpdateResponse findUpdateArticle(User user, Long articleId) {
         Article article = findArticle(articleId);
         User author = findAuthor(article.getAuthorId());
-        validateUpdatable(user, author);
+        validateEditable(user, author);
 
         return ArticleUpdateResponse.from(article);
     }
@@ -93,13 +93,21 @@ public class ArticleService {
     public void updateArticle(User user, Long articleId, ArticleUpdateRequest request) {
         Article article = findArticle(articleId);
         User author = findAuthor(article.getAuthorId());
-        validateUpdatable(user, author);
+        validateEditable(user, author);
 
         Article updateArticle = Article.update(article, request.title(), request.content(), dateTimeProvider.getNow());
         articleRepository.update(updateArticle);
     }
 
-    private void validateUpdatable(User user, User author) {
+    public void deleteArticle(User user, Long articleId) {
+        Article article = findArticle(articleId);
+        User author = findAuthor(article.getAuthorId());
+        validateEditable(user, author);
+
+        articleRepository.deleteById(articleId);
+    }
+
+    private void validateEditable(User user, User author) {
         String userEmail = user.getEmail();
         String authorEmail = author.getEmail();
         if (!userEmail.equals(authorEmail)) {

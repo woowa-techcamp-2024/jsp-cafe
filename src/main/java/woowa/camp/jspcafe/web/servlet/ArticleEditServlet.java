@@ -67,6 +67,11 @@ public class ArticleEditServlet extends HttpServlet {
             return;
         }
 
+        if ("DELETE".equalsIgnoreCase(method)) {
+            doDelete(req, resp);
+            return;
+        }
+
         log.debug("ArticleEditServlet doPost end");
     }
 
@@ -93,4 +98,22 @@ public class ArticleEditServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("ArticleEditServlet doDelete start");
+        try {
+            HttpSession session = req.getSession();
+            User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
+
+            Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/articles/edit/{articleId}",
+                    req.getRequestURI());
+            Long articleId = Long.parseLong(pathVariables.get("articleId"));
+
+            articleService.deleteArticle(sessionUser, articleId);
+            resp.sendRedirect(req.getContextPath() + "/");
+            log.debug("ArticleEditServlet doDelete end");
+        } catch (UnAuthorizationException e) {
+            resp.sendRedirect(req.getContextPath() + "/");
+        }
+    }
 }
