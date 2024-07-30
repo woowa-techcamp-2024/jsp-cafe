@@ -1,9 +1,9 @@
 package com.wootecam.jspcafe.servlet.question;
 
 import com.wootecam.jspcafe.domain.User;
+import com.wootecam.jspcafe.exception.CommonException;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,24 +18,29 @@ public class QuestionDeleteServlet extends AbstractHttpServlet {
     }
 
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doDelete(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
-            resp.sendRedirect("/users/sign-in");
+            responseError(req, resp, new CommonException("로그인을 해야 합니다.", HttpServletResponse.SC_UNAUTHORIZED));
             return;
         }
         Long questionId = parseSuffixPathVariable(req.getPathInfo());
 
         questionService.delete(questionId, signInUser.getId());
-
-        resp.sendRedirect("/");
     }
 
     private Long parseSuffixPathVariable(final String pathInfo) {
         String[] splitPaths = pathInfo.split("/");
 
         return Long.parseLong(splitPaths[splitPaths.length - 1].trim());
+    }
+
+    @Override
+    protected void responseError(final HttpServletRequest request,
+                                 final HttpServletResponse response,
+                                 final CommonException e) throws IOException {
+        response.setStatus(e.getStatusCode());
+        response.getWriter().print(e.getMessage());
     }
 }

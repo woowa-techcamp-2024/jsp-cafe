@@ -44,9 +44,7 @@
                                 <a class="link-modify-article" href="/questions/edit/${currentQuestion.id}">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/delete/${currentQuestion.id}"
-                                      method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
+                                <form class="form-delete">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
@@ -173,5 +171,26 @@
 
 <!-- script references -->
 <jsp:include page="../snippet/script.jsp"/>
+<script>
+    $(document).ready(function () {
+        $('.form-delete').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/questions/delete/${currentQuestion.id}",
+                type: 'DELETE',
+
+                success: function () {
+                    window.location.href = '/';
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = '/';
+                }
+            });
+        })
+    });
+</script>
 </body>
 </html>
