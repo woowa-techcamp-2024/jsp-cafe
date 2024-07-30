@@ -12,13 +12,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class MySqlArticleDao implements ArticleDao {
+    private ConnectionManager connectionManager;
+
+    public MySqlArticleDao(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     @Override
     public Long save(Article article) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "insert into articles(title,writer,content) values(?,?,?)";
             preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, article.getTitle());
@@ -35,7 +41,7 @@ public class MySqlArticleDao implements ArticleDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
@@ -45,7 +51,7 @@ public class MySqlArticleDao implements ArticleDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "select * from articles where id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, id);
@@ -60,7 +66,7 @@ public class MySqlArticleDao implements ArticleDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
@@ -70,7 +76,7 @@ public class MySqlArticleDao implements ArticleDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "select * from articles";
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
@@ -86,7 +92,7 @@ public class MySqlArticleDao implements ArticleDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 }

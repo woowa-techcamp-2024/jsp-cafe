@@ -3,8 +3,6 @@ package codesquad.infra;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
 import codesquad.exception.DuplicateIdException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class MySqlUserDao implements UserDao {
-    private static final Logger logger = LoggerFactory.getLogger(MySqlUserDao.class);
+    private ConnectionManager connectionManager;
+
+    public MySqlUserDao(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     @Override
     public Long save(User user) throws DuplicateIdException {
@@ -20,7 +22,7 @@ public class MySqlUserDao implements UserDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "insert into users(user_id,password,name,email) values(?,?,?,?)";
             preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getUserId());
@@ -40,7 +42,7 @@ public class MySqlUserDao implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
@@ -50,7 +52,7 @@ public class MySqlUserDao implements UserDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "select * from users where id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, id);
@@ -66,17 +68,21 @@ public class MySqlUserDao implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public Optional<User> findByUserId(String userId) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
             String sql = "select * from users where user_id = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, userId);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userId);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 String password = resultSet.getString("password");
@@ -87,6 +93,8 @@ public class MySqlUserDao implements UserDao {
             return Optional.empty();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
@@ -96,7 +104,7 @@ public class MySqlUserDao implements UserDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "select * from users";
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
@@ -113,7 +121,7 @@ public class MySqlUserDao implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
@@ -122,7 +130,7 @@ public class MySqlUserDao implements UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "update users set name = ?, email = ? where id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, user.getName());
@@ -135,7 +143,7 @@ public class MySqlUserDao implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, null);
+            connectionManager.close(connection, preparedStatement);
         }
     }
 }

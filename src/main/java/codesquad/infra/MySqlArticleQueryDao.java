@@ -12,13 +12,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class MySqlArticleQueryDao implements ArticleQueryDao {
+    private ConnectionManager connectionManager;
+
+    public MySqlArticleQueryDao(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
     @Override
     public Optional<ArticleResponse> findById(Long id) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
                     "LEFT JOIN users u ON a.writer = u.user_id " +
@@ -38,7 +44,7 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
@@ -48,7 +54,7 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = MySqlConnectionManager.getConnection();
+            connection = connectionManager.getConnection();
             String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
                     "LEFT JOIN users u ON a.writer = u.user_id";
@@ -70,7 +76,7 @@ public class MySqlArticleQueryDao implements ArticleQueryDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            MySqlConnectionManager.close(connection, preparedStatement, resultSet);
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 }

@@ -1,21 +1,20 @@
 package codesquad.infra;
 
+import codesquad.exception.ExternalConnectionException;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public final class MySqlConnectionManager {
-    private static MysqlDataSource dataSource;
+public class MySqlContextConnectionManager implements ConnectionManager {
+    private MysqlDataSource dataSource;
 
-    static {
+    public MySqlContextConnectionManager() {
         Properties properties = new Properties();
-        try (InputStream input = MySqlConnectionManager.class.getResourceAsStream("/application.properties")) {
+        try (InputStream input = MySqlContextConnectionManager.class.getResourceAsStream("/application.properties")) {
             if (input != null) {
                 properties.load(input);
             }
@@ -55,34 +54,11 @@ public final class MySqlConnectionManager {
         dataSource.setDatabaseName(databaseName);
     }
 
-    private MySqlConnectionManager() {
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
-
-    public static void close(Connection connection, PreparedStatement pstmt, ResultSet resultSet) {
-        if (resultSet != null) {
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if (pstmt != null) {
-            try {
-                pstmt.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+    public Connection getConnection() {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new ExternalConnectionException(e);
         }
     }
 }

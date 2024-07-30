@@ -8,7 +8,6 @@ import jakarta.servlet.annotation.HandlesTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 @HandlesTypes(AppInit.class)
@@ -27,8 +26,7 @@ public class WebServletContainerInitializer implements ServletContainerInitializ
             try {
                 AppInit appInit = (AppInit) appInitClass.getConstructor().newInstance();
                 appInit.onStartUp(servletContext);
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
