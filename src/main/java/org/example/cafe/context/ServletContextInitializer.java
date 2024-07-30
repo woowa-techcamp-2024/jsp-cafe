@@ -43,18 +43,18 @@ public class ServletContextInitializer implements ServletContextListener {
 
             setContext("UserRepository", () ->
                     new UserJdbcRepository(getBean("DbConnector", DbConnector.class)));
+            setContext("ReplyRepository", () ->
+                    new ReplyJdbcRepository(getBean("DbConnector", DbConnector.class)));
+            setContext("QuestionRepository", () ->
+                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
+
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));
             setContext("AuthService", () ->
                     new AuthService(getBean("UserRepository", UserRepository.class)));
-
-            setContext("QuestionRepository", () ->
-                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
             setContext("QuestionService", () ->
-                    new QuestionService(getBean("QuestionRepository", QuestionRepository.class)));
-
-            setContext("ReplyRepository", () ->
-                    new ReplyJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new QuestionService(getBean("QuestionRepository", QuestionRepository.class),
+                            getBean("ReplyRepository", ReplyRepository.class)));
             setContext("ReplyService", () ->
                     new ReplyService(getBean("ReplyRepository", ReplyRepository.class)));
         } catch (Exception e) {

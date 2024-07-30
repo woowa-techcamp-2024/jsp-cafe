@@ -36,7 +36,7 @@ public class ReplyService {
     }
 
     public void validWriter(String loginUserId, Reply reply) {
-        if (reply.isValidWriter(loginUserId)) {
+        if (!reply.hasWriter(loginUserId)) {
             throw new BadAuthenticationException("작성자만 수정, 삭제할 수 있습니다.");
         }
     }

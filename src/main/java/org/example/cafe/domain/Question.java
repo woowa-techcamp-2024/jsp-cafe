@@ -9,6 +9,7 @@ public class Question {
     private String title;
     private String content;
     private String writer;
+    private boolean isDeleted;
     private LocalDateTime createdAt;
 
     public Question(String title,
@@ -33,16 +34,22 @@ public class Question {
                     String title,
                     String content,
                     String writer,
+                    boolean isDeleted,
                     LocalDateTime createdAt) {
         this.questionId = questionId;
         this.title = title;
         this.content = content;
         this.writer = writer;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
     }
 
     public boolean isValidWriter(String loginUserId) {
         return loginUserId != null && !loginUserId.equals(writer);
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
     // ----------------------------------------------------------------------------- Getter
@@ -61,6 +68,10 @@ public class Question {
 
     public String getWriter() {
         return writer;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public LocalDateTime getCreatedAt() {

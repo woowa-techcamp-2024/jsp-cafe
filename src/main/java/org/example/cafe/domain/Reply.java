@@ -21,8 +21,8 @@ public class Reply {
         this.createdAt = builder.createdAt;
     }
 
-    public boolean isValidWriter(String loginUserId) {
-        return loginUserId != null && !loginUserId.equals(writer);
+    public boolean hasWriter(String loginUserId) {
+        return loginUserId != null && loginUserId.equals(writer);
     }
 
     public void delete() {
@@ -115,5 +115,17 @@ public class Reply {
     @Override
     public int hashCode() {
         return Objects.hash(replyId);
+    }
+
+    @Override
+    public String toString() {
+        return "Reply{" +
+                "replyId=" + replyId +
+                ", writer='" + writer + '\'' +
+                ", content='" + content + '\'' +
+                ", isDeleted=" + isDeleted +
+                ", questionId=" + questionId +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

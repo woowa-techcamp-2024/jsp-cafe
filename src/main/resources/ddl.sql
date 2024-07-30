@@ -15,6 +15,7 @@ create table QUESTION
     `writer`      varchar(255) NOT NULL,
     `title`       varchar(255) NOT NULL,
     `content`     text         NOT NULL,
+    `is_deleted` boolean NOT NULL DEFAULT FALSE,
     `created_at`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
