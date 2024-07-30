@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import woopaca.jspcafe.error.BadRequestException;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.UserService;
 import woopaca.jspcafe.servlet.dto.request.SignUpRequest;
@@ -42,7 +43,7 @@ public class SignUpServlet extends HttpServlet {
             SignUpRequest signUpRequest = RequestParametersResolver.resolve(parameters, SignUpRequest.class);
             userService.signUp(signUpRequest);
             response.sendRedirect("/users");
-        } catch (IllegalArgumentException e) {
+        } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             request.getRequestDispatcher("/user/register.jsp")
