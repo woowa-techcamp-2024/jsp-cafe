@@ -30,7 +30,7 @@
                 } else {
                 %>
                 <li><a href="/users/auth" role="button" onclick="logout(event)">로그아웃</a></li>
-                <li><a href="/userPage?action=update&seq=/<%=(long)session.getAttribute("userSeq")%>" role="button">개인정보수정</a></li>
+                <li><a href="/userPage?action=update&seq=<%=(long)session.getAttribute("userSeq")%>" role="button">개인정보수정</a></li>
                 <%
                     }
                 %>
