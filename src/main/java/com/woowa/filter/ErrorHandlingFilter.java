@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -20,7 +21,7 @@ public class ErrorHandlingFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (Exception e) {
-            handleException(e, (HttpServletRequest) request, (HttpServletResponse) response);
+            handleException(e, new HttpMethodRequestWrapper((HttpServletRequest) request, "GET"), (HttpServletResponse) response);
         }
     }
 
@@ -46,6 +47,21 @@ public class ErrorHandlingFilter implements Filter {
         } else {  // 500 그 외의 에러
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/classes/static/error/error.jsp");
             dispatcher.forward(request, response);
+        }
+    }
+
+    private static class HttpMethodRequestWrapper extends HttpServletRequestWrapper {
+
+        private final String method;
+
+        public HttpMethodRequestWrapper(HttpServletRequest request, String method) {
+            super(request);
+            this.method = method.toUpperCase();
+        }
+
+        @Override
+        public String getMethod() {
+            return this.method;
         }
     }
 }
