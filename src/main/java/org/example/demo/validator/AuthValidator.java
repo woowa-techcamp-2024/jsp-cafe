@@ -12,14 +12,6 @@ import java.io.IOException;
 
 public class AuthValidator {
     private static final Logger logger = LoggerFactory.getLogger(AuthValidator.class);
-    private static AuthValidator instance;
-
-    public static AuthValidator getInstance() {
-        if (instance == null) {
-            instance = new AuthValidator();
-        }
-        return instance;
-    }
 
     public void checkLoggedIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!isLoggedIn(request)) {

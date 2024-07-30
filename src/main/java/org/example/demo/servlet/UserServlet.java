@@ -20,7 +20,7 @@ public class UserServlet extends HttpServlet {
     @Override
     public void init() {
         router = new Router();
-        userHandler = UserHandler.getInstance();
+        userHandler = (UserHandler) getServletContext().getAttribute("userHandler");
         router.addRoute(HttpMethod.GET, "^/users/?$", userHandler::handleUserList);
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/?$", userHandler::handleUserProfile);
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/form/?$", userHandler::handleUpdateForm);

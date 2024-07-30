@@ -16,20 +16,12 @@ import java.util.List;
 
 public class PostHandler {
     private static final Logger logger = LoggerFactory.getLogger(PostHandler.class);
-    private static PostHandler instance;
     private final PostRepository postRepository;
     private final AuthValidator authValidator;
 
-    private PostHandler() {
-        postRepository = PostRepository.getInstance();
-        authValidator = AuthValidator.getInstance();
-    }
-
-    public static PostHandler getInstance() {
-        if (instance == null) {
-            instance = new PostHandler();
-        }
-        return instance;
+    public PostHandler(PostRepository postRepository, AuthValidator authValidator) {
+        this.postRepository = postRepository;
+        this.authValidator = authValidator;
     }
 
     public void handleGetPost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {

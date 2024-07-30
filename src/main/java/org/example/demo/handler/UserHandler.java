@@ -15,17 +15,10 @@ import java.util.Optional;
 
 public class UserHandler {
     private static UserHandler instance;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private UserHandler() {
-        userRepository = UserRepository.getInstance();
-    }
-
-    public static UserHandler getInstance() {
-        if (instance == null) {
-            instance = new UserHandler();
-        }
-        return instance;
+    public UserHandler(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void handleUserList(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {

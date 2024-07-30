@@ -21,17 +21,9 @@ public class PostRepository {
     private DbConfig dbConfig;
     private UserRepository userRepository;
 
-    private PostRepository(DbConfig dbConfig, UserRepository userRepository) {
+    public PostRepository(DbConfig dbConfig, UserRepository userRepository) {
         this.dbConfig = dbConfig;
         this.userRepository = userRepository;
-    }
-
-    public static PostRepository getInstance() {
-        return instance;
-    }
-
-    public static void init(DbConfig dbConfig, UserRepository userRepository) {
-        instance = new PostRepository(dbConfig, userRepository);
     }
 
     public Optional<Post> getPost(Long postId) {

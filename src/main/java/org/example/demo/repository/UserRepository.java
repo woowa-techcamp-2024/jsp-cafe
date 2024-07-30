@@ -19,16 +19,8 @@ public class UserRepository {
 
     private DbConfig dbConfig;
 
-    private UserRepository(DbConfig dbConfig) {
+    public UserRepository(DbConfig dbConfig) {
         this.dbConfig = dbConfig;
-    }
-
-    public static UserRepository getInstance() {
-        return instance;
-    }
-
-    public static void init(DbConfig dbConfig) {
-        instance = new UserRepository(dbConfig);
     }
 
     public Optional<User> getUser(Long id) {
