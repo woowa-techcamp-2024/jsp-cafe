@@ -44,7 +44,7 @@ public class ErrorHandlingFilter implements Filter {
                     "/WEB-INF/classes/static/error/not_found.jsp");
             dispatcher.forward(request, response);
         } else {  // 500 그 외의 에러
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/classes/static/error.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/classes/static/error/error.jsp");
             dispatcher.forward(request, response);
         }
     }
