@@ -14,7 +14,9 @@ CREATE TABLE articles (
     nickname VARCHAR(50),
     content CLOB NOT NULL,
     create_at TIMESTAMP NOT NULL,
-    update_at TIMESTAMP NOT NULL
+    update_at TIMESTAMP NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP
 );
 
 CREATE INDEX idx_articles_nickname ON articles(nickname);

@@ -25,7 +25,7 @@ class ErrorControllerTest {
     @Test
     void 에러_403페이지를_반환한다() throws ServletException, IOException {
         // Given
-        request.setPathInfo("/302");
+        request.setPathInfo("/403");
 
         // When
         errorController.doGet(request, response);
