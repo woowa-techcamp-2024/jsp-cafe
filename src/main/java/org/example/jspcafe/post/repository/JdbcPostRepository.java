@@ -145,6 +145,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
 
         // Order by는 너무 비효율적이지만, 어쩔 수 없으니,,
         String sql = "SELECT * FROM posts " +
+                "WHERE deleted_at IS NULL " +
                 "ORDER BY created_at DESC " +
                 "LIMIT ? OFFSET ?";
 
