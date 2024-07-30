@@ -148,6 +148,19 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
 
     @Override
     public void delete(Question question) {
+        String sql = "delete from question where question_id = ?";
 
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, question.getQuestionId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, null);
+        }
     }
 }
