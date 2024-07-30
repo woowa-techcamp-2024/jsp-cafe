@@ -85,4 +85,19 @@ class QuestionServiceTest {
         assertEquals(updatedTitle, questionService.findById(id).getTitle());
         assertEquals(updatedContent, questionService.findById(id).getContent());
     }
+
+    @Test
+    void testDeleteById() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer, 1L);
+
+        // when
+        questionService.deleteById(id);
+
+        // then
+        assertEquals(0, questionService.findAll().size());
+    }
 }
