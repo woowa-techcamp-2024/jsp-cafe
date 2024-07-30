@@ -16,6 +16,8 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
 
     private final DatabaseConnectionManager connectionManager;
 
+    private static final String SOFT_DELETE_SQL = "UPDATE comments SET deleted_at = NOW() WHERE comment_id = ?";
+
     public JdbcCommentRepository(DatabaseConnectionManager connectionManager) {
         super(Comment.class);
         this.connectionManager = connectionManager;
@@ -60,7 +62,7 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
             throw new IllegalArgumentException("ID는 null일 수 없습니다.");
         }
 
-        String sql = "SELECT * FROM comments WHERE comment_id = ?";
+        String sql = "SELECT * FROM comments WHERE comment_id = ? AND deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -88,10 +90,8 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
             throw new IllegalArgumentException("ID는 null일 수 없습니다.");
         }
 
-        String sql = "DELETE FROM comments WHERE comment_id = ?";
-
         try (Connection conn = connectionManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(SOFT_DELETE_SQL)) {
 
             pstmt.setLong(1, comment.getCommentId());
             pstmt.executeUpdate();
@@ -110,7 +110,7 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
             throw new IllegalArgumentException("ID는 null일 수 없습니다.");
         }
 
-        String sql = "UPDATE comments SET post_id = ?, user_id = ?, content = ?, created_at = ? WHERE comment_id = ?";
+        String sql = "UPDATE comments SET post_id = ?, user_id = ?, content = ?, created_at = ? WHERE comment_id = ? AND deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -143,7 +143,8 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
         String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
                 "FROM comments c " +
                 "JOIN users u ON c.user_id = u.user_id " +
-                "WHERE c.post_id IN (" + placeholders + ")";
+                "WHERE c.post_id IN (" + placeholders + ") " +
+                "AND c.deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -191,7 +192,7 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
         String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
                 "FROM comments c " +
                 "JOIN users u ON c.user_id = u.user_id " +
-                "WHERE c.post_id = ?";
+                "WHERE c.post_id = ? AND c.deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
