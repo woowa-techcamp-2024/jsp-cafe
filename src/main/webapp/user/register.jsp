@@ -13,7 +13,7 @@
 <body>
 <div id="container">
   <jsp:include page="${pageContext.request.contextPath}/common/header.jsp" />
-  <form id="user-form" method="post" action="${pageContext.request.contextPath}/users/signup">
+  <form id="user-form" method="post" action="${pageContext.request.contextPath}/signup">
     <div id="form-title">
       회원가입
     </div>
