@@ -3,7 +3,8 @@ package com.hyeonuk.jspcafe.global.servlet;
 import com.hyeonuk.jspcafe.article.dao.ArticleDao;
 import com.hyeonuk.jspcafe.article.dao.MysqlArticleDao;
 import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
-import com.hyeonuk.jspcafe.global.db.mysql.DBManager;
+import com.hyeonuk.jspcafe.global.db.DBManager;
+import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.HttpInternalServerErrorException;
 import com.hyeonuk.jspcafe.global.utils.BcryptPasswordEncoder;
 import com.hyeonuk.jspcafe.global.utils.PasswordEncoder;
@@ -21,7 +22,7 @@ public class MyServletContextListener implements ServletContextListener{
         ServletContextListener.super.contextInitialized(sce);
         try {
             DBConnectionInfo connectionInfo = new DBConnectionInfo("application-db.yml");
-            DBManager dbManager = new DBManager(connectionInfo);
+            DBManager dbManager = new DBManagerIml(connectionInfo);
             memberDao = new MysqlMemberDao(dbManager);
             passwordEncoder = new BcryptPasswordEncoder();
             articleDao = new MysqlArticleDao(dbManager);

@@ -1,7 +1,7 @@
 package com.hyeonuk.jspcafe.member.dao;
 
 import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
-import com.hyeonuk.jspcafe.global.db.mysql.DBManager;
+import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
 import com.hyeonuk.jspcafe.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("MemberDao 테스트")
 class MysqlMemberDaoTest {
-    DBManager manager;
+    DBManagerIml manager;
     MemberDao memberDao;
     @BeforeEach
     void setUp() throws SQLException, ClassNotFoundException {
         DBConnectionInfo connectionInfo = new DBConnectionInfo("application-testdb.yml");
-        manager = new DBManager(connectionInfo);
+        manager = new DBManagerIml(connectionInfo);
         memberDao = new MysqlMemberDao(manager);
     }
 

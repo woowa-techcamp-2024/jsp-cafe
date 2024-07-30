@@ -1,15 +1,13 @@
-package com.hyeonuk.jspcafe.global.db.mysql;
-
-import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
+package com.hyeonuk.jspcafe.global.db;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
 
-public class DBManager implements com.hyeonuk.jspcafe.global.db.DBManager {
+public class DBManagerIml implements DBManager {
     private final DBConnectionInfo connectionInfo;
-    public DBManager(DBConnectionInfo connectionInfo) throws ClassNotFoundException, SQLException {
+    public DBManagerIml(DBConnectionInfo connectionInfo) throws ClassNotFoundException, SQLException {
         this.connectionInfo = connectionInfo;
         Class.forName(connectionInfo.getDriverClassName());
         try(Connection conn = getConnection()) {
@@ -22,7 +20,7 @@ public class DBManager implements com.hyeonuk.jspcafe.global.db.DBManager {
     }
     private String readSqlFile(String fileName) {
         StringBuilder sb = new StringBuilder();
-        try (InputStream is = DBManager.class.getClassLoader().getResourceAsStream(fileName);
+        try (InputStream is = DBManagerIml.class.getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {

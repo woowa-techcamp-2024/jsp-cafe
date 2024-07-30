@@ -1,6 +1,7 @@
 package com.hyeonuk.jspcafe.member.dao;
 
-import com.hyeonuk.jspcafe.global.db.mysql.DBManager;
+import com.hyeonuk.jspcafe.global.db.DBManager;
+import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
 import com.hyeonuk.jspcafe.member.domain.Member;
 
