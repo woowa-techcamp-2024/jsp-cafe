@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 public class Article {
 
     private Long id;
-    private final String title;
+    private String title;
     private final User writer;
-    private final String contents;
+    private String contents;
     private final LocalDateTime createdAt;
 
     public Article(String title, User writer, String contents, LocalDateTime createdAt) {
@@ -21,6 +21,11 @@ public class Article {
     public Article(Long id, String title, User writer, String contents, LocalDateTime createdAt) {
         this(title, writer, contents, createdAt);
         this.id = id;
+    }
+
+    public void updateValues(String title, String contents) {
+        this.title = verifyTitle(title);
+        this.contents = verifyContents(contents);
     }
 
     public Long getId() {

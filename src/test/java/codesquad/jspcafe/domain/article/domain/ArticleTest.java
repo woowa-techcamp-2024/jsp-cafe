@@ -112,6 +112,60 @@ class ArticleTest {
 
         }
 
+        @Test
+        @DisplayName("title과 contents를 수정할 수 있다.")
+        void updateValues() {
+            // Arrange
+            String updatedTitle = "new title";
+            String updatedContent = "new contents";
+            Article article = new Article(updatedTitle, expectedWriter, updatedContent,
+                expectedCreatedAt);
+            // Act
+            article.updateValues(updatedTitle, updatedContent);
+            // Assert
+            assertThat(article)
+                .extracting("title", "contents")
+                .containsExactly(updatedTitle, updatedContent);
+        }
+
+        @Nested
+        @DisplayName("수정 시")
+        class whenUpdate {
+
+            @DisplayName("title이 null이거나 빈 문자열이면 예외가 발생한다.")
+            @MethodSource("expectedValues")
+            @ParameterizedTest
+            void updateValuesFailWhenTitleIsNull(String value) {
+                // Arrange
+                Article article = new Article(expectedTitle, expectedWriter, expectedContents,
+                    expectedCreatedAt);
+                // Act & Assert
+                assertThatThrownBy(() -> article.updateValues(value, expectedContents))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("제목은 필수 입력값입니다.");
+            }
+
+            @DisplayName("contents가 null이거나 빈 문자열이면 예외가 발생한다.")
+            @MethodSource("expectedValues")
+            @ParameterizedTest
+            void updateValuesFailWhenContentsIsNull(String value) {
+                // Arrange
+                Article article = new Article(expectedTitle, expectedWriter, expectedContents,
+                    expectedCreatedAt);
+                // Act & Assert
+                assertThatThrownBy(() -> article.updateValues(expectedTitle, value))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("본문은 필수 입력값입니다.");
+            }
+
+            private static Stream<Arguments> expectedValues() {
+                return Stream.of(
+                    Arguments.of((Object) null),
+                    Arguments.of("")
+                );
+            }
+        }
+
     }
 
 }
