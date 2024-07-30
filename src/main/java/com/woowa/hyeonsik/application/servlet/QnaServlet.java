@@ -4,6 +4,7 @@ import com.woowa.hyeonsik.application.domain.User;
 import com.woowa.hyeonsik.application.exception.LoginRequiredException;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.util.JsonParser;
 import com.woowa.hyeonsik.application.util.SendPageUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class QnaServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
@@ -32,9 +34,9 @@ public class QnaServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String title = request.getParameter("title");
-        String contents = request.getParameter("contents");
-        logger.debug("글쓰기 요청도착! writer: {}, title: {}, contents: {}", title, contents);
+        Map<String, Object> parse = JsonParser.parse(request.getReader());
+        String title = (String) parse.get("title");
+        String contents = (String) parse.get("contents");
 
         // 세션이 존재하는지 확인
         final HttpSession session = request.getSession(false);
@@ -46,11 +48,12 @@ public class QnaServlet extends HttpServlet {
         // 세션에서 글쓴이 정보를 가져온다.
         User user = (User) request.getSession(false).getAttribute("user");
         String writer = user.getUserId();
+        logger.debug("글쓰기 요청 수행! writer: {}, title: {}, contents: {}", writer, title, contents);
 
         // 게시글 작성
         Article article = new Article(null, writer, title, contents);
         articleService.write(article);
 
-        SendPageUtil.redirect("/", getServletContext(), response);
+//        SendPageUtil.redirect("/", getServletContext(), response);
     }
 }

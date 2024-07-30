@@ -58,6 +58,7 @@ public class ExceptionHandlingFilter implements Filter {
             httpResponse.sendError(400, e.getMessage());
         } catch (JdbcException e) {
             logger.debug("데이터베이스 접근 중 에러가 발생했습니다. 내용: {}", e.getMessage());
+            e.printStackTrace();
             SendPageUtil.redirect("/error/error.jsp", httpRequest.getServletContext(), httpResponse);
         } catch (Throwable t) {
             // 처리할 수 없는 예외는 로그만 남기고 throw 한다.
