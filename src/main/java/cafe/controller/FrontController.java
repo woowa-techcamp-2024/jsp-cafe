@@ -31,22 +31,24 @@ public class FrontController extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            String uri = req.getRequestURI();
-            if (uri.equals("/")) {
-                this.doDefaultService(req, resp);
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String uri = req.getRequestURI();
+        if (uri.equals("/")) {
+            this.doDefaultService(req, resp);
+            return;
+        }
+
+        String firstUri = uri.split("/")[1];
+        switch (firstUri) {
+            case "users": {
+                this.doUserService(req, resp);
                 return;
             }
-
-            String firstUri = uri.split("/")[1];
-            switch (firstUri) {
-                case "users": this.doUserService(req, resp);
-                case "articles": this.doArticleService(req, resp);
-                default: this.doDefaultService(req, resp);
+            case "articles": {
+                this.doArticleService(req, resp);
+                return;
             }
-        } catch (Exception e) {
-            //resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            default: this.doDefaultService(req, resp);
         }
     }
 
@@ -63,9 +65,18 @@ public class FrontController extends HttpServlet {
 
         String[] uriParts = uri.split("/");
         switch (uriParts[2]) {
-            case "sign-up": handlers.get("userSignUp").handle(req, resp);
-            case "sign-in": handlers.get("userSignIn").handle(req, resp);
-            case "sign-out": handlers.get("userSignOut").handle(req, resp);
+            case "sign-up": {
+                handlers.get("userSignUp").handle(req, resp);
+                return;
+            }
+            case "sign-in": {
+                handlers.get("userSignIn").handle(req, resp);
+                return;
+            }
+            case "sign-out": {
+                handlers.get("userSignOut").handle(req, resp);
+                return;
+            }
             default: {
                 if (uriParts.length == 3) {
                     handlers.get("userInfo").handle(req, resp);
@@ -85,7 +96,10 @@ public class FrontController extends HttpServlet {
 
         String[] uriParts = uri.split("/");
         switch (uriParts[2]) {
-            case "create": handlers.get("articleCreate").handle(req, resp);
+            case "create": {
+                handlers.get("articleCreate").handle(req, resp);
+                return;
+            }
             default: handlers.get("article").handle(req, resp);
         }
     }

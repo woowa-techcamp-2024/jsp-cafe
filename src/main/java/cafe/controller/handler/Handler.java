@@ -10,8 +10,14 @@ public interface Handler {
     default void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String method = req.getMethod();
         switch (method) {
-            case "GET": doGet(req, resp);
-            case "POST": doPost(req, resp);
+            case "GET" : {
+                doGet(req, resp);
+                return;
+            }
+            case "POST": {
+                doPost(req, resp);
+                return;
+            }
             default: throw new IllegalArgumentException("Unsupported method: " + method);
         }
     }
