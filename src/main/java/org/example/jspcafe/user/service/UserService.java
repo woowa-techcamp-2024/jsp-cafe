@@ -28,4 +28,12 @@ public class UserService {
 
         userRepository.update(user);
     }
+
+    public User findByIdAndPw(String userId, String password) {
+        User user = userRepository.findByUserId(userId).orElseThrow(IllegalArgumentException::new);
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("Wrong password");
+        }
+        return user;
+    }
 }
