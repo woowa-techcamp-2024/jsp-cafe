@@ -14,7 +14,7 @@ public class SessionManager {
 
 	public void loginCheck(HttpServletRequest req, String key, String userId) {
 		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
-		System.out.println("memberInfo = "+memberInfo);
+		System.out.println("memberInfo = "+memberInfo + " userId = "+userId);
 		if (memberInfo == null) {
 			throw ClientErrorCode.UNAUTHORIZED_USER.customException("Unauthorized user info = "+memberInfo);
 		} else if (!Objects.equals(memberInfo.getUserId(), userId)) {

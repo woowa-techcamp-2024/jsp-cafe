@@ -1,6 +1,7 @@
 package codesquad.javacafe.post.controller;
 
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.common.session.SessionManager;
 import codesquad.javacafe.post.cache.PostCache;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
@@ -24,6 +25,10 @@ public class PostController implements SubController {
         log.info("[PostController doProcess] method: {}", method);
         switch (method) {
             case "GET":{
+                var userId = req.getParameter("userId");
+                log.debug("UserId = {}",userId);
+                SessionManager.getInstance().loginCheck(req,"loginInfo", userId);
+
                 var body = Long.parseLong(req.getParameterMap().get("postId")[0]);
                 log.debug("[PostController doProcess] body: {}", body);
 

@@ -1,6 +1,9 @@
 package codesquad.javacafe.post.cache;
 
 import codesquad.javacafe.common.db.DBConnection;
+import codesquad.javacafe.common.session.MemberInfo;
+import codesquad.javacafe.member.entity.Member;
+import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.post.controller.PostController;
 import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
@@ -41,12 +44,16 @@ class PostCacheTest {
     @Test
     @DisplayName("캐시 히트는 항상 디스크 IO 보다 빠르다")
     void cacheTest() throws SQLException, ServletException, IOException {
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
         cacheSetUp();
 
         // post 하나 저장
         Map<String, String[]> body = new HashMap<>();
         HttpServletRequest request = new CustomHttpServletRequest();
         HttpServletResponse response = new CustomHttpServletResponse();
+        request.setAttribute("userId","user1");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
         List<Long> list = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {

@@ -33,6 +33,7 @@ public class PostRepository {
 
         Connection con = null;
         PreparedStatement ps = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -41,8 +42,11 @@ public class PostRepository {
             ps.setString(2, post.getTitle());
             ps.setString(3, post.getContents());
             ps.setTimestamp(4, Timestamp.valueOf(post.getCreatedAt()));
-            Integer pk = ps.executeUpdate();
-            if (pk != null) {
+            ps.executeUpdate();
+
+            var generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long pk = generatedKeys.getLong(1);
                 log.debug("[Post PK] {}", pk);
                 post.setId(pk);
             }
