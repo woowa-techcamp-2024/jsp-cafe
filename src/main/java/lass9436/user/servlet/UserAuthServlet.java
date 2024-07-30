@@ -23,7 +23,7 @@ public class UserAuthServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             // 요청에서 id 와 password 가져오기
             String userId = req.getParameter("userId");
@@ -44,5 +44,11 @@ public class UserAuthServlet extends HttpServlet {
         } catch (RuntimeException e){
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.getSession().invalidate();
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
