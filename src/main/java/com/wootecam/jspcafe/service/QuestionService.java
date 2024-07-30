@@ -39,13 +39,13 @@ public class QuestionService {
 
     public Question readQuestionToEdit(final Long questionId, final Long signInUserId) {
         if (Objects.isNull(questionId)) {
-            throw new NotFoundException("수정 할 게시글을 찾을 수 없습니다.");
+            throw new NotFoundException("수정 할 질문을 찾을 수 없습니다.");
         }
 
         Question question = read(questionId);
 
         if (!Objects.equals(question.getUserPrimaryId(), signInUserId)) {
-            throw new BadRequestException("다른 사용자의 글은 수정할 수 없습니다.");
+            throw new BadRequestException("다른 사용자의 질문은 수정할 수 없습니다.");
         }
 
         return question;

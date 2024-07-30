@@ -93,7 +93,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 해당_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "id", "password", "name", "email"));
+                userRepository.save(new User("id", "password", "name", "email"));
 
                 // when
                 User user = userService.read(1L);
@@ -115,9 +115,9 @@ class UserServiceTest extends ServiceTest {
         @Test
         void 저장되어있는_모든_사용자를_반환한다() {
             // given
-            userRepository.save(new User(1L, "id", "password", "name", "email"));
-            userRepository.save(new User(2L, "id", "password", "name", "email"));
-            userRepository.save(new User(3L, "id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
 
             // when
             List<User> users = userService.readAll();
@@ -137,7 +137,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 회원정보를_수정한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 userService.edit(1L, "password", "newPassword", "newName", "newEmail");
@@ -161,7 +161,7 @@ class UserServiceTest extends ServiceTest {
             @MethodSource("generateInvalidEditUserInfo")
             void 예외가_발생한다(List<String> invalidEditUserInfo) {
                 // given
-                userRepository.save(new User(1L, "id", "password", "name", "email"));
+                userRepository.save(new User("id", "password", "name", "email"));
 
                 // expect
                 assertThatThrownBy(
@@ -192,7 +192,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                userRepository.save(new User(1L, "id", "password", "name", "email"));
+                userRepository.save(new User("id", "password", "name", "email"));
 
                 // expect
                 assertThatThrownBy(
@@ -245,7 +245,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 비어있는_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 Optional<User> user = userService.signIn("userId", "differentPassword");
@@ -261,7 +261,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 로그인_성공의_의미로_실제_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 User user = userService.signIn("userId", "password").get();
@@ -286,7 +286,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                User user = new User(1L, "userId", "password", "name", "email");
+                User user = new User("userId", "password", "name", "email");
 
                 // expect
                 assertThatThrownBy(() -> userService.readSignInUser(2L, user))
@@ -322,7 +322,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 수정할_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 User findUser = userService.readSignInUser(1L, new User(1L, "userId", "password", "name", "email"));
