@@ -40,18 +40,15 @@ public class UserUpdateServlet extends HttpServlet {
         User user = userService.findById(userId);
         req.setAttribute("user", user);
 
-        if (pathParts.length != 2) {
-            HttpSession session = req.getSession(false);
-            if (!AuthUtils.isLoginUser(session)) {
-                resp.sendRedirect("/user/login.jsp");
-                return;
-            } else if (!((User)session.getAttribute("loginMember")).getId().equals(userId)) {
-                throw new TomcatException("다른 사용자의 정보를 수정할 수 없습니다.");
-            }
-            req.getRequestDispatcher("/user/updateForm.jsp").forward(req, resp);
+        HttpSession session = req.getSession(false);
+        if (!AuthUtils.isLoginUser(session)) {
+            resp.sendRedirect("/user/login.jsp");
             return;
         }
-        req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+        if (!((User) session.getAttribute("loginMember")).getId().equals(userId)) {
+            throw new TomcatException("다른 사용자의 정보를 수정할 수 없습니다.");
+        }
+        req.getRequestDispatcher("/user/updateForm.jsp").forward(req, resp);
     }
 
     @Override
