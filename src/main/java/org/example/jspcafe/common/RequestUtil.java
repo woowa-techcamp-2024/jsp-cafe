@@ -9,6 +9,8 @@ import java.io.IOException;
 import static org.example.jspcafe.common.StringUtils.isNumeric;
 
 public class RequestUtil {
+    public static final String userSessionKey = "authUser";
+
     public static Long extractLongPathVariable(HttpServletRequest req) throws IOException {
         String pathInfo = getPathInfo(req);
         String substring = pathInfo.substring(1);
@@ -33,6 +35,6 @@ public class RequestUtil {
 
     public static User getUserFromSession(HttpServletRequest req) {
         HttpSession session = req.getSession(false); // false: 세션이 없으면 null을 반환
-        return  (User) (session != null ? session.getAttribute("user") : null);
+        return  (User) (session != null ? session.getAttribute("authUser") : null);
     }
 }
