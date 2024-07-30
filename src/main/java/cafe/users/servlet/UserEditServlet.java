@@ -28,7 +28,7 @@ public class UserEditServlet extends MappingHttpServlet {
         User loginUser = (User) req.getSession().getAttribute("user");
 
         if (loginUser == null || !loginUser.getId().equals(id)) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
@@ -82,7 +82,8 @@ public class UserEditServlet extends MappingHttpServlet {
             return;
         }
 
-        userRepository.save(user.withEmail(email).withUsername(username).withPassword(currentPassword));
+        User save = userRepository.save(user.withEmail(email).withUsername(username).withPassword(currentPassword));
+        req.getSession().setAttribute("user", save);
         resp.sendRedirect("/users");
     }
 }
