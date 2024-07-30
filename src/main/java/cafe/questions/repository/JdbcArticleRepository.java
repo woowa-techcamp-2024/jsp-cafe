@@ -48,7 +48,7 @@ public class JdbcArticleRepository implements ArticleRepository {
     }
 
     private Article update(Article article) {
-        String sql = "UPDATE articles SET user_id = ?, title = ?, content = ? WHERE id = ?";
+        String sql = "UPDATE articles SET user_id = ?, title = ?, content = ? WHERE id = ? AND deleted_at IS NULL";
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, article.getUserId());
@@ -67,7 +67,7 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public List<Article> findAll() {
-        String sql = "SELECT * FROM articles ORDER BY id DESC";
+        String sql = "SELECT * FROM articles WHERE deleted_at IS NULL ORDER BY id DESC";
         try (Connection connection = connectionPool.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -90,7 +90,7 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public Article findById(Long id) {
-        String sql = "SELECT * FROM articles WHERE id = ?";
+        String sql = "SELECT * FROM articles WHERE id = ? AND deleted_at IS NULL";
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -125,7 +125,7 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public void deleteById(Long id) {
-        String sql = "DELETE FROM articles WHERE id = ?";
+        String sql = "UPDATE articles SET deleted_at = CURRENT_TIMESTAMP WHERE id = ? AND deleted_at IS NULL";
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
