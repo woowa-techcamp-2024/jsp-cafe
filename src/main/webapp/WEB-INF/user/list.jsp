@@ -25,7 +25,7 @@
                 %>
                 <tr>
                     <th scope="row"><%=i%></th>
-                    <td><%=user.getUserid()%></td>
+                    <td><%=user.getUserId()%></td>
                     <td><%=user.getName()%></td>
                     <td><%=user.getEmail()%></td>
                     <td><a href="/users/<%=key%>" class="btn btn-success" role="button">조회</a></td>

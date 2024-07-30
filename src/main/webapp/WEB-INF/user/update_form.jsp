@@ -1,5 +1,4 @@
 <%@ page import="cafe.domain.entity.User" %>
-<%@ page import="cafe.dto.UserDto" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/components/head.jsp" %>
 <body>
@@ -7,10 +6,9 @@
 <%@ include file="/WEB-INF/components/navigation.jsp"%>
 
 <%
-    UserDto userDto = (UserDto) request.getAttribute("user");
-    User user = userDto.getUser();
-    String id = userDto.getId();
-%>>
+    User user = (User) request.getAttribute("user");
+    String id = user.getUserId();
+%>
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">

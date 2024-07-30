@@ -32,16 +32,15 @@
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/questions/423/form">수정</a>
+                              <a class="link-modify-article" href="/articles/<%=article.getArticleId()%>/update">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/423" method="POST">
-                                  <input type="hidden" name="_method" value="DELETE">
-                                  <button class="link-delete-article" type="submit">삭제</button>
+                              <form id="delete-form" class="form-delete" onsubmit="return false;">
+                                  <button class="link-delete-article" type="button" onclick="deleteArticle('<%=article.getArticleId()%>')">삭제</button>
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/WEB-INF/qna/list.jsp">목록</a>
+                              <a class="link-modify-article" href="/">목록</a>
                           </li>
                       </ul>
                   </div>
@@ -153,6 +152,32 @@
 		</ul>
 		</div>
 	</article>
+</script>
+<script>
+    function deleteArticle(articleId) {
+        if (!confirm('정말로 삭제하시겠습니까?')) {
+            return;
+        }
+
+        fetch("/articles/" + articleId + "/delete", {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('삭제되었습니다.');
+                    window.location.href = '/articles';
+                } else {
+                    alert('삭제가 불가능합니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+    }
 </script>
 
 <!-- script references -->

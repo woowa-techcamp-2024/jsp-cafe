@@ -1,7 +1,7 @@
 package cafe.domain.entity;
 
 public class User {
-    private final String userid;
+    private final String userId;
     private final String name;
     private final String password;
     private final String email;
@@ -12,14 +12,14 @@ public class User {
 
     private User(String id, String name, String password, String email) {
         validate(id, password, name, email);
-        this.userid = id;
+        this.userId = id;
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUserId() {
+        return userId;
     }
 
     public String getPassword() {
@@ -55,6 +55,9 @@ public class User {
     public void validateEmail(String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is empty!");
+        }
+        if (!email.contains("@")) {
+            throw new IllegalArgumentException("Email is invalid!");
         }
     }
 

@@ -1,8 +1,8 @@
 package cafe.domain.db;
 
-import cafe.domain.DatabaseManager;
-import cafe.domain.sql.SQLExecutor;
-import cafe.domain.sql.SQLGenerator;
+import cafe.domain.util.DatabaseConnector;
+import cafe.domain.util.SQLExecutor;
+import cafe.domain.util.SQLGenerator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -17,12 +17,18 @@ public interface Database<K, V> {
     SQLGenerator sqlGenerator = SQLGenerator.getInstance();
     SQLExecutor sqlExecutor = SQLExecutor.getInstance();
 
+    default DatabaseConnector getConnector() {
+        return null;
+    }
+
     default void insert(V data) {
         String className = findClassName();
         Field[] fields = findFields();
-        for (Field field : fields) field.setAccessible(true);
+        for (Field field : fields) {
+            field.setAccessible(true);
+        }
 
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String insertSQL = sqlGenerator.generateInsertSQL(className, fields);
             sqlExecutor.executeInsert(connection, insertSQL, fields, data);
         } catch (Exception e) {
@@ -37,13 +43,15 @@ public interface Database<K, V> {
         constructor.setAccessible(true);
 
         V data = null;
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String selectSQL = sqlGenerator.generateSelectByIdSQL(className);
             ResultSet rs = sqlExecutor.executeSelectById(connection, selectSQL, id);
 
             if (!rs.next()) return null;
             Object[] objects = new Object[fields.length];
-            for (int i = 0; i < fields.length; i++) objects[i] = rs.getString(fields[i].getName());
+            for (int i = 0; i < fields.length; i++) {
+                objects[i] = rs.getString(fields[i].getName());
+            }
             data = constructor.newInstance(objects);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +66,7 @@ public interface Database<K, V> {
         constructor.setAccessible(true);
 
         Map<K, V> result = new HashMap<>();
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String selectAllSQL = sqlGenerator.generateSelectAllSQL(className);
             ResultSet rs = sqlExecutor.executeSelectAll(connection, selectAllSQL);
 
@@ -79,7 +87,7 @@ public interface Database<K, V> {
         Field[] fields = findFields();
         for (Field field : fields) field.setAccessible(true);
 
-        try (Connection connection = DatabaseManager.connect()) {
+        try (Connection connection = getConnector().connect()) {
             String updateSQL = sqlGenerator.generateUpdateSQL(className, fields);
             sqlExecutor.executeUpdate(connection, updateSQL, fields, data, id);
         } catch (Exception e) {
@@ -87,7 +95,25 @@ public interface Database<K, V> {
         }
     }
 
-    default void deleteById(K id) {}
+    default void deleteById(K id) {
+        String className = findClassName();
+        try (Connection connection = getConnector().connect()) {
+            String deleteSQL = sqlGenerator.generateDeleteByIdSQL(className);
+            sqlExecutor.executeDeleteById(connection, deleteSQL, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    default void deleteAll() {
+        String className = findClassName();
+        try (Connection connection = getConnector().connect()) {
+            String deleteAllSQL = sqlGenerator.generateDeleteAllSQL(className);
+            connection.prepareStatement(deleteAllSQL).executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private Field[] findFields() {
         Class<?> clazz = (Class<?>) ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1];
@@ -108,4 +134,5 @@ public interface Database<K, V> {
             return null;
         }
     }
+
 }
