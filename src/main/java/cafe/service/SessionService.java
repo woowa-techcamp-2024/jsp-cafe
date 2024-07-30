@@ -5,6 +5,8 @@ import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
 import cafe.dto.UserDto;
 
+import java.util.Map;
+
 public class SessionService {
     private final UserDatabase userDatabase;
     private final SessionDatabase sessionDatabase;
@@ -30,4 +32,9 @@ public class SessionService {
         return sessionDatabase.selectAll().containsKey(sessionid);
     }
 
+    public User findUserBySession(String id) {
+        User user = (User) sessionDatabase.selectById(id);
+        if (user == null) throw new IllegalArgumentException("User not found!");
+        return user;
+    }
 }

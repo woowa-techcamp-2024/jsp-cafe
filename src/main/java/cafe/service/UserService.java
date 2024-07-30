@@ -1,19 +1,15 @@
 package cafe.service;
 
-import cafe.domain.db.SessionDatabase;
 import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.User;
-import cafe.dto.UserDto;
 
 import java.util.Map;
 
 public class UserService {
     private final UserDatabase userDatabase;
-    private final SessionDatabase sessionDatabase;
 
-    public UserService(UserDatabase userDatabase, SessionDatabase sessionDatabase) {
+    public UserService(UserDatabase userDatabase) {
         this.userDatabase = userDatabase;
-        this.sessionDatabase = sessionDatabase;
     }
 
     public void save(String id, String name, String password, String email) {
@@ -25,22 +21,6 @@ public class UserService {
         User user = userDatabase.selectById(id);
         if (user == null) throw new IllegalArgumentException("User not found!");
         return user;
-    }
-
-    public UserDto findBySession(String id) {
-        User user = (User) sessionDatabase.selectById(id);
-        Map<String, User> users = userDatabase.selectAll();
-
-        String uuid = null;
-        for (String key : users.keySet()) {
-            if (users.get(key).getUserId().equals(user.getUserId())) {
-                uuid = key;
-                user = users.get(key);
-            }
-        }
-
-        if (user == null) throw new IllegalArgumentException("User not found!");
-        return new UserDto(uuid, user);
     }
 
     public Map<String, User> findAll() {

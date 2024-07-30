@@ -22,7 +22,7 @@ public class DIContainerInitializer implements ServletContextListener {
         ArticleDatabase articleDatabase = new ArticleDatabase(databaseConnector);
         SessionDatabase sessionDatabase = new SessionDatabase();
 
-        UserService userService = new UserService(userDatabase, sessionDatabase);
+        UserService userService = new UserService(userDatabase);
         ArticleService articleService = new ArticleService(articleDatabase);
         SessionService sessionService = new SessionService(userDatabase, sessionDatabase);
 
