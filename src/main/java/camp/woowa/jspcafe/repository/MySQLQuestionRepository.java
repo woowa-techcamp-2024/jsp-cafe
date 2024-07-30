@@ -18,12 +18,12 @@ public class MySQLQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public Long save(String title, String content, String writer, Long writerId) {
+    public Long save(Question question) {
         try (var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer, writerId) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
-            pstmt.setString(1, title);
-            pstmt.setString(2, content);
-            pstmt.setString(3, writer);
-            pstmt.setLong(4, writerId);
+            pstmt.setString(1, question.getTitle());
+            pstmt.setString(2, question.getContent());
+            pstmt.setString(3, question.getWriter());
+            pstmt.setLong(4, question.getWriterId());
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {
