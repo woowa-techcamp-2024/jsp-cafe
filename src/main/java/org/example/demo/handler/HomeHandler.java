@@ -3,7 +3,6 @@ package org.example.demo.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.demo.domain.Post;
 import org.example.demo.repository.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

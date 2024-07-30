@@ -6,13 +6,10 @@ import org.example.demo.exception.InternalServerError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -56,16 +53,16 @@ public class DbConfig {
         this.dataSource = new HikariDataSource(config);
     }
 
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
-
     private static String removeDatabaseName(String jdbcUrl) {
         int lastSlashIndex = jdbcUrl.lastIndexOf('/');
         if (lastSlashIndex != -1) {
             return jdbcUrl.substring(0, lastSlashIndex);
         }
         return jdbcUrl;
+    }
+
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     private void initializeSchema() {

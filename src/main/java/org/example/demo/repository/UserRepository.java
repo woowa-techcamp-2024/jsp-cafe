@@ -1,6 +1,5 @@
 package org.example.demo.repository;
 
-import org.example.demo.WasInitializeListener;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.User;
 import org.example.demo.model.UserCreateDao;
@@ -14,9 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserRepository {
-    private static UserRepository instance;
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
-
+    private static UserRepository instance;
     private DbConfig dbConfig;
 
     public UserRepository(DbConfig dbConfig) {

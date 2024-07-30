@@ -1,6 +1,5 @@
 package org.example.demo.repository;
 
-import org.example.demo.WasInitializeListener;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
@@ -15,9 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class PostRepository {
-    private static PostRepository instance;
     private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
-
+    private static PostRepository instance;
     private DbConfig dbConfig;
     private UserRepository userRepository;
 
