@@ -35,4 +35,22 @@ class ReplyServiceTest {
         assertEquals(reply.getWriter(), writer);
         assertEquals(reply.getWriterId(), writerId);
     }
+
+    @Test
+    void testFindByQuestionId() {
+        // given
+        Long questionId = 1L;
+        Long writerId = 1L;
+        String writer = "writer";
+        String content = "content";
+        int iteration = 3;
+        for (int i = 0; i < iteration; i++)
+            replyService.createReply(questionId, writerId, writer, content);
+
+        // when
+        int size = replyService.findByQuestionId(questionId).size();
+
+        // then
+        assertEquals(iteration, size);
+    }
 }
