@@ -12,18 +12,26 @@ public class Question {
     private final List<Reply> replies = new ArrayList<>();
     private final Author author;
     private final ZonedDateTime createdAt;
-    private boolean deleted = false;
+    private boolean deleted;
 
-    private Question(String questionId, String title, String content, Author author, ZonedDateTime createdAt) {
+    private Question(String questionId, String title, String content, Author author, ZonedDateTime createdAt,
+                     boolean deleted) {
         this.questionId = questionId;
         this.title = title;
         this.content = content;
         this.author = author;
         this.createdAt = createdAt;
+        this.deleted = deleted;
     }
 
-    public static Question create(String questionId, String title, String content, Author author, ZonedDateTime createdBy) {
-        return new Question(questionId, title, content, author, createdBy);
+    public static Question create(String questionId, String title, String content, Author author,
+                                  ZonedDateTime createdBy) {
+        return new Question(questionId, title, content, author, createdBy, false);
+    }
+
+    public static Question create(String questionId, String title, String content, Author author,
+                                  ZonedDateTime createdBy, boolean deleted) {
+        return new Question(questionId, title, content, author, createdBy, deleted);
     }
 
     public void checkAuthority(User user) {
@@ -31,10 +39,10 @@ public class Question {
     }
 
     public void update(String title, String content) {
-        if(title != null && !title.isBlank()) {
+        if (title != null && !title.isBlank()) {
             this.title = title;
         }
-        if(content != null && !content.isBlank()) {
+        if (content != null && !content.isBlank()) {
             this.content = content;
         }
     }

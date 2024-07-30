@@ -19,7 +19,7 @@ import java.util.Optional;
 public class QuestionJdbcDatabase implements QuestionDatabase {
     @Override
     public void save(Question question) {
-        String sql = "insert into question (question_id, title, content, user_id, created_at) values (?, ?, ?, ?, ?)";
+        String sql = "insert into question (question_id, title, content, user_id, created_at, deleted) values (?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -31,6 +31,7 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
             pstmt.setString(3, question.getContent());
             pstmt.setString(4, question.getAuthor().getUserId());
             pstmt.setTimestamp(5, Timestamp.valueOf(question.getCreatedAt().toLocalDateTime()));
+            pstmt.setBoolean(6, question.isDeleted());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalArgumentException("SQL 예외", e);
@@ -49,7 +50,8 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
                         rs.getString("nickname")
                 ),
                 ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(),
-                        ZoneId.of("Asia/Seoul"))
+                        ZoneId.of("Asia/Seoul")),
+                rs.getBoolean("deleted")
         );
     }
 
@@ -253,7 +255,8 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
                         questionId,
                         ""
                 ),
-                ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
+                ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul")),
+                rs.getBoolean("deleted")
         );
     }
 }

@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ReplyJdbcDatabase implements ReplyDatabase {
     @Override
     public void save(Reply reply) {
-        String sql = "insert into reply (reply_id, content, user_id, question_id, created_at) values (?, ?, ?, ?, ?)";
+        String sql = "insert into reply (reply_id, content, user_id, question_id, created_at, deleted) values (?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -30,6 +30,7 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
             pstmt.setString(3, reply.getAuthor().getUserId());
             pstmt.setString(4, reply.getQuestionInfo().getQuestionId());
             pstmt.setTimestamp(5, Timestamp.valueOf(reply.getCreatedAt().toLocalDateTime()));
+            pstmt.setBoolean(6, reply.isDeleted());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalArgumentException("SQL 예외 발생", e);
@@ -51,19 +52,7 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
             pstmt = con.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                replies.add(Reply.create(
-                        rs.getString("reply_id"),
-                        rs.getString("content"),
-                        new Author(
-                                rs.getString("user_id"),
-                                rs.getString("nickname")
-                        ),
-                        new QuestionInfo(
-                                rs.getString("question_id"),
-                                ""
-                        ),
-                        ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
-                ));
+                replies.add(mapToReply(rs));
             }
             return replies;
         } catch (SQLException e) {
@@ -86,19 +75,7 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
             pstmt.setString(1, replyId);
             rs = pstmt.executeQuery();
             if (rs.next()) {
-                Reply reply = Reply.create(
-                        rs.getString("reply_id"),
-                        rs.getString("content"),
-                        new Author(
-                                rs.getString("user_id"),
-                                rs.getString("nickname")
-                        ),
-                        new QuestionInfo(
-                                rs.getString("question_id"),
-                                ""
-                        ),
-                        ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul"))
-                );
+                Reply reply = mapToReply(rs);
                 return Optional.of(reply);
             }
             return Optional.empty();
@@ -107,6 +84,23 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
         } finally {
             DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
+    }
+
+    private Reply mapToReply(ResultSet rs) throws SQLException {
+        return Reply.create(
+                rs.getString("reply_id"),
+                rs.getString("content"),
+                new Author(
+                        rs.getString("user_id"),
+                        rs.getString("nickname")
+                ),
+                new QuestionInfo(
+                        rs.getString("question_id"),
+                        ""
+                ),
+                ZonedDateTime.of(rs.getTimestamp("created_at").toLocalDateTime(), ZoneId.of("Asia/Seoul")),
+                rs.getBoolean("deleted")
+        );
     }
 
     @Override

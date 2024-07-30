@@ -12,16 +12,21 @@ public class Reply {
     private final ZonedDateTime createdAt;
     private boolean deleted;
 
-    private Reply(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt) {
+    private Reply(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt, boolean deleted) {
         this.replyId = replyId;
         this.author = author;
         this.content = content;
         this.questionInfo = questionInfo;
         this.createdAt = createdAt;
+        this.deleted = deleted;
     }
 
     public static Reply create(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt) {
-        return new Reply(replyId, content, author, questionInfo, createdAt);
+        return new Reply(replyId, content, author, questionInfo, createdAt, false);
+    }
+
+    public static Reply create(String replyId, String content, Author author, QuestionInfo questionInfo, ZonedDateTime createdAt, boolean deleted) {
+        return new Reply(replyId, content, author, questionInfo, createdAt, deleted);
     }
 
     public void checkAuthority(User user) {
