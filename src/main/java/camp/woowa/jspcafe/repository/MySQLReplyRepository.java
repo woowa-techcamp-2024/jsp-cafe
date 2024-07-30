@@ -20,7 +20,7 @@ public class MySQLReplyRepository implements ReplyRepository {
 
     @Override
     public Long save(Reply reply) {
-        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO reply (content, question_id, writer, writer_id) VALUES (?, ?, ?, ?)")) {
+        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO reply (content, question_id, writer, writer_id) VALUES (?, ?, ?, ?) ", PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, reply.getContent());
             pstmt.setLong(2, reply.getQuestionId());
             pstmt.setString(3, reply.getWriter());
