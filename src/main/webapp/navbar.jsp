@@ -63,7 +63,7 @@
                         <!-- 필요한 경우 CSRF 토큰 등 추가 -->
                     </form>
                 </li>
-                <li><a href="/user/update.jsp" role="button">개인정보수정</a></li>
+                <li><a href="/users/<c:out value="${user.id}"/>" role="button">개인정보수정</a></li>
                 <% } else { %>
                 <li><a href="/auth/" role="button">로그인</a></li>
                 <li><a href="/user/form.jsp" role="button">회원가입</a></li>

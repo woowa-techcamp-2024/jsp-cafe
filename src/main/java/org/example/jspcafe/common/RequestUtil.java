@@ -9,13 +9,16 @@ import static org.example.jspcafe.common.StringUtils.isNumeric;
 public class RequestUtil {
     public static Long extractLongPathVariable(HttpServletRequest req) throws IOException {
         String pathInfo = getPathInfo(req);
-
         String substring = pathInfo.substring(1);
         if (!isNumeric(substring)) {
             throw new IllegalArgumentException("Invalid pathInfo");
         }
-
         return Long.valueOf(substring);
+    }
+
+    public static String extractStringPathVariable(HttpServletRequest req) throws IOException {
+        String pathInfo = getPathInfo(req);
+        return pathInfo.substring(1);
     }
 
     public static String getPathInfo(HttpServletRequest req) {
