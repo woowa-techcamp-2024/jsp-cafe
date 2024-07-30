@@ -29,7 +29,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
                     article = new Article(id, article.getTitle(), article.getContent(), article.getAuthor(),
                             article.getCreatedDt(), article.getAlivestatus(), article.getUserId());
                 } else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+                    throw new SQLException("Creating article failed, no ID obtained.");
                 }
             }
 
