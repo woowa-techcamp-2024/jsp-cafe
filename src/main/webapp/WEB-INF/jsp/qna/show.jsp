@@ -28,13 +28,10 @@
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/qna/${question.id}/form">수정</a>
+                              <a class="link-modify-article" href="${pageContext.request.contextPath}/qna/${question.id}/form">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/423" method="POST">
-                                  <input type="hidden" name="_method" value="DELETE">
-                                  <button class="link-delete-article" type="submit">삭제</button>
-                              </form>
+                              <button class="link-delete-article" type="button" onclick="deleteQuestion()">삭제</button>
                           </li>
                           <li>
                               <a class="link-modify-article" href="${pageContext.request.contextPath}/">목록</a>
@@ -152,3 +149,20 @@
 </script>
 
 <%@ include file="../template/footer.jsp"%>
+
+<script>
+    const deleteQuestion = () => {
+        $.ajax({
+            url: '${pageContext.request.contextPath}/questions/${question.id}',
+            type: 'DELETE',
+            success: function(response) {
+                if (response['result'] === 'success') {
+                    window.location.href = '/';
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
