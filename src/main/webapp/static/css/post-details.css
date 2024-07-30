@@ -154,3 +154,41 @@ textarea {
 
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 }
+
+.button {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 1em;
+  color: white;
+
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+#edit-button {
+  background-color: #62CBC6;
+}
+
+#delete-button {
+  background-color: #EE9941;
+}
+
+#edit-button:hover {
+  background-color: #51A9A5;
+}
+
+#delete-button:hover {
+  background-color: #D18A3A;
+}
+
+#modify-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 12px;
+}

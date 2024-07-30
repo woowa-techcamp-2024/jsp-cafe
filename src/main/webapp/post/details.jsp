@@ -31,6 +31,16 @@
         <c:out value="${line}" /><br>
       </c:forTokens>
     </div>
+    <c:choose>
+      <c:when test="${sessionScope.authentication.principal().getNickname() == post.writer()}">
+        <div id="modify-buttons">
+          <a id="edit-button" class="button" href="${pageContext.request.contextPath}/posts/edit/${post.id()}">수정</a>
+          <a id="delete-button" class="button" href="${pageContext.request.contextPath}/posts/edit/${post.id()}"
+             onclick="confirm('게시글을 삭제하시겠습니까?');"
+          >삭제</a>
+        </div>
+      </c:when>
+    </c:choose>
     <%--<div id="comments-count">댓글 <c:out value="${commentsCount}" />개</div>
     <div id="comments-container">
       <c:forEach var="comment" items="${comments}">
