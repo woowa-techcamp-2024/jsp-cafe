@@ -7,11 +7,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.jspcafe.question.repository.QuestionRepository;
+import org.example.jspcafe.user.User;
 
 import java.io.IOException;
 
 import static org.example.jspcafe.common.RequestUtil.extractLongPathVariable;
+import static org.example.jspcafe.common.RequestUtil.getUserFromSession;
 
 @WebServlet(name = "QuestionServlet", value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
@@ -25,9 +28,15 @@ public class QuestionsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        User user = getUserFromSession(req);
+        if(user == null) {
+            res.sendRedirect("/login.jsp"); // 로그인 페이지로 리다이렉트
+        }
         Long id = extractLongPathVariable(req);
         req.setAttribute("question", questionRepository.findById(id));
-        req.getRequestDispatcher("/qna/show.jsp").forward(req, resp);
+        req.getRequestDispatcher("/qna/show.jsp").forward(req, res);
     }
+
+
 }
