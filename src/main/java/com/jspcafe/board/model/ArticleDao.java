@@ -75,4 +75,23 @@ public class ArticleDao {
         }
         return articles;
     }
+
+    public void update(final Article updateArticle) {
+        String sql = "UPDATE articles SET title = ?, nickname = ?, content = ?, update_at = ? WHERE id = ?";
+        try (Connection conn = databaseConnector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, updateArticle.title());
+            pstmt.setString(2, updateArticle.nickname());
+            pstmt.setString(3, updateArticle.content());
+            pstmt.setTimestamp(4, Timestamp.valueOf(updateArticle.updateAt()));
+            pstmt.setString(5, updateArticle.id());
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating article failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating article", e);
+        }
+    }
 }

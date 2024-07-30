@@ -3,12 +3,8 @@ package com.jspcafe.board.model;
 import com.jspcafe.exception.ArticleNotFoundException;
 import com.jspcafe.test_util.H2Connector;
 import com.jspcafe.test_util.H2Initializer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,5 +42,20 @@ class ArticleDaoTest {
 
         // Then
         assertEquals(2, articleDao.findAll().size());
+    }
+
+    @Test
+    void 게시물을_수정한다() {
+        // Given
+        Article article = Article.create("testTitle1", "testTitle1", "test test test. 1");
+        articleDao.save(article);
+
+        // When
+        Article updateArticle = article.update("testTitle2", "testTitle2");
+        articleDao.update(updateArticle);
+
+        // Then
+        assertEquals(articleDao.findById(article.id())
+                .orElseThrow(() -> new ArticleNotFoundException("Not found id")), updateArticle);
     }
 }
