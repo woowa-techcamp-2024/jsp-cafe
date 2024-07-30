@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.utils;
+package woowa.camp.jspcafe.web.utils;
 
 import java.util.HashMap;
 import java.util.Map;

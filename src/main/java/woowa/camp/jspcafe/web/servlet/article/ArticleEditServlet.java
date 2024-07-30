@@ -19,7 +19,7 @@ import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
-import woowa.camp.jspcafe.utils.PathVariableExtractor;
+import woowa.camp.jspcafe.web.utils.PathVariableExtractor;
 
 @WebServlet(name = "ArticleEditServlet", value = "/articles/edit/*")
 public class ArticleEditServlet extends HttpServlet {

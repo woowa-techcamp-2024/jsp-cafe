@@ -1,6 +1,6 @@
 package woowa.camp.jspcafe.web.servlet.user;
 
-import static woowa.camp.jspcafe.utils.PathVariableExtractor.extractPathVariables;
+import static woowa.camp.jspcafe.web.utils.PathVariableExtractor.extractPathVariables;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
