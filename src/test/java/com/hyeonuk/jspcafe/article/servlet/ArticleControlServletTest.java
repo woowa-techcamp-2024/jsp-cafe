@@ -23,18 +23,18 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("ArticleViewServlet 클래스")
-class ArticleViewServletTest {
+class ArticleControlServletTest {
     private MockRequest req;
     private MockResponse res;
     private ArticleDao articleDao;
-    private ArticleViewServlet servlet;
+    private ArticleControlServlet servlet;
 
     @BeforeEach
     void setUp() throws ServletException {
         req = new MockRequest();
         res = new MockResponse();
         articleDao = new InMemoryArticleDao();
-        servlet = new ArticleViewServlet();
+        servlet = new ArticleControlServlet();
         ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("articleDao", articleDao);
         ServletConfig servletConfig = new BaseServletConfig(servletContext);

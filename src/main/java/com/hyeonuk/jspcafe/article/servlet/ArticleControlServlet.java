@@ -11,9 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-public class ArticleViewServlet extends HttpServlet {
+public class ArticleControlServlet extends HttpServlet {
     private ArticleDao articleDao;
     @Override
     public void init(ServletConfig config) throws ServletException {
