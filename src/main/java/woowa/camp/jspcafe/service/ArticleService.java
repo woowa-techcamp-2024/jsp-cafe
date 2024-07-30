@@ -13,6 +13,7 @@ import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.time.DateTimeProvider;
 
@@ -46,10 +47,6 @@ public class ArticleService {
         upHits(article);
         article = findArticle(id);
 
-        if (article.isAnonymousAuthor()) {
-            return ArticleDetailsResponse.of(article, null, "익명");
-        }
-
         User author = findAuthor(article.getAuthorId());
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
@@ -61,10 +58,6 @@ public class ArticleService {
 
         List<ArticlePreviewResponse> articlePreviewRespons = new ArrayList<>();
         for (Article article : articles) {
-            if (article.isAnonymousAuthor()) {
-                articlePreviewRespons.add(ArticlePreviewResponse.of(article, null, "익명"));
-                continue;
-            }
             User author = findAuthor(article.getAuthorId());
             articlePreviewRespons.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
         }
@@ -84,7 +77,24 @@ public class ArticleService {
 
     private void upHits(Article article) {
         article.upHits();
-        articleRepository.update(article.getId(), new ArticleUpdateRequest(article.getHits()));
+        Article updateArticle = Article.update(article, article.getTitle(), article.getContent(), article.getUpdatedAt());
+        articleRepository.update(updateArticle);
+    }
+
+    public ArticleUpdateResponse findUpdateArticle(User user, Long articleId) {
+        Article article = findArticle(articleId);
+        User author = findAuthor(article.getAuthorId());
+        validateUpdatable(user, author);
+
+        return ArticleUpdateResponse.from(article);
+    }
+
+    private void validateUpdatable(User user, User author) {
+        String userEmail = user.getEmail();
+        String authorEmail = author.getEmail();
+        if (!userEmail.equals(authorEmail)) {
+            throw new ArticleException("게시글 수정은 작성자의 이메일과 동일해야 합니다. %s, %s".formatted(userEmail, authorEmail));
+        }
     }
 
 }
