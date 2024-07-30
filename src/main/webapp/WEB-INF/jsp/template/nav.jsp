@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="/" class="navbar-brand">SLiPP</a>
+            <a href="${pageContext.request.contextPath}/" class="navbar-brand">SLiPP</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -26,7 +27,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="/users"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="${pageContext.request.contextPath}/users"><i class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>
     </div>
@@ -49,11 +50,15 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../index.jsp">Posts</a></li>
-                <li><a href="/user/login" role="button">로그인</a></li>
-                <li><a href="/user/form" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li class="active"><a href="${pageContext.request.contextPath}/">Posts</a></li>
+                <c:if test="${empty sessionScope.user}">
+                    <li><a href="${pageContext.request.contextPath}/user/login" role="button">로그인</a></li>
+                    <li><a href="${pageContext.request.contextPath}/user/form" role="button">회원가입</a></li>
+                </c:if>
+                <c:if test="${not empty sessionScope.user}">
+                    <li><form method="post" action="${pageContext.request.contextPath}/users/logout"><button type="submit">로그아웃</button></form></li>
+                    <li><a href="${pageContext.request.contextPath}/users/${sessionScope.user.id}/form" role="button">개인정보수정</a></li>
+                </c:if>
             </ul>
         </div>
     </div>

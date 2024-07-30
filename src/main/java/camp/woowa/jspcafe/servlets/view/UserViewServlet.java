@@ -16,6 +16,9 @@ public class UserViewServlet extends HttpServlet {
         try {
             if ("/form".equalsIgnoreCase(pathInfo)) {
                 req.getRequestDispatcher("/WEB-INF/jsp/user/form.jsp").forward(req, resp);
+            } else if ("/login".equalsIgnoreCase(pathInfo)) {
+                req.getRequestDispatcher("/WEB-INF/jsp/user/login.jsp").forward(req, resp);
+
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }

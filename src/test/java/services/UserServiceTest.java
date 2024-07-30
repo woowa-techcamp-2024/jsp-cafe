@@ -83,19 +83,18 @@ class UserServiceTest {
         String name = "name";
         String email = "email";
         Long id = userRepository.save(userId, password, name, email);
-        String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
+        User old_user = userService.findById(id);
 
         // when
-        Long updated_id = userService.update(id, password, updatedUserId, updatedName, updatedEmail);
+        Long updated_id = userService.update(old_user, id, password, updatedName, updatedEmail);
 
         // then
         User user = userService.findById(id);
         User updated = userRepository.findById(updated_id);
 
         assertEquals(user, updated);
-        assertEquals(user.getUserId(), updatedUserId);
         assertEquals(user.getName(), updatedName);
         assertEquals(user.getEmail(), updatedEmail);
     }
@@ -108,13 +107,13 @@ class UserServiceTest {
         String name = "name";
         String email = "email";
         Long id = userRepository.save(userId, password, name, email);
-        String updatedUserId = "updatedUserId";
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
 
+        User old_user = userRepository.findById(id);
         // when
         // then
-        assertThrows(RuntimeException.class, () -> userService.update(id, "1234", updatedUserId, updatedName, updatedEmail));
+        assertThrows(RuntimeException.class, () -> userService.update(old_user, id, "1234", updatedName, updatedEmail));
     }
 
     @Test
@@ -131,5 +130,21 @@ class UserServiceTest {
 
         // then
         assertTrue(isExisted);
+    }
+
+    @Test
+    void testLogin() {
+        // given
+        String userId = "userId";
+        String password = "password";
+        String name = "name";
+        String email = "email";
+        Long id = userRepository.save(userId, password, name, email);
+
+        // when
+        User user = userService.login(userId, password);
+
+        // then
+        assertEquals(user.getUserId(), userId);
     }
 }

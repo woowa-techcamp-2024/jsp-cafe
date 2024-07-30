@@ -88,7 +88,7 @@ class UserRepositoryTest {
         userRepository.save(userId, password, name, email);
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
-        userRepository.update(id, userId, updatedName, updatedEmail);
+        userRepository.update(id, updatedName, updatedEmail);
         User user = userRepository.findById(id);
 
         // then

@@ -16,7 +16,7 @@
                       </div>
                       <div class="article-header-text">
                           <a href="/users/${question.writerId}" class="article-author-name"> ${question.writer}</a>
-                          <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                          <a href="${pageContext.request.contextPath}/questions/413" class="article-header-time" title="퍼머링크">
                               2015-12-30 01:47
                               <i class="icon-link"></i>
                           </a>
@@ -37,7 +37,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/index.html">목록</a>
+                              <a class="link-modify-article" href="${pageContext.request.contextPath}/">목록</a>
                           </li>
                       </ul>
                   </div>

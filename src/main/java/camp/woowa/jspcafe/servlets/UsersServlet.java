@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,6 +47,7 @@ public class UsersServlet extends HttpServlet {
                 id = Long.parseLong(split[1]);
             } catch (NumberFormatException e) {
                 log(e.getMessage());
+                throw new CustomException(HttpStatus.BAD_REQUEST, "Invalide User Id");
             }
             User user = userService.findById(id);
             req.setAttribute("user", user);
@@ -91,6 +93,18 @@ public class UsersServlet extends HttpServlet {
             } catch (IOException e) {
                 log(e.getMessage());
             }
+        } else if (pathInfo.equalsIgnoreCase("/login")) {
+            String userId = req.getParameter("userId");
+            String password = req.getParameter("password");
+
+            User user = userService.login(userId, password);
+            req.getSession().setAttribute("user", user);
+
+            try {
+                res.sendRedirect("/");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
         } else if (pathInfo.endsWith("/form")) { // POST /users/{id}/form 필터링
             String[] split = pathInfo.split("/");
             long id = 0;
@@ -100,9 +114,17 @@ public class UsersServlet extends HttpServlet {
                 log(e.getMessage());
             }
 
-            userService.update(id,
+
+            HttpSession session = req.getSession(false);
+
+            if (session == null) {
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            }
+
+            User sessionUser = (User) session.getAttribute("user");
+
+            userService.update(sessionUser, id,
                     req.getParameter("password"),
-                    req.getParameter("userId"),
                     req.getParameter("name"),
                     req.getParameter("email"));
 
@@ -111,6 +133,15 @@ public class UsersServlet extends HttpServlet {
             } catch (IOException e) {
                 log(e.getMessage());
             }
+        } else if (pathInfo.equalsIgnoreCase("/logout")) {
+            req.getSession().invalidate();
+            try {
+                res.sendRedirect("/");
+            } catch (IOException e) {
+                log(e.getMessage());
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND);
         }
     }
 }
