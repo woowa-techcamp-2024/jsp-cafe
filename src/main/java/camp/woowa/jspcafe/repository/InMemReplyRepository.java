@@ -32,7 +32,8 @@ public class InMemReplyRepository implements ReplyRepository {
 
     @Override
     public List<Reply> findByQuestionId(Long questionId) {
-        return List.of((Reply) replies.values().stream()
-                .filter(reply -> reply.getQuestionId().equals(questionId)));
+        return replies.values().stream()
+                .filter(reply -> reply.getQuestionId().equals(questionId))
+                .collect(Collectors.toList());
     }
 }
