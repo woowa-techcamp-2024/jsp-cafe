@@ -176,6 +176,25 @@ public class DBArticleRepository implements ArticleRepository {
         }
     }
 
+    @Override
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM articles WHERE id = ?";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting article failed, no rows affected.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete article", e);
+        }
+    }
+
     private Article mapRowToArticle(ResultSet resultSet) throws SQLException {
         Long authorId = resultSet.getLong("author_id");
         boolean wasNull = resultSet.wasNull();
@@ -192,4 +211,5 @@ public class DBArticleRepository implements ArticleRepository {
         article.setId(resultSet.getLong("id"));
         return article;
     }
+
 }
