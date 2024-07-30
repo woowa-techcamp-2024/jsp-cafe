@@ -30,4 +30,8 @@ public final class TestUtil {
         assertEquals("text/html", response.getContentType());
         assertTrue(response.getBody().contains(errorMessages.get(errorCode)));
     }
+
+    public static String getSessionIdFromSetCookieHeader(String setCookieHeader) {
+        return setCookieHeader.split(";")[0].split("=")[1];
+    }
 }
