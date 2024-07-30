@@ -28,9 +28,9 @@ class QuestionRepositoryTest {
         String content = "content";
         String writer = "1234";
         Long expectedId = 1L;
-
+        Question save = new Question(title, content, writer, 1L);
         // when
-        Long id = questionRepository.save(title, content, writer, 1L);
+        Long id = questionRepository.save(save);
 
         // then
         assertEquals(expectedId, id);
