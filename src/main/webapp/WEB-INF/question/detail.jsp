@@ -24,7 +24,7 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/${question.userSeq}" class="article-author-name">${question.writer}</a>
+                            <a href="/userPage?action=detail&seq=${question.userSeq}" class="article-author-name">${question.writer}</a>
                             <a href="/questionPage?action=detail&seq=${question.questionSeq}" class="article-header-time" title="퍼머링크">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
