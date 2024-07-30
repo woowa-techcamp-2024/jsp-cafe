@@ -41,7 +41,7 @@ public class MySQLReplyRepository implements ReplyRepository {
 
     @Override
     public Reply findById(Long id) {
-        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE id = ?")) {
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE id = ? AND is_deleted = FALSE")) {
             pstmt.setLong(1, id);
             ResultSet rs = pstmt.executeQuery();
 
@@ -63,7 +63,7 @@ public class MySQLReplyRepository implements ReplyRepository {
     @Override
     public List<Reply> findByQuestionId(Long questionId) {
         List<Reply> replies = new ArrayList<>();
-        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE question_id = ?")) {
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE question_id = ? AND is_deleted = FALSE")) {
             pstmt.setLong(1, questionId);
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()) {
@@ -77,7 +77,7 @@ public class MySQLReplyRepository implements ReplyRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM reply WHERE id = ?")) {
+        try (PreparedStatement pstmt = conn.prepareStatement("UPDATE reply SET is_deleted = TRUE WHERE id = ?")) {
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
