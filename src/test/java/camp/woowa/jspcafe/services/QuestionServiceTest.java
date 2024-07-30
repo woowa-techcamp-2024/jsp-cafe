@@ -1,4 +1,4 @@
-package services;
+package camp.woowa.jspcafe.services;
 
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;

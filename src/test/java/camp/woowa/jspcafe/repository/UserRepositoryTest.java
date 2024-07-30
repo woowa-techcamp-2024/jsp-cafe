@@ -1,4 +1,4 @@
-package repository;
+package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.repository.InMemUserRepository;

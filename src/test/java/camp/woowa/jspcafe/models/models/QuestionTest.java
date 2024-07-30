@@ -1,4 +1,4 @@
-package models;
+package camp.woowa.jspcafe.models.models;
 
 import camp.woowa.jspcafe.model.Question;
 import org.junit.jupiter.api.Test;
