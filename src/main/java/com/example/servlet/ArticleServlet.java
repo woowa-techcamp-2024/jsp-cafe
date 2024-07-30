@@ -41,9 +41,22 @@ public class ArticleServlet extends HttpServlet {
 	@Login
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (req.getPathInfo() == null) {
+			req.getRequestDispatcher("/WEB-INF/qna/form.jsp").forward(req, resp);
+			return;
+		}
 		Long articleId = Long.parseLong(req.getPathInfo().substring(1));
 		Article article = articleService.getArticle(articleId);
 		req.setAttribute("article", article);
 		req.getRequestDispatcher("/WEB-INF/qna/show.jsp").forward(req, resp);
+	}
+
+	@Login
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Long articleId = Long.parseLong(req.getPathInfo().substring(1));
+		String userId = (String)req.getSession().getAttribute("id");
+		articleService.deleteArticle(userId, articleId);
+		resp.sendRedirect("/");
 	}
 }

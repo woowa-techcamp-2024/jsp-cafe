@@ -13,10 +13,10 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    ArticleDatabase articleDatabase = (ArticleDatabase)config.getServletContext()
-                            .getAttribute("articleDatabase");
-                    List<Article> articleList = articleDatabase.findAll();
-                    for (Article article : articleList) {
+                    ArticleDatabase articleDatabase = (ArticleDatabase) request.getServletContext().getAttribute("articleDatabase");
+                    List<Article> articles = articleDatabase.findAll();
+					request.setAttribute("articles", articles);
+                    for (Article article : articles) {
                 %>
                 <li>
                     <div class="wrap">
@@ -27,8 +27,9 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-15 18:47</span>
-                                <a href="users/profile/<%= article.getUserId() %>" class="author"><%= article.getUserId() %>></a>
+                                <span class="time"><%= article.getCreatedAt() %></span>
+                                <a href="users/profile/<%= article.getUserId() %>"
+                                   class="author"><%= article.getUserId() %>></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>

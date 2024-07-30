@@ -8,10 +8,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="kr">
-<%@ include file="../template/head.jsp"%>
+<%@ include file="../template/head.jsp" %>
 <body>
-<%@ include file="../template/top-header.jsp"%>
-<%@ include file="../template/sub-header.jsp"%>
+<%@ include file="../template/top-header.jsp" %>
+<%@ include file="../template/sub-header.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
@@ -20,18 +20,22 @@
                 Article article = (Article)request.getAttribute("article");
             %>
             <header class="qna-header">
-                <h2 class="qna-title"><%= article.getTitle() %></h2>
+                <h2 class="qna-title"><%= article.getTitle() %>
+                </h2>
             </header>
             <div class="content-main">
                 <article class="article">
                     <div class="article-header">
                         <div class="article-header-thumb">
-                            <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
+                            <img src="https://graph.facebook.com/v2.3/100000059371774/picture"
+                                 class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name"><%= article.getUserId() %></a>
+                            <a href="/users/profile/<%= article.getUserId() %>"
+                               class="article-author-name"><%= article.getUserId() %>
+                            </a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                2015-12-30 01:47
+                                <%= article.getCreatedAt()%>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -42,16 +46,17 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article"
+                                   href="${pageContext.request.contextPath}/articles/edit/<%= article.getId() %>">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/articles/<%=article.getId()%>" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/temp/index.html">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>
@@ -65,7 +70,8 @@
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                             class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
                                         <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
@@ -80,10 +86,12 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li>
-                                            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                                            <a class="link-modify-article"
+                                               href="/questions/413/answers/1405/form">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405" method="POST">
+                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
+                                                  method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
                                             </form>
@@ -94,7 +102,8 @@
                             <article class="article" id="answer-1406">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                             class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
                                         <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
@@ -109,10 +118,12 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li>
-                                            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                                            <a class="link-modify-article"
+                                               href="/questions/413/answers/1405/form">수정</a>
                                         </li>
                                         <li>
-                                            <form class="form-delete" action="/questions/413/answers/1405" method="POST">
+                                            <form class="form-delete" action="/questions/413/answers/1405"
+                                                  method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
                                             </form>
@@ -125,7 +136,7 @@
                                     <textarea class="form-control" placeholder="Update your status"></textarea>
                                 </div>
                                 <button class="btn btn-success pull-right" type="button">답변하기</button>
-                                <div class="clearfix" />
+                                <div class="clearfix"/>
                             </form>
                         </div>
                     </div>

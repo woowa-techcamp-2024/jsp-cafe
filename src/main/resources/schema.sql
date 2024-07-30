@@ -11,8 +11,9 @@ create table user
 
 create table article
 (
-    id       bigint primary key auto_increment,
-    userId   varchar(100) not null,
-    title    varchar(100) not null,
-    contents varchar(100) not null
+    id        bigint primary key auto_increment,
+    userId    varchar(100) not null,
+    title     varchar(100) not null,
+    contents  varchar(100) not null,
+    createdAt timestamp    not null
 )

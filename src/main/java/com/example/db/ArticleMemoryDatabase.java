@@ -39,4 +39,9 @@ public class ArticleMemoryDatabase implements ArticleDatabase {
 	public void update(Long aLong, Article article) {
 		articles.put(aLong, article);
 	}
+
+	@Override
+	public void delete(Long id) {
+		articles.remove(id);
+	}
 }
