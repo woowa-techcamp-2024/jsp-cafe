@@ -2,7 +2,9 @@
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="org.example.domain.Article" %>
 <%@ page import="org.example.domain.Reply" %>
+<%@ page import="org.example.domain.User" %>
 <%@ page import="java.util.List"%>
+<%@ page import="org.example.constance.SessionName" %>
 
 <html>
 <head>
@@ -18,6 +20,7 @@
     Article article = (Article) request.getAttribute("article");
     List<Reply> replies = (List<Reply>) request.getAttribute("replies");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+     User currentUser = (User)session.getAttribute(SessionName.USER.getName());
 %>
     <div class="container">
         <%@ include file="/common/header.jsp" %>
@@ -34,8 +37,10 @@
             </div>
             <div class="action-buttons">
                 <a class="btn" href="/">글 목록으로 돌아가기</a>
-                <a href="/articles/update-form/<%= article.getArticleId() %>"  class="btn">글 수정하기</a>
-                <button class="btn" id="deleteArticle">글 삭제하기</button>
+                <% if (currentUser != null && currentUser.getUserId().equals(article.getUserId())) {%>
+                    <a href="/articles/update-form/<%= article.getArticleId() %>"  class="btn">글 수정하기</a>
+                    <button class="btn" id="deleteArticle">글 삭제하기</button>
+                <% } %>
             </div>
 
             <!-- 댓글 들 -->
@@ -48,7 +53,9 @@
                         <span class="reply-date"><%= reply.getCreatedDt().format(formatter) %></span>
                     </div>
                     <div class="reply-comment"><%= reply.getComment() %></div>
-                    <button class="btn delete-reply" data-reply-id="<%= reply.getReplyId() %>">삭제</button>
+                    <% if (currentUser != null && currentUser.getUserId().equals(reply.getUserId())) {%>
+                        <button class="btn delete-reply" data-reply-id="<%= reply.getReplyId() %>">삭제</button>
+                    <% } %>
                 </div>
                 <% } %>
             </div>
