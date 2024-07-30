@@ -99,6 +99,6 @@ public class QuestionHandler {
         question.checkAuthority(user);
         questionDatabase.delete(question);
         return ResponseEntity.builder()
-                .found("/questions");
+                .found("/");
     }
 }

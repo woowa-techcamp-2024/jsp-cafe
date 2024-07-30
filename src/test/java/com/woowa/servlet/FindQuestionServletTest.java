@@ -162,7 +162,7 @@ class FindQuestionServletTest {
             findQuestionServlet.doDelete(request, response);
 
             //then
-            assertThat(response.getRedirectLocation()).isEqualTo("/questions");
+            assertThat(response.getRedirectLocation()).isEqualTo("/");
         }
     }
 }
