@@ -5,6 +5,6 @@ import jakarta.servlet.http.HttpSession;
 public interface SessionManager {
 
     HttpSession getSession(String sessionId);
-    HttpSession createSession(String sessionId, HttpSession session);
+    HttpSession addSessionToManager(HttpSession session);
     void invalidateSession(String sessionId);
 }

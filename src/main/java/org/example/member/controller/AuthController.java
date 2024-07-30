@@ -31,7 +31,7 @@ public class AuthController {
 
     @RequestMapping(path = "/login", method = HttpMethod.GET)
     public ModelAndView getLoginPage() {
-        return new ModelAndView("redirect:/user/login.html");
+        return new ModelAndView("redirect:/static/user/login.html");
     }
 
     @RequestMapping(path = "/login", method = HttpMethod.POST)
@@ -43,7 +43,7 @@ public class AuthController {
             if (userService.validateUser(userId, password)) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("user", userId);
-                sessionManager.createSession(session.getId(), session);
+                sessionManager.addSessionToManager(session);
                 return new ModelAndView("redirect:/");
             }
             return new ModelAndView("redirect:/user/login_failed.html");

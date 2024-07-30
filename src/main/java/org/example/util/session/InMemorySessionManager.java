@@ -46,15 +46,16 @@ public class InMemorySessionManager implements SessionManager {
     }
 
     @Override
-    public HttpSession createSession(String sessionId, HttpSession session) {
+    public HttpSession addSessionToManager(HttpSession session) {
         lock.writeLock().lock();
         try {
-            sessions.put(sessionId, session);
+            sessions.put(session.getId(), session);
         } finally {
             lock.writeLock().unlock();
         }
         return session;
     }
+
 
     @Override
     public void invalidateSession(String sessionId) {
