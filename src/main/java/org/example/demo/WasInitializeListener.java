@@ -22,7 +22,7 @@ public class WasInitializeListener implements ServletContextListener {
         // JdbcUrl 에 데이터베이스 명시 필요
         DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/cafe", "root", "");
         UserRepository userRepository = new UserRepository(dbConfig);
-        PostRepository postRepository = new PostRepository(dbConfig, userRepository);
+        PostRepository postRepository = new PostRepository(dbConfig);
         AuthValidator authValidator = new AuthValidator();
 
         HomeHandler homeHandler = new HomeHandler(postRepository);

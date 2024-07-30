@@ -14,7 +14,6 @@ import java.util.Optional;
 
 public class UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
-    private static UserRepository instance;
     private DbConfig dbConfig;
 
     public UserRepository(DbConfig dbConfig) {
