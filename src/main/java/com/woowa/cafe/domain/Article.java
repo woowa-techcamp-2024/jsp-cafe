@@ -37,6 +37,10 @@ public class Article {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public boolean isSameWriter(final String writerId) {
+        return this.writerId.equals(writerId);
+    }
+
     public void setId(final Long id) {
         this.id = id;
     }

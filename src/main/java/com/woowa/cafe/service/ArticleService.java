@@ -53,11 +53,22 @@ public class ArticleService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new HttpException(SC_NOT_FOUND, "존재하지 않는 게시글입니다."));
 
-        if (!article.getWriterId().equals(memberId)) {
+        if (!article.isSameWriter(memberId)) {
             throw new HttpException(SC_NOT_FOUND, "다른 사람이 수정할 수 없습니다.");
         }
 
         article.update(from.title(), from.content());
         articleRepository.update(article);
+    }
+
+    public void delete(final Long articleId, final String memberId) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new HttpException(SC_NOT_FOUND, "존재하지 않는 게시글입니다."));
+
+        if (!article.isSameWriter(memberId)) {
+            throw new HttpException(SC_NOT_FOUND, "다른 사람이 삭제할 수 없습니다.");
+        }
+
+        articleRepository.delete(articleId);
     }
 }

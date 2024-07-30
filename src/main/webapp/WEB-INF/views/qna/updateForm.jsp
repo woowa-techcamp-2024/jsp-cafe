@@ -49,7 +49,7 @@
             redirect: 'manual'
         })
             .then(response => {
-                if (response.type === 'opaqueredirect') {
+                if (response.status === 303) {
                     window.location.href = response.headers.get('Location');
                 } else if (response.ok) {
                     return response.text();

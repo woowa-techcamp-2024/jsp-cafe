@@ -1,4 +1,3 @@
-<%@ page import="com.woowa.cafe.domain.Article" %>
 <%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -32,8 +31,8 @@
                             </a>
                         </div>
                     </div>
-                    <div class="article-doc">
-                        <%= article.contents()%>
+                    <div class="article-doc" style="white-space: pre-wrap;">
+<%= article.contents() %>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
@@ -41,11 +40,9 @@
                                 <a class="link-modify-article" href="<%="/question/" + article.articleId() +"/form"%>">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
-                            </li>
+                                <button type="button" class="link-modify-article"
+                                        onclick="deleteArticle()">삭제
+                                </button>
                             <li>
                                 <a class="link-modify-article" href="/index.html">목록</a>
                             </li>
@@ -165,6 +162,31 @@
             </ul>
         </div>
     </article>
+</script>
+
+<script>
+    var articleId = <%=article.articleId()%>;
+
+    function deleteArticle() {
+
+        fetch(`/question/` + articleId, {
+            method: 'DELETE',
+            redirect: 'manual'
+        })
+            .then(response => {
+                if (response.status === 303) {
+                    window.location.href = response.headers.get('Location');
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
 </script>
 
 <!-- script references -->

@@ -74,7 +74,7 @@ public class ArticleServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    public void doPut(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         log.info(req.toString());
 
         String[] path = req.getPathInfo().split("/");
@@ -86,11 +86,21 @@ public class ArticleServlet extends HttpServlet {
         log.info("bodyFormData: {}", bodyFormData.toString());
         articleService.update(articleId, SaveArticleDto.from(bodyFormData), memberId);
 
-        resp.sendRedirect("/question/" + articleId);
+        resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        resp.setHeader("Location", "/question/" + articleId);
     }
 
     @Override
-    protected void doDelete(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+    public void doDelete(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        String[] path = req.getPathInfo().split("/");
+        Long articleId = Long.parseLong(path[1]);
+
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("memberId");
+
+        articleService.delete(articleId, memberId);
+
+        resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        resp.setHeader("Location", "/");
     }
 }
