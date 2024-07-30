@@ -23,11 +23,12 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
-    private final SessionManager sessionManager = InMemorySessionManager.getInstance();
+    private final SessionManager sessionManager;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, SessionManager sessionManager) {
         this.userService = userService;
+        this.sessionManager = sessionManager;
     }
 
     @RequestMapping(path = "/login", method = HttpMethod.GET)
@@ -42,8 +43,8 @@ public class AuthController {
         ModelAndView mv = new ModelAndView("/user/UserLogin");
         try {
             if (userService.validateUser(userId, password)) {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("user", userId);
+                HttpSession session = request.getSession(true); // 세션이 없으면 새로 생성
+                session.setAttribute("userId", userId);
                 sessionManager.addSessionToManager(session);
                 return new ModelAndView("redirect:/");
             } else {
@@ -51,8 +52,14 @@ public class AuthController {
             }
         } catch (SQLException e) {
             logger.error("로그인 처리 중 오류 발생", e);
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                // 로그인 실패 시 기존 세션 무효화
+                session.invalidate();
+            }
             mv.addAttribute("loginError", "로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }
+
         return mv;
     }
 

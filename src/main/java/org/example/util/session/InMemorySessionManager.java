@@ -1,62 +1,82 @@
 package org.example.util.session;
 
 import jakarta.servlet.http.HttpSession;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import org.example.config.annotation.Autowired;
+import org.example.config.annotation.Component;
+import org.example.member.model.dto.UserResponseDto;
+import org.example.member.service.UserService;
 
+@Component
 public class InMemorySessionManager implements SessionManager {
+    private final Map<String, InternalSession> sessions = new HashMap<>();
+    private final UserService userService;
 
-    private final ConcurrentHashMap<String, HttpSession> sessions = new ConcurrentHashMap<>();
-
-    private static final class InstanceHolder {
-        private static final SessionManager INSTANCE = new InMemorySessionManager();
-    }
-
-    public static SessionManager getInstance() {
-        return InstanceHolder.INSTANCE;
-    }
-
-    private InMemorySessionManager() {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(this::cleanInactiveSessions, 0, 1, TimeUnit.MINUTES);
+    @Autowired
+    public InMemorySessionManager(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
-    public HttpSession getSession(String sessionId) {
-        return sessions.get(sessionId);
-    }
+    public HttpSession addSessionToManager(HttpSession session) throws SQLException {
+        String userId = (String) session.getAttribute("userId");
+        UserResponseDto user = userService.getUserFromUserId(userId);
 
-    @Override
-    public HttpSession addSessionToManager(HttpSession session) {
-        sessions.put(session.getId(), session);
+        // 내부용 세션 객체 생성
+        InternalSession internalSession = new InternalSession(session);
+        internalSession.setAttribute("userDetails", user);
+
+        sessions.put(session.getId(), internalSession);
         return session;
     }
 
     @Override
+    public HttpSession getSessionFromManager(String sessionId) {
+        InternalSession internalSession = sessions.get(sessionId);
+        return internalSession != null ? internalSession.getOriginalSession() : null;
+    }
+
+    @Override
     public void invalidateSession(String sessionId) {
-        HttpSession session = sessions.remove(sessionId);
-        if (session != null) {
-            try {
-                session.invalidate();
-            } catch (IllegalStateException e) {
-                // 세션이 이미 무효화된 경우 무시
-            }
+        InternalSession internalSession = sessions.get(sessionId);
+        if (internalSession != null) {
+            internalSession.getOriginalSession().invalidate();
+        }
+        sessions.remove(sessionId);
+    }
+
+    @Override
+    public UserResponseDto getUserDetails(String sessionId) {
+        InternalSession internalSession = sessions.get(sessionId);
+        if (internalSession != null) {
+            return (UserResponseDto) internalSession.getAttribute("userDetails");
+        }
+        return null;
+    }
+
+    // 내부용 세션 클래스
+    private static class InternalSession {
+        private final HttpSession originalSession;
+        private final Map<String, Object> internalAttributes = new HashMap<>();
+
+        InternalSession(HttpSession session) {
+            this.originalSession = session;
+        }
+
+        void setAttribute(String name, Object value) {
+            internalAttributes.put(name, value);
+        }
+
+        Object getAttribute(String name) {
+            return internalAttributes.get(name);
+        }
+
+        HttpSession getOriginalSession() {
+            return originalSession;
         }
     }
 
-    private void cleanInactiveSessions() {
-        sessions.entrySet().removeIf(entry -> {
-            HttpSession session = entry.getValue();
-            try {
-                // 세션에 접근을 시도하여 유효한지 확인
-                session.getLastAccessedTime();
-                return false; // 세션이 유효함
-            } catch (IllegalStateException e) {
-                // 세션이 이미 무효화된 경우
-                return true; // 맵에서 제거
-            }
-        });
-    }
+
 }
