@@ -1,9 +1,8 @@
 package com.hyeonuk.jspcafe.article.dao;
 
 import com.hyeonuk.jspcafe.article.domain.Article;
-import com.hyeonuk.jspcafe.global.db.mysql.MysqlManager;
+import com.hyeonuk.jspcafe.global.db.mysql.DBManager;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
-import com.hyeonuk.jspcafe.member.domain.Member;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class MysqlArticleDao implements ArticleDao{
-    private final MysqlManager manager;
+    private final DBManager manager;
 
-    public MysqlArticleDao(MysqlManager manager) {
+    public MysqlArticleDao(DBManager manager) {
         this.manager = manager;
     }
 

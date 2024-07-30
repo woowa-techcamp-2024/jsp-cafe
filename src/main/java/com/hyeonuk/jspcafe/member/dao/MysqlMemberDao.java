@@ -1,6 +1,6 @@
 package com.hyeonuk.jspcafe.member.dao;
 
-import com.hyeonuk.jspcafe.global.db.mysql.MysqlManager;
+import com.hyeonuk.jspcafe.global.db.mysql.DBManager;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
 import com.hyeonuk.jspcafe.member.domain.Member;
 
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class MysqlMemberDao implements MemberDao {
-    private final MysqlManager manager;
-    public MysqlMemberDao(MysqlManager manager) {
+    private final DBManager manager;
+    public MysqlMemberDao(DBManager manager) {
         this.manager = manager;
     }
 
@@ -68,7 +68,6 @@ public class MysqlMemberDao implements MemberDao {
             }
             return member;
         }catch (SQLException e) {
-            e.printStackTrace();
             throw new DataIntegrityViolationException("error");
         }
     }
@@ -102,6 +101,7 @@ public class MysqlMemberDao implements MemberDao {
             }
             return members;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DataIntegrityViolationException("error");
         }
     }

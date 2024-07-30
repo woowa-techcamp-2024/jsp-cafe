@@ -1,9 +1,9 @@
 package com.hyeonuk.jspcafe.article.dao;
 
 import com.hyeonuk.jspcafe.article.domain.Article;
-import com.hyeonuk.jspcafe.global.db.mysql.MysqlManager;
+import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
+import com.hyeonuk.jspcafe.global.db.mysql.DBManager;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
-import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +20,8 @@ class MysqlArticleDaoTest {
 
     @BeforeEach
     void setUp() throws SQLException, ClassNotFoundException {
-        MysqlManager manager = new MysqlManager();
+        DBConnectionInfo connectionInfo = new DBConnectionInfo("application-testdb.yml");
+        DBManager manager = new DBManager(connectionInfo);
         articleDao = new MysqlArticleDao(manager);
     }
 
