@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS articles (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     author VARCHAR(100) NOT NULL,
+    alive_status VARCHAR(20) NOT NULL,
     created_dt DATETIME NOT NULL
 );
 
