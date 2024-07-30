@@ -27,13 +27,13 @@
                 <%
                     }
                     else {
-                        String uuid = (String) request.getAttribute("uuid");
+                        String id = (String) request.getAttribute("id");
                 %>
                 <li>
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">로그아웃</a>
                 </li>
                 <form id="logoutForm" action="/users/sign-out" method="POST" style="display: none;"></form>
-                <li><a href="/users/<%=uuid%>/edit" role="button">개인정보수정</a></li>
+                <li><a href="/users/<%=id%>/edit" role="button">개인정보수정</a></li>
                 <%
                     }
                 %>
