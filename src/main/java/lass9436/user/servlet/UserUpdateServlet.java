@@ -45,9 +45,13 @@ public class UserUpdateServlet extends HttpServlet {
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
 		User user = userRepository.findByUserSeq(userSeq);
+		String userId = (String) req.getSession().getAttribute("userId");
 		if (user == null) {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found.");
 			return;
+		}
+		if (!user.getUserId().equals(userId)){
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
 		}
 		if (!user.getPassword().equals(password)) {
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Wrong password.");

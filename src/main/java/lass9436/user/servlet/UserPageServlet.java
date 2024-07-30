@@ -21,7 +21,6 @@ public class UserPageServlet extends HttpServlet {
 	@Override
 	public void init(){
 		actionPageMap = new HashMap<>();
-		actionPageMap.put("login", "/login.jsp");
 		actionPageMap.put("register", "/register.jsp");
 		actionPageMap.put("login-failed", "/loginFailed.jsp");
 	}
