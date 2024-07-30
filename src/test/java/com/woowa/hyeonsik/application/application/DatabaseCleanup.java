@@ -14,7 +14,9 @@ public class DatabaseCleanup {
         List.of(
             "TRUNCATE TABLE member",
             "TRUNCATE TABLE article",
-            "ALTER TABLE article ALTER COLUMN article_id RESTART WITH 1"
+            "TRUNCATE TABLE comment",
+            "ALTER TABLE article ALTER COLUMN article_id RESTART WITH 1",
+            "ALTER TABLE comment ALTER COLUMN id RESTART WITH 1"
         ).forEach(databaseConnector::execute);
     }
 }
