@@ -3,6 +3,8 @@ package camp.woowa.jspcafe.service;
 import camp.woowa.jspcafe.model.Reply;
 import camp.woowa.jspcafe.repository.ReplyRepository;
 
+import java.util.List;
+
 public class ReplyService {
     private final ReplyRepository replyRepository;
 
@@ -16,5 +18,9 @@ public class ReplyService {
 
     public Reply findById(Long id) {
         return replyRepository.findById(id);
+    }
+
+    public List<Reply> findByQuestionId(Long questionId) {
+        return replyRepository.findByQuestionId(questionId);
     }
 }
