@@ -27,4 +27,10 @@ public class ArticleService {
     public List<Article> findAll() {
         return articleDao.findAll();
     }
+
+    public void update(final String id, final String title, final String content) {
+        Article article = findById(id);
+        Article updateArticle = article.update(title, content);
+        articleDao.update(updateArticle);
+    }
 }

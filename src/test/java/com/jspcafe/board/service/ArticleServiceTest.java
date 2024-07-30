@@ -86,4 +86,18 @@ class ArticleServiceTest {
         // When + Then
         assertThrows(ArticleNotFoundException.class, () -> articleService.findById("wrong id"));
     }
+
+    @Test
+    void id_수정된_제목_내용을_받으면_업데이트를_한다() {
+        // Given
+        Article article = Article.create("testTitle", "testName", "test test test.");
+        articleDao.save(article);
+
+        // When
+        articleService.update(article.id(), "updatedTitle", "updatedContent");
+
+        // Then
+        assertEquals("updatedTitle", articleService.findById(article.id()).title());
+        assertEquals("updatedContent", articleService.findById(article.id()).content());
+    }
 }
