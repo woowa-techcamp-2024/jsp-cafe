@@ -70,6 +70,20 @@ class QuestionServiceTest {
 
     @Test
     void testUpdate() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer, 1L);
 
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+
+        // when
+        questionService.update(id, updatedTitle, updatedContent, 1L);
+
+        // then
+        assertEquals(updatedTitle, questionService.findById(id).getTitle());
+        assertEquals(updatedContent, questionService.findById(id).getContent());
     }
 }
