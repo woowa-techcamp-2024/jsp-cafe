@@ -31,7 +31,17 @@ public class DatabaseInitializer {
                  `modified_at` timestamp NULL DEFAULT NULL,
                  PRIMARY KEY (`article_id`)
              ) 
-             """
+             """,
+            """
+            CREATE TABLE IF NOT EXISTS `comment` (
+                `id`         BIGINT       not null AUTO_INCREMENT,
+                `article_id` BIGINT       not null,
+                `writer_id`  VARCHAR(255) null,
+                `contents`   VARCHAR(255) null,
+                `created_at` timestamp     null,
+                primary key (`id`)
+            );
+            """
         ).forEach(databaseConnector::execute);
     }
 }

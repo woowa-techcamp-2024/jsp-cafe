@@ -57,6 +57,18 @@ class ReplyTest {
     }
 
     @Test
+    @DisplayName("작성자가 null인 경우 예외 발생")
+    void createReplyWithNullWriter() {
+        // given
+        Long id = 1L;
+        Long articleId = 1L;
+        String contents = "테스트 내용입니다.";
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> new Reply(id, articleId, null, contents));
+    }
+
+    @Test
     @DisplayName("작성자 이름이 최대 길이를 초과할 경우 예외 발생")
     void createReplyWithTooLongWriter() {
         // given
@@ -80,6 +92,18 @@ class ReplyTest {
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> new Reply(id, articleId, writer, emptyContents));
+    }
+
+    @Test
+    @DisplayName("내용이 null인 경우 예외 발생")
+    void createReplyWithNullContents() {
+        // given
+        Long id = 1L;
+        Long articleId = 1L;
+        String writer = "테스터";
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> new Reply(id, articleId, writer, null));
     }
 
     @Test
