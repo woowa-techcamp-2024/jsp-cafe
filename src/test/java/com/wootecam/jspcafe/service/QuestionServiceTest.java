@@ -39,14 +39,14 @@ class QuestionServiceTest extends ServiceTest {
 
             @ParameterizedTest
             @MethodSource("generateInvalidQuestionInfo")
-            void 예외를_발생시킨다(List<Object> invalidUserInfo) {
+            void 예외를_발생시킨다(List<Object> invalidQuestionInfo) {
                 // given
                 userRepository.save(new User("userId", "password", "name", "email"));
 
                 // expect
                 assertThatThrownBy(
-                        () -> questionService.append((String) invalidUserInfo.get(0), (String) invalidUserInfo.get(1),
-                                (String) invalidUserInfo.get(2), (Long) invalidUserInfo.get(3)))
+                        () -> questionService.append((String) invalidQuestionInfo.get(0), (String) invalidQuestionInfo.get(1),
+                                (String) invalidQuestionInfo.get(2), (Long) invalidQuestionInfo.get(3)))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("질문 작성 시 모든 정보를 입력해야 합니다.");
             }
