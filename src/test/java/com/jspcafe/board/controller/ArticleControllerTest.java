@@ -6,6 +6,7 @@ import com.jspcafe.board.model.ArticleDao;
 import com.jspcafe.test_util.*;
 import com.jspcafe.user.model.User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,5 +142,37 @@ class ArticleControllerTest {
         Article updateArticle = articleService.findById(article.id());
         assertEquals("updateTitle", updateArticle.title());
         assertEquals("updateContent", updateArticle.content());
+    }
+
+    @Test
+    void 게시글_작성자가_게시물을_삭제할_수_있다() throws ServletException, IOException {
+        // Given
+        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        articleDao.save(article);
+        request.setPathInfo("/" + article.id());
+        HttpSession session = request.getSession();
+        session.setAttribute("userInfo", User.create("test@test", "테스트 작성자", "testPassword"));
+
+        // When
+        articleController.doDelete(request, response);
+
+        // Then
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+    }
+
+    @Test
+    void 게시글_작성자가_아닐시_삭제할_수_없다() throws ServletException, IOException {
+        // Given
+        Article article = Article.create("테스트 제목", "테스트 작성자", "테스트 내용");
+        articleDao.save(article);
+        request.setPathInfo("/" + article.id());
+        HttpSession session = request.getSession();
+        session.setAttribute("userInfo", User.create("test@test", "Wrong Nickname", "testPassword"));
+
+        // When
+        articleController.doDelete(request, response);
+
+        // Then
+        assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
     }
 }

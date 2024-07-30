@@ -53,6 +53,11 @@ public class ArticleController extends HttpServlet {
         modifyArticle(req, resp);
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        deleteArticle(req, resp);
+    }
+
     private void forward(String fileName, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/views/board/" + fileName + ".jsp").forward(req, resp);
     }
@@ -105,6 +110,18 @@ public class ArticleController extends HttpServlet {
         String id = req.getPathInfo().replace("/", "");
         Map<String, Object> data = HttpUtils.getJsonRequestBody(req);
         articleService.update(id, (String) data.get("title"), (String) data.get("content"));
+        resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    private void deleteArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getPathInfo().replace("/", "");
+        Article article = articleService.findById(id);
+        User user = getUser(req);
+        if (!article.nickname().equals(user.nickname())) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        articleService.delete(id);
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
