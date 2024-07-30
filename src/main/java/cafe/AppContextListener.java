@@ -1,7 +1,9 @@
 package cafe;
 
+import cafe.filter.AuthFilter;
 import cafe.filter.ErrorHandlingFilter;
 import cafe.filter.MappingFilter;
+import cafe.questions.servlet.QuestionEditServlet;
 import cafe.questions.servlet.QuestionServlet;
 import cafe.questions.servlet.QuestionWriteServlet;
 import cafe.questions.servlet.QuestionsServlet;
@@ -29,9 +31,10 @@ public class AppContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
 
+        addFilter(sc, AuthFilter::new);
         addFilter(sc, ErrorHandlingFilter::new);
 
-        addServlet(sc, UserRegisterServlet::new);
+        addServlet(sc, () -> new UserRegisterServlet(factory.userRepository()));
         addServlet(sc, () -> new UsersServlet(factory.userRepository()));
         addServlet(sc, () -> new UsersProfileServlet(factory.userRepository()));
         addServlet(sc, () -> new UserEditServlet(factory.userRepository()));
@@ -41,6 +44,7 @@ public class AppContextListener implements ServletContextListener {
         addServlet(sc, () -> new QuestionWriteServlet(factory.articleRepository()));
         addServlet(sc, () -> new QuestionsServlet(factory.articleRepository()));
         addServlet(sc, () -> new QuestionServlet(factory.articleRepository(), factory.userRepository()));
+        addServlet(sc, () -> new QuestionEditServlet(factory.articleRepository()));
     }
 
     private void addServlet(ServletContext sc, Supplier<MappingHttpServlet> servletSupplier) {
