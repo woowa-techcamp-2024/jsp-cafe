@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
+import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
@@ -102,7 +103,7 @@ public class ArticleService {
         String userEmail = user.getEmail();
         String authorEmail = author.getEmail();
         if (!userEmail.equals(authorEmail)) {
-            throw new ArticleException("게시글 수정은 작성자의 이메일과 동일해야 합니다. %s, %s".formatted(userEmail, authorEmail));
+            throw new UnAuthorizationException("게시글 수정은 작성자의 이메일과 동일해야 합니다. %s, %s".formatted(userEmail, authorEmail));
         }
     }
 
