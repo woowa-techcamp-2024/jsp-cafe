@@ -11,8 +11,8 @@ import lass9436.user.model.UserRepository;
 
 import java.io.IOException;
 
-@WebServlet("/users/login")
-public class UserLoginServlet extends HttpServlet {
+@WebServlet("/users/auth")
+public class UserAuthServlet extends HttpServlet {
 
     private UserRepository userRepository;
 
@@ -23,17 +23,26 @@ public class UserLoginServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("userId");
-        String password = req.getParameter("password");
-        User user = userRepository.findByUserId(userId);
-        if(user != null && password.equals(user.getPassword())) {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            // 요청에서 id 와 password 가져오기
+            String userId = req.getParameter("userId");
+            String password = req.getParameter("password");
+
+            // 레포지토리에서 user 가져오기
+            User user = userRepository.findByUserId(userId);
+            // 비밀번호 확인
+            if (!password.equals(user.getPassword())) throw new IllegalArgumentException("Wrong password");
+
+            // 세션에 저장
             req.getSession().setAttribute("userId", userId);
             req.getSession().setAttribute("userSeq", user.getUserSeq());
             req.getSession().setAttribute("userName", user.getName());
+
+            // 메인 페이지로 리다이렉트
             resp.sendRedirect("/");
-            return;
+        } catch (RuntimeException e){
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
-        resp.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }
