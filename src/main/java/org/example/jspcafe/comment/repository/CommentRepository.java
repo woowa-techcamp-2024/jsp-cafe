@@ -11,5 +11,4 @@ public interface CommentRepository extends Repository<Comment> {
     List<CommentVO> findCommentsJoinUser(Long postId);
 
     List<Comment> findAllByPostId(Long postId);
-    boolean existsByPostId(Long postId);
 }
