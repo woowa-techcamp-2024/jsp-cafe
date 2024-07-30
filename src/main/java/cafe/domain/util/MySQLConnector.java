@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class MySQLConnector implements DatabaseConnector {
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://mysql:3306/cafe";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/cafe";
     private static final String DB_USER = "cafe";
     private static final String DB_PASSWORD = "cafe";
     private static MysqlConnectionPoolDataSource dataSource;
@@ -50,11 +50,15 @@ public class MySQLConnector implements DatabaseConnector {
             StringBuilder sql = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) continue;
                 sql.append(line).append("\n");
             }
 
-            statement.execute(sql.toString());
-
+            String[] sqls = sql.toString().split(";");
+            for (String s: sqls) {
+                if (s.isBlank()) continue;
+                statement.execute(s.trim() + ";");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to initialize database", e);
