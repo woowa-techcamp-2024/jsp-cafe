@@ -23,6 +23,11 @@ public class ErrorHandlingServlet extends HttpServlet {
         handleException(req, resp);
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        handleException(req, resp);
+    }
+
     private void handleException(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Throwable throwable = (Throwable) req.getAttribute("jakarta.servlet.error.exception");
         Integer statusCode = (Integer) req.getAttribute("jakarta.servlet.error.status_code");
