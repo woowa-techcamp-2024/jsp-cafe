@@ -14,9 +14,9 @@ public class InMemUserRepository implements UserRepository {
     private static final Map<Long, User> users = new ConcurrentHashMap<>();
 
     @Override
-    public Long save(String userId, String password, String name, String email) {
+    public Long save(User user) {
         Long id = sequence_id.getAndIncrement();
-        users.put(id, new User(id, userId, password, name, email));
+        users.put(id, new User(id, user.getUserId(), user.getPassword(), user.getName(), user.getEmail()));
         return id;
     }
 
@@ -31,10 +31,10 @@ public class InMemUserRepository implements UserRepository {
     }
 
     @Override
-    public Long update(Long id, String updatedName, String updatedEmail) {
-        User user = users.get(id);
-        user.update(updatedName, updatedEmail);
-        return id;
+    public Long update(User user) {
+        users.put(user.getId(), user);
+
+        return user.getId();
     }
 
     @Override

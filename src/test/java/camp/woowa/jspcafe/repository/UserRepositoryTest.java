@@ -21,16 +21,17 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testSave() {
+    void testSaveAndFindById() {
         // given
         Long id = 1L;
         String userId = "userId";
         String password = "password";
         String name = "name";
         String email = "email";
+        User save = new User(userId, password, name, email);
 
         // when
-        userRepository.save(userId, password, name, email);
+        userRepository.save(save);
 
         // then
         User user = userRepository.findById(id);
@@ -47,31 +48,16 @@ class UserRepositoryTest {
 
         int expected_size = 1;
 
+        User save = new User(userId, password, name, email);
+
         // when
-        userRepository.save(userId, password, name, email);
+        userRepository.save(save);
+
         List<User> users = userRepository.findAll();
 
         // then
         assertEquals(users.size(), expected_size);
         assertEquals(users.get(expected_size - 1).getUserId(), userId);
-    }
-
-    @Test
-    void testFindById() {
-        // given
-        Long id = 1L;
-        String userId = "userId";
-        String password = "password";
-        String name = "name";
-        String email = "email";
-        UserRepository userRepository = new InMemUserRepository();
-
-        // when
-        userRepository.save(userId, password, name, email);
-        User user = userRepository.findById(id);
-
-        // then
-        assertEquals(user.getUserId(), userId);
     }
 
     @Test
@@ -83,11 +69,15 @@ class UserRepositoryTest {
         String name = "name";
         String email = "email";
 
+        User save = new User(userId, password, name, email);
+
         // when
-        userRepository.save(userId, password, name, email);
+        userRepository.save(save);
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
-        userRepository.update(id, updatedName, updatedEmail);
+        User target = userRepository.findById(id);
+        target.update(updatedName, updatedEmail);
+        userRepository.update(target);
         User user = userRepository.findById(id);
 
         // then
@@ -102,7 +92,9 @@ class UserRepositoryTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        userRepository.save(userId, password, name, email);
+        User save = new User(userId, password, name, email);
+
+        userRepository.save(save);
 
         // when
         boolean isExisted = userRepository.isExistedByUserId(userId);

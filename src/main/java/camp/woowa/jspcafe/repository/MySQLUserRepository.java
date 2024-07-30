@@ -18,12 +18,12 @@ public class MySQLUserRepository implements UserRepository{
     }
 
     @Override
-    public Long save(String userId, String password, String name, String email) {
+    public Long save(User user) {
         try (var pstmt = conn.prepareStatement("INSERT INTO user (userId, password, name, email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
-            pstmt.setString(1, userId);
-            pstmt.setString(2, password);
-            pstmt.setString(3, name);
-            pstmt.setString(4, email);
+            pstmt.setString(1, user.getUserId());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getName());
+            pstmt.setString(4, user.getEmail());
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {
@@ -66,15 +66,15 @@ public class MySQLUserRepository implements UserRepository{
     }
 
     @Override
-    public Long update(Long id, String updatedName, String updatedEmail) {
+    public Long update(User user) {
         try (var pstmt = conn.prepareStatement("UPDATE user SET name = ?, email = ? WHERE id = ?");){
-            pstmt.setString(1, updatedName);
-            pstmt.setString(2, updatedEmail);
-            pstmt.setLong(3, id);
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setLong(3, user.getId());
 
             pstmt.executeUpdate();
 
-            return id;
+            return user.getId();
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }

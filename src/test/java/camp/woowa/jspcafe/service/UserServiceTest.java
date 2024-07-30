@@ -64,7 +64,7 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        Long id = userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(new User(userId, password, name, email));
 
 
         // when
@@ -81,7 +81,7 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        Long id = userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(new User(userId, password, name, email));
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
         User old_user = userService.findById(id);
@@ -105,7 +105,7 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        Long id = userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(new User(userId, password, name, email));
         String updatedName = "updatedName";
         String updatedEmail = "updatedEmail";
 
@@ -122,7 +122,7 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(new User(userId, password, name, email));
 
         // when
         boolean isExisted = userService.isExistedByUserId(userId);
@@ -138,7 +138,7 @@ class UserServiceTest {
         String password = "password";
         String name = "name";
         String email = "email";
-        Long id = userRepository.save(userId, password, name, email);
+        Long id = userRepository.save(new User(userId, password, name, email));
 
         // when
         User user = userService.login(userId, password);

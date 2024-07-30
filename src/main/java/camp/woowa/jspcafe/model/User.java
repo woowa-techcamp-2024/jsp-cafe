@@ -17,6 +17,10 @@ public class User {
         this.email = email;
     }
 
+    public User(String userId, String password, String name, String email) {
+        this(null, userId, password, name, email);
+    }
+
     public Long getId() {
         return id;
     }
