@@ -13,7 +13,7 @@ import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("/api/users/update/*")
+@WebServlet("/api/users/*")
 public class UserUpdateApi extends HttpServlet {
     private final Logger log = LoggerFactory.getLogger(UserUpdateApi.class);
     private UserDataHandler userDataHandler;
