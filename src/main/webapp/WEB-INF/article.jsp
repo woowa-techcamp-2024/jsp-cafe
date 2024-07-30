@@ -7,6 +7,12 @@
     <title>${article.title}</title>
     <link href="<c:url value='/static/css/bootstrap.min.css'/>" rel="stylesheet">
     <link href="<c:url value='/static/css/styles.css'/>" rel="stylesheet">
+    <script>
+      // 전역 변수로 서버 측 데이터 설정
+      var articleId = ${article.articleId};
+      //var initialReplies = ${replies}; // replies는 JSON 문자열로 직렬화해야 합니다.
+    </script>
+    <script src="<c:url value='/static/js/comment.js'/>"></script> <!-- 외부 JS 파일 -->
 </head>
 <%@ include file="navbar.jspf" %>
 <body>
@@ -55,88 +61,5 @@
         </div>
     </div>
 </div>
-<script>
-  document.getElementById('deleteButton').addEventListener('click', function() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', '<c:url value="/question/${article.articleId}"/>', true);
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        window.location.href = '/';
-      } else {
-        window.location.href = '/error/not-same-author.html';
-      }
-    };
-    xhr.send();
-  });
-
-  document.getElementById('replyForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const content = document.getElementById('replyContent').value;
-    const articleId = ${article.articleId};
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '<c:url value="/reply"/>', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (xhr.status === 201 || xhr.status === 200) {
-        const articleId = ${article.articleId};
-        const xhrReplies = new XMLHttpRequest();
-        xhrReplies.open('GET', '/question/' + articleId + '/replies', true);
-        xhrReplies.onload = function() {
-          if (xhrReplies.status === 200) {
-            const responseJson = JSON.parse(xhrReplies.responseText);
-            const repliesHtml = responseJson.replies.map(reply => `
-              <div class="reply">
-                <p><strong><c:out value="\${reply.authorId}"/></strong>: <c:out value="\${reply.content}"/>
-                <button class="btn btn-danger btn-sm delete-reply-button" data-reply-id="<c:out value="\${reply.replyId}"/>" style="margin-left: 10px;">Delete</button>
-                </p>
-              </div>
-            `).join('');
-            document.querySelector('.replies').innerHTML = repliesHtml;
-          } else {
-            alert('댓글 목록 갱신에 실패했습니다.');
-          }
-        };
-        xhrReplies.send();
-      } else {
-        alert('댓글 작성에 실패했습니다.');
-      }
-    };
-    xhr.send(JSON.stringify({ content: content, articleId: articleId }));
-  });
-
-  document.querySelector('.replies').addEventListener('click', function(event) {
-    if (event.target.classList.contains('delete-reply-button')) {
-      const replyId = event.target.getAttribute('data-reply-id');
-      const xhr = new XMLHttpRequest();
-      xhr.open('DELETE', '/reply/' + replyId, true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          const articleId = ${article.articleId};
-          const xhrReplies = new XMLHttpRequest();
-          xhrReplies.open('GET', '/question/' + articleId + '/replies', true);
-          xhrReplies.onload = function() {
-            if (xhrReplies.status === 200) {
-              const responseJson = JSON.parse(xhrReplies.responseText);
-              const repliesHtml = responseJson.replies.map(reply => `
-                <div class="reply">
-                  <p><strong><c:out value="\${reply.authorId}"/></strong>: <c:out value="\${reply.content}"/>
-                  <button class="btn btn-danger btn-sm delete-reply-button" data-reply-id="<c:out value="\${reply.replyId}"/>" style="margin-left: 10px;">Delete</button>
-                  </p>
-                </div>
-              `).join('');
-              document.querySelector('.replies').innerHTML = repliesHtml;
-            } else {
-              alert('댓글 목록 갱신에 실패했습니다.');
-            }
-          };
-          xhrReplies.send();
-        } else {
-          alert('댓글 삭제에 실패했습니다.');
-        }
-      };
-      xhr.send();
-    }
-  });
-</script>
 </body>
 </html>

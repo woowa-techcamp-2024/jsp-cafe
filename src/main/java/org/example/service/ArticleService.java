@@ -9,9 +9,12 @@ import org.example.repository.ArticleRepository;
 import org.example.repository.ArticleRepositoryDBImpl;
 import org.example.repository.ReplyRepository;
 import org.example.repository.ReplyRepositoryDBImpl;
+import org.example.util.LoggerUtil;
+import org.slf4j.Logger;
 
 public class ArticleService {
 
+    private final static Logger logger = LoggerUtil.getLogger();
     private final ArticleRepository articleRepository = ArticleRepositoryDBImpl.getInstance();
     private final ReplyRepository replyRepository = ReplyRepositoryDBImpl.getInstance();
 
@@ -71,5 +74,6 @@ public class ArticleService {
 
         // 게시글 삭제
         articleRepository.deleteById(i);
+        logger.info("게시글 삭제 완료");
     }
 }

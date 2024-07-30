@@ -80,10 +80,8 @@ public class SingleArticleServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             request.getRequestDispatcher("/WEB-INF/error/not-same-author.jsp").forward(request, response);
             return;
-        }catch (Exception e){
-            e.printStackTrace();
         }
-        logger.info("게시글 삭제 완료");
+        logger.info("delete success");
     }
 
     @Override

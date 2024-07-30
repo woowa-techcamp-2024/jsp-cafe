@@ -23,6 +23,10 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
             instance = new ArticleRepositoryDBImpl();
             instance.save(new Article("title1", "content1", "test"));
             instance.save(new Article("title2", "content2", "test2"));
+            instance.save(new Article("title3", "content1", "test"));
+            instance.save(new Article("title4", "content2", "test"));
+            instance.save(new Article("title5", "content1", "test"));
+            instance.save(new Article("title6", "content2", "test"));
         }
         return instance;
     }
