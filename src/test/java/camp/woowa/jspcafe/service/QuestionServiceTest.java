@@ -1,9 +1,8 @@
-package camp.woowa.jspcafe.services;
+package camp.woowa.jspcafe.service;
 
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
-import camp.woowa.jspcafe.service.QuestionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
