@@ -1,10 +1,8 @@
 package service;
 
 import domain.Article;
-import domain.User;
 import dto.ArticleDao;
 import repository.article.ArticleRepository;
-import repository.users.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,11 +11,9 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final UserRepository userRepository;
 
-    public ArticleService(ArticleRepository articleRepository, UserRepository userRepository) {
+    public ArticleService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
-        this.userRepository = userRepository;
     }
 
     public List<Article> findAll() {
@@ -25,12 +21,9 @@ public class ArticleService {
     }
 
     public void saveArticle(ArticleDao articleDao) {
-        User writer = userRepository.findByUserId(articleDao.getWriter())
-                .orElseThrow(() -> new RuntimeException("User not found"));
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        Article article = new Article(null, writer, articleDao.getTitle(), articleDao.getContent(), now.format(formatter));
+        Article article = new Article(null, articleDao.getWriter(), articleDao.getTitle(), articleDao.getContent(), now.format(formatter));
         articleRepository.saveArticle(article);
     }
 
