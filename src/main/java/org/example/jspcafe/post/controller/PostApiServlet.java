@@ -50,9 +50,14 @@ public class PostApiServlet extends HttpServlet {
             String pathInfo = req.getPathInfo();
             Long postId = Long.parseLong(pathInfo.substring(1));
 
-            postService.deletePost(userId, postId);
+            try {
+                postService.deletePost(userId, postId);
 
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } catch (Exception e) {
+                session.setAttribute("errorMessage", e.getMessage());
+                resp.sendRedirect(req.getContextPath() + "/posts/" + postId);
+            }
             return;
         }
 

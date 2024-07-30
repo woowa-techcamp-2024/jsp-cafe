@@ -42,7 +42,7 @@
                         window.location.href = '${pageContext.request.contextPath}/index.jsp'; // 삭제 후 목록 페이지로 이동합니다.
                     },
                     error: function (xhr, status, error) {
-                        alert('게시글 삭제 중 오류가 발생했습니다.');
+                        location.reload();
                     }
                 });
             });
