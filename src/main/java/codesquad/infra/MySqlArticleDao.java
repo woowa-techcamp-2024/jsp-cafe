@@ -95,4 +95,25 @@ public class MySqlArticleDao implements ArticleDao {
             connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
+
+    @Override
+    public void update(Article article) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = connectionManager.getConnection();
+            String sql = "update articles set content = ? where id = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, article.getContent());
+            preparedStatement.setLong(2, article.getId());
+            int updatedRows = preparedStatement.executeUpdate();
+            if (updatedRows == 0) {
+                throw new SQLException("Failed to update article");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement);
+        }
+    }
 }

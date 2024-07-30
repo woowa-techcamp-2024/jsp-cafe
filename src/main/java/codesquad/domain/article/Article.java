@@ -1,5 +1,7 @@
 package codesquad.domain.article;
 
+ import codesquad.exception.UnauthorizedRequestException;
+
 public class Article {
     private Long id;
     private String title;
@@ -40,5 +42,11 @@ public class Article {
 
     public String getContent() {
         return content;
+    }
+
+    public void update(String userId, String content) throws UnauthorizedRequestException {
+        if (!writer.equals(userId))
+            throw new UnauthorizedRequestException();
+        this.content = content;
     }
 }
