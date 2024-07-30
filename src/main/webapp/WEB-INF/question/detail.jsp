@@ -48,9 +48,9 @@
                                 <a class="link-modify-article" href="/questions/update/${question.questionSeq}">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/delete/${question.questionSeq}" method="POST">
+                                <form class="form-delete" id="form-delete">
                                     <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
+                                    <button class="link-delete-article" type="button" onclick="deleteQuestion()">삭제</button>
                                 </form>
                             </li>
                             </c:if>
@@ -169,6 +169,26 @@
     </article>
 </script>
 
+<script>
+function deleteQuestion() {
+    fetch(`/questions/${question.questionSeq}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.redirected) {
+            window.location.href = response.url; // 질문 목록 페이지로 리디렉트
+        } else {
+            // 오류 처리
+            alert("질문 삭제 중 오류가 발생했습니다.");
+        }
+    }).catch(error => {
+        console.error("Error:", error);
+        alert("질문 삭제 중 오류가 발생했습니다.");
+    });
+}
+</script>
 <!-- script references -->
 <%@include file="/WEB-INF/includes/script-references.jsp"%>
 </body>
