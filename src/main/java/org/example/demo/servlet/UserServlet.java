@@ -18,7 +18,7 @@ public class UserServlet extends HttpServlet {
     private UserHandler userHandler;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         router = new Router();
         userHandler = UserHandler.getInstance();
         router.addRoute(HttpMethod.GET, "^/users/?$", userHandler::handleUserList);
@@ -28,6 +28,8 @@ public class UserServlet extends HttpServlet {
         router.addRoute(HttpMethod.POST, "^/users/(\\d+)/?$", userHandler::handleUserUpdate);
         router.addRoute(HttpMethod.POST, "^/users/login/?$", userHandler::handleUserLogin);
         router.addRoute(HttpMethod.POST, "^/users/logout/?$", userHandler::handleUserLogout);
+        router.addRoute(HttpMethod.GET, "^/users/login/?$", userHandler::handleUserLoginPage);
+        router.addRoute(HttpMethod.GET, "^/users/form/?$", userHandler::handleUserFormPage);
     }
 
     @Override

@@ -27,7 +27,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/user/list.jsp"><i class="glyphicon glyphicon-user"></i></a>
+                <li><a href="${pageContext.request.contextPath}/users"><i class="glyphicon glyphicon-user"></i></a>
                 </li>
             </ul>
         </div>
@@ -40,7 +40,7 @@
                data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <li><a href="${pageContext.request.contextPath}/user/profile.jsp"><i class="glyphicon glyphicon-user"
+                <li><a href="${pageContext.request.contextPath}/users"><i class="glyphicon glyphicon-user"
                                                                                      style="color:#1111dd;"></i> Profile</a>
                 </li>
                 <li class="nav-divider"></li>
@@ -58,7 +58,7 @@
                 <!-- 세션 기반 조건부 메뉴 표시 -->
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-                        <li><a href="${pageContext.request.contextPath}/user/profile.jsp" role="button">개인정보수정</a></li>
+                        <li><a href="${pageContext.request.contextPath}/users" role="button">개인정보수정</a></li>
                         <li>
                             <form id="logoutForm" action="${pageContext.request.contextPath}/users/logout" method="post"
                                   style="display:none;"></form>
@@ -66,8 +66,8 @@
                         </li>
                     </c:when>
                     <c:otherwise>
-                        <li><a href="${pageContext.request.contextPath}/user/login.jsp" role="button">로그인</a></li>
-                        <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
+                        <li><a href="${pageContext.request.contextPath}/users/login" role="button">로그인</a></li>
+                        <li><a href="${pageContext.request.contextPath}/users/form" role="button">회원가입</a></li>
                     </c:otherwise>
                 </c:choose>
             </ul>

@@ -5,9 +5,9 @@
 <html lang="kr" xmlns:jsp="http://java.sun.com/JSP/Page">
 
 
-<jsp:include page="/components/header.jsp"/>
+<jsp:include page="${pageContext.request.contextPath}/components/header.jsp"/>
 <body>
-<jsp:include page="/components/nav.jsp"/>
+<jsp:include page="${pageContext.request.contextPath}/components/nav.jsp"/>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -21,13 +21,13 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="/posts/<%=post.getId()%>"><%=post.getContents()%>
+                                <a href="${pageContext.request.contextPath}/posts/<%=post.getId()%>"><%=post.getContents()%>
                                 </a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%=post.getCreatedAt()%></span>
-                                <a href="/users/<%=post.getWriter().getId()%>"
+                                <a href="${pageContext.request.contextPath}/users/<%=post.getWriter().getId()%>"
                                    class="author"><%=post.getWriter().getName()%>
                                 </a>
                             </div>
@@ -56,7 +56,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="/post/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="${pageContext.request.contextPath}/posts/form" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>

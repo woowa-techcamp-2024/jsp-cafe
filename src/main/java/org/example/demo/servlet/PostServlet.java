@@ -18,7 +18,7 @@ public class PostServlet extends HttpServlet {
     private PostHandler postHandler;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         postHandler = PostHandler.getInstance();
         router = new Router();
         router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/?$", postHandler::handleGetPost);
@@ -26,6 +26,7 @@ public class PostServlet extends HttpServlet {
         router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/edit/?$", postHandler::handleEditPost);
         router.addRoute(HttpMethod.PUT, "^/posts/(\\d+)/?$", postHandler::handleUpdatePost);
         router.addRoute(HttpMethod.DELETE, "^/posts/(\\d+)/?$", postHandler::handleDeletePost);
+        router.addRoute(HttpMethod.GET, "^/posts/form/?$", postHandler::handlePostForm);
     }
 
     @Override

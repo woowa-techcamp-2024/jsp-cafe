@@ -7,11 +7,14 @@ import org.example.demo.domain.Post;
 import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
 import org.example.demo.repository.PostRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class PostHandler {
+    private static final Logger logger = LoggerFactory.getLogger(PostHandler.class);
     private static PostHandler instance;
     private PostRepository postRepository;
 
@@ -31,7 +34,7 @@ public class PostHandler {
         Post post = postRepository.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
 
         request.setAttribute("post", post);
-        request.getRequestDispatcher("/post/show.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/post/show.jsp").forward(request, response);
     }
 
     public void handleCreatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
@@ -48,7 +51,7 @@ public class PostHandler {
         Post post = postRepository.getPost(id).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
 
         request.setAttribute("post", post);
-        request.getRequestDispatcher("/post/edit.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/post/edit.jsp").forward(request, response);
     }
 
     public void handleUpdatePost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
@@ -65,5 +68,9 @@ public class PostHandler {
         postRepository.deletePost(id);
 
         response.sendRedirect("/");
+    }
+
+    public void handlePostForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException, ServletException {
+        request.getRequestDispatcher("/WEB-INF/post/form.jsp").forward(request, response);
     }
 }

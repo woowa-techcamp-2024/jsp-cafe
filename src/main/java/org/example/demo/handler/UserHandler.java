@@ -30,7 +30,7 @@ public class UserHandler {
 
     public void handleUserList(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         request.setAttribute("users", userRepository.getUsers());
-        request.getRequestDispatcher("/user/list.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(request, response);
     }
 
     public void handleUpdateForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
@@ -55,7 +55,7 @@ public class UserHandler {
         }
 
         request.setAttribute("user", user.get());
-        request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
     }
 
     public void handleUserCreate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
@@ -100,7 +100,7 @@ public class UserHandler {
         Optional<User> user = userRepository.getUserByUserId(userId);
         if (user.isEmpty() || !user.get().getPassword().equals(password)) {
             request.setAttribute("error", "아이디 또는 패스워드가 틀렸습니다.");
-            request.getRequestDispatcher("/user/login_failed.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/user/login_failed.jsp").forward(request, response);
             return;
         }
 
@@ -111,5 +111,13 @@ public class UserHandler {
     public void handleUserLogout(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
         request.getSession().removeAttribute("user");
         response.sendRedirect("/");
+    }
+
+    public void handleUserLoginPage(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/user/login.jsp").forward(request, response);
+    }
+
+    public void handleUserFormPage(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request, response);
     }
 }
