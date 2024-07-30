@@ -50,16 +50,16 @@
             jsonData[key] = value;
         });
 
-        fetch(`/questions/update/${question.questionSeq}`, {
+        fetch(`/questions/${question.questionSeq}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(jsonData)
         }).then(response => {
-            if (response.redirected) {
+            if (response.ok) {
                 // 성공 처리 (예: 페이지 리로드 또는 메시지 표시)
-                window.location.href = response.url; // 예: 질문 목록 페이지로 리다이렉트
+                window.location.href = "/questions/${question.questionSeq}"; // 예: 질문 목록 페이지로 리다이렉트
             } else {
                 // 오류 처리
                 alert("질문 업데이트 중 오류가 발생했습니다.");

@@ -47,36 +47,4 @@ public class QuestionUpdateServlet extends HttpServlet {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid User ID");
 		}
 	}
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String pathInfo = req.getPathInfo(); // 예: /123
-		if (pathInfo != null && !pathInfo.isEmpty()) {
-			// 요청 본문을 읽어 JSON 객체로 변환
-			StringBuilder sb = new StringBuilder();
-			try (BufferedReader reader = req.getReader()) {
-				String line;
-				while ((line = reader.readLine()) != null) {
-					sb.append(line);
-				}
-			}
-			JSONObject json = new JSONObject(sb.toString());
-
-			long questionSeq = Long.parseLong(pathInfo.substring(1));
-			String writer = json.getString("writer");
-			String title = json.getString("title");
-			String contents = json.getString("contents");
-
-			String userId = (String)req.getSession().getAttribute("userId");
-			User user = userRepository.findByUserId(userId);
-
-			if (user != null && user.getName().equals(writer)) {
-				questionRepository.save(new Question(questionSeq, user.getUserSeq(), writer, title, contents));
-				resp.sendRedirect("/questions/"+questionSeq);
-				return;
-			}
-		}
-
-		resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
-	}
 }
