@@ -1,7 +1,6 @@
 package cafe.users.servlet;
 
 import cafe.MappingHttpServlet;
-import cafe.users.User;
 import cafe.users.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

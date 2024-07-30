@@ -6,14 +6,7 @@
     <div class="col-md-8">
         <h2 class="mt-5"><c:out value="${article.title}"/></h2>
         <p class="text-muted">By
-            <c:choose>
-                <c:when test="${not empty user}">
-                    <c:out value="${user.username}"/>
-                </c:when>
-                <c:otherwise>
-                    Unknown
-                </c:otherwise>
-            </c:choose>
+            <c:out value="${article.userName}"/>
             on <c:out value="${article.createdDate}"/></p>
         <hr>
         <p><c:out value="${article.content}"/></p>
@@ -26,6 +19,39 @@
             <a href="${pageContext.request.contextPath}/question/edit/${article.id}" class="btn btn-primary">Edit</a>
             <button class="btn btn-danger" onclick="deleteArticle('<c:out value="${article.id}"/>')">Delete</button>
         </c:if>
+
+
+        <hr>
+
+        <h4>Comments</h4>
+        <c:forEach var="reply" items="${replyList}">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text"><c:out value="${reply.content}"/></p>
+                    <footer class="blockquote-footer text-end">
+                        <c:out value="${reply.userName}"/>
+                        <c:if test="${sessionScope.user != null and sessionScope.user.id == reply.userId}">
+                            <button class="btn btn-danger btn-sm" onclick="deleteReply('<c:out value="${reply.id}"/>')">
+                                Delete
+                            </button>
+                        </c:if>
+                    </footer>
+                </div>
+            </div>
+        </c:forEach>
+
+
+        <hr>
+
+        <h5>Leave a Comment</h5>
+        <form id="commentForm" action="${pageContext.request.contextPath}/replies" method="post">
+            <input type="hidden" id="articleId" name="articleId" value="<c:out value='${article.id}'/>">
+            <div class="mb-3">
+                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
 
     </div>
 </div>
@@ -45,7 +71,27 @@
                 }
             } catch (error) {
                 if (error.response.status === 403) {
-                    alert('You do not have permission to delete this article.');
+                    alert(error.response.data);
+                } else {
+                    alert('Failed to delete the article.');
+                }
+            }
+        }
+    }
+</script>
+<script>
+    async function deleteReply(replyId) {
+        if (confirm("Are you sure you want to delete this comment?")) {
+            try {
+                const response = await axios.delete(`${pageContext.request.contextPath}/replies/` + replyId);
+                if (response.status === 200) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to delete the comment.');
+                }
+            } catch (error) {
+                if (error.response.status >= 400 && error.response.status < 500) {
+                    alert(error.response.data);
                 } else {
                     alert('Failed to delete the article.');
                 }
