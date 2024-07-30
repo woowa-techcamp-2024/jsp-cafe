@@ -1,4 +1,4 @@
-package servlet;
+package servlet.article;
 
 import domain.Article;
 import domain.User;
@@ -54,6 +54,8 @@ public class QuestionServlet extends HttpServlet {
     }
 
     @Override
+    // 1. 미로그인시 로그인 페이지로 이동
+    // 2. 게시글 작성 후 /로 이동
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (!AuthUtils.isLoginUser(session)) {
@@ -66,4 +68,11 @@ public class QuestionServlet extends HttpServlet {
         articleService.saveArticle(new ArticleDao((User) session.getAttribute("loginMember"), title, content));
         resp.sendRedirect("/");
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("Question Servlet doPut");
+        log.info("{}", req.getParameter("id"));
+    }
+
 }
