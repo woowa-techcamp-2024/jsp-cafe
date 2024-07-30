@@ -65,4 +65,25 @@ public class JdbcCommentDao implements CommentDao {
                     }
                 });
     }
+
+    @Override
+    public void update(final Reply reply) {
+        String sql = """
+            UPDATE comment 
+            SET contents = ? 
+            WHERE id = ?
+            """;
+
+        databaseConnector.execute(sql, List.of(reply.getContents(), String.valueOf(reply.getId())));
+    }
+
+    @Override
+    public void removeByReplyId(final long replyId) {
+        String sql = """
+            DELETE FROM comment
+            WHERE id = ?
+            """;
+
+        databaseConnector.execute(sql, List.of(String.valueOf(replyId)));
+    }
 }

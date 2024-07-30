@@ -11,7 +11,6 @@ import org.junit.jupiter.api.*;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CommentServiceTest extends MemoryDbTest {
     private CommentService commentService;
@@ -37,7 +36,6 @@ class CommentServiceTest extends MemoryDbTest {
 
     @Test
     @DisplayName("게시글에 댓글을 모두 읽어온다.")
-    @Disabled
     void findAllByArticleId() {
         Reply reply = new Reply(null, 1L, "TEST_USER", "COMMENT");
         Reply reply2 = new Reply(null, 1L, "TEST_USER_USER", "HIHELLO");
@@ -51,7 +49,6 @@ class CommentServiceTest extends MemoryDbTest {
 
     @Test
     @DisplayName("댓글의 내용을 성공적으로 수정한다.")
-    @Disabled
     void updateComment() {
         Reply reply = new Reply(null, 1L, "TEST_USER", "COMMENT");
         commentService.addComment(reply);
@@ -67,7 +64,6 @@ class CommentServiceTest extends MemoryDbTest {
 
     @Test
     @DisplayName("댓글을 성공적으로 삭제한다.")
-    @Disabled
     void deleteComment() {
         Reply reply = new Reply(null, 1L, "TEST_USER", "COMMENT");
         commentService.addComment(reply);

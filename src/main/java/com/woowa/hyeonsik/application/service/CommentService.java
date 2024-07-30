@@ -1,5 +1,6 @@
 package com.woowa.hyeonsik.application.service;
 
+import com.woowa.hyeonsik.application.dao.ArticleDao;
 import com.woowa.hyeonsik.application.dao.CommentDao;
 import com.woowa.hyeonsik.application.domain.Reply;
 
@@ -24,13 +25,17 @@ public class CommentService {
         return commentDao.findAllByArticleId(articleId);
     }
 
-    // TODO: 어떤 게시글에 댓글을 수정한다.
+    // 어떤 게시글에 댓글을 수정한다.
     public void updateComment(Reply reply, String userId) {
-        throw new UnsupportedOperationException();
+        // FIXME 유효한 게시글인지 확인
+        // FIXME 권한이 있는 유저인지 확인 (내가 쓴 댓글인지)
+        commentDao.update(reply);
     }
 
-    // TODO: 어떤 게시글에 댓글을 삭제한다.
+    // 어떤 게시글에 댓글을 삭제한다.
     public void deleteComment(long replyId, String userId) {
-        throw new UnsupportedOperationException();
+        // FIXME 유효한 게시글인지 확인
+        // FIXME 권한이 있는 유저인지 확인 (내가 쓴 댓글인지)
+        commentDao.removeByReplyId(replyId);
     }
 }

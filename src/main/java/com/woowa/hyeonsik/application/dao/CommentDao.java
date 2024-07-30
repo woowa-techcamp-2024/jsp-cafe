@@ -7,4 +7,6 @@ import java.util.List;
 public interface CommentDao {
     void save(Reply reply);
     List<Reply> findAllByArticleId(long articleId);
+    void update(Reply reply);
+    void removeByReplyId(long replyId);
 }
