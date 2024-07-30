@@ -74,6 +74,16 @@ public class QuestionServlet extends MappingHttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
         if (validAutorized(req, resp, articleRepository.findById(id))) return;
+
+        List<Reply> replyList = replyRepository.findByArticleId(id);
+        User user = (User) req.getSession().getAttribute("user");
+        if (!replyList.stream().allMatch(reply -> reply.getUserId().equals(user.getId()))) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("삭제할 수 없는 댓글이 있습니다.");
+            return;
+        }
+
+        replyList.forEach(reply -> replyRepository.deleteById(reply.getId()));
         articleRepository.deleteById(id);
     }
 
