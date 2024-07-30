@@ -12,4 +12,6 @@ public interface QuestionRepository {
     Question findById(Long id);
 
     void deleteAll();
+
+    void update(Question target);
 }

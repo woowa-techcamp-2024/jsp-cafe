@@ -33,4 +33,9 @@ public class InMemQuestionRepository implements QuestionRepository {
         questions.clear();
         sequence_id.set(1L);
     }
+
+    @Override
+    public void update(Question target) {
+        questions.put(target.getId(), target);
+    }
 }
