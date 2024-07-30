@@ -48,6 +48,14 @@ public class FindQuestionServlet extends HttpServlet {
         resp.sendRedirect(response.getLocation());
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String questionId = req.getRequestURI().replace(PREFIX, "");
+        String userId = getUserIdFromSession(req);
+        ResponseEntity response = questionHandler.deleteQuestion(userId, questionId);
+        resp.sendRedirect(response.getLocation());
+    }
+
     private String getUserIdFromSession(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session == null) {

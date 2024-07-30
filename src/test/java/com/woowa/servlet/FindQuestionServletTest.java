@@ -131,4 +131,38 @@ class FindQuestionServletTest {
             assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
         }
     }
+
+    @Nested
+    @DisplayName("DoDelete 호출 시")
+    class DoDeleteTest {
+
+        private StubHttpServletRequest request;
+        private StubHttpServletResponse response;
+
+        @BeforeEach
+        void setUp() {
+            request = new StubHttpServletRequest();
+            response = new StubHttpServletResponse();
+        }
+
+        @Test
+        @DisplayName("질문 리스트 화면으로 리다이렉트한다.")
+        void returnToListQuestions() throws ServletException, IOException {
+            //given
+            User user = UserFixture.user();
+            Question question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+            StubHttpSession session = new StubHttpSession();
+            session.setAttribute("userId", user.getUserId());
+            request.setSession(session);
+            request.setRequestUri("/questions/" + question.getQuestionId());
+
+            //when
+            findQuestionServlet.doDelete(request, response);
+
+            //then
+            assertThat(response.getRedirectLocation()).isEqualTo("/questions");
+        }
+    }
 }
