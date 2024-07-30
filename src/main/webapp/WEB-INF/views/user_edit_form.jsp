@@ -6,9 +6,7 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
             <c:if test="${not empty error}">
-                <script type="text/javascript">
-                    alert("${error}");
-                </script>
+                <div class="alert alert-danger" role="alert">${error}</div>
             </c:if>
             <form name="userModify" method="post" action="/users/edit">
                 <input type="hidden" name="userId" value="${user.id}">
@@ -19,11 +17,15 @@
                            value="${user.username}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
+                    <label for="originalPassword">기존 비밀번호</label>
+                    <input type="password" class="form-control" id="originalPassword" name="originalPassword" placeholder="Original Password">
+                </div>
+                <div class="form-group">
+                    <label for="password">새로운 비밀번호</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                 </div>
                 <div class="form-group">
-                    <label for="confirmPassword">비밀번호 확인</label>
+                    <label for="confirmPassword">새로운 비밀번호 확인</label>
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            placeholder="Confirm Password">
                 </div>
