@@ -26,6 +26,10 @@ dependencies {
 
     // db
     implementation 'com.mysql:mysql-connector-j:9.0.0'
+
+    // json
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+
 }
 
 test {
