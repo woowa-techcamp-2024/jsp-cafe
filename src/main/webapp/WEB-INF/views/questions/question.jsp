@@ -71,7 +71,7 @@
                 }
             } catch (error) {
                 if (error.response.status === 403) {
-                    alert('You do not have permission to delete this article.');
+                    alert(error.response.data);
                 } else {
                     alert('Failed to delete the article.');
                 }
@@ -90,7 +90,11 @@
                     alert('Failed to delete the comment.');
                 }
             } catch (error) {
-                alert('Failed to delete the comment.');
+                if (error.response.status >= 400 && error.response.status < 500) {
+                    alert(error.response.data);
+                } else {
+                    alert('Failed to delete the article.');
+                }
             }
         }
     }
