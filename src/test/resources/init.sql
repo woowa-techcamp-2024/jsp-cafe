@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS replies;
 
 CREATE TABLE users (
     id VARCHAR(36) PRIMARY KEY,
@@ -12,6 +13,18 @@ CREATE TABLE articles (
     id VARCHAR(36) PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     nickname VARCHAR(50),
+    content CLOB NOT NULL,
+    create_at TIMESTAMP NOT NULL,
+    update_at TIMESTAMP NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP
+);
+
+CREATE TABLE replies (
+    id VARCHAR(36) PRIMARY KEY,
+    article_id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(36) NOT NULL,
+    nickname VARCHAR(50) NOT NULL,
     content CLOB NOT NULL,
     create_at TIMESTAMP NOT NULL,
     update_at TIMESTAMP NOT NULL,
