@@ -33,7 +33,7 @@ public class ReplyServlet extends MappingHttpServlet {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
         Reply reply = replyRepository.findById(id);
 
-        if (reply == null || !reply.getArticleId().equals(user.getId())) {
+        if (reply == null || !reply.getUserId().equals(user.getId())) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("only the author can delete the reply");
             return;

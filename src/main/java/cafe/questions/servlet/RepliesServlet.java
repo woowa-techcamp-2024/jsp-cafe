@@ -32,7 +32,7 @@ public class RepliesServlet extends MappingHttpServlet {
         }
         Long articleId = Long.parseLong(req.getParameter("articleId"));
         String content = req.getParameter("content");
-        Reply reply = new Reply(user.getId(), articleId, content);
+        Reply reply = new Reply(articleId, user.getId(), content);
         Reply save = replyRepository.save(reply);
         resp.sendRedirect("/questions/" + articleId);
     }
