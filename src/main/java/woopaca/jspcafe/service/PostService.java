@@ -1,6 +1,8 @@
 package woopaca.jspcafe.service;
 
+import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.Post;
+import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
@@ -21,10 +23,9 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    public void writePost(WritePostRequest writePostRequest, String userId) {
-        /*User writer = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 사용자를 찾을 수 없습니다."));*/
-        Post post = new Post(writePostRequest.title(), writePostRequest.content(), "사용자");
+    public void writePost(WritePostRequest writePostRequest, Authentication authentication) {
+        User user = authentication.principal();
+        Post post = new Post(writePostRequest.title(), writePostRequest.content(), user.getId());
         postRepository.save(post);
     }
 
@@ -32,16 +33,22 @@ public class PostService {
         return postRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
-                .map(PostsResponse::from)
+                .map(post -> {
+                    User user = userRepository.findById(post.getWriterId())
+                            .orElseThrow(() -> new IllegalArgumentException("[ERROR] 작성자를 찾을 수 없습니다."));
+                    return PostsResponse.of(post, user);
+                })
                 .toList();
     }
 
     public PostDetailsResponse getPostDetails(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다. postId: " + postId));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다."));
         updateViewCount(post);
         PageInfo pageInfo = getPageInfo(post);
-        return PostDetailsResponse.of(post, pageInfo);
+        User user = userRepository.findById(post.getWriterId())
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 작성자를 찾을 수 없습니다."));
+        return PostDetailsResponse.of(post, pageInfo, user);
     }
 
     private void updateViewCount(Post post) {

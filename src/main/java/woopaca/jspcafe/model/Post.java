@@ -10,19 +10,19 @@ public class Post {
     private String content;
     private int viewCount;
     private LocalDateTime writtenAt;
-    private String writer;
+    private Long writerId;
 
-    public Post(Long id, String title, String content, Integer viewCount, LocalDateTime writtenAt, String writer) {
+    public Post(Long id, String title, String content, Integer viewCount, LocalDateTime writtenAt, Long writerId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.writtenAt = writtenAt;
-        this.writer = writer;
+        this.writerId = writerId;
     }
 
-    public Post(String title, String content, String writer) {
-        this(null, title, content, 0, LocalDateTime.now(), writer);
+    public Post(String title, String content, Long writerId) {
+        this(null, title, content, 0, LocalDateTime.now(), writerId);
     }
 
     public Long getId() {
@@ -45,8 +45,8 @@ public class Post {
         return writtenAt;
     }
 
-    public String getWriter() {
-        return writer;
+    public Long getWriterId() {
+        return writerId;
     }
 
     public void setId(long id) {

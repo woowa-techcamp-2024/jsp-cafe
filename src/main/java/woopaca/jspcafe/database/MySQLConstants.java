@@ -18,7 +18,7 @@ public abstract class MySQLConstants {
             content VARCHAR(1000) NOT NULL,
             view_count INT NOT NULL DEFAULT 0,
             written_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            writer VARCHAR(20) NOT NULL
+            writer_id BIGINT NOT NULL
             );
             """;
 }

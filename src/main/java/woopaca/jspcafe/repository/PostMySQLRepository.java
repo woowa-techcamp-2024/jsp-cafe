@@ -21,13 +21,13 @@ public class PostMySQLRepository implements PostRepository {
             return;
         }
 
-        String sql = "INSERT INTO post (title, content, written_at, writer) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getWrittenAt(), post.getWriter());
+        String sql = "INSERT INTO post (title, content, written_at, writer_id) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getWrittenAt(), post.getWriterId());
     }
 
     private void update(Post post) {
-        String sql = "UPDATE post SET title = ?, content = ?, view_count = ?, writer = ? WHERE id = ?";
-        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getViewCount(), post.getWriter(), post.getId());
+        String sql = "UPDATE post SET title = ?, content = ?, view_count = ? WHERE id = ?";
+        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getViewCount(), post.getId());
     }
 
     @Override
