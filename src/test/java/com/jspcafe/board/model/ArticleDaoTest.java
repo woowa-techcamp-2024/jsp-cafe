@@ -6,6 +6,8 @@ import com.jspcafe.test_util.H2Initializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArticleDaoTest {
@@ -57,5 +59,18 @@ class ArticleDaoTest {
         // Then
         assertEquals(articleDao.findById(article.id())
                 .orElseThrow(() -> new ArticleNotFoundException("Not found id")), updateArticle);
+    }
+
+    @Test
+    void 게시물을_삭제한다() {
+        // Given
+        Article article = Article.create("testTitle1", "testTitle1", "test test test. 1");
+        articleDao.save(article);
+
+        // When
+        articleDao.delete(article.id());
+
+        // Then
+        assertEquals(Optional.empty(), articleDao.findById(article.id()));
     }
 }

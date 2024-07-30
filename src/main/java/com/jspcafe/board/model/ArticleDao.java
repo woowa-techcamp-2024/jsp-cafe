@@ -94,4 +94,15 @@ public class ArticleDao {
             throw new RuntimeException("Error updating article", e);
         }
     }
+
+    public void delete(final String id) {
+        String sql = "DELETE FROM articles WHERE id = ?";
+        try(Connection conn = databaseConnector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting article", e);
+        }
+    }
 }
