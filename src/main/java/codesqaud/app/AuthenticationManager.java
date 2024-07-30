@@ -13,13 +13,13 @@ import java.util.Optional;
 public class AuthenticationManager {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationManager.class);
 
-    public static boolean isMe(HttpServletRequest request, User user) {
+    public static boolean isMe(HttpServletRequest request, Long targetUserId) {
         Optional<User> loginUser = getLoginUser(request);
         if(loginUser.isEmpty()) {
             return false;
         }
         Long loginUserId = loginUser.get().getId();
-        return loginUserId.equals(user.getId());
+        return loginUserId.equals(targetUserId);
     }
 
     public static Optional<User> getLoginUser(HttpServletRequest request) {
