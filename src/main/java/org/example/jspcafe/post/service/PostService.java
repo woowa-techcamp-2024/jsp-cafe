@@ -1,6 +1,7 @@
 package org.example.jspcafe.post.service;
 
 import org.example.jspcafe.Component;
+import org.example.jspcafe.comment.model.Comment;
 import org.example.jspcafe.comment.repository.CommentRepository;
 import org.example.jspcafe.post.model.Post;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
@@ -115,18 +116,55 @@ public class PostService {
         postRepository.update(post);
     }
 
+    /**
+     * 게시글 삭제
+     *
+     *  {@link PostService#deleteIfAllCommentByPostUser(Post)}
+     *
+     * 게시글 작성자가 작성한 댓글만 존재할 경우
+     * 댓글을 모두 삭제한 후 게시글 삭제
+     *
+     * 게시글 작성자가 작성한 댓글이 아닌 댓글이 존재할 경우
+     * IllegalArgumentException 발생
+     *
+     * 댓글이 존재하지 않는 경우 게시글 삭제
+     *
+     * @param userId
+     * @param postId
+     */
     public void deletePost(Long userId, Long postId) {
         final Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
-        if (commentRepository.existsByPostId(postId)) {
-            throw new IllegalArgumentException("댓글이 존재하는 게시글은 삭제할 수 없습니다.");
-        }
-
         if (!post.canModifyBy(userId)) {
             throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
-
+        deleteIfAllCommentByPostUser(post);
         postRepository.delete(post);
+    }
+
+    /**
+     * 모든 댓글이 게시글 작성자가 작성한 댓글인 경우
+     * 댓글을 모두 삭제
+     *
+     * 만약 다른 사용자가 작성한 댓글이 하나라도 존재한다면
+     * IllegalArgumentException 발생
+     * @param post
+     */
+    private void deleteIfAllCommentByPostUser(final Post post) {
+        final List<Comment> comments = commentRepository.findAllByPostId(post.getPostId());
+
+        if (comments.isEmpty()) {
+            return;
+        }
+
+        comments.stream()
+                .filter(comment -> !comment.getUserId().equals(post.getUserId()))
+                .findAny()
+                .ifPresent(comment -> {
+                    throw new IllegalArgumentException("댓글이 존재하는 게시글은 삭제할 수 없습니다.");
+                });
+
+        comments.forEach(commentRepository::delete);
     }
 }
