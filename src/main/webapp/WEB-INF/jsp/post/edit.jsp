@@ -8,6 +8,7 @@
     <title>게시글 수정</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/create-post.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <%
@@ -24,7 +25,7 @@
     <main class="main-content">
         <div class="post-container">
             <h1 class="post-title">게시글 수정</h1>
-            <form class="post-form" action="${pageContext.request.contextPath}/api/posts/<%= post.getPostId() %>" method="post">
+            <form id="editPostForm" class="post-form">
                 <div class="input-field">
                     <label for="title">제목</label>
                     <input
@@ -54,5 +55,46 @@
         </div>
     </main>
 </div>
+<script>
+    $(document).ready(function() {
+        $('#editPostForm').on('submit', function(event) {
+            event.preventDefault();
+
+            var postId = "<%= post.getPostId() %>";
+            var title = $('#title').val();
+            var content = $('#content').val();
+            var actionUrl = `${pageContext.request.contextPath}/api/posts/` + postId;
+            console.log(actionUrl);
+
+            $.ajax({
+                url: actionUrl,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ title: title, content: content }),
+                success: function(result) {
+                    alert('게시글이 성공적으로 수정되었습니다.');
+                    window.location.href = `${pageContext.request.contextPath}/posts/`+postId; // 성공 시 게시글 페이지로 리디렉션
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseText || '게시글 수정 중 오류가 발생했습니다.';
+                    $('#error-container').html(`
+                        <div id="error-message" class="error-message">${errorMessage}</div>
+                    `);
+                    triggerErrorMessageScript();
+                }
+            });
+        });
+
+        function triggerErrorMessageScript() {
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000); // 3초 후에 사라짐
+            }
+        }
+    });
+</script>
 </body>
 </html>
