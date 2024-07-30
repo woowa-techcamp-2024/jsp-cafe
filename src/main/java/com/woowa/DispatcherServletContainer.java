@@ -1,6 +1,7 @@
 package com.woowa;
 
 import com.woowa.database.UserDatabase;
+import com.woowa.filter.ErrorHandlingFilter;
 import com.woowa.filter.HttpMethodFilter;
 import com.woowa.framework.ApplicationInitializer;
 import com.woowa.framework.BeanFactory;
@@ -80,5 +81,9 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
     private void addFilter(ServletContext ctx) {
         FilterRegistration.Dynamic httpMethodFilter = ctx.addFilter("httpMethodFilter", new HttpMethodFilter());
         httpMethodFilter.addMappingForUrlPatterns(null, true, "/*");
+
+        FilterRegistration.Dynamic errorHandlingFilter = ctx.addFilter("errorHandlingFilter",
+                new ErrorHandlingFilter());
+        errorHandlingFilter.addMappingForUrlPatterns(null, true, "/*");
     }
 }
