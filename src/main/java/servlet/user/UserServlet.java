@@ -1,5 +1,6 @@
 package servlet.user;
 
+import domain.User;
 import dto.UsersDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -40,6 +41,15 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("Get /users");
+
+        String id = req.getParameter("id");
+        if(id != null) {
+            User user = userService.findById(Long.parseLong(id));
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+            return;
+        }
+
         req.setAttribute("users", userService.findAll());
         req.getRequestDispatcher("/user/list.jsp").forward(req, resp);
     }
