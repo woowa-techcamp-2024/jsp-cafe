@@ -34,4 +34,9 @@ public class MemoryArticleRepository implements ArticleRepository {
     public void deleteAll() {
         articles.clear();
     }
+
+    @Override
+    public void deleteById(Long id) {
+
+    }
 }

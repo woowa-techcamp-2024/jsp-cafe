@@ -39,7 +39,7 @@ abstract class ArticleRepositoryTest {
         Article savedArticle = articleRepository.save(article);
         String updatedTitle = "Updated Title";
         String updatedContent = "Updated Content";
-        Article updatedArticle = savedArticle.withTitle(updatedTitle).withContents(updatedContent);
+        Article updatedArticle = savedArticle.withTitle(updatedTitle).withContent(updatedContent);
 
         savedArticle = articleRepository.save(updatedArticle);
 

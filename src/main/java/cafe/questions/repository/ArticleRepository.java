@@ -12,4 +12,6 @@ public interface ArticleRepository {
     Article findById(Long id);
 
     void deleteAll();
+
+    void deleteById(Long id);
 }

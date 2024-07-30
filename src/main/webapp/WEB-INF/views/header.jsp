@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/styles.css">
+    <script src="${pageContext.request.contextPath}/static/js/axios.min.js" defer></script>
 </head>
 <body>
 <header>

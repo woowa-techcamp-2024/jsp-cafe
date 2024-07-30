@@ -36,7 +36,7 @@ public class Article {
         return new Article(id, userId, title, content, createdDate, updatedDate);
     }
 
-    public Article withContents(String content) {
+    public Article withContent(String content) {
         return new Article(id, userId, title, content, createdDate, updatedDate);
     }
 
