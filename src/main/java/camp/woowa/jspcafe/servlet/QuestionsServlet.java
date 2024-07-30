@@ -99,11 +99,23 @@ public class QuestionsServlet extends HttpServlet {
             }
         }
 
-        questionService.deleteById(questionId, w.getId());
+        try {
+            questionService.deleteById(questionId, w.getId());
+        } catch (CustomException e) {
+            resp.setStatus(e.getStatusCode());
+            resp.setContentType("application/json");
+            try {
+                resp.getWriter().write("{\"message\":\"" + e.getMessage() + "\"}");
+                return;
+            } catch (IOException ex) {
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to write response");
+            }
+        }
 
         try {
             resp.setContentType("application/json");
             resp.getWriter().write("{\"result\":\"success\"}");
+            return;
         } catch (IOException e) {
             log("Redirect Error", e);
         }
@@ -130,11 +142,21 @@ public class QuestionsServlet extends HttpServlet {
             questionService.update(questionId, title, content, w.getId());
         } catch (IOException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read request body");
+        } catch (CustomException e) {
+            resp.setStatus(e.getStatusCode());
+            resp.setContentType("application/json");
+            try {
+                resp.getWriter().write("{\"message\":\"" + e.getMessage() + "\"}");
+                return;
+            } catch (IOException ex) {
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to write response");
+            }
         }
 
         try {
             resp.setContentType("application/json");
             resp.getWriter().write("{\"result\":\"success\"}");
+            return;
         } catch (IOException e) {
             log("Redirect Error", e);
         }
