@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.service;
 
+import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuestionServiceTest {
     QuestionRepository questionRepository;
@@ -87,6 +89,23 @@ class QuestionServiceTest {
     }
 
     @Test
+    void testUpdate_Forbidden() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer, 1L);
+
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+
+        // when
+        // then
+        assertThrows(CustomException.class, () -> questionService.update(id, updatedTitle, updatedContent, 2L));
+
+    }
+
+    @Test
     void testDeleteById() {
         // given
         String title = "title";
@@ -95,9 +114,22 @@ class QuestionServiceTest {
         Long id = questionService.save(title, content, writer, 1L);
 
         // when
-        questionService.deleteById(id);
+        questionService.deleteById(id, 1L);
 
         // then
         assertEquals(0, questionService.findAll().size());
+    }
+
+    @Test
+    void testDeleteById_Forbidden() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer, 1L);
+
+        // when
+        // then
+        assertThrows(CustomException.class, () -> questionService.deleteById(id, 2L));
     }
 }
