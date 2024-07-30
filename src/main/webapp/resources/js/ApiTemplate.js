@@ -30,6 +30,23 @@ function postAPI(url, data, successPath) {
     });
 }
 
+function postJsonAPI(url, data, successPath) {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            console.log('Success:', response);
+            window.location.href = successPath;
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            alert('에러 발생: ' + xhr.responseJSON.error);
+        }
+    });
+}
+
 function putAPI(url, data, successPath) {
     $.ajax({
         url: url,

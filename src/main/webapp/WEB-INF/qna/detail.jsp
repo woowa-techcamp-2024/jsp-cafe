@@ -90,11 +90,15 @@
                                     </ul>
                                 </div>
                             </article>
+
                             <form class="submit-write">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea class="form-control" placeholder="Update your status"
+                                              id="reply-content"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                                <button class="btn btn-success pull-right" type="button"
+                                        onclick="createReply(${question.questionId})">답변하기
+                                </button>
                                 <div class="clearfix"/>
                             </form>
                         </div>
@@ -107,4 +111,5 @@
 
 <script src="/resources/js/ApiTemplate.js"></script>
 <script src="/resources/js/question.js"></script>
+<script src="/resources/js/reply.js"></script>
 <%@ include file="/WEB-INF/base/footer.jsp" %>
