@@ -26,7 +26,8 @@ public class ControllerMethodInvoker {
         return method.invoke(handler.getInstance(), args);
     }
 
-    private Object[] resolveHandlerArguments(Method method, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    private Object[] resolveHandlerArguments(Method method, HttpServletRequest request, HttpServletResponse response,
+                                             HttpSession session) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
@@ -49,10 +50,7 @@ public class ControllerMethodInvoker {
     private Object resolveRequestParam(Parameter parameter, HttpServletRequest request) {
         RequestParam annotation = parameter.getAnnotation(RequestParam.class);
         String paramName = annotation.value().isEmpty() ? parameter.getName() : annotation.value();
-        String paramValue = request.getParameter(paramName);
-        String decode = URLDecoder.decode(paramValue, StandardCharsets.UTF_8);
-        logger.info("paramName: {}, paramValue: {}", paramName, URLDecoder.decode(paramValue, StandardCharsets.UTF_8));
-
+        String paramValue = URLDecoder.decode(request.getParameter(paramName), StandardCharsets.UTF_8);
         if (paramValue == null && annotation.required()) {
             throw new IllegalArgumentException("Required parameter '" + paramName + "' is not present");
         }

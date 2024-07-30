@@ -30,7 +30,6 @@ public class AnnotationHandlerMapping implements HandlerMapping {
         return null;
     }
 
-
     public static class HandlerKey {
         private String url;
         private HttpMethod httpMethod;

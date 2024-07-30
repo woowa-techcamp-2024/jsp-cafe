@@ -1,6 +1,8 @@
 package org.example.post.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.config.HttpMethod;
@@ -72,9 +74,21 @@ public class PostController {
         return mv;
     }
 
+    @RequestMapping(path = "/questions/{id}", method = HttpMethod.PUT)
+    public void editQuestion(@PathVariable("id") Long id, @RequestParam("title") String title, @RequestParam("contents") String contents,
+                                     HttpServletResponse response) throws SQLException, IOException {
+        PostResponse post = postService.getPostById(id);
+        post.setTitle(title);
+        post.setContents(contents);
+        postService.updatePost(post);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setHeader("X-Redirect-Location", "/questions/" + id);
+        response.getWriter().write("게시글이 성공적으로 수정되었습니다.");
+    }
+
     @RequestMapping(path = "/questions/{id}/form", method = HttpMethod.GET)
-    public ModelAndView getQuestionForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
-        ModelAndView mv = new ModelAndView("post/PostForm");
+    public ModelAndView getQuestionEditForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
+        ModelAndView mv = new ModelAndView("post/PostEditForm");
         PostResponse post = postService.getPostById(id);
         boolean isAuthor = isAuthor(session, post);
         if (!isAuthor) {
