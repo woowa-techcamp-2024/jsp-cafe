@@ -5,6 +5,7 @@ import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.service.QuestionService;
 import camp.woowa.jspcafe.service.UserService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -129,7 +130,7 @@ public class QuestionsServlet extends HttpServlet {
         // PUT request json body to Object
         try (BufferedReader reader = req.getReader()){
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> dataMap = mapper.readValue(reader, Map.class);
+            Map<String, String> dataMap = mapper.readValue(reader, new TypeReference<Map<String, String>>() {});
 
             String title = dataMap.get("title");
             String content = dataMap.get("content");
