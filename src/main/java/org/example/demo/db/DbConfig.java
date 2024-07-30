@@ -48,7 +48,7 @@ public class DbConfig {
         config.setPassword(password);
 
         // Tomcat 의 maxThread 개수 만큼 Pool Size 설정
-        config.setMaximumPoolSize(200);
+        config.setMaximumPoolSize(100);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
