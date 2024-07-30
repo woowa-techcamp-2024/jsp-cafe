@@ -39,7 +39,7 @@
                 } else {
                 %>
                 <li><a href="${pageContext.request.contextPath}/users/login" role="button">로그인</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
+                <li><a href="${pageContext.request.contextPath}/form.jsp" role="button">회원가입</a></li>
                 <%
                     }
                 %>

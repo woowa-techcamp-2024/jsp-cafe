@@ -4,10 +4,10 @@
 <%@ page import="com.example.db.ArticleDatabase" %>
 <!DOCTYPE html>
 <html lang="kr">
-<%@ include file="template/head.jsp" %>
+<%@ include file="WEB-INF/template/head.jsp" %>
 <body>
-<%@ include file="template/top-header.jsp" %>
-<%@ include file="template/sub-header.jsp" %>
+<%@ include file="WEB-INF/template/top-header.jsp" %>
+<%@ include file="WEB-INF/template/sub-header.jsp" %>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
@@ -138,6 +138,6 @@
 -->
 
 <!-- script references -->
-<%@include file="template/footer.jsp" %>
+<%@include file="WEB-INF/template/footer.jsp" %>
 </body>
 </html>

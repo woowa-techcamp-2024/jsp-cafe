@@ -63,7 +63,7 @@ class UserUpdateServletTest {
 		context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
 		when(context.getAttribute("userService")).thenReturn(userService);
-		when(request.getRequestDispatcher("/user/updateForm.jsp")).thenReturn(requestDispatcher);
+		when(request.getRequestDispatcher("/WEB-INF/user/updateForm.jsp")).thenReturn(requestDispatcher);
 		when(request.getSession()).thenReturn(session);
 		when(session.getAttribute("login")).thenReturn(new Object());
 

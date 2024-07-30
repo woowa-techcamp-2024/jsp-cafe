@@ -49,7 +49,7 @@ class UserServletTest {
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
 		when(context.getAttribute("userService")).thenReturn(userService);
-		when(request.getRequestDispatcher("/user/list.jsp")).thenReturn(requestDispatcher);
+		when(request.getRequestDispatcher("/WEB-INF/user/list.jsp")).thenReturn(requestDispatcher);
 
 		userServlet.init(config);
 	}

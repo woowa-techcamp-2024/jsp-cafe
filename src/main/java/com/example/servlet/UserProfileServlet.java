@@ -28,6 +28,6 @@ public class UserProfileServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		User user = userService.getUser(req.getPathInfo().substring(1).split("/")[0]);
 		req.setAttribute("user", user);
-		req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(req, resp);
 	}
 }
