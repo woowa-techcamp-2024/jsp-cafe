@@ -79,4 +79,18 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
         return Optional.ofNullable(question);
     }
+
+    @Override
+    public void update(final Long id, final String editedTitle, final String editedContents) {
+        String query = "UPDATE question SET title = ?, contents = ? WHERE id = ?";
+
+        jdbcTemplate.update(
+                query,
+                ps -> {
+                    ps.setString(1, editedTitle);
+                    ps.setString(2, editedContents);
+                    ps.setLong(3, id);
+                }
+        );
+    }
 }

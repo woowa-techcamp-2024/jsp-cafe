@@ -10,4 +10,6 @@ public interface QuestionRepository {
     List<Question> findAllOrderByCreatedTimeDesc();
 
     Optional<Question> findById(final Long id);
+
+    void update(final Long id, String editedTitle, String editedContents);
 }

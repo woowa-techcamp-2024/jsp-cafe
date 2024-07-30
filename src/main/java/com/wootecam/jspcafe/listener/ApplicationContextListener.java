@@ -9,6 +9,7 @@ import com.wootecam.jspcafe.repository.JdbcUserRepository;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionDeleteServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDetailHttpServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionEditHttpServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionHttpServlet;
@@ -61,6 +62,8 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/questions/*");
         servletContext.addServlet("questionEditServlet", new QuestionEditHttpServlet(questionService))
                 .addMapping("/questions/edit/*");
+        servletContext.addServlet("questionDeleteServlet", new QuestionDeleteServlet(questionService))
+                .addMapping("/questions/delete/*");
     }
 
     @Override

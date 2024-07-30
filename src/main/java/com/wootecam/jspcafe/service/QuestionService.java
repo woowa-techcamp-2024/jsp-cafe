@@ -50,4 +50,13 @@ public class QuestionService {
 
         return question;
     }
+
+    public void edit(final Long questionId, final String editedTitle, final String editedContents) {
+        if (Objects.isNull(editedTitle) || Objects.isNull(editedContents)
+                || editedTitle.isEmpty() || editedContents.isEmpty()) {
+            throw new BadRequestException("질문 수정 시 제목과 내용을 모두 입력해야 합니다.");
+        }
+
+        questionRepository.update(questionId, editedTitle, editedContents);
+    }
 }

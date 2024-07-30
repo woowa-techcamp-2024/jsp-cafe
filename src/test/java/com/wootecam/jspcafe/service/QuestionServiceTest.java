@@ -40,7 +40,7 @@ class QuestionServiceTest extends ServiceTest {
             @MethodSource("generateInvalidQuestionInfo")
             void 예외를_발생시킨다(List<Object> invalidUserInfo) {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // expect
                 assertThatThrownBy(
@@ -69,7 +69,7 @@ class QuestionServiceTest extends ServiceTest {
             @Test
             void 질문을_저장합니다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // expect
                 assertThatNoException()
@@ -84,10 +84,10 @@ class QuestionServiceTest extends ServiceTest {
         @Test
         void 저장되어있는_모든_질문을_반환한다() {
             // given
-            userRepository.save(new User(1L, "userId", "password", "name", "email"));
-            questionRepository.save(new Question(1L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
-            questionRepository.save(new Question(2L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
-            questionRepository.save(new Question(3L, "작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            userRepository.save(new User("userId", "password", "name", "email"));
+            questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
             // when
             List<Question> questions = questionService.readAll();
@@ -107,7 +107,7 @@ class QuestionServiceTest extends ServiceTest {
             @Test
             void id에_해당하는_질문을_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
                 questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
                 // when
@@ -133,7 +133,7 @@ class QuestionServiceTest extends ServiceTest {
             @Test
             void questionId에_해당하는_질문을_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
                 questionRepository.save(new Question("작성자1", "1제목입니다.", "1내용입니다.", LocalDateTime.now(), 1L));
                 questionRepository.save(new Question("작성자2", "2제목입니다.", "2내용입니다.", LocalDateTime.now(), 1L));
 
@@ -160,7 +160,7 @@ class QuestionServiceTest extends ServiceTest {
                 // expect
                 assertThatThrownBy(() -> questionService.readQuestionToEdit(null, 1L))
                         .isInstanceOf(NotFoundException.class)
-                        .hasMessage("수정 할 게시글을 찾을 수 없습니다.");
+                        .hasMessage("수정 할 질문을 찾을 수 없습니다.");
             }
         }
 
@@ -170,13 +170,64 @@ class QuestionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                userRepository.save(new User(1L, "userId1", "password1", "name1", "email1"));
-                questionRepository.save(new Question("작성자1", "1제목입니다.", "1내용입니다.", LocalDateTime.now(), 1L));
+                userRepository.save(new User("userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
                 // expect
                 assertThatThrownBy(() -> questionService.readQuestionToEdit(1L, 2L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("다른 사용자의 글은 수정할 수 없습니다.");
+                        .hasMessage("다른 사용자의 질문은 수정할 수 없습니다.");
+            }
+        }
+    }
+
+    @Nested
+    class edit_메소드는 {
+
+        @Nested
+        class 만약_정상적인_질문의_제목과_내용이_요청으로_온다면 {
+
+            @Test
+            void 게시글의_제목과_내용을_수정한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+
+                // when
+                questionService.edit(1L, "변경된 제목입니다.", "변경된 내용입니다.");
+                Question question = questionService.read(1L);
+
+                // then
+                assertAll(
+                        () -> assertThat(question.getTitle()).isEqualTo("변경된 제목입니다."),
+                        () -> assertThat(question.getContents()).isEqualTo("변경된 내용입니다.")
+                );
+            }
+        }
+
+        @Nested
+        class 만약_수정할_질문의_제목_혹은_내용이_null이라면 {
+
+            @ParameterizedTest
+            @MethodSource("generateInvalidEditedQuestionInfo")
+            void 예외가_발생한다(String editTitle, String editContents) {
+                // given
+                userRepository.save(new User("userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+
+                // expect
+                assertThatThrownBy(() -> questionService.edit(1L, editTitle, editContents))
+                        .isExactlyInstanceOf(BadRequestException.class)
+                        .hasMessage("질문 수정 시 제목과 내용을 모두 입력해야 합니다.");
+            }
+
+            private static Stream<Arguments> generateInvalidEditedQuestionInfo() {
+                return Stream.of(
+                        Arguments.of(null, "내용"),
+                        Arguments.of("제목", null),
+                        Arguments.of("", "내용"),
+                        Arguments.of("제목", "")
+                );
             }
         }
     }

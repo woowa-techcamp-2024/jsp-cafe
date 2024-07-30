@@ -40,4 +40,23 @@ public class QuestionEditHttpServlet extends AbstractHttpServlet {
 
         return Long.parseLong(splitPaths[splitPaths.length - 1].trim());
     }
+
+    @Override
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+        User signInUser = (User) req.getSession().getAttribute("signInUser");
+
+        if (Objects.isNull(signInUser)) {
+            resp.sendRedirect("/users/sign-in");
+            return;
+        }
+        Long id = parseSuffixPathVariable(req.getPathInfo());
+        questionService.edit(
+                id,
+                req.getParameter("title"),
+                req.getParameter("contents")
+        );
+
+        resp.sendRedirect("/questions/" + id);
+    }
 }
