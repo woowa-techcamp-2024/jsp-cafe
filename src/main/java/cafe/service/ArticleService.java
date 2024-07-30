@@ -2,6 +2,7 @@ package cafe.service;
 
 import cafe.domain.db.ArticleDatabase;
 import cafe.domain.entity.Article;
+import cafe.domain.entity.User;
 
 import java.util.Map;
 import java.util.UUID;
@@ -28,5 +29,17 @@ public class ArticleService {
 
     public Map<String, Article> findAll() {
         return articleDatabase.selectAll();
+    }
+
+    public void verifyArticleId(User user, String requestURI) {
+        String id = requestURI.split("/")[2];
+        Article article = articleDatabase.selectById(id);
+        if (article == null) throw new IllegalArgumentException("게시글이 없습니다!");
+        if (!article.getWriter().equals(user.getUserId())) throw new IllegalArgumentException("다른 사람의 글을 수정할 수 없습니다!");
+    }
+
+    public void deleteById(String requestURI) {
+        String id = requestURI.split("/")[2];
+        articleDatabase.deleteById(id);
     }
 }
