@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.regex.Pattern;
 
 public class FindQuestionServlet extends HttpServlet {
 
@@ -26,10 +24,10 @@ public class FindQuestionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String questionId = req.getRequestURI().replace(PREFIX, "");
+        String userId = getUserIdFromSession(req);
         ResponseEntity response;
         if (questionId.endsWith(UPDATE_SUFFIX)) {
             questionId = questionId.replace(UPDATE_SUFFIX, "");
-            String userId = getUserIdFromSession(req);
             response = questionHandler.updateQuestionForm(userId, questionId);
         } else {
             response = questionHandler.findQuestion(questionId);

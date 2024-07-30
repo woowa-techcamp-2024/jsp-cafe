@@ -153,14 +153,22 @@ class QuestionHandlerTest {
     @DisplayName("findQuestion 호출 시")
     class FindQuestionTest {
 
+        private User user;
+        private Question question;
+
+        @BeforeEach
+        void setUp() {
+            user = UserFixture.user();
+            question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+
+        }
+
         @Test
         @DisplayName("단일 게시글을 조회한다.")
         void findQuestion() {
             //given
-            User user = UserFixture.user();
-            Question question = QuestionFixture.question(user);
-
-            questionDatabase.save(question);
 
             //when
             ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());

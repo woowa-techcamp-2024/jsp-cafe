@@ -1,11 +1,13 @@
 package com.woowa.servlet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
+import com.woowa.exception.AuthenticationException;
 import com.woowa.handler.QuestionHandler;
 import com.woowa.model.Question;
 import com.woowa.model.User;
@@ -51,12 +53,15 @@ class FindQuestionServletTest {
 
         @Test
         @DisplayName("게시글을 반환한다.")
-        void test() throws ServletException, IOException {
+        void setAttributeQuestion() throws ServletException, IOException {
             //given
             User user = UserFixture.user();
             Question question = QuestionFixture.question(user);
-
             questionDatabase.save(question);
+            userDatabase.save(user);
+            StubHttpSession session = new StubHttpSession();
+            session.setAttribute("userId", user.getUserId());
+            request.setSession(session);
             request.setRequestUri("/questions/" + question.getQuestionId());
 
             //when
@@ -64,6 +69,24 @@ class FindQuestionServletTest {
 
             //then
             assertThat(request.getAttribute("question")).isNotNull().isInstanceOf(Question.class);
+        }
+
+        @Test
+        @DisplayName("예외(Authentication): 로그인하지 않았으면")
+        void authentication_WhenNoLogin() throws ServletException, IOException {
+            //given
+            User user = UserFixture.user();
+            Question question = QuestionFixture.question(user);
+            questionDatabase.save(question);
+            userDatabase.save(user);
+
+            request.setRequestUri("/questions/" + question.getQuestionId());
+
+            //when
+            Exception exception = catchException(() -> findQuestionServlet.doGet(request, response));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthenticationException.class);
         }
 
         @Nested
