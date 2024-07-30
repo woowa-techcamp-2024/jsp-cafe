@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="../template/header.jsp"%>
 <%@ include file="../template/nav.jsp"%>
 
@@ -25,6 +26,7 @@
                   <div class="article-doc">
                       <p> ${question.content} </p>
                   </div>
+                  <c:if test="${question.writerId == sessionScope.user.id}">
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
@@ -38,6 +40,7 @@
                           </li>
                       </ul>
                   </div>
+                  </c:if>
               </article>
 
               <div class="qna-comment">
@@ -152,21 +155,23 @@
 
 <script>
     const deleteQuestion = () => {
-        $.ajax({
-            url: '${pageContext.request.contextPath}/questions/${question.id}',
-            type: 'DELETE',
-            success: function(response) {
-                if (response['result'] === 'success') {
-                    window.location.href = '/';
+        if (confirm("삭제하시겠습니까?")) {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/questions/${question.id}',
+                type: 'DELETE',
+                success: function(response) {
+                    if (response['result'] === 'success') {
+                        window.location.href = '/';
+                    }
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
+                    if (xhr.status === 403 && xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert('Error:' + errorMessage);
                 }
-            },
-            error: function(xhr, status, error) {
-                let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
-                if (xhr.status === 403 && xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                }
-                alert('Error:' + errorMessage);
-            }
-        });
+            });
+        }
     }
 </script>
