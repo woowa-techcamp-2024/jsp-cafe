@@ -3,7 +3,6 @@ package org.example.demo.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.demo.aop.NeedLogin;
 import org.example.demo.domain.User;
 import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.UserCreateDao;
@@ -118,7 +117,6 @@ public class UserHandler {
         request.getRequestDispatcher("/WEB-INF/user/login.jsp").forward(request, response);
     }
 
-    @NeedLogin
     public void handleUserFormPage(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request, response);
     }

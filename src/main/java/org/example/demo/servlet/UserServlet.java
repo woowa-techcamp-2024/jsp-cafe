@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
 import org.example.demo.Router;
-import org.example.demo.aop.AopValidator;
 import org.example.demo.exception.InternalServerError;
 import org.example.demo.handler.UserHandler;
 
@@ -20,7 +19,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void init() {
-        router = new Router(new AopValidator());
+        router = new Router();
         userHandler = UserHandler.getInstance();
         router.addRoute(HttpMethod.GET, "^/users/?$", userHandler::handleUserList);
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/?$", userHandler::handleUserProfile);
