@@ -14,7 +14,7 @@ import java.io.IOException;
 import org.example.constance.SessionName;
 
 @WebFilter(
-        urlPatterns = {"/articles/register", "/articles/*"}
+        urlPatterns = {"/articles/register", "/articles/*", "/articles/update-form/*"}
 )
 public class AuthenticationFilter implements Filter {
     @Override
