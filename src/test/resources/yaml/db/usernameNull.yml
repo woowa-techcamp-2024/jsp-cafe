@@ -1,0 +1,5 @@
+db:
+  datasource:
+    password: password
+    url: url
+    driver-class-name: driverClassName
