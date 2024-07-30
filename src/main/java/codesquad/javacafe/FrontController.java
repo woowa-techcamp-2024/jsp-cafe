@@ -52,7 +52,8 @@ public class FrontController extends HttpServlet {
 			subController.doProcess(req, res);
 		} catch (CustomException exception) {
 			log.error("[CustomException] error name = {}, debug message = {}", exception.getErrorName(),
-				exception.getDebugMessage());
+					exception.getDebugMessage());
+			res.setStatus(exception.getHttpStatus().getStatusCode());
 			req.setAttribute("exception", exception);
 			var dispatcher = req.getRequestDispatcher("/WEB-INF/error/customError.jsp");
 			try {

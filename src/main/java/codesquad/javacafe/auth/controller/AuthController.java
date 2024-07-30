@@ -1,6 +1,7 @@
 package codesquad.javacafe.auth.controller;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,9 @@ public class AuthController implements SubController {
 			}
 			case "POST": {
 				var body = req.getParameterMap();
+				if (body.isEmpty()) {
+					throw ClientErrorCode.PARAMETER_IS_NULL.customException("user parameter info = "+body);
+				}
 				var loginDto = new LoginRequestDto(body);
 				log.info("[AuthController doProcess] loginDto: {}", loginDto);
 				MemberInfo loginInfo = AuthService.getInstance().getLoginInfo(loginDto);

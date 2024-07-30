@@ -26,6 +26,7 @@ public class MemberInfoController implements SubController {
         switch(method){
             case "GET" : {
                 var userId = req.getParameter("userId");
+                req.setAttribute("userId", userId);
                 SessionManager.getInstance().loginCheck(req,"loginInfo", userId);
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/memberInfo.jsp");
                 dispatcher.forward(req, res);

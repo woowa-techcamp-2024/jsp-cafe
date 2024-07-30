@@ -8,7 +8,8 @@ public enum ClientErrorCode implements ErrorCode{
 	PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청 경로를 확인해 주세요."),
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "요청 메소드를 확인해 주세요."),
 	UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
-	ACCESS_DENIED(HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다.");
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다."),
+	PARAMETER_IS_NULL(HttpStatus.BAD_REQUEST, "필요한 파라미터를 입력해주세요");
 
 	private final HttpStatus httpStatus;
 	private final String message;
