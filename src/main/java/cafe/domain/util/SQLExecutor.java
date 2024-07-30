@@ -42,4 +42,10 @@ public class SQLExecutor {
         statement.setObject(fields.length + 1, id);
         statement.executeUpdate();
     }
+
+    public <K> void executeDeleteById(Connection connection, String deleteSQL, K id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(deleteSQL);
+        statement.setObject(1, id);
+        statement.executeUpdate();
+    }
 }

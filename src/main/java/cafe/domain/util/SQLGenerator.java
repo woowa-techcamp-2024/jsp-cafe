@@ -70,4 +70,11 @@ public class SQLGenerator {
         }
         return "DELETE FROM `" + className + "s`;";
     }
+
+    public <K> String generateDeleteByIdSQL(String className) {
+        if (className == null) {
+            throw new IllegalArgumentException("Invalid arguments");
+        }
+        return "DELETE FROM `" + className + "s` WHERE `" + className + "Id` = ?;";
+    }
 }

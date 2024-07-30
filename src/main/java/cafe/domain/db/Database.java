@@ -95,7 +95,16 @@ public interface Database<K, V> {
         }
     }
 
-    default void deleteById(K id) {}
+    default void deleteById(K id) {
+        String className = findClassName();
+        try (Connection connection = getConnector().connect()) {
+            String deleteSQL = sqlGenerator.generateDeleteByIdSQL(className);
+            sqlExecutor.executeDeleteById(connection, deleteSQL, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     default void deleteAll() {
         String className = findClassName();
         try (Connection connection = getConnector().connect()) {
