@@ -26,11 +26,8 @@ public class AuthenticationFilter extends HttpFilter {
                 RequestMapper.permittedPostMapping("/users"),
                 RequestMapper.permittedPostMapping("/users/login"),
                 RequestMapper.permittedGetMapping("/users/form"),
-                RequestMapper.permittedGetMapping("/qna/**"),
 
-                RequestMapper.permittedGetMapping("/static/**"),
-
-                RequestMapper.authenticatedGetMapping("/qna/form")
+                RequestMapper.permittedGetMapping("/static/**")
         );
 
         permitAllRequests.addAll(permittedRequests);
