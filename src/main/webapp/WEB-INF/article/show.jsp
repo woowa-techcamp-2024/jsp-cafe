@@ -4,6 +4,7 @@
 <body>
 <%@ include file="/WEB-INF/components/header.jsp"%>
 <%@ include file="/WEB-INF/components/navigation.jsp"%>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
 <% Article article = (Article) request.getAttribute("article"); %>
 <div class="container" id="main">
@@ -109,12 +110,12 @@
                                   </ul>
                               </div>
                           </article>
-                          <form class="submit-write">
+                          <form class="submit-write" id="answerForm">
                               <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status"></textarea>
+                                  <textarea class="form-control" id="answerText" placeholder="Update your status"></textarea>
                               </div>
-                              <button class="btn btn-success pull-right" type="button">답변하기</button>
-                              <div class="clearfix" />
+                              <button class="btn btn-success pull-right" type="button" id="submitAnswer">답변하기</button>
+                              <div class="clearfix"></div>
                           </form>
                       </div>
                   </div>
@@ -178,6 +179,27 @@
                 alert('An error occurred. Please try again.');
             });
     }
+</script>
+<script>
+  $(document).ready(function() {
+    $('#submitAnswer').on('click', function() {
+      var answerText = $('#answerText').val();
+      console.log(answerText);
+
+      $.ajax({
+        url: '/comment',
+        type: 'POST',
+        data: { comment: answerText },
+        success: function(response) {
+          alert('Your answer was submitted successfully!');
+          $('#answerText').val('');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          alert('An error occurred while submitting your answer: ' + textStatus);
+        }
+      });
+    });
+  });
 </script>
 
 <!-- script references -->
