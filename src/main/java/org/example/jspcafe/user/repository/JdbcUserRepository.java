@@ -54,7 +54,7 @@ public class JdbcUserRepository extends ReflectionIdFieldExtractor<User> impleme
 
     @Override
     public Optional<User> findById(Long id) {
-        String sql = "SELECT * FROM users WHERE user_id = ?";
+        String sql = "SELECT * FROM users WHERE user_id = ? AND deleted_at IS NULL";
 
         try (Connection conn = connectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
