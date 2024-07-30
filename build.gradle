@@ -39,6 +39,10 @@ dependencies {
   testImplementation 'com.h2database:h2:2.3.230'
   implementation 'mysql:mysql-connector-java:8.0.26'
 
+  //lombok
+  compileOnly 'org.projectlombok:lombok:1.18.24'
+  annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
   // log
   implementation 'org.slf4j:slf4j-api:2.0.6'
   implementation 'ch.qos.logback:logback-classic:1.4.5'
