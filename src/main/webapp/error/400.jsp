@@ -14,6 +14,7 @@
 <div id="container">
   <div class="error-message">헉, 이건 그쪽 잘못이에요!</div>
   <div class="error-message">400 Bad Request<br>(개발자들 잘못은 아니겠죠?)</div>
+  <div style="margin-top: 20px"><c:out value="${requestScope.errorMessage}" /></div>
   <a id="home-button" href="${pageContext.request.contextPath}/">홈으로 가기</a>
 </div>
 </body>
