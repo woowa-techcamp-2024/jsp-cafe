@@ -4,6 +4,7 @@ import cafe.domain.db.ArticleDatabase;
 import cafe.domain.entity.Article;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class ArticleService {
     private final ArticleDatabase articleDatabase;
@@ -11,7 +12,11 @@ public class ArticleService {
     public ArticleService(ArticleDatabase articleDatabase) { this.articleDatabase = articleDatabase; }
 
     public void save(String writer, String title, String contents) {
-        articleDatabase.insert(Article.of(writer, title, contents));
+        save(UUID.randomUUID().toString(), writer, title, contents);
+    }
+
+    public void save(String id, String writer, String title, String contents) {
+        articleDatabase.insert(Article.of(id, writer, title, contents));
     }
 
     public Article find(String uri) {

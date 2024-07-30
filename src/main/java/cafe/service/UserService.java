@@ -17,14 +17,14 @@ public class UserService {
     }
 
     public void save(String id, String name, String password, String email) {
-        userDatabase.insert(User.of(id, password, name, email));
+        userDatabase.insert(User.of(id, name, password, email));
     }
 
-    public UserDto find(String uri) {
+    public User find(String uri) {
         String id = uri.split("/")[2];
         User user = userDatabase.selectById(id);
         if (user == null) throw new IllegalArgumentException("User not found!");
-        return new UserDto(id, user);
+        return user;
     }
 
     public UserDto findBySession(String id) {
@@ -33,7 +33,7 @@ public class UserService {
 
         String uuid = null;
         for (String key : users.keySet()) {
-            if (users.get(key).getUserid().equals(user.getUserid())) {
+            if (users.get(key).getUserId().equals(user.getUserId())) {
                 uuid = key;
                 user = users.get(key);
             }
@@ -53,7 +53,7 @@ public class UserService {
         if (user == null) throw new IllegalArgumentException("User not found!");
 
         validatePassword(beforePassword, user.getPassword());
-        userDatabase.update(id, User.of(user.getUserid(), password, name, email));
+        userDatabase.update(id, User.of(user.getUserId(), name, password, email));
     }
 
     private void validatePassword(String before, String real) {

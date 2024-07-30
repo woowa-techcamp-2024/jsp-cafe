@@ -12,6 +12,6 @@ public class ArticleDatabase implements Database<String, Article> {
 
     @Override
     public DatabaseConnector getConnector() {
-        return null;
+        return databaseConnector;
     }
 }

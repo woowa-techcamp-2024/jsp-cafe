@@ -15,7 +15,7 @@ public class SessionService {
     }
 
     public void signIn(String sessionid, String userid, String password) {
-        User user = userDatabase.selectByUserId(userid);
+        User user = userDatabase.selectById(userid);
         if (user == null || !user.getPassword().equals(password)) {
             throw new IllegalArgumentException("로그인 실패");
         }
@@ -30,10 +30,4 @@ public class SessionService {
         return sessionDatabase.selectAll().containsKey(sessionid);
     }
 
-    public User find(String uri) {
-        String id = uri.split("/")[2];
-        User user = (User) sessionDatabase.selectById(id);
-        if (user == null) throw new IllegalArgumentException("User not found!");
-        return user;
-    }
 }
