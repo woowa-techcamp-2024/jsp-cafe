@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.service;
 
+import camp.woowa.jspcafe.model.Reply;
 import camp.woowa.jspcafe.repository.InMemReplyRepository;
 import camp.woowa.jspcafe.repository.ReplyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,11 +28,12 @@ class ReplyServiceTest {
 
         // when
         Long id = replyService.createReply(questionId, writerId, writer, content);
+        Reply reply = replyRepository.findById(id);
 
         // then
-        assertEquals(replyRepository.findById(id).getContent(), content);
-        assertEquals(replyRepository.findById(id).getQuestionId(), questionId);
-        assertEquals(replyRepository.findById(id).getWriter(), writer);
-        assertEquals(replyRepository.findById(id).getWriterId(), writerId);
+        assertEquals(reply.getContent(), content);
+        assertEquals(reply.getQuestionId(), questionId);
+        assertEquals(reply.getWriter(), writer);
+        assertEquals(reply.getWriterId(), writerId);
     }
 }
