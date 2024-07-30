@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import com.example.annotation.NotNull;
 import com.example.dto.util.DtoValidationUtil;
+import com.example.exception.BaseException;
 
 public record SignupRequest(
 	@NotNull String id,
@@ -24,16 +25,16 @@ public record SignupRequest(
 		Matcher passwordMatcher = passwordPattern.matcher(password);
 
 		if (!emailMatcher.matches()) {
-			throw new RuntimeException("Invalid email pattern");
+			throw BaseException.exception(400, "invalid email pattern");
 		}
 		if (!passwordMatcher.matches()) {
-			throw new RuntimeException("Invalid password pattern");
+			throw BaseException.exception(400, "invalid password pattern");
 		}
 		if (id.length() > 100) {
-			throw new RuntimeException("id is too long");
+			throw BaseException.exception(400, "id is too long");
 		}
 		if (name.length() > 100) {
-			throw new RuntimeException("name is too long");
+			throw BaseException.exception(400, "name is too long");
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.example.entity.User;
+import com.example.exception.BaseException;
 
 public class UserMemoryDatabase implements UserDatabase {
 
@@ -16,7 +17,7 @@ public class UserMemoryDatabase implements UserDatabase {
 	public void insert(User user) {
 		users.compute(user.id(), (k, v) -> {
 			if (v != null) {
-				throw new IllegalArgumentException("duplicate userId: " + user.id());
+				throw BaseException.exception(409, "user already exists");
 			}
 			return new User(user.id(), user.password(), user.name(), user.email());
 		});

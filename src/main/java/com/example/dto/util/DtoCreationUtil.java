@@ -10,6 +10,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.exception.BaseException;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 public class DtoCreationUtil {
@@ -33,8 +35,7 @@ public class DtoCreationUtil {
 		try {
 			return (T)constructor.newInstance(params.toArray());
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			log.error(e.getMessage());
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 	}
 }

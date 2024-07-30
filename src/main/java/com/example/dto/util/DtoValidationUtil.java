@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.annotation.NotNull;
+import com.example.exception.BaseException;
 
 public class DtoValidationUtil {
 
@@ -21,11 +22,10 @@ public class DtoValidationUtil {
 				field.setAccessible(true);
 				try {
 					if (field.get(obj) == null || ((String)field.get(obj)).isBlank()) {
-						throw new RuntimeException("field " + field.getName() + " is null or blank");
+						throw BaseException.exception(400, "field is null or blank");
 					}
 				} catch (IllegalAccessException e) {
-					log.error(e.getMessage());
-					throw new RuntimeException(e);
+					throw BaseException.serverException();
 				}
 			}
 		}
