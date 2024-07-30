@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -10,7 +10,7 @@
     <link href="<c:url value='/static/css/styles.css'/>" rel="stylesheet">
 </head>
 <body>
-<%@ include file="../Header.jsp"%>
+<%@ include file="../Header.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
@@ -22,7 +22,8 @@
                 <article class="article">
                     <div class="article-header">
                         <div class="article-header-thumb">
-                            <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
+                            <img src="https://graph.facebook.com/v2.3/100000059371774/picture"
+                                 class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
                             <a href="/users/${post.writer}" class="article-author-name">${post.writer}</a>
@@ -37,13 +38,17 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/${post.id}/form">수정</a>
+                                <c:if test="${isAuthor}">
+                                    <a class="link-modify-article" href="/questions/${post.id}/form">수정</a>
+                                </c:if>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/${post.id}" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
+                                <c:if test="${isAuthor}">
+                                    <form class="form-delete" action="/questions/${post.id}" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button class="link-delete-article" type="submit">삭제</button>
+                                    </form>
+                                </c:if>
                             </li>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>

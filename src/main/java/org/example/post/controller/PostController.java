@@ -14,7 +14,6 @@ import org.example.member.model.dto.UserResponseDto;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostResponse;
 import org.example.post.service.PostService;
-import org.example.util.session.InMemorySessionManager;
 import org.example.util.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,21 +53,47 @@ public class PostController {
     }
 
     @RequestMapping(path = "/questions", method = HttpMethod.POST)
-    public ModelAndView addQuestion(@RequestParam("writer") String writer,
-                                    @RequestParam("title") String title,
-                                    @RequestParam("contents") String contents) throws SQLException {
-        Post post = Post.create(writer, title, contents);
+    public ModelAndView addQuestion(@RequestParam("title") String title,
+                                    @RequestParam("contents") String contents,
+                                    HttpSession session) throws SQLException {
+        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        Post post = Post.create(userDetails.getName(), title, contents);
         postService.create(post);
         ModelAndView mv = new ModelAndView("redirect:/");
         return mv;
     }
 
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.GET)
-    public ModelAndView getQuestion(@PathVariable("id") Long id) throws SQLException {
+    public ModelAndView getQuestion(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostDetail");
         PostResponse post = postService.getPostById(id);
+        mv.addAttribute("isAuthor", isAuthor(session, post));
         mv.addAttribute("post", post);
         return mv;
+    }
+
+    @RequestMapping(path = "/questions/{id}/form", method = HttpMethod.GET)
+    public ModelAndView getQuestionForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
+        ModelAndView mv = new ModelAndView("post/PostForm");
+        PostResponse post = postService.getPostById(id);
+        boolean isAuthor = isAuthor(session, post);
+        if (!isAuthor) {
+            return new ModelAndView("redirect:/questions/" + id);
+        }
+        mv.addAttribute("isAuthor", isAuthor);
+        mv.addAttribute("post", post);
+        return mv;
+    }
+
+    private boolean isAuthor(HttpSession session, PostResponse post) {
+        boolean isAuthor = false;
+
+        if (session != null) {
+            UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+            isAuthor = userDetails.getName().equals(post.getWriter());
+            logger.info("isAuthor: " + isAuthor);
+        }
+        return isAuthor;
     }
 }
 
