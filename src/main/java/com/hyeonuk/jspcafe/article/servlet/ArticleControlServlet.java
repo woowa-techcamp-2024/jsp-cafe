@@ -45,7 +45,7 @@ public class ArticleControlServlet extends HttpServlet {
             else if(pathParts.length == 3 && "form".equals(pathParts[2])){
                 HttpSession session = req.getSession();
                 Member member = (Member)session.getAttribute("member");
-                if(!article.getWriter().equals(member.getMemberId())) {
+                if(!article.getWriter().getId().equals(member.getId())) {
                     throw new HttpBadRequestException("작성자가 아닙니다.");
                 }
                 req.getRequestDispatcher("/templates/qna/modify.jsp").forward(req, resp);
@@ -71,7 +71,7 @@ public class ArticleControlServlet extends HttpServlet {
                     .orElseThrow(() -> new HttpNotFoundException(articleId + "번의 게시글을 찾을 수 없습니다."));
 
             Member member = (Member)req.getSession().getAttribute("member");
-            if(!article.getWriter().equals(member.getMemberId())) throw new HttpBadRequestException("작성자가 아니라 권한이 없습니다.");
+            if(!article.getWriter().getId().equals(member.getId())) throw new HttpBadRequestException("작성자가 아니라 권한이 없습니다.");
 
             String method = req.getParameter("_method");
             if("PUT".equalsIgnoreCase(method)){

@@ -3,6 +3,7 @@ package com.hyeonuk.jspcafe.article.servlet;
 import com.hyeonuk.jspcafe.article.dao.ArticleDao;
 import com.hyeonuk.jspcafe.article.dao.InMemoryArticleDao;
 import com.hyeonuk.jspcafe.article.domain.Article;
+import com.hyeonuk.jspcafe.member.domain.Member;
 import com.hyeonuk.jspcafe.member.servlets.mock.*;
 import jakarta.servlet.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,11 +43,11 @@ class ArticleListServletTest {
         @Test
         void forwardWithAllArticles() throws ServletException, IOException {
             //given
-            Article article1 = new Article(1l,"writer1","title1","contents1");
-            Article article2 = new Article(2l,"writer2","title2","contents2");
-            Article article3 = new Article(3l,"writer3","title3","contents3");
-            Article article4 = new Article(4l,"writer4","title4","contents4");
-            Article article5 = new Article(5l,"writer5","title5","contents5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
 

@@ -1,18 +1,20 @@
 package com.hyeonuk.jspcafe.article.domain;
 
+import com.hyeonuk.jspcafe.member.domain.Member;
+
 public class Article {
     private Long id;
-    private String writer;
+    private Member writer;
     private String title;
     private String contents;
 
-    public Article(Long id,String writer,String title,String contents){
+    public Article(Long id,Member writer,String title,String contents){
         this.id=id;
         this.writer=writer;
         this.title = title;
         this.contents = contents;
     }
-    public Article(String writer, String title, String contents) {
+    public Article(Member writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
@@ -26,11 +28,11 @@ public class Article {
         this.id = id;
     }
 
-    public String getWriter() {
+    public Member getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(Member writer) {
         this.writer = writer;
     }
 
@@ -53,6 +55,6 @@ public class Article {
     public boolean validation(){
         return this.title != null && !this.title.isBlank()
                 && this.contents!=null && !this.contents.isBlank()
-                && this.writer != null && !this.writer.isBlank();
+                && this.writer != null && this.writer.getId() != null;
     }
 }

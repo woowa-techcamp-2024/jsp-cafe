@@ -20,6 +20,6 @@ CREATE TABLE member (
 CREATE TABLE article (
                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
                          title VARCHAR(255) NOT NULL,
-                         writer VARCHAR(255) NOT NULL,
+                         writer BIGINT NOT NULL,
                          contents TEXT NOT NULL
 );

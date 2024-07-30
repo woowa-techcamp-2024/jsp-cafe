@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS ARTICLE;
 DROP TABLE IF EXISTS MEMBER;
 
 -- member 테이블 생성
-CREATE TABLE MEMBER (
+CREATE TABLE member (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
                         memberId VARCHAR(255) UNIQUE NOT NULL,
                         password VARCHAR(255) NOT NULL,
@@ -12,9 +12,9 @@ CREATE TABLE MEMBER (
 );
 
 -- article 테이블 생성
-CREATE TABLE ARTICLE (
+CREATE TABLE article (
                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
                          title VARCHAR(255) NOT NULL,
-                         writer VARCHAR(255) NOT NULL,
+                         writer BIGINT NOT NULL,
                          contents TEXT NOT NULL
 );

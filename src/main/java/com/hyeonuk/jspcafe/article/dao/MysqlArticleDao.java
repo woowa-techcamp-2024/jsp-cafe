@@ -4,6 +4,7 @@ import com.hyeonuk.jspcafe.article.domain.Article;
 import com.hyeonuk.jspcafe.global.db.DBManager;
 import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
+import com.hyeonuk.jspcafe.member.domain.Member;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,16 +21,16 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public Article save(Article article) {
         if(!article.validation()){
-            throw new DataIntegrityViolationException("can't persist null or empty value");
+            throw new DataIntegrityViolationException("can\"t persist null or empty value");
         }
         try(Connection conn = manager.getConnection()) {
             if(article.getId() == null){//save작업
-                String writer = article.getWriter();
+                Member writer = article.getWriter();
                 String title = article.getTitle();
                 String contents = article.getContents();
                 String query = "insert into article(writer,title,contents) values(?,?,?)";
                 PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                pstmt.setString(1, writer);
+                pstmt.setLong(1, writer.getId());
                 pstmt.setString(2, title);
                 pstmt.setString(3, contents);
                 int num = pstmt.executeUpdate();
@@ -41,14 +42,14 @@ public class MysqlArticleDao implements ArticleDao{
             }
             else{//update 작업
                 Long id = article.getId();
-                String writer = article.getWriter();
+                Member writer = article.getWriter();
                 String title = article.getTitle();
                 String contents = article.getContents();
                 Optional<Article> byId = findById(id);
                 if(byId.isPresent()) {
                     String query = "update article set writer = ?, title = ?, contents = ? where id = ?";
                     PreparedStatement pstmt = conn.prepareStatement(query);
-                    pstmt.setString(1, writer);
+                    pstmt.setLong(1, writer.getId());
                     pstmt.setString(2, title);
                     pstmt.setString(3, contents);
                     pstmt.setLong(4, id);
@@ -59,7 +60,7 @@ public class MysqlArticleDao implements ArticleDao{
                     String query = "insert into article(id,writer,title,contents) values(?,?,?,?)";
                     PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                     pstmt.setLong(1,id);
-                    pstmt.setString(2, writer);
+                    pstmt.setLong(2, writer.getId());
                     pstmt.setString(3, title);
                     pstmt.setString(4, contents);
 
@@ -68,7 +69,6 @@ public class MysqlArticleDao implements ArticleDao{
             }
             return article;
         }catch (SQLException e) {
-            e.printStackTrace();
             throw new DataIntegrityViolationException("error");
         }
     }
@@ -76,7 +76,7 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public List<Article> findAll() {
         try(Connection conn = manager.getConnection()){
-            String sql = "select * from article";
+            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" from article a left join member m on m.id = a.writer";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             List<Article> articles = new ArrayList<>();
@@ -85,6 +85,7 @@ public class MysqlArticleDao implements ArticleDao{
             }
             return articles;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DataIntegrityViolationException("error");
         }
     }
@@ -92,7 +93,7 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public Optional<Article> findById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "select * from article where id = ?";
+            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" from article a left join member m on m.id = a.writer where a.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
             ResultSet rs = pstmt.executeQuery();
@@ -120,10 +121,16 @@ public class MysqlArticleDao implements ArticleDao{
     }
 
     private Article mappingArticle(ResultSet rs) throws SQLException {
-        Long id = rs.getLong("id");
-        String writer = rs.getString("writer");
-        String title = rs.getString("title");
-        String contents = rs.getString("contents");
-        return new Article(id,writer,title,contents);
+        Long id = rs.getLong("a.id");
+        String title = rs.getString("a.title");
+        String contents = rs.getString("a.contents");
+
+        Long writerId = rs.getLong("m.id");
+        String nickname = rs.getString("m.nickname");
+        String password = rs.getString("m.password");
+        String memberId = rs.getString("m.memberId");
+        String email = rs.getString("m.email");
+
+        return new Article(id,new Member(writerId,memberId,password,nickname,email),title,contents);
     }
 }

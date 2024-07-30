@@ -22,7 +22,7 @@
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
                               <span class="time">2016-01-15 18:47</span>
-                              <a href="${pageContext.request.contextPath}/members/<%=article.getWriter()%>" class="author"><%=article.getWriter()%></a>
+                              <a href="${pageContext.request.contextPath}/members/<%=article.getWriter().getMemberId()%>" class="author"><%=article.getWriter().getNickname()%></a>
                           </div>
 <%--                          <div class="reply" title="댓글">--%>
 <%--                              <i class="icon-reply"></i>--%>

@@ -76,6 +76,9 @@
                         Member member = (Member)session.getAttribute("member");
                 %>
                 <li>
+                    <h1><%=member.getNickname()%></h1>
+                </li>
+                <li>
                     <form method="post" action="${pageContext.request.contextPath}/logout">
                         <button type="submit">로그아웃</button>
                     </form>

@@ -21,7 +21,7 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="${pageContext.request.contextPath}/members/<%=article.getWriter()%>" class="article-author-name"><%=article.getWriter()%></a>
+                          <a href="${pageContext.request.contextPath}/members/<%=article.getWriter().getMemberId()%>" class="article-author-name"><%=article.getWriter().getNickname()%></a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
                               2015-12-30 01:47
                               <i class="icon-link"></i>
@@ -34,7 +34,7 @@
                   <div class="article-util">
                       <ul class="article-util-list">
                           <%
-                              if(article.getWriter().equals(member.getMemberId())){
+                              if(article.getWriter().getId().equals(member.getId())){
                           %>
                           <li>
                               <a class="link-modify-article" href="/questions/<%=article.getId()%>/form">수정</a>

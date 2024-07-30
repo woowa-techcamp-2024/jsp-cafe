@@ -40,7 +40,7 @@ public class ArticleRegistServlet extends HttpServlet {
         String writer = member.getMemberId();
         String title = req.getParameter("title");
         String contents = req.getParameter("contents");
-        Article article = new Article(writer, title, contents);
+        Article article = new Article(member, title, contents);
 
         if(!article.validation()) throw new InvalidArticleRegistRequest("빈값이 존재하면 안됩니다.");
 

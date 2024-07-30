@@ -48,11 +48,11 @@ class ArticleControlServletTest {
         @DisplayName("제대로 된 요청이 들어온 경우, 해당하는 article을 반환한다.")
         void success() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/" + article1.getId());
@@ -74,11 +74,11 @@ class ArticleControlServletTest {
         @DisplayName("작성자가 자신의 게시글의 /{id}/form 으로 들어온 경우")
         void formPath() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/1/form");
@@ -103,11 +103,11 @@ class ArticleControlServletTest {
         @DisplayName("작성자가 자신이 아닌 게시글의 /{id}/form 으로 들어온 경우")
         void formPathWithOtherArticle() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/1/form");
@@ -125,11 +125,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 null인 경우")
         void nullPathInfo() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo(null);
@@ -144,11 +144,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 empty인 경우")
         void emptyPathInfo() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("");
@@ -163,11 +163,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 /인  경우")
         void slashPathInfo() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/");
@@ -184,11 +184,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 /{id}/{anyNumber}으로 들어온 경우")
         void manyPathVariables() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/1/2");
@@ -203,11 +203,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 /{id}/{form 이외의 string}으로 들어온 경우")
         void manyPathVariablesWithString() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/1/anyString");
@@ -222,11 +222,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 /{id}/{anyString}/{anyString}으로 들어온 경우")
         void manyPathVariablesWithStringDouble() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/1/anyString/otherString");
@@ -241,11 +241,11 @@ class ArticleControlServletTest {
         @DisplayName("pathInfo가 숫자가 아닌 string으로 들어온 경우")
         void pathInfoWithStringId() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/helloworld");
@@ -260,11 +260,11 @@ class ArticleControlServletTest {
         @DisplayName("article이 존재하지 않는 경우")
         void notExistsArticle() throws Exception {
             //given
-            Article article1 = new Article(1l, "writer1", "title1", "content1");
-            Article article2 = new Article(2l, "writer2", "title2", "content2");
-            Article article3 = new Article(3l, "writer3", "title3", "content3");
-            Article article4 = new Article(4l, "writer4", "title4", "content4");
-            Article article5 = new Article(5l, "writer5", "title5", "content5");
+            Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+            Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+            Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+            Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+            Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
             List<Article> articles = List.of(article1, article2, article3, article4, article5);
             articles.forEach(articleDao::save);
             req.setPathInfo("/6");
@@ -323,7 +323,7 @@ class ArticleControlServletTest {
             void badRequestMethodValue() throws Exception {
                 //given
                 Member member = new Member(1l, "id1", "pw1", "nick1", "email1");
-                Article article1 = new Article(1l, member.getMemberId(), "title1", "content1");
+                Article article1 = new Article(1l, member, "title1", "content1");
                 articleDao.save(article1);
                 req.setPathInfo("/"+ article1.getId());
                 req.setParameter("_method","otherMethod");
@@ -353,11 +353,11 @@ class ArticleControlServletTest {
             @DisplayName("pathInfo가 /{id}/{anyString}으로 들어온 경우")
             void manyPathVariablesWithString() throws Exception {
                 //given
-                Article article1 = new Article(1l, "writer1", "title1", "content1");
-                Article article2 = new Article(2l, "writer2", "title2", "content2");
-                Article article3 = new Article(3l, "writer3", "title3", "content3");
-                Article article4 = new Article(4l, "writer4", "title4", "content4");
-                Article article5 = new Article(5l, "writer5", "title5", "content5");
+                Article article1 = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title1","contents1");
+                Article article2 = new Article(2l,new Member(2l,"id2","pw2","nick2","email2"),"title2","contents2");
+                Article article3 = new Article(3l,new Member(3l,"id3","pw3","nick3","email3"),"title3","contents3");
+                Article article4 = new Article(4l,new Member(4l,"id4","pw4","nick4","email4"),"title4","contents4");
+                Article article5 = new Article(5l,new Member(5l,"id5","pw5","nick5","email5"),"title5","contents5");
                 List<Article> articles = List.of(article1, article2, article3, article4, article5);
                 articles.forEach(articleDao::save);
                 req.setPathInfo("/1/anyString");
@@ -389,7 +389,7 @@ class ArticleControlServletTest {
             void methodPut() throws Exception {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
-                Article article = new Article(1l,member.getMemberId(),"beforeUpdateTitle","beforeUpdateContents");
+                Article article = new Article(1l,member,"beforeUpdateTitle","beforeUpdateContents");
                 String updateTitle = "updatedTitle";
                 String updateContents = "updatedContents";
                 articleDao.save(article);
@@ -424,7 +424,7 @@ class ArticleControlServletTest {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
                 Member member2 = new Member(2l,"id2","pw2","nick2","email2");
-                Article article = new Article(1l,member.getMemberId(),"beforeUpdateTitle","beforeUpdateContents");
+                Article article = new Article(1l,member,"beforeUpdateTitle","beforeUpdateContents");
                 String updateTitle = "updatedTitle";
                 String updateContents = "updatedContents";
                 articleDao.save(article);
@@ -459,7 +459,7 @@ class ArticleControlServletTest {
             void methodPutWithNullTitle() throws Exception {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
-                Article article = new Article(1l,member.getMemberId(),"beforeUpdateTitle","beforeUpdateContents");
+                Article article = new Article(1l,member,"beforeUpdateTitle","beforeUpdateContents");
                 String updateTitle = null;
                 String updateContents = "updatedContents";
                 articleDao.save(article);
@@ -494,7 +494,7 @@ class ArticleControlServletTest {
             void methodPutWithBlankTitle() throws Exception {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
-                Article article = new Article(1l,member.getMemberId(),"beforeUpdateTitle","beforeUpdateContents");
+                Article article = new Article(1l,member,"beforeUpdateTitle","beforeUpdateContents");
                 String updateTitle = "    ";
                 String updateContents = "updatedContents";
                 articleDao.save(article);
@@ -529,7 +529,7 @@ class ArticleControlServletTest {
             void methodPutWithNullContents() throws Exception {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
-                Article article = new Article(1l,member.getMemberId(),"beforeUpdateTitle","beforeUpdateContents");
+                Article article = new Article(1l,member,"beforeUpdateTitle","beforeUpdateContents");
                 String updateTitle = "updatedTitle";
                 String updateContents = null;
                 articleDao.save(article);
@@ -564,7 +564,7 @@ class ArticleControlServletTest {
             void methodPutWithBlankContents() throws Exception {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
-                Article article = new Article(1l,member.getMemberId(),"beforeUpdateTitle","beforeUpdateContents");
+                Article article = new Article(1l,member,"beforeUpdateTitle","beforeUpdateContents");
                 String updateTitle = "updatedTitle";
                 String updateContents = "    ";
                 articleDao.save(article);
@@ -603,7 +603,7 @@ class ArticleControlServletTest {
             void deleteSuccessTest() throws Exception{
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
-                Article article = new Article(1l,member.getMemberId(),"title","contents");
+                Article article = new Article(1l,member,"title","contents");
                 articleDao.save(article);
                 MockSession session = new MockSession();
                 session.setAttribute("member",member);
@@ -628,7 +628,7 @@ class ArticleControlServletTest {
                 //given
                 Member member = new Member(1l,"id1","pw1","nick1","email1");
                 Member member2 = new Member(2l,"id2","pw2","nick2","email2");
-                Article article = new Article(1l,member.getMemberId(),"title","contents");
+                Article article = new Article(1l,member,"title","contents");
                 articleDao.save(article);
                 MockSession session = new MockSession();
                 session.setAttribute("member",member2);
