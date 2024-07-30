@@ -2,8 +2,8 @@ package camp.woowa.jspcafe.model;
 
 public class Question {
     private final Long id;
-    private final String title;
-    private final String content;
+    private String title;
+    private String content;
     private final String writer;
     private final Long writerId;
 
@@ -33,5 +33,14 @@ public class Question {
 
     public Long getWriterId() {
         return writerId;
+    }
+
+    public void update(String updatedTitle, String updatedContent) {
+        if (updatedTitle != null && !updatedTitle.isEmpty()) {
+            this.title = updatedTitle;
+        }
+        if (updatedContent != null && !updatedContent.isEmpty()) {
+            this.content = updatedContent;
+        }
     }
 }
