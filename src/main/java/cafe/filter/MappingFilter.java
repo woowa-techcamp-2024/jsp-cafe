@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface MappingFilter extends Filter {
 
-    List<String> mappings();
+    default List<String> mappings() {
+        return List.of("/*");
+    }
 }
