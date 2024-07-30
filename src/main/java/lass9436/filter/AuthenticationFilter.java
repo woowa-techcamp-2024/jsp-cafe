@@ -1,4 +1,4 @@
-package lass9436.question.filter;
+package lass9436.filter;
 
 import java.io.IOException;
 
@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter({"/questions/*", "/questions"})
-public class QuestionFilter implements Filter {
+@WebFilter({"/questions/*", "/questions", "/questionPage"})
+public class AuthenticationFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws
