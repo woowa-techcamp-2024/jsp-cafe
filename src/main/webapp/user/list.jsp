@@ -26,7 +26,7 @@
                     <th scope="row"><%= user.getId() %></th>
                       <td> <c:out value="<%= user.getUserId() %>"/></td>
                       <td>
-                          <span onclick="location.href='<%= request.getContextPath() %>/users/<%= user.getId() %>'" style="cursor:pointer;">
+                          <span onclick="location.href='<%= request.getContextPath() %>/users?id=<%= user.getId() %>'" style="cursor:pointer;">
                               <c:out value="<%= user.getName() %>" />
                           </span>
                       </td>

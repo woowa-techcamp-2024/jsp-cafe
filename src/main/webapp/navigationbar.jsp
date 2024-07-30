@@ -58,7 +58,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <% User loginUser = (User) session.getAttribute("loginMember");
                     if (loginUser != null) { %>
-                <li><a href="/users/<%= loginUser.getId() %>"><c:out value="<%= loginUser.getName()%>"/> 님!</a></li>
+                <li><a href="/users?id=<%= loginUser.getId() %>"><c:out value="<%= loginUser.getName()%>"/> 님!</a></li>
                 <% } %>
                 <li class="active"><a href="/">Posts</a></li>
                 <%

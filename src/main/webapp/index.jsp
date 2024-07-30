@@ -23,7 +23,7 @@
                             <strong class="subject">
                                 <c:choose>
                                     <c:when test="${not empty sessionScope.loginMember}">
-                                        <a href="./questions?id=<%= article.getId() %>"><c:out
+                                        <a href="/questions?id=<%= article.getId() %>"><c:out
                                                 value="<%= article.getTitle() %>"/></a>
                                     </c:when>
                                     <c:otherwise>
@@ -34,7 +34,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%= article.getCreated() %></span>
-                                <a href="users/<%= article.getWriter().getId() %>"
+                                <a href="/users?id=<%= article.getWriter().getId() %>"
                                    class="author"><c:out value="<%= article.getWriter().getName() %>"/>
                                 </a>
                             </div>
