@@ -142,10 +142,10 @@ class ArticleServiceTest {
         private final String expectedUpdateTitle = "updateTitle";
         private final String expectedUpdateContents = "updateContents";
 
-        private final Map<String, String[]> expectedValues = Map.of(
-            "id", new String[]{String.valueOf(expectedId)},
-            "title", new String[]{expectedContents},
-            "contents", new String[]{expectedContents}
+        private final Map<String, String> expectedValues = Map.of(
+            "id", String.valueOf(expectedId),
+            "title", expectedContents,
+            "contents", expectedContents
         );
 
         @Test

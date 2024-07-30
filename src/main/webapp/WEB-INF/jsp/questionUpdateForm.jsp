@@ -57,6 +57,16 @@
         url: actionUrl,
         type: 'PUT', // Use PUT method
         data: formData,
+
+        success: function () {
+          window.location.href = '/questions/' + ${articleCommonResponse.id};
+        },
+        error: function (xhr, status, error) {
+          let errorMessage = xhr.responseText
+          if (confirm(status + ": " + errorMessage)) {
+            window.location.href = '/questions/' + ${articleCommonResponse.id};
+          }
+        }
       });
     })
   });

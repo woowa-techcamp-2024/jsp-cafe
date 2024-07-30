@@ -16,10 +16,10 @@ public class ArticleUpdateRequest {
         this.userId = userId;
     }
 
-    public static ArticleUpdateRequest of(Map<String, String[]> map, Long userId) {
-        Long articleId = Long.parseLong(map.get("id")[0]);
-        String title = map.get("title")[0];
-        String contents = map.get("contents")[0];
+    public static ArticleUpdateRequest of(Map<String, String> map, Long userId) {
+        Long articleId = Long.parseLong(map.get("id"));
+        String title = map.get("title");
+        String contents = map.get("contents");
         return new ArticleUpdateRequest(articleId, title, contents, userId);
     }
 
