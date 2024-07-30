@@ -4,7 +4,6 @@ import static org.example.cafe.utils.LoggerFactory.getLogger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,12 +12,11 @@ import java.nio.charset.StandardCharsets;
 import org.example.cafe.application.UserService;
 import org.example.cafe.application.dto.UserUpdateDto;
 import org.example.cafe.common.error.BadAuthenticationException;
-import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.User;
 import org.slf4j.Logger;
 
 @WebServlet(name = "UserProfileServlet", value = "/users/*")
-public class UserProfileServlet extends HttpServlet {
+public class UserProfileServlet extends BaseServlet {
 
     private static final Logger log = getLogger(UserProfileServlet.class);
 
@@ -62,8 +60,7 @@ public class UserProfileServlet extends HttpServlet {
             throws IOException, ServletException {
         String loginUserId = (String) request.getSession().getAttribute("userId");
         if (!userId.equals(loginUserId)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
+            throw new BadAuthenticationException("다른 사용자의 정보를 수정할 수 없습니다.");
         }
 
         request.setAttribute("user", userService.findById(userId));
@@ -96,8 +93,7 @@ public class UserProfileServlet extends HttpServlet {
 
         String loginUserId = (String) request.getSession().getAttribute("userId");
         if (!userId.equals(loginUserId)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
+            throw new BadAuthenticationException("다른 사용자의 정보를 수정할 수 없습니다.");
         }
 
         String checkPassword = request.getParameter("checkPassword");
@@ -105,14 +101,8 @@ public class UserProfileServlet extends HttpServlet {
         String nickname = request.getParameter("nickname");
         String email = request.getParameter("email");
 
-        try {
-            User user = userService.updateUser(userId, new UserUpdateDto(checkPassword, password, nickname, email));
-            request.setAttribute("user", user);
-            request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
-        } catch (DataNotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        } catch (BadAuthenticationException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+        User user = userService.updateUser(userId, new UserUpdateDto(checkPassword, password, nickname, email));
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
     }
 }

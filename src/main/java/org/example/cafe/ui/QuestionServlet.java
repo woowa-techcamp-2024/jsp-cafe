@@ -4,7 +4,6 @@ import static org.example.cafe.utils.LoggerFactory.getLogger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import org.example.cafe.application.dto.QuestionCreateDto;
 import org.slf4j.Logger;
 
 @WebServlet(name = "QuestionServlet", urlPatterns = "/questions")
-public class QuestionServlet extends HttpServlet {
+public class QuestionServlet extends BaseServlet {
 
     private static final Logger log = getLogger(QuestionServlet.class);
 
@@ -43,7 +42,8 @@ public class QuestionServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
 
-        String writer = request.getParameter("writer");
+        assert request.getSession().getAttribute("userId") != null;
+        String writer = (String) request.getSession().getAttribute("userId");
         String title = request.getParameter("title");
         String contents = request.getParameter("contents");
 

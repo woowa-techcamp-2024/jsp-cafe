@@ -2,26 +2,32 @@ package org.example.cafe.ui;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.example.cafe.application.QuestionService;
+import org.example.cafe.application.dto.QuestionUpdateDto;
+import org.example.cafe.common.error.BadAuthenticationException;
 import org.example.cafe.domain.Question;
+import org.example.cafe.utils.JsonDataBinder;
+import org.example.cafe.utils.PathTokenExtractUtils;
 import org.slf4j.Logger;
 
 @WebServlet("/questions/*")
-public class QuestionDetailServlet extends HttpServlet {
+public class QuestionDetailServlet extends BaseServlet {
 
     private static final Logger log = getLogger(QuestionDetailServlet.class);
 
     private QuestionService questionService;
+    private ObjectMapper objectMapper;
 
     @Override
     public void init() {
-        questionService = (QuestionService) getServletContext().getAttribute("QuestionService");
+        this.questionService = (QuestionService) getServletContext().getAttribute("QuestionService");
+        this.objectMapper = (ObjectMapper) getServletContext().getAttribute("ObjectMapper");
         log.debug("Init servlet: {}", this.getClass().getSimpleName());
     }
 
@@ -37,18 +43,66 @@ public class QuestionDetailServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
+        Long questionId = PathTokenExtractUtils.extractValueByIndex(request.getRequestURI(), 2, Long.class);
 
-        String path = request.getRequestURI();
-        String[] pathParts = path.split("/");
-        Long questionId = Long.valueOf(pathParts[2]);
-
-        Question question = questionService.findById(questionId);
-        if (question == null) {
-            response.sendError(404);
+        String edit = request.getParameter("edit");
+        if ("true".equals(edit)) {
+            forwardEditQuestionForm(request, response, questionId);
             return;
         }
 
+        forwardQuestionDetail(request, response, questionId);
+    }
+
+    private void forwardQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId)
+            throws ServletException, IOException {
+        Question question = questionService.findById(questionId);
+
         request.setAttribute("question", question);
         request.getRequestDispatcher("/WEB-INF/qna/detail.jsp").forward(request, response);
+    }
+
+    private void forwardEditQuestionForm(HttpServletRequest request, HttpServletResponse response, Long questionId)
+            throws ServletException, IOException {
+        Question question = questionService.findById(questionId);
+        if (question.isValidWriter((String) request.getSession().getAttribute("userId"))) {
+            throw new BadAuthenticationException("작성자만 수정, 삭제할 수 있습니다.");
+        }
+
+        request.setAttribute("question", question);
+        request.getRequestDispatcher("/WEB-INF/qna/form.jsp").forward(request, response);
+    }
+
+    /**
+     * 게시글을 삭제한다
+     *
+     * @param request  the {@link HttpServletRequest} object that contains the request the client made of the servlet
+     * @param response the {@link HttpServletResponse} object that contains the response the servlet returns to the
+     *                 client
+     * @throws IOException
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long questionId = PathTokenExtractUtils.extractValueByIndex(request.getRequestURI(), 2, Long.class);
+
+        assert request.getSession().getAttribute("userId") != null;
+        String loginUserId = (String) request.getSession().getAttribute("userId");
+
+        questionService.deleteQuestion(loginUserId, questionId);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Long questionId = PathTokenExtractUtils.extractValueByIndex(request.getRequestURI(), 2, Long.class);
+
+        assert request.getSession().getAttribute("userId") != null;
+        String loginUserId = (String) request.getSession().getAttribute("userId");
+
+        QuestionUpdateDto questionUpdateDto = JsonDataBinder.bind(objectMapper, request.getInputStream(),
+                QuestionUpdateDto.class);
+        questionService.updateQuestion(loginUserId, questionUpdateDto);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

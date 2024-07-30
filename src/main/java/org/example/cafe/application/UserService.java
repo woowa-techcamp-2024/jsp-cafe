@@ -1,9 +1,11 @@
 package org.example.cafe.application;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.example.cafe.application.dto.UserCreateDto;
 import org.example.cafe.application.dto.UserUpdateDto;
 import org.example.cafe.common.error.BadAuthenticationException;
+import org.example.cafe.common.error.CafeException;
 import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.User;
 import org.example.cafe.domain.UserRepository;
@@ -19,7 +21,7 @@ public class UserService {
     public void createUser(UserCreateDto userCreateDto) {
         String userId = userCreateDto.userId();
         if (userRepository.findById(userId) != null) {
-            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+            throw new CafeException(HttpServletResponse.SC_BAD_REQUEST, "이미 사용 중인 아이디입니다.");
         }
 
         User user = userCreateDto.toUser();
@@ -48,6 +50,11 @@ public class UserService {
     }
 
     public User findById(String id) {
-        return userRepository.findById(id);
+        User user = userRepository.findById(id);
+        if (user == null) {
+            throw new DataNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+
+        return user;
     }
 }

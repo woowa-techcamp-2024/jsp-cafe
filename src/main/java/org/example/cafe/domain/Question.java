@@ -22,6 +22,16 @@ public class Question {
     public Question(Long questionId,
                     String title,
                     String content,
+                    String writer) {
+        this.questionId = questionId;
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
+
+    public Question(Long questionId,
+                    String title,
+                    String content,
                     String writer,
                     LocalDateTime createdAt) {
         this.questionId = questionId;
@@ -30,6 +40,12 @@ public class Question {
         this.writer = writer;
         this.createdAt = createdAt;
     }
+
+    public boolean isValidWriter(String loginUserId) {
+        return loginUserId != null && !loginUserId.equals(writer);
+    }
+
+    // ----------------------------------------------------------------------------- Getter
 
     public Long getQuestionId() {
         return questionId;

@@ -18,6 +18,8 @@ public class QuestionJdbcRepository implements QuestionRepository {
     private static final String SELECT = "SELECT * FROM QUESTION";
     private static final String SELECT_BY_ID = "SELECT * FROM QUESTION WHERE question_id = ?";
     private static final String DELETE = "DELETE FROM QUESTION";
+    private static final String DELETE_BY_ID = "DELETE FROM QUESTION WHERE question_id = ?";
+    private static final String UPDATE_BY_ID = "UPDATE QUESTION SET title = ?, content = ?, writer = ? WHERE question_id = ?";
 
     private final DbConnector dbConnector;
 
@@ -90,6 +92,38 @@ public class QuestionJdbcRepository implements QuestionRepository {
             }
         } catch (SQLException e) {
             throw new CafeException("Failed to find questions", e);
+        }
+    }
+
+    @Override
+    public void update(Question question) {
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BY_ID)) {
+            preparedStatement.setString(1, question.getTitle());
+            preparedStatement.setString(2, question.getContent());
+            preparedStatement.setString(3, question.getWriter());
+            preparedStatement.setLong(4, question.getQuestionId());
+
+            int row = preparedStatement.executeUpdate();
+            if (row != 1) {
+                throw new CafeException("Failed to update question " + question.getQuestionId());
+            }
+        } catch (SQLException e) {
+            throw new CafeException("Failed to update question " + question.getQuestionId(), e);
+        }
+    }
+
+    public void delete(Long id) {
+        try (Connection connection = dbConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
+            preparedStatement.setLong(1, id);
+
+            int row = preparedStatement.executeUpdate();
+            if (row != 1) {
+                throw new CafeException("Failed to delete question " + id);
+            }
+        } catch (SQLException e) {
+            throw new CafeException("Failed to delete question " + id, e);
         }
     }
 

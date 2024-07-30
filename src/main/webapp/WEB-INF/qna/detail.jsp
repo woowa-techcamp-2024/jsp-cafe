@@ -32,17 +32,20 @@
                             ${question.content}
                         </p>
                     </div>
+
                     <div class="article-util">
                         <ul class="article-util-list">
-                            <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
-                            </li>
-                            <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
-                            </li>
+                            <c:if test="${sessionScope.userId == question.writer}">
+                                <li>
+                                    <a class="link-modify-article"
+                                       href="/questions/${question.questionId}?edit=true">수정</a>
+                                </li>
+                                <li>
+                                    <button id="delete-question-btn" class="delete-answer-button"
+                                            onclick="deleteQuestion(${question.questionId})">삭제
+                                    </button>
+                                </li>
+                            </c:if>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>
                             </li>
@@ -102,34 +105,6 @@
     </div>
 </div>
 
-<script type="text/template" id="answerTemplate">
-    <article class="article">
-        <div class="article-header">
-            <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-            </div>
-            <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
-            </div>
-        </div>
-        <div class="article-doc comment-doc">
-            {2}
-        </div>
-        <div class="article-util">
-            <ul class="article-util-list">
-                <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </article>
-</script>
-
+<script src="/resources/js/ApiTemplate.js"></script>
+<script src="/resources/js/question.js"></script>
 <%@ include file="/WEB-INF/base/footer.jsp" %>

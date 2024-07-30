@@ -2,6 +2,7 @@ package org.example.cafe.context;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -33,6 +34,8 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private void registerBean() {
         try {
+            setContext("ObjectMapper", ObjectMapper::new);
+
             setContext("DbConnector", () -> new DbConnector().init());
 
             setContext("UserRepository", () ->

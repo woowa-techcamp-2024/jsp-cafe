@@ -10,5 +10,9 @@ public interface QuestionRepository {
 
     List<Question> findAll();
 
+    void update(Question question);
+
+    void delete(Long id);
+
     void deleteAll();
 }
