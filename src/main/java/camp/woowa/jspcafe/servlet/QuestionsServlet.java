@@ -12,11 +12,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
+
+import static utils.SessionUtils.getSessionUser;
 
 @WebServlet(value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
@@ -67,7 +68,7 @@ public class QuestionsServlet extends HttpServlet {
             String questionIdStr = pathInfo.split("/")[1];
             try { // questionId 검증
                 Long questionId = Long.parseLong(questionIdStr);
-                deleteQuestions(req, resp, questionId);
+                deleteQuestion(req, resp, questionId);
             } catch (NumberFormatException e) {
                 throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid Question Id");
             }
@@ -76,20 +77,9 @@ public class QuestionsServlet extends HttpServlet {
         }
     }
 
-    private User getSessionUser(HttpServletRequest req, HttpServletResponse resp) {
-        HttpSession session = req.getSession(false);
-
-        if (session == null) {
-            return null;
-        }
-
-        User user = (User) session.getAttribute("user");
-
-        return findByUserIdOrThrow(user.getUserId());
-    }
-
-    private void deleteQuestions(HttpServletRequest req, HttpServletResponse resp, Long questionId) {
+    private void deleteQuestion(HttpServletRequest req, HttpServletResponse resp, Long questionId) {
         User w = getSessionUser(req, resp);
+
         if (w == null) {
             try {
                 resp.sendRedirect("/user/login");
@@ -98,6 +88,8 @@ public class QuestionsServlet extends HttpServlet {
                 throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to redirect");
             }
         }
+
+        findByUserIdOrThrow(w.getUserId()); // 실제 존재하는 지 확인
 
         try {
             questionService.deleteById(questionId, w.getId());
@@ -131,6 +123,9 @@ public class QuestionsServlet extends HttpServlet {
                 throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to redirect");
             }
         }
+
+        findByUserIdOrThrow(w.getUserId()); // 실제 존재하는 지 확인
+
         // PUT request json body to Object
         try (BufferedReader reader = req.getReader()){
             ObjectMapper mapper = new ObjectMapper();
@@ -183,6 +178,8 @@ public class QuestionsServlet extends HttpServlet {
                 throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to redirect");
             }
         }
+
+        findByUserIdOrThrow(w.getUserId()); // 실제 존재하는 지 확인
 
         String title = req.getParameter("title");
         String content = req.getParameter("content");
