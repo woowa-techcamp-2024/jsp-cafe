@@ -2,6 +2,7 @@ package codesqaud.app.dao.user;
 
 import codesqaud.app.dao.JdbcTemplate;
 import codesqaud.app.dao.RowMapper;
+import codesqaud.app.exception.DbConstraintException;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;
 import org.slf4j.Logger;
@@ -10,8 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.*;
 
 public class DbUserDao implements UserDao {
     private static final Logger log = LoggerFactory.getLogger(DbUserDao.class);
@@ -37,8 +37,12 @@ public class DbUserDao implements UserDao {
             throw new HttpException(SC_INTERNAL_SERVER_ERROR);
         }
 
-        String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
+        try {
+            String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
+            jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
+        } catch (DbConstraintException e) {
+            throw new HttpException(SC_BAD_REQUEST, "id가 중복되었습니다.");
+        }
     }
 
     @Override
