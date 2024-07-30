@@ -59,22 +59,66 @@ public class QuestionsServlet extends HttpServlet {
         }
     }
 
-    private void updateQuestions(HttpServletRequest req, HttpServletResponse resp, Long questionId) {
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+
+        if (pathInfo.split("/").length == 2) {
+            String questionIdStr = pathInfo.split("/")[1];
+            try { // questionId 검증
+                Long questionId = Long.parseLong(questionIdStr);
+                deleteQuestions(req, resp, questionId);
+            } catch (NumberFormatException e) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid Question Id");
+            }
+        } else {
+            throw new CustomException(HttpStatus.METHOD_NOT_ALLOWED, "Method Not Allowed");
+        }
+    }
+
+    private User getSessionUser(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession session = req.getSession(false);
 
         if (session == null) {
-            try {
-                resp.sendRedirect("/user/login");
-                return;
-            } catch (IOException e) {
-                log("Redirect Error", e);
-            }
+            return null;
         }
 
         User user = (User) session.getAttribute("user");
 
-        User w = findByUserIdOrThrow(user.getUserId());// Check if the user exists
+        return findByUserIdOrThrow(user.getUserId());
+    }
 
+    private void deleteQuestions(HttpServletRequest req, HttpServletResponse resp, Long questionId) {
+        User w = getSessionUser(req, resp);
+        if (w == null) {
+            try {
+                resp.sendRedirect("/user/login");
+                return;
+            } catch (IOException e) {
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to redirect");
+            }
+        }
+
+        questionService.deleteById(questionId, w.getId());
+
+        try {
+            resp.setContentType("application/json");
+            resp.getWriter().write("{\"result\":\"success\"}");
+        } catch (IOException e) {
+            log("Redirect Error", e);
+        }
+    }
+
+    private void updateQuestions(HttpServletRequest req, HttpServletResponse resp, Long questionId) {
+        User w = getSessionUser(req, resp);
+        if (w == null) {
+            try {
+                resp.sendRedirect("/user/login");
+                return;
+            } catch (IOException e) {
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to redirect");
+            }
+        }
         // PUT request json body to Object
         try (BufferedReader reader = req.getReader()){
             ObjectMapper mapper = new ObjectMapper();
@@ -107,21 +151,16 @@ public class QuestionsServlet extends HttpServlet {
     }
 
     private void createQuestion(HttpServletRequest req, HttpServletResponse resp) {
+        User w = getSessionUser(req, resp);
 
-        HttpSession session = req.getSession(false);
-
-        if (session == null) {
+        if (w == null) {
             try {
                 resp.sendRedirect("/user/login");
                 return;
             } catch (IOException e) {
-                log("Redirect Error", e);
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to redirect");
             }
         }
-
-        User user = (User) session.getAttribute("user");
-
-        User w = findByUserIdOrThrow(user.getUserId());// Check if the user exists
 
         String title = req.getParameter("title");
         String content = req.getParameter("content");

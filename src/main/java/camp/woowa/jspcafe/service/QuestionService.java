@@ -28,7 +28,7 @@ public class QuestionService {
 
     public void update(Long id, String updatedTitle, String updatedContent, long writerId) {
         Question target = findById(id);
-        if (target.getWriterId() != writerId) { // 수정 권한 검증
+        if (!target.getWriterId().equals(writerId)) { // 수정 권한 검증
             throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to update this question.");
         }
 
@@ -39,7 +39,7 @@ public class QuestionService {
 
     public void deleteById(Long id, long writerId) {
         Question target = findById(id);
-        if (target.getWriterId() != writerId) { // 삭제 권한 검증
+        if (!target.getWriterId().equals(writerId)) { // 삭제 권한 검증
             throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to delete this question.");
         }
 
