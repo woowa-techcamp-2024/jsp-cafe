@@ -30,6 +30,8 @@ public class FrontController extends HttpServlet {
         handlers.put("articleCreate", (Handler) servletContext.getAttribute("articleCreateHandler"));
         handlers.put("articleUpdate", (Handler) servletContext.getAttribute("articleUpdateHandler"));
         handlers.put("articleDelete", (Handler) servletContext.getAttribute("articleDeleteHandler"));
+        handlers.put("commentCreate", (Handler) servletContext.getAttribute("commentCreateHandler"));
+        handlers.put("commentDelete", (Handler) servletContext.getAttribute("commentDeleteHandler"));
     }
 
     @Override
@@ -48,6 +50,10 @@ public class FrontController extends HttpServlet {
             }
             case "articles": {
                 this.doArticleService(req, resp);
+                return;
+            }
+            case "comments": {
+                this.doCommentService(req, resp);
                 return;
             }
             default: this.doDefaultService(req, resp);
@@ -112,5 +118,9 @@ public class FrontController extends HttpServlet {
                 }
             }
         }
+    }
+
+    private void doCommentService(HttpServletRequest req, HttpServletResponse resp) {
+        //TODO: 댓글 서비스
     }
 }
