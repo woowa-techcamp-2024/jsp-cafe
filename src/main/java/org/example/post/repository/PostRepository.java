@@ -84,4 +84,26 @@ public class PostRepository {
             throw new SerialException(e.getMessage());
         }
     }
+
+    public Post update(Post post) throws SQLException {
+        logger.info("Updating post: {}", post);
+        String sql = "UPDATE posts SET title = ?, contents = ? WHERE id = ?";
+
+        try (Connection conn = dataUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getContents());
+            ps.setLong(3, post.getId());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating post failed, no rows affected.");
+            }
+
+            return post;
+        } catch (SQLException e) {
+            logger.error("Error updating post", e);
+            throw new SQLException(e);
+        }
+    }
 }
