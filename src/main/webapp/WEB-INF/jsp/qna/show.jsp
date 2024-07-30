@@ -76,19 +76,7 @@
 		<div class="article-doc comment-doc">
 			{2}
 		</div>
-		<div class="article-util">
-		<ul class="article-util-list">
-			<li>
-				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-			</li>
-			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
-			</li>
-		</ul>
-		</div>
+        {3}
 	</article>
 </script>
 
@@ -149,10 +137,28 @@
                 $('#answer-count').text(response.length);
                 const template = $('#answerTemplate').html();
                 let html = '';
+                const questionId = ${question.id};
                 for (let i = 0; i < response.length; i++) {
                     const answer = response[i];
-                    html += template.format(answer.writer, '2024-08-31', answer.content, ${question.id}, answer.id);
+                    let replyUtils = '';
+                    if (answer.writerId === ${sessionScope.user.id}) {
+                        replyUtils= `<div class="article-util">
+                                <ul class="article-util-list">
+                                    <li>
+                                        <a class="link-modify-article" href="/api/qna/updateAnswer/${answer.id}">수정</a>
+                                    </li>
+                                    <li>
+                                        <form class="delete-answer-form" action="/api/questions/${questionId}/answers/${answer.id}" method="POST">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                             <button type="submit" class="delete-answer-button">삭제</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                                </div>`;
+                    }
+                    html += template.format(answer.writer, '2024-08-31', answer.content, replyUtils);
                 }
+
                 $('#reply').before(html);
             },
             error: function(xhr, status, error) {
