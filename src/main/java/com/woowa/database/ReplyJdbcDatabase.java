@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ReplyJdbcDatabase implements ReplyDatabase {
     @Override
@@ -70,5 +71,15 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
         } finally {
             DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
+    }
+
+    @Override
+    public Optional<Reply> findById(String replyId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void delete(Reply reply) {
+
     }
 }

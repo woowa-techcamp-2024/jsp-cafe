@@ -30,8 +30,7 @@ public class ReplyHandler {
 
     @RequestMapping(path = "/questions/{questionId}/replies", method = HttpMethod.POST)
     public ResponseEntity createReply(String userId, String questionId, String content) {
-        User user = userDatabase.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+        User user = getUser(userId);
         Question question = questionDatabase.findById(questionId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
         Reply reply = Reply.create(
@@ -44,5 +43,21 @@ public class ReplyHandler {
         replyDatabase.save(reply);
         return ResponseEntity.builder()
                 .found("/questions/" + questionId);
+    }
+
+    @RequestMapping(path = "/questions/{questionId}/replies/{replyId}", method = HttpMethod.DELETE)
+    public ResponseEntity deleteReply(String userId, String questionId, String replyId) {
+        User user = getUser(userId);
+        Reply reply = replyDatabase.findById(replyId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다."));
+        reply.checkAuthority(user);
+        replyDatabase.delete(reply);
+        return ResponseEntity.builder()
+                .found("/questions/" + questionId);
+    }
+
+    private User getUser(String userId) {
+        return userDatabase.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
     }
 }

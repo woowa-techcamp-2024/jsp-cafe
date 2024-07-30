@@ -70,4 +70,8 @@ public class Reply {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    public void checkAuthority(User user) {
+        author.checkAuthority(user);
+    }
 }
