@@ -1,12 +1,15 @@
 package codesqaud.mock;
 
+import codesqaud.TestDataSource;
+import codesqaud.app.dao.JdbcTemplate;
 import codesqaud.app.dao.article.ArticleDao;
-import codesqaud.app.dao.article.InMemoryArticleDao;
-import codesqaud.app.dao.user.InMemoryUserDao;
+import codesqaud.app.dao.article.DbArticleDao;
+import codesqaud.app.dao.user.DbUserDao;
 import codesqaud.app.dao.user.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.descriptor.JspConfigDescriptor;
 
+import javax.sql.DataSource;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,10 +18,14 @@ import java.util.*;
 public class MockServletContext implements ServletContext {
     private final Map<String, Object> attributes = new HashMap<>();
     {
-        UserDao userDao= new InMemoryUserDao();
+        DataSource dataSource = TestDataSource.getDataSource();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+        UserDao userDao = new DbUserDao(jdbcTemplate);
         attributes.put("userDao", userDao);
 
-        ArticleDao articleDao = new InMemoryArticleDao();
+
+        ArticleDao articleDao = new DbArticleDao(jdbcTemplate);
         attributes.put("articleDao", articleDao);
     }
 
