@@ -12,6 +12,8 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./src/main/resources/db/init:/docker-entrypoint-initdb.d
+    networks:
+      - network
 
   tomcat:
     build:
@@ -26,6 +28,11 @@ services:
       MYSQL_SERVERNAME: mysql
       MYSQL_USERNAME: test_user
       MYSQL_PASSWORD: test_password
+    networks:
+      - network
 
 volumes:
   mysql-data:
+
+networks:
+  network:
