@@ -3,6 +3,7 @@ package org.example.demo.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.domain.Comment;
 import org.example.demo.domain.Post;
 import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
@@ -79,6 +80,20 @@ public class PostHandler {
         Long userId = getUserIdFromSession(request);
 
         authValidator.checkIdenticalUser(request, userId, post);
+        List<Comment> comments = postRepository.getPost(postId).get().getComments();
+
+        // 댓글이 없는 경우 삭제 가능
+        if (!comments.isEmpty()) {
+            request.setAttribute("error", "Post has comments. cannot delete");
+            throw new IllegalArgumentException("Post has comments");
+        }
+
+        // 모든 댓글이 작성자 본인이 쓴 댓글인 경우에만 삭제 가능
+        //TODO 항상 false 인 이유?
+        if (comments.stream().anyMatch(comment -> !comment.getWriter().getId().equals(userId))) {
+            request.setAttribute("error", "다른 사람이 쓴 댓글이 존재합니다.");
+            throw new IllegalArgumentException("다른 사람이 쓴 댓글이 존재");
+        }
 
         postRepository.deletePost(postId);
 

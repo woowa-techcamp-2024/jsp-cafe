@@ -3,6 +3,7 @@ package org.example.demo.validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.domain.Comment;
 import org.example.demo.domain.Post;
 import org.example.demo.exception.UnauthorizedException;
 import org.slf4j.Logger;
@@ -32,11 +33,24 @@ public class AuthValidator {
         }
     }
 
+    public void checkIdenticalUser(HttpServletRequest request, Long userId, Comment comment) {
+        if (!isIdenticalUser(userId, comment)) {
+            logger.warn("User not authorized");
+            request.setAttribute("error", "User not authorized");
+
+            throw new UnauthorizedException("User not authorized");
+        }
+    }
+
     private boolean isLoggedIn(HttpServletRequest request) {
         return request.getSession().getAttribute("user") != null;
     }
 
     private boolean isIdenticalUser(Long userId, Post post) {
         return userId.equals(post.getWriter().getId());
+    }
+
+    private boolean isIdenticalUser(Long userId, Comment comment) {
+        return userId.equals(comment.getWriter().getId());
     }
 }
