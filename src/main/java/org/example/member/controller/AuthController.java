@@ -31,25 +31,28 @@ public class AuthController {
 
     @RequestMapping(path = "/login", method = HttpMethod.GET)
     public ModelAndView getLoginPage() {
-        return new ModelAndView("redirect:/static/user/login.html");
+        return new ModelAndView("/user/UserLogin");
     }
 
     @RequestMapping(path = "/login", method = HttpMethod.POST)
     public ModelAndView login(@RequestParam("userId") String userId, @RequestParam("password") String password,
-                              HttpServletRequest request)
-            throws SQLException {
+                              HttpServletRequest request) {
         logger.info("로그인 시도 : {}", userId);
+        ModelAndView mv = new ModelAndView("/user/UserLogin");
         try {
             if (userService.validateUser(userId, password)) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("user", userId);
                 sessionManager.addSessionToManager(session);
                 return new ModelAndView("redirect:/");
+            } else {
+                mv.addAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
             }
-            return new ModelAndView("redirect:/user/login_failed.html");
         } catch (SQLException e) {
-            return new ModelAndView("redirect:/user/login_failed.html");
+            logger.error("로그인 처리 중 오류 발생", e);
+            mv.addAttribute("loginError", "로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }
+        return mv;
     }
 
     @RequestMapping(path = "/logout", method = HttpMethod.GET)

@@ -43,12 +43,12 @@ public class SessionCheckFilter implements Filter {
             logger.info("login check path : {}", path);
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("user") == null) {
-                response.sendRedirect("/static/user/login.html");
+                response.sendRedirect("/user/UserLogin");
                 return;
             }
             // 세션이 있더라도 세션매니저 내부에 존재하지 않으면 로그인 페이지로 보낸다.
             if (sessionManager.getSession(session.getId()) == null) {
-                response.sendRedirect("/static/user/login.html");
+                response.sendRedirect("/user/UserLogin");
                 return;
             }
         }
