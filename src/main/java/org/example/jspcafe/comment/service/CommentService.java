@@ -69,7 +69,19 @@ public class CommentService {
         if (!comment.getUserId().equals(userId)) {
             throw new IllegalArgumentException("댓글을 삭제할 권한이 없습니다.");
         }
-        
+
         commentRepository.delete(comment);
+    }
+
+    public void modifyComment(Long userId, Long commentId, String content) {
+        final Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+
+        if (!comment.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("댓글을 수정할 권한이 없습니다.");
+        }
+
+        comment.modifyContent(content);
+        commentRepository.update(comment);
     }
 }
