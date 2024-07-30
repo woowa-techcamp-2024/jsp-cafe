@@ -40,7 +40,7 @@ dependencies {
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:${jstlVersion}")
     // HikariCP
     implementation("com.zaxxer:HikariCP:${hikariVersion}")
-    
+
     // Junit5
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
@@ -48,6 +48,8 @@ dependencies {
     testImplementation("org.assertj:assertj-core:${assertJVersion}")
     // Mockito
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testImplementation("org.mockito:mockito-junit-jupiter:${mockitoVersion}")
+
 }
 
 test {
