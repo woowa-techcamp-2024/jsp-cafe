@@ -17,7 +17,4 @@ public class WasInitializeListener implements ServletContextListener {
 
         System.out.println("WasInitializeListener.contextInitialized finish!");
     }
-
-
-
 }

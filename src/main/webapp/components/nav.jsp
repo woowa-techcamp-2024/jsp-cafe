@@ -52,7 +52,6 @@
                 <!-- 세션 기반 조건부 메뉴 표시 -->
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-                        <div>로그인이 됨</div>
                         <li><a href="${pageContext.request.contextPath}/user/profile.jsp" role="button">개인정보수정</a></li>
                         <li>
                             <form id="logoutForm" action="${pageContext.request.contextPath}/users/logout" method="post" style="display:none;"></form>
@@ -60,7 +59,6 @@
                         </li>
                     </c:when>
                     <c:otherwise>
-                        <div>로그인이 안됨</div>
                         <li><a href="${pageContext.request.contextPath}/user/login.jsp" role="button">로그인</a></li>
                         <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
                     </c:otherwise>
