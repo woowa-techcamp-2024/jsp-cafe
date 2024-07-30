@@ -20,9 +20,15 @@ public abstract class AbstractHttpServlet extends HttpServlet {
             super.service(req, resp);
         } catch (CommonException e) {
             log.debug(e.getMessage(), e);
-            req.setAttribute("errorResponse", e);
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp")
-                    .forward(req, resp);
+            responseError(req, resp, e);
         }
+    }
+
+    protected void responseError(final HttpServletRequest request,
+                                 final HttpServletResponse response,
+                                 final CommonException e) throws IOException, ServletException {
+        request.setAttribute("errorResponse", e);
+        request.getRequestDispatcher("/WEB-INF/views/error/error.jsp")
+                .forward(request, response);
     }
 }

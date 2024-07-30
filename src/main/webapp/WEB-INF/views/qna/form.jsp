@@ -32,5 +32,18 @@
 
 <!-- script references -->
 <jsp:include page="../snippet/script.jsp"/>
+<script>
+    $(document).ready(function () {
+        $('#question').on('submit', function (e) {
+            $.ajax({
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = '/questions/' + ${editedQuestion.id};
+                }
+            });
+        })
+    });
+</script>
 </body>
 </html>

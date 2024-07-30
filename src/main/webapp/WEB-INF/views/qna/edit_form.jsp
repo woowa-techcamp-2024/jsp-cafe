@@ -13,10 +13,7 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
-            <form name="question" method="post"
-                  action="${pageContext.request.contextPath}/questions/edit/${editedQuestion.id}">
-                <input class="form-control" id="writer" name="writer" type="hidden" value="${signInUser.name}"
-                       readonly/>
+            <form id="question" name="question">
                 <div class="form-group">
                     <label for="title">제목</label>
                     <input type="text" class="form-control" id="title" name="title" value="${editedQuestion.title}"/>
@@ -35,5 +32,31 @@
 
 <!-- script references -->
 <jsp:include page="../snippet/script.jsp"/>
+
+<script>
+    $(document).ready(function () {
+        $('#question').on('submit', function (e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let formData = form.serialize();
+
+            $.ajax({
+                url: "${pageContext.request.contextPath}/questions/edit/${editedQuestion.id}",
+                type: 'PUT',
+                data: formData,
+
+                success: function () {
+                    window.location.href = '/questions/' + ${editedQuestion.id};
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = '/questions/' + ${editedQuestion.id};
+                }
+            });
+        })
+    });
+</script>
 </body>
 </html>

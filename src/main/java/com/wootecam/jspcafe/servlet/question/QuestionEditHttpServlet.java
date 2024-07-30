@@ -2,12 +2,15 @@ package com.wootecam.jspcafe.servlet.question;
 
 import com.wootecam.jspcafe.domain.Question;
 import com.wootecam.jspcafe.domain.User;
+import com.wootecam.jspcafe.exception.CommonException;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
+import com.wootecam.jspcafe.servlet.HttpBodyParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 public class QuestionEditHttpServlet extends AbstractHttpServlet {
@@ -42,8 +45,7 @@ public class QuestionEditHttpServlet extends AbstractHttpServlet {
     }
 
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPut(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         User signInUser = (User) req.getSession().getAttribute("signInUser");
 
         if (Objects.isNull(signInUser)) {
@@ -51,12 +53,20 @@ public class QuestionEditHttpServlet extends AbstractHttpServlet {
             return;
         }
         Long id = parseSuffixPathVariable(req.getPathInfo());
+        Map<String, String> parameters = HttpBodyParser.parse(req.getReader().readLine());
+
         questionService.edit(
                 id,
-                req.getParameter("title"),
-                req.getParameter("contents")
+                parameters.get("title"),
+                parameters.get("contents")
         );
+    }
 
-        resp.sendRedirect("/questions/" + id);
+    @Override
+    protected void responseError(final HttpServletRequest request,
+                                 final HttpServletResponse response,
+                                 final CommonException e) throws IOException {
+        response.setStatus(e.getStatusCode());
+        response.getWriter().print(e.getMessage());
     }
 }
