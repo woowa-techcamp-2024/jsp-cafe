@@ -21,6 +21,15 @@ public class SavedHttpResponse {
 
     public Header[] getHeaders() {
         return headers;
+
+    }
+
+    public String getFirstHeader(String key) {
+        return Arrays.stream(headers)
+                .filter(header -> header.getName().equals(key))
+                .findFirst()
+                .map(Header::getValue)
+                .orElse("");
     }
 
     public String getBody() {

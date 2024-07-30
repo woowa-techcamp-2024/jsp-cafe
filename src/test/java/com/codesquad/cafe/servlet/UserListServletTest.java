@@ -17,11 +17,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class UsersServletTest extends E2ETestBase {
+class UserListServletTest extends E2ETestBase {
 
     private static UserRepository userRepository;
 
-    private final String path = "/users";
+    private final String path = "/users/list";
 
     private User user;
 

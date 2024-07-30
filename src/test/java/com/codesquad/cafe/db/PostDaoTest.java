@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class PostDaoTest {
 
     private static UserDao userDao;
 
-    private static User user;
+    private User user;
 
     private Post post;
 
@@ -37,6 +38,10 @@ class PostDaoTest {
         postDao = new PostDao(new JdbcTemplate(ds));
         userDao = new UserDao(new JdbcTemplate(ds));
         createTable(ds);
+    }
+
+    @BeforeEach
+    void setUp() {
         user = userDao.save(User.of("javajigi", "test1234", "박재성", "javajihi@gmail.com"));
     }
 
@@ -47,6 +52,7 @@ class PostDaoTest {
     @AfterEach
     void tearDown() {
         postDao.deleteAll();
+        userDao.deleteAll();
     }
 
     @AfterAll
@@ -58,7 +64,7 @@ class PostDaoTest {
     @Test
     void save() {
         //given
-        Post post = Post.of(1L, "test-title", "test-content", "test-filename.jpg");
+        Post post = Post.of(user.getId(), "test-title", "test-content", "test-filename.jpg");
 
         //when
         postDao.save(post);
