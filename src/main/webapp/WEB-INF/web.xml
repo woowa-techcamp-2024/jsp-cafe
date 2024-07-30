@@ -80,7 +80,7 @@
     <filter-mapping>
         <filter-name>sessionFilter</filter-name>
         <url-pattern>/members/*/form</url-pattern>
-        <url-pattern>/questions</url-pattern>
+        <url-pattern>/questions/*</url-pattern>
     </filter-mapping>
 
     <filter>
