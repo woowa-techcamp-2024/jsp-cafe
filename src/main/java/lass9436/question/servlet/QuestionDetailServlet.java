@@ -30,24 +30,6 @@ public class QuestionDetailServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// URL 패턴에서 경로 변수를 추출
-		String pathInfo = req.getPathInfo(); // 예: /123
-		if (pathInfo != null && !pathInfo.isEmpty()) {
-			long questionSeq = Long.parseLong(pathInfo.substring(1)); // 첫 번째 슬래시를 제거
-			Question question = questionRepository.findByQuestionSeq(questionSeq);
-			if (question != null) {
-				req.setAttribute("question", question);
-				req.getRequestDispatcher("/WEB-INF/question/detail.jsp").forward(req, resp);
-			} else {
-				resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
-			}
-		} else {
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid User ID");
-		}
-	}
-
-	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String pathInfo = req.getPathInfo(); // 예: /123
 		if (pathInfo != null && !pathInfo.isEmpty()) {

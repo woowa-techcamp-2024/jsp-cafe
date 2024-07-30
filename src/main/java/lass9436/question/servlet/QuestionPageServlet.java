@@ -68,7 +68,12 @@ public class QuestionPageServlet extends HttpServlet {
 
 	private String handleUpdate(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
-		// seq에 해당하는 질문을 가져와서 request attribute에 설정하는 로직 추가
+		Question question = questionRepository.findByQuestionSeq(seq);
+		long userSeq = (long) req.getSession().getAttribute("userSeq");
+		if (question.getUserSeq() != userSeq) {
+			throw new IllegalArgumentException("you are not allowed to update this question");
+		}
+		req.setAttribute("question", question);
 		return "/update.jsp";
 	}
 

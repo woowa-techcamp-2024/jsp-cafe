@@ -36,9 +36,9 @@
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
-                            <c:if test="${question.writer == sessionScope.userName}">
+                            <c:if test="${question.userSeq == sessionScope.userSeq}">
                             <li>
-                                <a class="link-modify-article" href="/questions/update/${question.questionSeq}">수정</a>
+                                <a class="link-modify-article" href="/questionPage?action=update&seq=${question.questionSeq}">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" id="form-delete">
