@@ -15,6 +15,8 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
 
     private final DatabaseConnectionManager connectionManager;
 
+    private static final String SOFT_DELETE_SQL = "UPDATE posts SET deleted_at = NOW() WHERE post_id = ?";
+
     public JdbcPostRepository(DatabaseConnectionManager connectionManager) {
         super(Post.class);
         this.connectionManager = connectionManager;
@@ -56,7 +58,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
 
     @Override
     public Optional<Post> findById(Long id) {
-        String sql = "SELECT * FROM posts WHERE post_id = ?";
+        String sql = "SELECT * FROM posts WHERE post_id = ? AND deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -81,22 +83,26 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
         if (post.getPostId() == null) {
             throw new IllegalArgumentException("Id는 null일 수 없습니다.");
         }
-        String sql = "DELETE FROM posts WHERE post_id = ?";
 
         try (Connection conn = connectionManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(SOFT_DELETE_SQL)) {
 
             pstmt.setLong(1, post.getPostId());
-            pstmt.executeUpdate();
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new RuntimeException("Post 삭제 실패: 해당 ID의 포스트가 없습니다.");
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting post", e);
         }
+
     }
 
     @Override
     public void update(Post post) {
-        String sql = "UPDATE posts SET title = ?, content = ? WHERE post_id = ?";
+        String sql = "UPDATE posts SET title = ?, content = ? WHERE post_id = ? AND deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -162,7 +168,7 @@ public class JdbcPostRepository extends ReflectionIdFieldExtractor<Post> impleme
 
     @Override
     public int count() {
-        String sql = "SELECT COUNT(*) FROM posts";
+        String sql = "SELECT COUNT(*) FROM posts WHERE deleted_at IS NULL";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
