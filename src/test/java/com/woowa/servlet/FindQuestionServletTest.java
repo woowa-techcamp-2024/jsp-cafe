@@ -13,8 +13,10 @@ import com.woowa.exception.AuthenticationException;
 import com.woowa.handler.QuestionHandler;
 import com.woowa.handler.ReplyHandler;
 import com.woowa.model.Question;
+import com.woowa.model.Reply;
 import com.woowa.model.User;
 import com.woowa.support.QuestionFixture;
+import com.woowa.support.ReplyFixture;
 import com.woowa.support.StubHttpServletRequest;
 import com.woowa.support.StubHttpServletResponse;
 import com.woowa.support.StubHttpSession;
@@ -225,24 +227,77 @@ class FindQuestionServletTest {
             response = new StubHttpServletResponse();
         }
 
-        @Test
-        @DisplayName("질문 리스트 화면으로 리다이렉트한다.")
-        void returnToListQuestions() throws ServletException, IOException {
-            //given
-            User user = UserFixture.user();
-            Question question = QuestionFixture.question(user);
-            userDatabase.save(user);
-            questionDatabase.save(question);
-            StubHttpSession session = new StubHttpSession();
-            session.setAttribute("userId", user.getUserId());
-            request.setSession(session);
-            request.setRequestUri("/questions/" + question.getQuestionId());
+        @Nested
+        @DisplayName("/questions/{questionId}이면")
+        class DeleteQuestionPath {
 
-            //when
-            findQuestionServlet.doDelete(request, response);
+            @Test
+            @DisplayName("질문 리스트 화면으로 리다이렉트한다.")
+            void returnToListQuestions() throws ServletException, IOException {
+                //given
+                User user = UserFixture.user();
+                Question question = QuestionFixture.question(user);
+                userDatabase.save(user);
+                questionDatabase.save(question);
+                StubHttpSession session = new StubHttpSession();
+                session.setAttribute("userId", user.getUserId());
+                request.setSession(session);
+                request.setRequestUri("/questions/" + question.getQuestionId());
 
-            //then
-            assertThat(response.getRedirectLocation()).isEqualTo("/");
+                //when
+                findQuestionServlet.doDelete(request, response);
+
+                //then
+                assertThat(response.getRedirectLocation()).isEqualTo("/");
+            }
+        }
+
+        @Nested
+        @DisplayName("/questions/{questionId}/replies/{replyId}이면")
+        class DeleteReplyPath {
+
+            private User user;
+            private Question question;
+            private Reply reply;
+
+            @BeforeEach
+            void setUp() {
+                user = UserFixture.user();
+                question = QuestionFixture.question(user);
+                reply = ReplyFixture.reply(user, question);
+                userDatabase.save(user);
+                questionDatabase.save(question);
+                replyDatabase.save(reply);
+
+                request.setRequestUri("/questions/" + question.getQuestionId() + "/replies/" + reply.getReplyId());
+            }
+
+            @Test
+            @DisplayName("질문 상세 화면으로 리다이렉트한다.")
+            void redirectToQuestionDetail() throws ServletException, IOException {
+                //given
+                StubHttpSession session = new StubHttpSession();
+                session.setAttribute("userId", user.getUserId());
+                request.setSession(session);
+
+                //when
+                findQuestionServlet.doDelete(request, response);
+
+                //then
+                assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
+            }
+
+            @Test
+            @DisplayName("예외(Authentication): 로그인되어 있지 않으면")
+            void authentication_WhenNoLogin() throws ServletException, IOException {
+                //given
+
+                //when
+                Exception exception = catchException(() -> findQuestionServlet.doDelete(request, response));
+
+                //then
+                assertThat(exception).isInstanceOf(AuthenticationException.class);
+            }
         }
     }
 }
