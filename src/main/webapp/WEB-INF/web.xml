@@ -4,7 +4,17 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
                       https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
+    <!-- 필터 매핑-->
+    <filter>
+        <filter-name>exceptionFilter</filter-name>
+        <filter-class>com.codesquad.cafe.filter.ExceptionTranslationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>exceptionFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
+    <!-- 서블릿 매핑-->
     <servlet>
         <servlet-name>user_join</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.UserJoinServlet</servlet-class>
@@ -29,7 +39,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>user_edit</servlet-name>
-        <url-pattern>/users/edit/*</url-pattern>
+        <url-pattern>/users/edit</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -59,11 +69,6 @@
         <url-pattern>/posts/*</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/static/*</url-pattern>
-    </servlet-mapping>
-
     <servlet>
         <servlet-name>login</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.LoginServlet</servlet-class>
@@ -91,6 +96,11 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
+    </servlet-mapping>
+
     <!--  에러 페이지 설정 -->
     <error-page>
         <error-code>400</error-code>
@@ -110,10 +120,6 @@
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/static/error/500.html</location>
-    </error-page>
-    <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
         <location>/static/error/500.html</location>
     </error-page>
 </web-app>
