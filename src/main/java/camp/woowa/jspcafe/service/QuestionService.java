@@ -26,7 +26,7 @@ public class QuestionService {
 
     public void update(Long id, String updatedTitle, String updatedContent, long writerId) {
         Question target = findById(id);
-        if (target.getWriterId() != writerId) {
+        if (target.getWriterId() != writerId) { // 수정 권한 검증
             throw new IllegalArgumentException("You are not authorized to update this question.");
         }
 
