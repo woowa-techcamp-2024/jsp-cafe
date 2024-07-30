@@ -6,11 +6,11 @@
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="../../css/styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
 
@@ -23,7 +23,7 @@
           <form name="question" method="post" action="/questions">
               <div class="form-group">
                   <label for="writer">글쓴이</label>
-                  <input readonly class="form-control" id="writer" name="writer" placeholder="글쓴이" value="<c:out value='${sessionScope.userName}'/>"/>
+                  <input readonly class="form-control" id="writer" name="writer" placeholder="글쓴이" value="${sessionScope.userName}"/>
               </div>
               <div class="form-group">
                   <label for="title">제목</label>
