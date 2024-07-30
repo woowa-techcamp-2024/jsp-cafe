@@ -19,9 +19,7 @@
                 </div>
                 <div class="form-group">
                     <label for="contents">내용</label>
-                    <textarea name="contents" id="contents" rows="5" class="form-control">
-<%=article.contents()%>
-                    </textarea>
+                    <textarea name="contents" id="contents" rows="5" class="form-control"><%= article.contents()%></textarea>
                 </div>
                 <button type="button" class="btn btn-success clearfix pull-right"
                         onclick="updateArticle()">수정하기
@@ -36,6 +34,9 @@
     var articleId = <%=article.articleId()%>;
 
     function updateArticle() {
+        const textarea = document.getElementById('contents');
+        textarea.value = textarea.value.trim();
+        
         const form = document.getElementById('articleForm');
         const formData = new FormData(form);
         const urlParams = new URLSearchParams(formData);
@@ -46,11 +47,11 @@
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: urlParams.toString(),
-            redirect: 'manual'
         })
             .then(response => {
+                console.log(response)
                 if (response.status === 303) {
-                    window.location.href = response.headers.get('Location');
+                    window.location.href = "/question/" + articleId;
                 } else if (response.ok) {
                     return response.text();
                 } else {

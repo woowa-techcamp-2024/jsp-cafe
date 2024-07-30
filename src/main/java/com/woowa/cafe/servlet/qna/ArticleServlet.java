@@ -87,7 +87,6 @@ public class ArticleServlet extends HttpServlet {
         articleService.update(articleId, SaveArticleDto.from(bodyFormData), memberId);
 
         resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
-        resp.setHeader("Location", "/question/" + articleId);
     }
 
     @Override
@@ -101,6 +100,5 @@ public class ArticleServlet extends HttpServlet {
         articleService.delete(articleId, memberId);
 
         resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
-        resp.setHeader("Location", "/");
     }
 }

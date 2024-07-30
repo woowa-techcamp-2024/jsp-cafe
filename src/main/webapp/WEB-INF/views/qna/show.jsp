@@ -1,4 +1,5 @@
 <%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -32,7 +33,7 @@
                         </div>
                     </div>
                     <div class="article-doc" style="white-space: pre-wrap;">
-<%= article.contents() %>
+                        <%= StringEscapeUtils.escapeHtml4(article.contents().trim()) %>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
@@ -165,17 +166,23 @@
 </script>
 
 <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const articleDoc = document.querySelector('.article-doc');
+        articleDoc.innerHTML = articleDoc.innerHTML.trim();
+    });
+    
     var articleId = <%=article.articleId()%>;
 
     function deleteArticle() {
 
         fetch(`/question/` + articleId, {
             method: 'DELETE',
-            redirect: 'manual'
         })
             .then(response => {
                 if (response.status === 303) {
-                    window.location.href = response.headers.get('Location');
+                    window.location.href = "/";
+                } else if (response.ok) {
+                    return response.text();
                 } else {
                     throw new Error('Network response was not ok');
                 }
