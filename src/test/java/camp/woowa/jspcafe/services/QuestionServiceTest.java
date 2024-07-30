@@ -22,7 +22,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void TestSave() {
+    void testSave() {
         // given
         String title = "title";
         String content = "content";
@@ -37,7 +37,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void TestFindAll() {
+    void testFindAll() {
         // given
         String title = "title";
         String content = "content";
@@ -54,7 +54,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void TestFindById() {
+    void testFindById() {
         // given
         String title = "title";
         String content = "content";
@@ -66,5 +66,10 @@ class QuestionServiceTest {
 
         // then
         assertEquals(title, foundTitle);
+    }
+
+    @Test
+    void testUpdate() {
+
     }
 }
