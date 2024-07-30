@@ -2,6 +2,7 @@ package woopaca.jspcafe.resolver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import woopaca.jspcafe.error.BadRequestException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
@@ -44,7 +45,7 @@ public class RequestParametersResolver {
 
         String[] values = request.get(componentName);
         if (values == null || values.length == 0) {
-            throw new IllegalArgumentException("[ERROR] 파라미터에 `" + componentName + "` 값이 없습니다.");
+            throw new BadRequestException("[ERROR] 파라미터에 `" + componentName + "` 값이 없습니다.");
         }
         return convert(values[0], componentType);
     }

@@ -1,5 +1,7 @@
 package woopaca.jspcafe.model;
 
+import woopaca.jspcafe.error.BadRequestException;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -53,7 +55,7 @@ public class User {
 
     public void updateNickname(String nickname) {
         if (nickname.isBlank()) {
-            throw new IllegalArgumentException("[ERROR] 닉네임은 비어있을 수 없습니다.");
+            throw new BadRequestException("[ERROR] 닉네임은 비어있을 수 없습니다.");
         }
         this.nickname = nickname;
     }

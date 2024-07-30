@@ -1,5 +1,7 @@
 package woopaca.jspcafe.service;
 
+import woopaca.jspcafe.error.ForbiddenException;
+import woopaca.jspcafe.error.NotFoundException;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.Post;
 import woopaca.jspcafe.model.User;
@@ -8,6 +10,7 @@ import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
 import woopaca.jspcafe.servlet.dto.response.PageInfo;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
+import woopaca.jspcafe.servlet.dto.response.PostEditResponse;
 import woopaca.jspcafe.servlet.dto.response.PostsResponse;
 
 import java.util.Comparator;
@@ -35,7 +38,7 @@ public class PostService {
                 .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
                 .map(post -> {
                     User user = userRepository.findById(post.getWriterId())
-                            .orElseThrow(() -> new IllegalArgumentException("[ERROR] 작성자를 찾을 수 없습니다."));
+                            .orElseThrow(() -> new NotFoundException("[ERROR] 작성자를 찾을 수 없습니다."));
                     return PostsResponse.of(post, user);
                 })
                 .toList();
@@ -43,11 +46,11 @@ public class PostService {
 
     public PostDetailsResponse getPostDetails(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("[ERROR] 게시글을 찾을 수 없습니다."));
         updateViewCount(post);
         PageInfo pageInfo = getPageInfo(post);
         User user = userRepository.findById(post.getWriterId())
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 작성자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("[ERROR] 작성자를 찾을 수 없습니다."));
         return PostDetailsResponse.of(post, pageInfo, user);
     }
 
@@ -66,5 +69,19 @@ public class PostService {
         Long previousPostId = hasPrevious ? posts.get(postIndex - 1).getId() : null;
         Long nextPostId = hasNext ? posts.get(postIndex + 1).getId() : null;
         return new PageInfo(hasNext, hasPrevious, nextPostId, previousPostId);
+    }
+
+    public PostEditResponse getPostTitleContent(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("[ERROR] 게시글을 찾을 수 없습니다."));
+        return new PostEditResponse(post.getId(), post.getTitle(), post.getContent());
+    }
+
+    public void validateWriter(Long postId, Authentication authentication) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
+        if (!authentication.isPrincipal(post.getWriterId())) {
+            throw new ForbiddenException("[ERROR] 작성자만 수정할 수 있습니다.");
+        }
     }
 }
