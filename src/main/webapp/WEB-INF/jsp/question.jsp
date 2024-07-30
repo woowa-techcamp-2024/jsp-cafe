@@ -167,26 +167,28 @@
         }
       });
     });
-
-    $('#replyDelete').on('submit', function (e) {
-      e.preventDefault();
-
-      let form = $(this);
-      let actionUrl = form.attr('action');
-
-      $.ajax({
-        url: actionUrl,
-        type: 'DELETE',
-        success: function () {
-          window.location.href = '/questions/' + ${articleCommonResponse.id};
-        },
-        error: function (xhr, status, error) {
-          let errorMessage = xhr.responseText;
-          if (confirm(status + ": " + errorMessage)) {
-            window.location.href = '/questions/' + ${articleCommonResponse.id};
-          }
-        }
-      });
-    })
   })
+</script>
+<script>
+  $(document).on('submit', '.delete-answer-form', function (e) {
+    e.preventDefault();
+
+    let form = $(this);
+    let actionUrl = form.attr('action');
+    let replyId = form.closest('.article').attr('id').split('-')[1];
+
+    $.ajax({
+      url: actionUrl,
+      type: 'DELETE',
+      success: function () {
+        $('#answer-' + replyId).remove();
+      },
+      error: function (xhr, status, error) {
+        let errorMessage = xhr.responseText;
+        if (confirm(status + ": " + errorMessage)) {
+          window.location.href = '/questions/' + ${articleCommonResponse.id};
+        }
+      }
+    });
+  });
 </script>
