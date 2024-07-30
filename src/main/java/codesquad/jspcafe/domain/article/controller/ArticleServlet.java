@@ -20,7 +20,8 @@ import java.util.NoSuchElementException;
 
 
 /**
- * ArticleServlet은 질문 조회 요청을 처리하는 서블릿입니다. <br> GET 메서드를 제공하여 질문을 표시하거나 질문 갱신 페이지로 이동합니다.
+ * ArticleServlet은 질문 조회 요청을 처리하는 서블릿입니다. <br><br> GET 요청을 처리하여 여러 .jsp 페이지로 포워딩합니다. <br> PUT 요청을
+ * 처리하여 질문을 수정합니다. <br> DELETE 요청을 처리하여 질문을 삭제합니다. <br> 이 서블릿은 /questions/* 경로로 매핑되어 있습니다.
  */
 @WebServlet("/questions/*")
 public class ArticleServlet extends HttpServlet {
@@ -97,6 +98,28 @@ public class ArticleServlet extends HttpServlet {
         articleService.updateArticle(
             ArticleUpdateRequest.of(parseRequestBody(req), sessionResponse.getId()));
         resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    /**
+     * DELETE 요청을 처리하여 질문을 삭제합니다. <br> 클라이언트가 /questions/{articleId}로 DELETE 요청을 보낼 때 이 메서드가 호출됩니다.
+     * <br> 삭제 요청에 대해 작성자가 아닌경우 AccessDeniedException{@link AccessDeniedException}을 던집니다. <br> 요청
+     * URI가 잘못된 경우 NoSuchElementException{@link NoSuchElementException}을 던집니다.
+     *
+     * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
+     * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
+     * @throws ServletException 서블릿이 PUT 요청을 처리하는 동안 입력 또는 출력 오류가 발생할 경우
+     * @throws IOException      포워드 요청을 처리할 수 없는 경우
+     */
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        verifyPathInfo(pathInfo);
+        UserSessionResponse sessionResponse = (UserSessionResponse) req.getSession()
+            .getAttribute("user");
+        articleService.deleteArticle(Long.parseLong(pathInfo.substring(1)),
+            sessionResponse.getId());
+        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
     private void verifyPathInfo(String pathInfo) {

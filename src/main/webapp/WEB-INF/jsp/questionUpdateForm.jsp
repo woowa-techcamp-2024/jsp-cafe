@@ -41,21 +41,18 @@
 </body>
 </html>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-        crossorigin="anonymous"></script>
 <script>
   $(document).ready(function () {
     $('#question').on('submit', function (e) {
-      e.preventDefault(); // Prevent the form from submitting the default way
+      e.preventDefault();
 
       let form = $(this);
       let actionUrl = form.attr('action');
-      let formData = form.serialize(); // Serialize form data
+      let formData = form.serialize();
 
       $.ajax({
         url: actionUrl,
-        type: 'PUT', // Use PUT method
+        type: 'PUT',
         data: formData,
 
         success: function () {
