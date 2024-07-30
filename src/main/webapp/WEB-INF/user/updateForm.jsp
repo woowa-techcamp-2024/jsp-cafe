@@ -12,7 +12,7 @@
             <div class="panel-heading"><h4>프로필 수정</h4></div>
             <div class="panel-body">
                 <%
-                    String id = (String)request.getAttribute("id");
+                    String id = (String)session.getAttribute("id");
                 %>
                 <form action="/users/edit/<%= id %>" method="post">
                     <div class="form-group">

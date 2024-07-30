@@ -27,7 +27,7 @@ public class UserUpdateServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setAttribute("id", req.getPathInfo().substring(1));
+		req.getSession().setAttribute("id", req.getPathInfo().substring(1));
 		req.getRequestDispatcher("/WEB-INF/user/updateForm.jsp").forward(req, resp);
 	}
 

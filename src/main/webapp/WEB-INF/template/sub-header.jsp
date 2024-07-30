@@ -28,7 +28,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="/">Posts</a></li>
+                <li><a href="/">Posts</a></li>
                 <%
                     Object login = session.getAttribute("login");
                     if (login != null) {
