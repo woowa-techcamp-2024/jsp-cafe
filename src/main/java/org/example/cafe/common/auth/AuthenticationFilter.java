@@ -46,8 +46,13 @@ public class AuthenticationFilter implements Filter {
         if (canMatch(httpRequest)) {
             HttpSession session = httpRequest.getSession(false);
             if (!isSessionValid(session)) {
-                httpResponse.sendRedirect("/login");
-                return;
+                if ("GET".equals(httpRequest.getMethod()) || "POST".equals(httpRequest.getMethod())) {
+                    httpResponse.sendRedirect("/login");
+                    return;
+                } else {
+                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다.");
+                    return;
+                }
             }
         }
 
@@ -57,7 +62,10 @@ public class AuthenticationFilter implements Filter {
     private boolean canMatch(HttpServletRequest request) {
         return ENDPOINT_PATTERNS.stream().anyMatch(pattern -> {
             if (pattern.path.endsWith("/") || pattern.path.endsWith("*")) {
-                return request.getRequestURI().startsWith(pattern.path)
+                String comparePath = pattern.path.endsWith("*")
+                        ? pattern.path.substring(0, pattern.path.length() - 1)
+                        : pattern.path;
+                return request.getRequestURI().startsWith(comparePath)
                         && request.getMethod().equals(pattern.method);
             }
             return request.getRequestURI().equals(pattern.path)
