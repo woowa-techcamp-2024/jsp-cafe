@@ -70,6 +70,23 @@ class QuestionRepositoryTest {
 
     @Test
     void testUpdate() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionRepository.save(title, content, writer, 1L);
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+        Question target = questionRepository.findById(id);
 
+        target.update(updatedTitle, updatedContent);
+
+        // when
+        questionRepository.update(target);
+
+        // then
+        Question question = questionRepository.findById(id);
+        assertEquals(updatedTitle, question.getTitle());
+        assertEquals(updatedContent, question.getContent());
     }
 }
