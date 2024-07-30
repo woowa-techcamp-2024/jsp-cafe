@@ -12,4 +12,6 @@ public interface ReplyRepository {
     void deleteAll();
 
     List<Reply> findByQuestionId(Long questionId);
+
+    void deleteById(Long id);
 }

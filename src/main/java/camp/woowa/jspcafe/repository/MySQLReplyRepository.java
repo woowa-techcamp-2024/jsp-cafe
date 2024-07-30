@@ -74,4 +74,14 @@ public class MySQLReplyRepository implements ReplyRepository {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    @Override
+    public void deleteById(Long id) {
+        try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM reply WHERE id = ?")) {
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }

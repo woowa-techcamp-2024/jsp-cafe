@@ -36,4 +36,9 @@ public class InMemReplyRepository implements ReplyRepository {
                 .filter(reply -> reply.getQuestionId().equals(questionId))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteById(Long id) {
+        replies.remove(id);
+    }
 }
