@@ -21,7 +21,7 @@ public class ArticleService {
     }
 
     public Article find(String uri) {
-        String id = uri.substring(uri.lastIndexOf("/") + 1);
+        String id = uri.split("/")[2];
         Article article = articleDatabase.selectById(id);
         if (article == null) throw new IllegalArgumentException("Question not found!");
         return article;
@@ -41,5 +41,11 @@ public class ArticleService {
     public void deleteById(String requestURI) {
         String id = requestURI.split("/")[2];
         articleDatabase.deleteById(id);
+    }
+
+    public void update(String requestURI, String title, String contents) {
+        String id = requestURI.split("/")[2];
+        Article article = articleDatabase.selectById(id);
+        articleDatabase.update(id, Article.of(id, article.getWriter(), title, contents));
     }
 }
