@@ -46,6 +46,7 @@ public class DatabaseInitServlet extends HttpServlet {
                 "writer VARCHAR(50) NOT NULL," +
                 "title VARCHAR(50) NOT NULL," +
                 "contents TEXT NOT NULL," +
+                "status VARCHAR(50) NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                 ")";
     }
