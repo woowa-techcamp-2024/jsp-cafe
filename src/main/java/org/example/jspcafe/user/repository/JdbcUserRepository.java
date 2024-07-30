@@ -72,10 +72,10 @@ public class JdbcUserRepository implements UserRepository {
                 User user = new User(
                         rs.getLong("id"),
                         rs.getString("user_id"),
-                        rs.getString("password"),
+                        rs.getString("email"),
                         rs.getString("nickname"),
-                        rs.getString("email")
-                );
+                        rs.getString("password")
+                        );
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -96,10 +96,35 @@ public class JdbcUserRepository implements UserRepository {
                     User user = new User(
                             rs.getLong("id"),
                             rs.getString("user_id"),
-                            rs.getString("password"),
+                            rs.getString("email"),
                             rs.getString("nickname"),
-                            rs.getString("email")
+                            rs.getString("password")
                     );
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findByUserId(String userId) {
+        String sql = "SELECT * FROM Users WHERE user_id = ?";
+        try (Connection conn = SimpleConnectionPool.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User(
+                            rs.getLong("id"),
+                            rs.getString("user_id"),
+                            rs.getString("email"),
+                            rs.getString("nickname"),
+                            rs.getString("password")
+                            );
                     return Optional.of(user);
                 }
             }

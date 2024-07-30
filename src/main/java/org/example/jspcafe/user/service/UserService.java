@@ -19,13 +19,22 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
-    public void updateUser(Long id, String userId, String nickname, String password, String email) {
+    public void updateUser(Long id, String nickname, String password, String email) {
         User user = findById(id);
-        user.setUserId(userId);
+        if (!password.equals(user.getPassword())) {
+            throw new IllegalArgumentException("Passwords don't match");
+        }
         user.setNickname(nickname);
-        user.setPassword(password);
         user.setEmail(email);
 
         userRepository.update(user);
+    }
+
+    public User findByIdAndPw(String userId, String password) {
+        User user = userRepository.findByUserId(userId).orElseThrow(IllegalArgumentException::new);
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("Wrong password");
+        }
+        return user;
     }
 }

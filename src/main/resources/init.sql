@@ -17,3 +17,6 @@ CREATE TABLE Question (
                           contents TEXT NOT NULL,
                           date VARCHAR(20) NOT NULL
 );
+
+INSERT INTO Users (user_id, password, nickname, email)
+VALUES ('seungsu', '994499', '김승수', 'seungsu@naver.com');
