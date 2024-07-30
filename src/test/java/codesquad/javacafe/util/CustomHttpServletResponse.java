@@ -13,6 +13,7 @@ import java.util.Locale;
 public class CustomHttpServletResponse implements HttpServletResponse {
     private String redirectedUrl;
     private String forwardedUrl;
+    private int statusCode;
 
     @Override
     public void addCookie(Cookie cookie) {
@@ -81,12 +82,12 @@ public class CustomHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setStatus(int i) {
-
+        this.statusCode = i;
     }
 
     @Override
     public int getStatus() {
-        return 0;
+        return statusCode;
     }
 
     @Override

@@ -5,16 +5,11 @@
 
 <!DOCTYPE html>
 <html lang="kr">
-<head>
-    <meta charset="UTF-8">
-    <title>QnA List</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/styles.css">
-</head>
-
+<jsp:include page="/common/header.jsp" />
 <body>
 <jsp:include page="/common/topbar.jsp" />
 <jsp:include page="/common/navbar.jsp" />
+
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -62,7 +57,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="<%= request.getContextPath() %>/qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="<%= request.getContextPath() %>/qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -70,8 +65,11 @@
 </div>
 
 <!-- script references -->
-<script src="/js/jquery-2.2.0.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/scripts.js"></script>
+<%
+    var contextPath = request.getContextPath();
+%>
+<script src="<%=contextPath%>/js/jquery-2.2.0.min.js"></script>
+<script src="<%=contextPath%>/js/bootstrap.min.js"></script>
+<script src="<%=contextPath%>/js/scripts.js"></script>
 </body>
 </html>

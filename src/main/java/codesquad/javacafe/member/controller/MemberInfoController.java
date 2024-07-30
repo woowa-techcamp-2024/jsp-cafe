@@ -1,6 +1,8 @@
 package codesquad.javacafe.member.controller;
 
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.common.exception.ClientErrorCode;
+import codesquad.javacafe.common.session.SessionManager;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
@@ -25,7 +27,8 @@ public class MemberInfoController implements SubController {
             case "GET" : {
                 var userId = req.getParameter("userId");
                 req.setAttribute("userId", userId);
-                var dispatcher = req.getRequestDispatcher("/user/memberInfo.jsp");
+                SessionManager.getInstance().loginCheck(req,"loginInfo", userId);
+                var dispatcher = req.getRequestDispatcher("/WEB-INF/user/memberInfo.jsp");
                 dispatcher.forward(req, res);
                 break;
             }
@@ -37,12 +40,14 @@ public class MemberInfoController implements SubController {
                 dispatcher.forward(req, res);
                 break;
             }
+            default: throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("Request Method = "+method);
         }
     }
 
     private void updateMember(HttpServletRequest req) {
         var body = req.getParameterMap();
         var memberDto = new MemberUpdateRequestDto(body);
+        SessionManager.getInstance().loginCheck(req,"loginInfo", memberDto.getUserId());
         MemberService.getInstance().updateMember(memberDto);
     }
 }

@@ -4,13 +4,10 @@
 
 <!DOCTYPE html>
 <html lang="kr">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <!-- Include CSS and other head elements here -->
-</head>
-<body>
 <jsp:include page="/common/header.jsp" />
+<body>
+<jsp:include page="/common/topbar.jsp" />
+<jsp:include page="/common/navbar.jsp" />
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
@@ -29,8 +26,8 @@
                         </div>
 
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name"><%=post.getWriter()%></a>
-                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                            <a href="#" class="article-author-name"><%=post.getWriter()%></a>
+                            <a href="#" class="article-header-time" title="퍼머링크">
                                 <%=post.getCreatedAt()%>
                                 <i class="icon-link"></i>
                             </a>
@@ -42,7 +39,7 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="#">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="#" method="POST">
@@ -51,7 +48,7 @@
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/index.html">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>
@@ -152,10 +149,10 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="#">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <form class="delete-answer-form" action="# method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>

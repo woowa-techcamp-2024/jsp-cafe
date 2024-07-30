@@ -1,3 +1,4 @@
+<%@ page import="codesquad.javacafe.common.session.MemberInfo" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -13,12 +14,12 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
             <%
-                var userId = request.getAttribute("userId");
+				var loginInfo = (MemberInfo)request.getSession().getAttribute("loginInfo");
             %>
             <form name="question" method="post" action="/api/users/info">
                 <div class="form-group">
                     <label for="userId">ID</label>
-                    <input class="form-control" id="userId" name="userId" value="<%=userId%>" readonly>
+                    <input class="form-control" id="userId" name="userId" value="<%=loginInfo.getUserId()%>" readonly>
                 </div>
                 <div class="form-group">
                     <label for="password">기존 비밀번호</label>
@@ -30,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label for="name">이름</label>
-                    <input class="form-control" id="name" name="name" placeholder="Name">
+                    <input class="form-control" id="name" name="name" placeholder="<%=loginInfo.getName()%>">
                 </div>
                 <button type="submit" class="btn btn-success clearfix pull-right">수정</button>
                 <div class="clearfix" />
@@ -40,8 +41,11 @@
 </div>
 
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<%
+    var contextPath = request.getContextPath();
+%>
+<script src="<%=contextPath%>/js/jquery-2.2.0.min.js"></script>
+<script src="<%=contextPath%>/js/bootstrap.min.js"></script>
+<script src="<%=contextPath%>/js/scripts.js"></script>
 </body>
 </html>

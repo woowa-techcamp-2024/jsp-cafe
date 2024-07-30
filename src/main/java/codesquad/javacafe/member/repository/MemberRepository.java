@@ -22,8 +22,7 @@ public class MemberRepository {
     }
 
 
-    public void save(Connection connection, MemberCreateRequestDto memberDto) {
-        var member = memberDto.toEntity();
+    public void save(Member member) {
         log.debug("[Member] {}",member);
 
 
@@ -32,14 +31,10 @@ public class MemberRepository {
         PreparedStatement ps = null;
 
         try {
-            if (connection != null) {
-                con = connection;
-            } else {
-                con = getConnection();
-            }
+            con = getConnection();
 
             String sql;
-            if (isH2Database(connection)) {
+            if (isH2Database(con)) {
                 sql = "MERGE INTO member (member_id, member_password, member_name) " +
                         "KEY (member_id) VALUES (?, ?, ?)";
             } else {
@@ -69,11 +64,7 @@ public class MemberRepository {
             log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
         }finally {
-            if (connection == null) {
-                close(con, ps, null);
-            } else {
-                close(null, ps, null);
-            }
+            close(con, ps, null);
         }
     }
 
@@ -124,7 +115,7 @@ public class MemberRepository {
         }
     }
 
-    public Member findByUserId(Connection connection, String userId) {
+    public Member findByUserId(String userId) {
         var sql = "select * from member where member_id = ?";
 
         Connection con = null;
@@ -132,11 +123,7 @@ public class MemberRepository {
         ResultSet rs = null;
 
         try {
-            if (connection != null) {
-                con = connection;
-            } else {
-                con = getConnection();
-            }
+            con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, userId);
 
@@ -158,15 +145,11 @@ public class MemberRepository {
             log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
         }finally {
-            if (connection == null) {
-                close(con, ps, null);
-            } else {
-                close(null, ps, null);
-            }
+            close(con, ps, null);
         }
     }
 
-    public void update(MemberUpdateRequestDto memberDto) {
+    public int update(MemberUpdateRequestDto memberDto) {
         var sql = "update member set member_password = ?, member_name = ?\n" +
                 "where member_id = ? and member_password = ?";
 
@@ -181,12 +164,7 @@ public class MemberRepository {
             ps.setString(3, memberDto.getUserId());
             ps.setString(4, memberDto.getOldPassword());
 
-            int result = ps.executeUpdate();
-
-            if (result == 0) {
-                //TODO error 처리
-                log.error("[MemberRepository] update, 비밀번호가 일치하지 않습니다");
-            }
+            return ps.executeUpdate();
 
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);

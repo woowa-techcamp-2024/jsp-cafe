@@ -1,6 +1,7 @@
 package codesquad.javacafe.member.controller;
 
 import codesquad.javacafe.common.SubController;
+import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.member.service.MemberService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,9 @@ public class MemberProfileController implements SubController {
                 req.setAttribute("memberInfo", memberInfo);
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/profile.jsp");
                 dispatcher.forward(req, res);
+                break;
             }
+            default: throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("Request Method = "+method);
         }
     }
 }

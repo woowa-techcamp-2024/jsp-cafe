@@ -1,4 +1,4 @@
-<%--
+<%@ page import="codesquad.javacafe.common.session.MemberInfo" %><%--
   Created by IntelliJ IDEA.
   User: woowatech28
   Date: 2024. 7. 25.
@@ -13,7 +13,7 @@
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="../WEB-INF/index.jsp" class="navbar-brand">SLiPP</a>
+            <a href="/" class="navbar-brand">SLiPP</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -29,6 +29,15 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <%
+                    var loginInfo = (MemberInfo)session.getAttribute("loginInfo");
+                    if (loginInfo != null) {
+
+                %>
+                <li class="navbar-brand"><%=loginInfo.getName()%> 님</li>
+                <%
+                    }
+                %>
                 <li>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
                     <ul class="dropdown-menu">
@@ -36,7 +45,17 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="user/list.jsp"><i class="glyphicon glyphicon-user"></i></a></li>
+                <%
+                    if(loginInfo != null){
+                %>
+                <li><a href="/api/users/info?userId=<%=loginInfo.getUserId()%>"><i class="glyphicon glyphicon-user"></i></a></li>
+                <%
+                    }else{
+                %>
+                <li><a href="/api/auth"><i class="glyphicon glyphicon-user"></i></a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>

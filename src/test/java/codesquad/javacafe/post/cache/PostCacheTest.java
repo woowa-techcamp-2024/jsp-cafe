@@ -49,7 +49,7 @@ class PostCacheTest {
         HttpServletResponse response = new CustomHttpServletResponse();
 
         List<Long> list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             body.put("writer", new String[]{"writer1"});
             body.put("title", new String[]{"title1"});
             body.put("contents", new String[]{"contents1"});
@@ -59,7 +59,7 @@ class PostCacheTest {
         }
 
         long notCacheStart = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             ((CustomHttpServletRequest) request).setMethod("GET");
             ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
             postController.doProcess(request, response);
@@ -71,7 +71,7 @@ class PostCacheTest {
 
 
         long cacheHitStart = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             ((CustomHttpServletRequest) request).setMethod("GET");
             ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
             postController.doProcess(request, response);
