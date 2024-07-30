@@ -91,7 +91,8 @@
                                                    href="/replies/${reply.id}">수정</a>
                                             </li>
                                             <li>
-                                                <form class="delete-answer-form"
+                                                <form class="delete-answer-form" id="replyDelete"
+                                                      name="replyDelete"
                                                       action="/replies/${reply.id}" method="POST">
                                                     <button type="submit"
                                                             class="delete-answer-button">
@@ -184,5 +185,29 @@
         }
       });
     })
+  })
+</script>
+<script>
+  $(document).ready(function () {
+    $('#replyDelete').on('submit', function (e) {
+      e.preventDefault();
+
+      let form = $(this);
+      let actionUrl = form.attr('action');
+
+      $.ajax({
+        url: actionUrl,
+        type: 'DELETE',
+        success: function () {
+          window.location.href = '/questions/' + ${articleCommonResponse.id};
+        },
+        error: function (xhr, status, error) {
+          let errorMessage = xhr.responseText;
+          if (confirm(status + ": " + errorMessage)) {
+            window.location.href = '/questions/' + ${articleCommonResponse.id};
+          }
+        }
+      });
+    });
   })
 </script>

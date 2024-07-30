@@ -77,7 +77,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
 
     @Override
     public Optional<Reply> findById(Long id) {
-        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.deleted_at IS NULL";
+        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.id = ? AND r.deleted_at IS NULL";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
