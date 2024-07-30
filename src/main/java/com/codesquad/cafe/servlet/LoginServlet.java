@@ -61,7 +61,7 @@ public class LoginServlet extends UserServlet {
             throws IOException {
         HttpSession session = req.getSession(true);
         session.setAttribute(SESSION_USER_PRINCIPAL_KEY,
-                new UserPrincipal(authenticatedUser.getId(), authenticatedUser.getEmail()));
+                new UserPrincipal(authenticatedUser.getId(), authenticatedUser.getUsername()));
 
         resp.sendRedirect("/");
 
