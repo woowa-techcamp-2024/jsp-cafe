@@ -5,8 +5,11 @@ import com.woowa.cafe.repository.member.JdbcMemberRepository;
 import com.woowa.cafe.repository.member.MemberRepository;
 import com.woowa.cafe.repository.qna.ArticleRepository;
 import com.woowa.cafe.repository.qna.JdbcArticleRepository;
+import com.woowa.cafe.repository.qna.JdbcReplyRepository;
+import com.woowa.cafe.repository.qna.ReplyRepository;
 import com.woowa.cafe.service.ArticleService;
 import com.woowa.cafe.service.MemberService;
+import com.woowa.cafe.service.ReplyService;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -44,10 +47,17 @@ public class AppContextListener implements ServletContextListener {
     private void registryArticleService(final ServletContextEvent sce, final DataSource dataSource) {
         ArticleRepository articleRepository = new JdbcArticleRepository(dataSource);
         MemberRepository memberRepository = (MemberRepository) sce.getServletContext().getAttribute("memberRepository");
-        ArticleService articleService = new ArticleService(articleRepository, memberRepository);
+        ReplyRepository replyRepository = new JdbcReplyRepository(dataSource);
+
+        ArticleService articleService = new ArticleService(articleRepository, memberRepository, replyRepository);
 
         sce.getServletContext().setAttribute("articleService", articleService);
         sce.getServletContext().setAttribute("articleRepository", articleRepository);
+
+        ReplyService replyService = new ReplyService(articleRepository, replyRepository);
+
+        sce.getServletContext().setAttribute("replyService", replyService);
+        sce.getServletContext().setAttribute("replyRepository", replyRepository);
     }
 
     @Override

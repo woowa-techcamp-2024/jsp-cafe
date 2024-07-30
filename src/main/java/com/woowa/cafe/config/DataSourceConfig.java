@@ -41,6 +41,16 @@ public class DataSourceConfig {
                     "writer_id VARCHAR(255), " +
                     "title VARCHAR(255), " +
                     "contents TEXT, " +
+                    "reply_count BIGINT, " +
+                    "create_at TIMESTAMP, " +
+                    "modified_at TIMESTAMP)";
+
+            String dropReplyTable = "DROP TABLE IF EXISTS replies";
+            String createReplyTable = "CREATE TABLE replies (" +
+                    "reply_id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
+                    "article_id BIGINT, " +
+                    "writer_id VARCHAR(255), " +
+                    "contents TEXT, " +
                     "create_at TIMESTAMP, " +
                     "modified_at TIMESTAMP)";
 
@@ -49,6 +59,8 @@ public class DataSourceConfig {
                 connection.prepareStatement(createMemberTable).execute();
                 connection.prepareStatement(dropArticleTable).execute();
                 connection.prepareStatement(createArticleTable).execute();
+                connection.prepareStatement(dropReplyTable).execute();
+                connection.prepareStatement(createReplyTable).execute();
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
