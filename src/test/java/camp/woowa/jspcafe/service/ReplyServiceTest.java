@@ -28,7 +28,7 @@ class ReplyServiceTest {
 
         // when
         Long id = replyService.createReply(questionId, writerId, writer, content);
-        Reply reply = replyRepository.findById(id);
+        Reply reply = replyService.findById(id);
 
         // then
         assertEquals(reply.getContent(), content);
