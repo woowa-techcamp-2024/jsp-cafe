@@ -100,4 +100,17 @@ class ArticleServiceTest {
         assertEquals("updatedTitle", articleService.findById(article.id()).title());
         assertEquals("updatedContent", articleService.findById(article.id()).content());
     }
+
+    @Test
+    void id를_기준으로_게시물을_삭제한다() {
+        // Given
+        Article article = Article.create("testTitle", "testName", "test test test.");
+        articleDao.save(article);
+
+        // When
+        articleService.delete(article.id());
+
+        // Then
+        assertThrows(ArticleNotFoundException.class, () -> articleService.findById(article.id()));
+    }
 }

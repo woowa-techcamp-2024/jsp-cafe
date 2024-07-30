@@ -33,4 +33,8 @@ public class ArticleService {
         Article updateArticle = article.update(title, content);
         articleDao.update(updateArticle);
     }
+
+    public void delete(final String id) {
+        articleDao.delete(id);
+    }
 }
