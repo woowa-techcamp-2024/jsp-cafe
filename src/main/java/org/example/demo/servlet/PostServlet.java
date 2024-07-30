@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
 import org.example.demo.Router;
 import org.example.demo.exception.InternalServerError;
+import org.example.demo.handler.CommentHandler;
 import org.example.demo.handler.PostHandler;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class PostServlet extends HttpServlet {
     private Router router;
     private PostHandler postHandler;
+    private CommentHandler commentHandler;
 
     @Override
     public void init() {
@@ -26,6 +28,9 @@ public class PostServlet extends HttpServlet {
         router.addRoute(HttpMethod.PUT, "^/posts/(\\d+)/?$", postHandler::handleUpdatePost);
         router.addRoute(HttpMethod.DELETE, "^/posts/(\\d+)/?$", postHandler::handleDeletePost);
         router.addRoute(HttpMethod.GET, "^/posts/form/?$", postHandler::handlePostForm);
+        router.addRoute(HttpMethod.POST, "^/posts/(\\d+)/comments/?$", commentHandler::createComment);
+        router.addRoute(HttpMethod.DELETE, "^/posts/(\\d+)/comments/(\\d+)/?$", commentHandler::deleteComment);
+        router.addRoute(HttpMethod.PUT, "^/posts/(\\d+)/comments/(\\d+)/?$", commentHandler::updateComment);
     }
 
     @Override

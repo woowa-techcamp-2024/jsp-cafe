@@ -3,6 +3,7 @@ package org.example.demo.repository;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.Comment;
 import org.example.demo.domain.User;
+import org.example.demo.model.CommentCreateDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,13 +21,13 @@ public class CommentRepository {
         this.dbConfig = dbConfig;
     }
 
-    public void saveComment(Long postId, Long writerId, String contents) {
+    public void saveComment(CommentCreateDao dao) {
         String sql = "INSERT INTO comments (post_id, writer_id, contents, created_at) VALUES (?, ?, ?, ?)";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setLong(1, postId);
-            pstmt.setLong(2, writerId);
-            pstmt.setString(3, contents);
+            pstmt.setLong(1, dao.getPostId());
+            pstmt.setLong(2, dao.getWriterId());
+            pstmt.setString(3, dao.getContents());
             pstmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
             pstmt.executeUpdate();
 
