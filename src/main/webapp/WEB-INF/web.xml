@@ -49,7 +49,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>articleRegisterServlet</servlet-name>
-        <url-pattern>/questions</url-pattern>
+        <url-pattern>/questions/regist</url-pattern>
     </servlet-mapping>
     
     <servlet>
