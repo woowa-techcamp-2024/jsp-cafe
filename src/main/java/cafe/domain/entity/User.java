@@ -1,7 +1,7 @@
 package cafe.domain.entity;
 
 public class User {
-    private final String userid;
+    private final String userId;
     private final String name;
     private final String password;
     private final String email;
@@ -12,14 +12,14 @@ public class User {
 
     private User(String id, String name, String password, String email) {
         validate(id, password, name, email);
-        this.userid = id;
+        this.userId = id;
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUserId() {
+        return userId;
     }
 
     public String getPassword() {

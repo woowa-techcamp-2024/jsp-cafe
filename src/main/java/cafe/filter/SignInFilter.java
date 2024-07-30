@@ -36,8 +36,8 @@ public class SignInFilter implements Filter {
         if (paths.length <= 3) return;
         if (paths[1].equals("users") && paths[3].equals("edit")) {
             User sessionUser = userService.findBySession(sessionid).getUser();
-            User user = userService.find(uri).getUser();
-            if (!user.getUserid().equals(sessionUser.getUserid())) throw new IllegalArgumentException("You can't edit other user's information!");
+            User user = userService.find(uri);
+            if (!user.getUserId().equals(sessionUser.getUserId())) throw new IllegalArgumentException("You can't edit other user's information!");
         }
     }
 

@@ -18,9 +18,8 @@ public class SQLExecutor {
 
     public <V> void executeInsert(Connection connection, String insertSQL, Field[] fields, V data) throws SQLException, IllegalAccessException {
         PreparedStatement statement = connection.prepareStatement(insertSQL);
-        statement.setObject(1, UUID.randomUUID().toString());
         for (int i = 0; i < fields.length; i++) {
-            statement.setObject(i + 2, fields[i].get(data).toString());
+            statement.setObject(i + 1, fields[i].get(data).toString());
         }
         statement.executeUpdate();
     }
