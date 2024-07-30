@@ -5,10 +5,13 @@ import static org.assertj.core.api.Assertions.catchException;
 
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
+import com.woowa.database.ReplyDatabase;
+import com.woowa.database.ReplyMemoryDatabase;
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserMemoryDatabase;
 import com.woowa.exception.AuthenticationException;
 import com.woowa.handler.QuestionHandler;
+import com.woowa.handler.ReplyHandler;
 import com.woowa.model.Question;
 import com.woowa.model.User;
 import com.woowa.support.QuestionFixture;
@@ -27,15 +30,19 @@ import org.junit.jupiter.api.Test;
 class FindQuestionServletTest {
     private FindQuestionServlet findQuestionServlet;
     private QuestionHandler questionHandler;
+    private ReplyHandler replyHandler;
     private UserDatabase userDatabase;
     private QuestionDatabase questionDatabase;
+    private ReplyDatabase replyDatabase;
 
     @BeforeEach
     void setUp() {
         questionDatabase = new QuestionMemoryDatabase();
         userDatabase = new UserMemoryDatabase();
         questionHandler = new QuestionHandler(userDatabase, questionDatabase);
-        findQuestionServlet = new FindQuestionServlet(questionHandler);
+        replyDatabase = new ReplyMemoryDatabase();
+        replyHandler = new ReplyHandler(userDatabase, questionDatabase, replyDatabase);
+        findQuestionServlet = new FindQuestionServlet(questionHandler, replyHandler);
     }
 
     @Nested
@@ -113,6 +120,56 @@ class FindQuestionServletTest {
                 //then
                 assertThat(request.getRequestDispatcher().getPath()).isEqualTo("/WEB-INF/classes/static/qna/update.jsp");
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("DoPost 호출 시")
+    class DoPostTest {
+
+        private StubHttpServletRequest request;
+        private StubHttpServletResponse response;
+        private User user;
+        private Question question;
+
+        @BeforeEach
+        void setUp() {
+            request = new StubHttpServletRequest();
+            response = new StubHttpServletResponse();
+            user = UserFixture.user();
+            question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+            request.setRequestUri("/questions/" + question.getQuestionId() + "/replies");
+        }
+
+        @Test
+        @DisplayName("질문 상세 조회로 리다이렉트한다.")
+        void redirectToQuestionDetail() throws ServletException, IOException {
+            //given
+            StubHttpSession session = new StubHttpSession();
+            session.setAttribute("userId", user.getUserId());
+            request.setSession(session);
+            request.addParameter("content", "content");
+
+            //when
+            findQuestionServlet.doPost(request, response);
+
+            //then
+            assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
+        }
+
+        @Test
+        @DisplayName("예외(Authentication): 로그인 되어 있지 않으면")
+        void authentication_WhenNoLogin() throws ServletException, IOException {
+            //given
+            request.addParameter("content", "content");
+
+            //when
+            Exception exception = catchException(() -> findQuestionServlet.doPost(request, response));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthenticationException.class);
         }
     }
 

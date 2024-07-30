@@ -7,6 +7,7 @@ import com.woowa.framework.ApplicationInitializer;
 import com.woowa.framework.BeanFactory;
 import com.woowa.handler.LoginHandler;
 import com.woowa.handler.QuestionHandler;
+import com.woowa.handler.ReplyHandler;
 import com.woowa.handler.UserHandler;
 import com.woowa.servlet.FindQuestionServlet;
 import com.woowa.servlet.ListQuestionServlet;
@@ -74,7 +75,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         listQuestionServlet.addMapping("/");
 
         Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet",
-                new FindQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
+                new FindQuestionServlet(beanFactory.getBean(QuestionHandler.class), beanFactory.getBean(ReplyHandler.class)));
         findQuestionServlet.addMapping("/questions/*");
     }
 

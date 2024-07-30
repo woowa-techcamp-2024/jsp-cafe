@@ -3,6 +3,7 @@ package com.woowa.servlet;
 import com.woowa.exception.AuthenticationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.handler.QuestionHandler;
+import com.woowa.handler.ReplyHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +15,14 @@ public class FindQuestionServlet extends HttpServlet {
 
     private static final String PREFIX = "/questions/";
     private static final String UPDATE_SUFFIX = "/update";
+    private static final String REPLY_SUFFIX = "/replies";
 
     private final QuestionHandler questionHandler;
+    private final ReplyHandler replyHandler;
 
-    public FindQuestionServlet(QuestionHandler questionHandler) {
+    public FindQuestionServlet(QuestionHandler questionHandler, ReplyHandler replyHandler) {
         this.questionHandler = questionHandler;
+        this.replyHandler = replyHandler;
     }
 
     @Override
@@ -34,6 +38,18 @@ public class FindQuestionServlet extends HttpServlet {
         }
         req.setAttribute("question", response.getModel().get("question"));
         req.getRequestDispatcher("/WEB-INF/classes/static" + response.getViewName() + ".jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String questionId = req.getRequestURI().replace(PREFIX, "");
+        String userId = getUserIdFromSession(req);
+        if(questionId.endsWith(REPLY_SUFFIX)) {
+            questionId = questionId.replace(REPLY_SUFFIX, "");
+            String content = req.getParameter("content");
+            ResponseEntity response = replyHandler.createReply(userId, questionId, content);
+            resp.sendRedirect(response.getLocation());
+        }
     }
 
     @Override
