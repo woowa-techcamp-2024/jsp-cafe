@@ -91,4 +91,14 @@ public class QuestionHandler {
         return ResponseEntity.builder()
                 .found("/questions/" + questionId);
     }
+
+    @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.DELETE)
+    public ResponseEntity deleteQuestion(String userId, String questionId) {
+        User user = getUser(userId);
+        Question question = getQuestion(questionId);
+        question.checkAuthority(user);
+        questionDatabase.delete(question);
+        return ResponseEntity.builder()
+                .found("/questions");
+    }
 }

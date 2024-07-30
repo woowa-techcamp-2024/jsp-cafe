@@ -293,4 +293,47 @@ class QuestionHandlerTest {
             assertThat(response.getLocation()).isEqualTo("/questions/" + question.getQuestionId());
         }
     }
+
+    @Nested
+    @DisplayName("deleteQuestion 호출 시")
+    class DeleteQuestionTest {
+
+        private User user;
+        private Question question;
+
+        @BeforeEach
+        void setUp() {
+            user = UserFixture.user();
+            question = QuestionFixture.question(user);
+            userDatabase.save(user);
+            questionDatabase.save(question);
+        }
+
+        @Test
+        @DisplayName("질문을 지운다.")
+        void deleteQuestion() {
+            //given
+
+            //when
+            questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(questionDatabase.findById(question.getQuestionId())).isEmpty();
+        }
+
+        @Test
+        @DisplayName("예외(Authorization): 작성자가 아니면")
+        void authorization_WhenNoAuthor() {
+            //given
+            User anotherUser = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
+            userDatabase.save(anotherUser);
+
+            //when
+            Exception exception = catchException(
+                    () -> questionHandler.deleteQuestion(anotherUser.getUserId(), question.getQuestionId()));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+    }
 }

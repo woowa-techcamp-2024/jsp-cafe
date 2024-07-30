@@ -37,4 +37,9 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
     public void update(Question question) {
 
     }
+
+    @Override
+    public void delete(Question question) {
+        questions.remove(question.getQuestionId());
+    }
 }
