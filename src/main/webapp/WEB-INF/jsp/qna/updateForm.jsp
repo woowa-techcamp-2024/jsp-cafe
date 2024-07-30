@@ -37,7 +37,9 @@
             type: 'PUT',
             data: JSON.stringify(formData),
             success: function(response) {
-                window.location.redirect('/');
+                if (response['result'] === 'success') {
+                    window.location.href = '/';
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
