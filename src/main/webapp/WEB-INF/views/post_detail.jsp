@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ page import="com.codesquad.cafe.db.entity.Post" %>
+<%@ page import="com.codesquad.cafe.db.entity.PostDetailsDto" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/WEB-INF/views/include/header.jsp" %>
 
@@ -23,7 +25,11 @@
                         </div>
                     </div>
                     <div class="article-doc">
-                        ${post.content}
+                        <%
+                            String content = ((PostDetailsDto) request.getAttribute("post")).getContent();
+                            content = content.replaceAll("(\r\n|\n)", "<br>");
+                        %>
+                        <c:out value="<%= content %>" escapeXml="false"/>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
