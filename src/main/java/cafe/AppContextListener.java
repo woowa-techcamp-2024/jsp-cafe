@@ -3,10 +3,7 @@ package cafe;
 import cafe.filter.AuthFilter;
 import cafe.filter.ErrorHandlingFilter;
 import cafe.filter.MappingFilter;
-import cafe.questions.servlet.QuestionEditServlet;
-import cafe.questions.servlet.QuestionServlet;
-import cafe.questions.servlet.QuestionWriteServlet;
-import cafe.questions.servlet.QuestionsServlet;
+import cafe.questions.servlet.*;
 import cafe.users.servlet.*;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -43,8 +40,11 @@ public class AppContextListener implements ServletContextListener {
 
         addServlet(sc, () -> new QuestionWriteServlet(factory.articleRepository()));
         addServlet(sc, () -> new QuestionsServlet(factory.articleRepository()));
-        addServlet(sc, () -> new QuestionServlet(factory.articleRepository(), factory.userRepository()));
+        addServlet(sc, () -> new QuestionServlet(factory.articleRepository(), factory.replyRepository()));
         addServlet(sc, () -> new QuestionEditServlet(factory.articleRepository()));
+
+        addServlet(sc, () -> new RepliesServlet(factory.replyRepository()));
+        addServlet(sc, () -> new ReplyServlet(factory.replyRepository()));
     }
 
     private void addServlet(ServletContext sc, Supplier<MappingHttpServlet> servletSupplier) {

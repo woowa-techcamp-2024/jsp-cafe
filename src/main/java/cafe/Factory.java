@@ -4,6 +4,8 @@ import cafe.database.ConnectionPool;
 import cafe.database.RealJdbcConnectionPool;
 import cafe.questions.repository.ArticleRepository;
 import cafe.questions.repository.JdbcArticleRepository;
+import cafe.questions.repository.JdbcReplyRepository;
+import cafe.questions.repository.ReplyRepository;
 import cafe.users.repository.JdbcUserRepository;
 import cafe.users.repository.UserRepository;
 import cafe.util.PropertiesLoader;
@@ -26,6 +28,10 @@ public class Factory {
 
     public ArticleRepository articleRepository() {
         return getOrCreate(ArticleRepository.class, () -> new JdbcArticleRepository(connectionPool()));
+    }
+
+    public ReplyRepository replyRepository() {
+        return getOrCreate(ReplyRepository.class, () -> new JdbcReplyRepository(connectionPool()));
     }
 
     public ConnectionPool connectionPool() {
