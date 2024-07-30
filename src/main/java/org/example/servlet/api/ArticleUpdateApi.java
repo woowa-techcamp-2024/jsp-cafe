@@ -9,11 +9,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import org.example.constance.DataHandler;
 import org.example.constance.SessionName;
 import org.example.data.ArticleDataHandler;
+import org.example.data.ReplyDataHandler;
 import org.example.domain.Article;
+import org.example.domain.Reply;
 import org.example.domain.User;
 import org.example.util.JsonParser;
 import org.slf4j.Logger;
@@ -23,12 +26,15 @@ import org.slf4j.LoggerFactory;
 public class ArticleUpdateApi extends HttpServlet {
     private final Logger log = (Logger) LoggerFactory.getLogger(ArticleUpdateApi.class);
     private ArticleDataHandler articleDataHandler;
+    private ReplyDataHandler replyDataHandler;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         articleDataHandler = (ArticleDataHandler) config.getServletContext()
                 .getAttribute(DataHandler.ARTICLE.getValue());
+        replyDataHandler = (ReplyDataHandler) config.getServletContext()
+                .getAttribute(DataHandler.REPLY.getValue());
     }
 
     @Override
@@ -57,9 +63,13 @@ public class ArticleUpdateApi extends HttpServlet {
 
         Article article = articleDataHandler.findByArticleId(articleId);
         if (isArticleNull(req, resp, article)) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"게시글을 찾을 수 없습니다.\"}");
             return;
         }
         if (isCorrectAuthor(req, resp, article)) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"작성자만 게시글을 수정할 수 있습니다.\"}");
             return;
         }
         if (article != null) {
@@ -87,12 +97,24 @@ public class ArticleUpdateApi extends HttpServlet {
 
         Article article = articleDataHandler.findByArticleId(articleId);
         if (isArticleNull(req, resp, article)) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"게시글을 찾을 수 없습니다.\"}");
             return;
         }
         if (isCorrectAuthor(req, resp, article)) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"작성자만 게시글을 지울 수 있습니다.\"}");
             return;
         }
         if (article != null) {
+            // 댓글이 없어야만 삭제 가능
+            List<Reply> replies = replyDataHandler.findAllByArticleId(article.getArticleId());
+            if (!replies.isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"댓글이 없는 글 만 삭제 가능합니다.\"}");
+                return;
+            }
+            //
             article.delete();
             Article upateArticle = articleDataHandler.update(article);
             if (upateArticle != null) {
@@ -105,27 +127,17 @@ public class ArticleUpdateApi extends HttpServlet {
         }
     }
 
-    private boolean isArticleNull(HttpServletRequest request, HttpServletResponse response, Article article)
-            throws ServletException, IOException {
+    private boolean isArticleNull(HttpServletRequest request, HttpServletResponse response, Article article) {
         if (article == null) {
-            request.setAttribute("status_code", HttpServletResponse.SC_NOT_FOUND);
-            request.setAttribute("message", "Article 이 없습니다.");
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            request.getRequestDispatcher("/error/error.jsp").forward(request, response);
             return true;
         }
         return false;
     }
 
-    private boolean isCorrectAuthor(HttpServletRequest request, HttpServletResponse response, Article article)
-            throws ServletException, IOException {
+    private boolean isCorrectAuthor(HttpServletRequest request, HttpServletResponse response, Article article) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(SessionName.USER.getName());
         if (!user.getUserId().equals(article.getUserId())) {
-            request.setAttribute("status_code", HttpServletResponse.SC_NOT_FOUND);
-            request.setAttribute("message", "Article 작성자가 아닙니다");
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            request.getRequestDispatcher("/error/error.jsp").forward(request, response);
             return true;
         }
         return false;
