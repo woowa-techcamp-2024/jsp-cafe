@@ -48,7 +48,9 @@ public class UserAuthServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // 세션 무효화
         req.getSession().invalidate();
+        // 200 OK 응답
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
