@@ -1,6 +1,7 @@
 package com.codesquad.cafe.servlet;
 
 import static com.codesquad.cafe.TestUtil.assertErrorPageResponse;
+import static com.codesquad.cafe.TestUtil.getSessionIdFromSetCookieHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,14 +28,18 @@ class UserEditServletTest extends E2ETestBase {
 
     private User user;
 
+    private String sessionId;
+
     @BeforeAll
     static void beforeAll() {
         userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
     }
 
     @BeforeEach
-    void setUp() {
-        user = userRepository.save(User.of("woowa", "1234", "박재성", "woowa@gmail.com"));
+    void setUp() throws IOException {
+        user = userRepository.save(User.of("javajigi", "1234", "박재성", "park@gmail.com"));
+        sessionId = getSessionIdFromSetCookieHeader(
+                post("/login", "username=javajigi&password=1234").getFirstHeader("Set-Cookie").getValue());
     }
 
     @AfterEach
@@ -46,7 +51,7 @@ class UserEditServletTest extends E2ETestBase {
     @DisplayName("유저 수정 페이지를 반환한다.")
     void testDoGetUserProfile() throws IOException, URISyntaxException {
         //when
-        SavedHttpResponse response = get(getPath(user.getId()));
+        SavedHttpResponse response = get(path, sessionId);
         String html = response.getBody();
 
         //then
@@ -58,25 +63,13 @@ class UserEditServletTest extends E2ETestBase {
     }
 
     @Test
-    @DisplayName("없는 유저의 수정 페이지를 요처하면404 페이지를 응답한다.")
+    @DisplayName("세션 쿠키 없이 수정 페이지를 요청하면 401을 응답한다.")
     void testDoGetUnknownUser() throws IOException, URISyntaxException {
         //when
-        SavedHttpResponse response = get(getPath(100000L));
+        SavedHttpResponse response = get(path, "unknown-session-id");
 
         //then
-        assertErrorPageResponse(response, 400);
-    }
-
-    @Test
-    @DisplayName("탈퇴한 유저의 유저의 수정 페이지를 요처하면404 페이지를 응답한다.")
-    void testDoGetDeletedUser() throws IOException, URISyntaxException {
-        //given
-        deleteUser(user);
-        //when
-        SavedHttpResponse response = get(getPath(100000L));
-
-        //then
-        assertErrorPageResponse(response, 400);
+        assertErrorPageResponse(response, 401);
     }
 
     @Test
@@ -84,7 +77,8 @@ class UserEditServletTest extends E2ETestBase {
     void testDoPostEditUser() throws IOException, URISyntaxException {
         //when
         HttpResponse response = post(path,
-                getBody(user.getId(), user.getUsername(), "1234", "1234", "woo@gmail.com", "박재성"));
+                getBody(user.getId(), user.getUsername(), user.getPassword(), "1234", "1234", "woo@gmail.com", "박재성"),
+                sessionId);
 
         //then
         assertEquals(302, response.getStatusLine().getStatusCode());
@@ -95,11 +89,40 @@ class UserEditServletTest extends E2ETestBase {
     }
 
     @Test
+    @DisplayName("세션 쿠키 없이 유저 수정 요청시 성공하면 401 응답한다.")
+    void testDoPostEditUserWithoutSessionCookie() throws IOException, URISyntaxException {
+        //when
+        HttpResponse response = post(path,
+                getBody(user.getId(), user.getUsername(), user.getPassword(), "1234", "1234", "woo@gmail.com", "박재성"),
+                sessionId);
+
+        //then
+        assertEquals(302, response.getStatusLine().getStatusCode());
+        assertEquals("/users/" + user.getId(), response.getFirstHeader("Location").getValue());
+        User updatedUser = userRepository.findById(user.getId()).get();
+        assertEquals("woo@gmail.com", updatedUser.getEmail());
+        assertEquals("1234", updatedUser.getPassword());
+    }
+
+    @Test
+    @DisplayName("세션 쿠키와 다른 유저 수정 요청시 성공하면 401 응답한다.")
+    void testDoPostEditNotMe() throws IOException, URISyntaxException {
+        //when
+        HttpResponse response = post(path,
+                getBody(100L, user.getUsername(), user.getPassword(), "1234", "1234", "woo@gmail.com", "박재성"),
+                sessionId);
+
+        //then
+        assertErrorPageResponse(response, 401);
+    }
+
+    @Test
     @DisplayName("유저 수정에 실패한다 - 비밀번호 불일치")
     void testDoPostEditUserFailPassword() throws IOException, URISyntaxException {
         //when
         HttpResponse response = post(path,
-                getBody(user.getId(), user.getUsername(), "1234", "1111", "woo@gmail.com", "박재성"));
+                getBody(user.getId(), user.getUsername(), user.getPassword(), "1234", "1111", "woo@gmail.com", "박재성"),
+                sessionId);
 
         //then
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -107,7 +130,7 @@ class UserEditServletTest extends E2ETestBase {
         String html = EntityUtils.toString(response.getEntity());
         assertTrue(html.contains("userModify"));
         assertTrue(html.contains(user.getUsername()));
-        assertTrue(html.contains("비밀번호가 일치하지 않습니다."));
+        assertTrue(html.contains("비밀번호가 비밀번호 확인과 일치하지 않습니다."));
         assertTrue(html.contains(user.getEmail()));
     }
 
@@ -116,7 +139,8 @@ class UserEditServletTest extends E2ETestBase {
     void testDoPostEditUserFailFieldAbsent() throws IOException, URISyntaxException {
         //when
         HttpResponse response = post(path,
-                "id=" + user.getId() + "&username=" + user.getUsername() + "&password=1234" + "&confirmPassword=1234");
+                "id=" + user.getId() + "&username=" + user.getUsername() + "&password=1234" + "&confirmPassword=1234",
+                sessionId);
 
         //then
         assertErrorPageResponse(response, 400);
@@ -127,18 +151,20 @@ class UserEditServletTest extends E2ETestBase {
     void testDoPostEditUserFailFieldEmpty() throws IOException, URISyntaxException {
         //when
         HttpResponse response = post(path,
-                getBody(user.getId(), user.getUsername(), "1234", "1234", "", "박재성"));
+                getBody(user.getId(), user.getUsername(), user.getPassword(), "1234", "1234", "", "박재성"),
+                sessionId);
 
         //then
         assertErrorPageResponse(response, 400);
     }
 
     @Test
-    @DisplayName("유저 수정에 실패한다 - 빈 비밀번호")
-    void testDoPostEditUserFailPasswordEmpty() throws IOException, URISyntaxException {
+    @DisplayName("유저 수정에 실패한다 - 잘못된 기존 비밀번호")
+    void testDoPostEditUserFailWrong() throws IOException, URISyntaxException {
         //when
         HttpResponse response = post(path,
-                getBody(user.getId(), user.getUsername(), "", "", "woo@gmail.com", "박재성"));
+                getBody(user.getId(), user.getUsername(), "wrongpw", "12345", "12345", "woo@gmail.com", "박재성"),
+                sessionId);
 
         //then
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -146,8 +172,20 @@ class UserEditServletTest extends E2ETestBase {
         String html = EntityUtils.toString(response.getEntity());
         assertTrue(html.contains("userModify"));
         assertTrue(html.contains(user.getUsername()));
-        assertTrue(html.contains("비밀번호가 일치하지 않습니다."));
+        assertTrue(html.contains("기존 비밀번호가 일치하지 않습니다."));
         assertTrue(html.contains(user.getEmail()));
+    }
+
+    @Test
+    @DisplayName("유저 수정에 실패한다 - 빈 비밀번호")
+    void testDoPostEditUserFailPasswordEmpty() throws IOException, URISyntaxException {
+        //when
+        HttpResponse response = post(path,
+                getBody(user.getId(), user.getUsername(), user.getPassword(), "", "", "woo@gmail.com", "박재성"),
+                sessionId);
+
+        //then
+        assertErrorPageResponse(response, 400);
     }
 
     @Test
@@ -155,7 +193,8 @@ class UserEditServletTest extends E2ETestBase {
     void testDoPostEditUserFailEditUsername() throws IOException, URISyntaxException {
         //when
         HttpResponse response = post(path,
-                getBody(user.getId(), "nweUsername", "1234", "1234", "woo@gmail.com", "박재성"));
+                getBody(user.getId(), "nweUsername", user.getPassword(), "1234", "1234", "woo@gmail.com", "박재성"),
+                sessionId);
 
         //then
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -174,7 +213,8 @@ class UserEditServletTest extends E2ETestBase {
         deleteUser(user);
         //when
         HttpResponse response = post(path,
-                getBody(user.getId(), user.getUsername(), "1234", "1234", "woo@gmail.com", "박재성"));
+                getBody(user.getId(), user.getUsername(), user.getPassword(), "1234", "1234", "woo@gmail.com", "박재성"),
+                sessionId);
 
         //then
         assertErrorPageResponse(response, 400);
@@ -185,16 +225,14 @@ class UserEditServletTest extends E2ETestBase {
         userRepository.save(user);
     }
 
-    public String getPath(Long id) {
-        return path + "?id=" + id;
-    }
-
-    public String getBody(Long id, String username, String password, String confirmPassword, String email, String name)
+    public String getBody(Long id, String username, String originalPassword, String password, String confirmPassword,
+                          String email, String name)
             throws IOException {
         StringBuilder sb = new StringBuilder();
         sb
                 .append("id=").append(id)
                 .append("&username=").append(username)
+                .append("&originalPassword=").append(originalPassword)
                 .append("&password=").append(password)
                 .append("&confirmPassword=").append(confirmPassword)
                 .append("&name=").append(name)
