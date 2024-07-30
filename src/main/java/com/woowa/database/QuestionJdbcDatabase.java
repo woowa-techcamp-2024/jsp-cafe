@@ -125,4 +125,42 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
             DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
     }
+
+    @Override
+    public void update(Question question) {
+        String sql = "update question set title = ?, content = ? where question_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, question.getTitle());
+            pstmt.setString(2, question.getContent());
+            pstmt.setString(3, question.getQuestionId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, null);
+        }
+    }
+
+    @Override
+    public void delete(Question question) {
+        String sql = "delete from question where question_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, question.getQuestionId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, null);
+        }
+    }
 }

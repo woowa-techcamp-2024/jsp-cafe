@@ -1,5 +1,6 @@
 package com.woowa.model;
 
+import com.woowa.exception.AuthorizationException;
 import java.util.Objects;
 
 public class Author {
@@ -46,5 +47,12 @@ public class Author {
                 "userId='" + userId + '\'' +
                 ", nickname='" + nickname + '\'' +
                 '}';
+    }
+
+    public void checkAuthority(User user) {
+        if (user.getUserId().equals(userId)) {
+            return;
+        }
+        throw new AuthorizationException("다른 사람의 질문은 수정할 수 없습니다.");
     }
 }

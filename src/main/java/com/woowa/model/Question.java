@@ -4,8 +4,8 @@ import java.time.ZonedDateTime;
 
 public class Question {
     private final String questionId;
-    private final String title;
-    private final String content;
+    private String title;
+    private String content;
     private final Author author;
     private final ZonedDateTime createdAt;
 
@@ -39,5 +39,18 @@ public class Question {
 
     public ZonedDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void checkAuthority(User user) {
+        author.checkAuthority(user);
+    }
+
+    public void update(String title, String content) {
+        if(title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if(content != null && !content.isBlank()) {
+            this.content = content;
+        }
     }
 }

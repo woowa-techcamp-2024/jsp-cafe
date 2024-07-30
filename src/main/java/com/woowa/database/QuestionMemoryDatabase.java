@@ -32,4 +32,14 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
     public Optional<Question> findById(String questionId) {
         return Optional.ofNullable(questions.get(questionId));
     }
+
+    @Override
+    public void update(Question question) {
+
+    }
+
+    @Override
+    public void delete(Question question) {
+        questions.remove(question.getQuestionId());
+    }
 }

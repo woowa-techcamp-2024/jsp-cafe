@@ -50,7 +50,7 @@ class LogoutServletTest {
             request.getSession();
 
             //when
-            logoutServlet.doPost(request, response);
+            logoutServlet.doGet(request, response);
 
             //then
             assertThat(response.getRedirectLocation()).isEqualTo("/");

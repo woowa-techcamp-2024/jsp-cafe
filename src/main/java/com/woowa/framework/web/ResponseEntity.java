@@ -9,20 +9,26 @@ public class ResponseEntity {
     private final Map<String, String> header = new HashMap<>();
     private final int status;
     private String location = "";
+    private final String viewName;
     private final byte[] body;
 
-    public ResponseEntity(int status, byte[] body) {
-        this(status, "", body);
+    public ResponseEntity(int status, byte[] body, String viewName) {
+        this(status, "", viewName, body);
     }
 
-    public ResponseEntity(int status, String location, byte[] body) {
+    public ResponseEntity(int status, String location, String viewName, byte[] body) {
         this.status = status;
         this.location = location;
+        this.viewName = viewName;
         this.body = body;
     }
 
     public void add(String key, Object value) {
         model.put(key, value);
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 
     public static Builder builder() {
@@ -34,6 +40,7 @@ public class ResponseEntity {
         private Map<String, Object> model = new HashMap<>();
         private Map<String, String> header = new HashMap<>();
         private byte[] body;
+        private String viewName;
 
         public Builder add(String key, Object value) {
             model.put(key, value);
@@ -50,15 +57,20 @@ public class ResponseEntity {
             return this;
         }
 
+        public Builder viewName(String viewName) {
+            this.viewName = viewName;
+            return this;
+        }
+
         public ResponseEntity found(String location) {
-            ResponseEntity responseEntity = new ResponseEntity(302, location, new byte[0]);
+            ResponseEntity responseEntity = new ResponseEntity(302, location, "", new byte[0]);
             responseEntity.model.putAll(model);
             responseEntity.header.putAll(header);
             return responseEntity;
         }
 
         public ResponseEntity ok() {
-            ResponseEntity responseEntity = new ResponseEntity(200, body);
+            ResponseEntity responseEntity = new ResponseEntity(200, body, viewName);
             responseEntity.model.putAll(model);
             responseEntity.header.putAll(header);
             return responseEntity;

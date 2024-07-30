@@ -42,8 +42,7 @@ public class QuestionHandler {
             String userId,
             @RequestParameter("title") String title,
             @RequestParameter("content") String content) {
-        User user = userDatabase.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+        User user = getUser(userId);
         Question question = Question.create(UUID.randomUUID().toString(), title, content, Author.from(user),
                 ZonedDateTime.now());
         log.info("새로운 질문이 등록되었습니다. qusetionId={}", question.getQuestionId());
@@ -54,10 +53,52 @@ public class QuestionHandler {
 
     @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.GET)
     public ResponseEntity findQuestion(String questionId) {
-        Question question = questionDatabase.findById(questionId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
+        Question question = getQuestion(questionId);
         return ResponseEntity.builder()
                 .add("question", question)
+                .viewName("/qna/show")
                 .ok();
+    }
+
+    @RequestMapping(path = "/questions/{questionId}/update", method = HttpMethod.GET)
+    public ResponseEntity updateQuestionForm(String userId, String questionId) {
+        User user = getUser(userId);
+        Question question = getQuestion(questionId);
+        question.checkAuthority(user);
+        return ResponseEntity.builder()
+                .add("question", question)
+                .viewName("/qna/update")
+                .ok();
+    }
+
+    private User getUser(String userId) {
+        return userDatabase.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+    }
+
+    private Question getQuestion(String questionId) {
+        return questionDatabase.findById(questionId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
+    }
+
+    @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.PUT)
+    public ResponseEntity updateQuestion(String userId, String questionId, String title, String content) {
+        User user = getUser(userId);
+        Question question = getQuestion(questionId);
+        question.checkAuthority(user);
+        question.update(title, content);
+        questionDatabase.update(question);
+        return ResponseEntity.builder()
+                .found("/questions/" + questionId);
+    }
+
+    @RequestMapping(path = "/questions/{questionId}", method = HttpMethod.DELETE)
+    public ResponseEntity deleteQuestion(String userId, String questionId) {
+        User user = getUser(userId);
+        Question question = getQuestion(questionId);
+        question.checkAuthority(user);
+        questionDatabase.delete(question);
+        return ResponseEntity.builder()
+                .found("/");
     }
 }

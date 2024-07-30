@@ -50,16 +50,16 @@
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/questions/423/form">수정</a>
+                              <a class="link-modify-article" href="/questions/${question.questionId}/update">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/423" method="POST">
+                              <form class="form-delete" action="/questions/${question.questionId}" method="POST">
                                   <input type="hidden" name="_method" value="DELETE">
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/index.jsp">목록</a>
+                              <a class="link-modify-article" href="<c:url value="/"/>">목록</a>
                           </li>
                       </ul>
                   </div>
