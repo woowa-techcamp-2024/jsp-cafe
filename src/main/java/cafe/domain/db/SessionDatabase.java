@@ -42,4 +42,9 @@ public class SessionDatabase implements Database {
         }
         sessions.remove(id);
     }
+
+    @Override
+    public void deleteAll() {
+        sessions.clear();
+    }
 }

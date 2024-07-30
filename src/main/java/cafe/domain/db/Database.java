@@ -24,7 +24,9 @@ public interface Database<K, V> {
     default void insert(V data) {
         String className = findClassName();
         Field[] fields = findFields();
-        for (Field field : fields) field.setAccessible(true);
+        for (Field field : fields) {
+            field.setAccessible(true);
+        }
 
         try (Connection connection = getConnector().connect()) {
             String insertSQL = sqlGenerator.generateInsertSQL(className, fields);
@@ -47,7 +49,9 @@ public interface Database<K, V> {
 
             if (!rs.next()) return null;
             Object[] objects = new Object[fields.length];
-            for (int i = 0; i < fields.length; i++) objects[i] = rs.getString(fields[i].getName());
+            for (int i = 0; i < fields.length; i++) {
+                objects[i] = rs.getString(fields[i].getName());
+            }
             data = constructor.newInstance(objects);
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,6 +96,15 @@ public interface Database<K, V> {
     }
 
     default void deleteById(K id) {}
+    default void deleteAll() {
+        String className = findClassName();
+        try (Connection connection = getConnector().connect()) {
+            String deleteAllSQL = sqlGenerator.generateDeleteAllSQL(className);
+            connection.prepareStatement(deleteAllSQL).executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private Field[] findFields() {
         Class<?> clazz = (Class<?>) ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1];
@@ -112,4 +125,5 @@ public interface Database<K, V> {
             return null;
         }
     }
+
 }
