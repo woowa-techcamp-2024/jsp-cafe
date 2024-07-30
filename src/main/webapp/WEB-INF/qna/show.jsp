@@ -32,6 +32,7 @@
                     <div class="article-doc" style="margin-top: 28px;">
                         <c:out value="${article.contents}"/>
                     </div>
+                    <c:if test="${isMine}">
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
@@ -48,6 +49,7 @@
                             </li>
                         </ul>
                     </div>
+                    </c:if>
                 </article>
 
                 <div class="qna-comment">
