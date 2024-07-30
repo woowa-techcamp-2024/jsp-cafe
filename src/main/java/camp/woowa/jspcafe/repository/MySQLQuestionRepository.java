@@ -87,4 +87,14 @@ public class MySQLQuestionRepository implements QuestionRepository {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()) ;
         }
     }
+
+    @Override
+    public void deleteById(Long id) {
+        try (var pstmt = conn.prepareStatement("DELETE FROM question WHERE id = ?");){
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }

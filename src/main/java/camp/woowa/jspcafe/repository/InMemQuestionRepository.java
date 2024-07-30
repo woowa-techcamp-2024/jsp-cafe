@@ -38,4 +38,9 @@ public class InMemQuestionRepository implements QuestionRepository {
     public void update(Question target) {
         questions.put(target.getId(), target);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        questions.remove(id);
+    }
 }

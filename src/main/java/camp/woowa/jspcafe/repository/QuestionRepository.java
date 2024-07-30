@@ -14,4 +14,6 @@ public interface QuestionRepository {
     void deleteAll();
 
     void update(Question target);
+
+    void deleteById(Long id);
 }
