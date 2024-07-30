@@ -42,7 +42,7 @@ public class Article {
 
     private void validateAuthorId(Long authorId) {
         if (authorId == null) {
-            throw new HttpException(SC_INTERNAL_SERVER_ERROR, "작성자 ID는 비어있을 수 없습니다.");
+            throw new HttpException(SC_INTERNAL_SERVER_ERROR, "작성자 ID는 null일 수 없습니다.");
         }
     }
 
@@ -74,10 +74,5 @@ public class Article {
     public void setContents(String contents) {
         validateContent(contents);
         this.contents = contents;
-    }
-
-    public void setAuthorId(Long authorId) {
-        validateAuthorId(authorId);
-        this.authorId = authorId;
     }
 }
