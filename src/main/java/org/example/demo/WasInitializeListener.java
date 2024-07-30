@@ -15,7 +15,8 @@ public class WasInitializeListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/test", "root", "");
+        // JdbcUrl 에 데이터베이스 명시 필요
+        DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/cafe", "root", "");
         UserRepository.init(dbConfig);
         PostRepository.init(dbConfig, UserRepository.getInstance());
 
