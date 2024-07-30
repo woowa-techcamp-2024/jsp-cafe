@@ -7,6 +7,7 @@
 <div class="container" id="main">
     <%
         Article article = (Article)request.getAttribute("article");
+        Member member = (Member)session.getAttribute("member");
     %>
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
@@ -32,6 +33,9 @@
                   </div>
                   <div class="article-util">
                       <ul class="article-util-list">
+                          <%
+                              if(article.getWriter().equals(member.getMemberId())){
+                          %>
                           <li>
                               <a class="link-modify-article" href="/questions/<%=article.getId()%>/form">수정</a>
                           </li>
@@ -41,8 +45,11 @@
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>
                           </li>
+                         <%
+                             }
+                         %>
                           <li>
-                              <a class="link-modify-article" href="/index.jsp">목록</a>
+                              <a class="link-modify-article" href="/">목록</a>
                           </li>
                       </ul>
                   </div>

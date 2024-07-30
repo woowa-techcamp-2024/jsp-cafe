@@ -89,7 +89,12 @@ public class ArticleControlServlet extends HttpServlet {
             }
             else if("DELETE".equalsIgnoreCase(method)){
                 //삭제 메서드
+                articleDao.deleteById(articleId);
 
+                resp.sendRedirect("/");
+            }
+            else{
+                throw new HttpBadRequestException("잘못된 요청입니다.");
             }
 
         }catch(NumberFormatException e ){

@@ -318,7 +318,24 @@ class ArticleControlServletTest {
                 });
             }
 
+            @Test
+            @DisplayName("허용된 method value가 아닌 값이 _method에 들어오면 badRequest 오류를 던진다.")
+            void badRequestMethodValue() throws Exception {
+                //given
+                Member member = new Member(1l, "id1", "pw1", "nick1", "email1");
+                Article article1 = new Article(1l, member.getMemberId(), "title1", "content1");
+                articleDao.save(article1);
+                req.setPathInfo("/"+ article1.getId());
+                req.setParameter("_method","otherMethod");
+                MockSession session = new MockSession();
+                session.setAttribute("member",member);
+                req.setSession(session);
 
+                //when & then
+                assertThrows(HttpBadRequestException.class,()->{
+                    servlet.doPost(req,res);
+                });
+            }
 
             @Test
             @DisplayName("pathInfo가 /{id}/{anyNumber}으로 들어온 경우")
@@ -575,6 +592,66 @@ class ArticleControlServletTest {
                 assertEquals(article.getWriter(),notUpdated.getWriter());
                 assertEquals(article.getTitle(),notUpdated.getTitle());
                 assertEquals(article.getContents(),notUpdated.getContents());
+            }
+        }
+
+        @Nested
+        @DisplayName("_method가 DELETE인 경우")
+        class MethodDelete {
+            @DisplayName("작성자가 자신의 게시글을 삭제하면 잘 삭제된다.")
+            @Test
+            void deleteSuccessTest() throws Exception{
+                //given
+                Member member = new Member(1l,"id1","pw1","nick1","email1");
+                Article article = new Article(1l,member.getMemberId(),"title","contents");
+                articleDao.save(article);
+                MockSession session = new MockSession();
+                session.setAttribute("member",member);
+                MockRequest req = new MockRequest();
+                MockResponse res = new MockResponse();
+                req.setSession(session);
+                req.setPathInfo("/"+article.getId());
+
+                req.setParameter("_method","DELETE");
+
+                //when
+                servlet.doPost(req,res);
+
+                //then
+                assertTrue(articleDao.findById(article.getId()).isEmpty());
+                assertEquals("/",res.getRedirection());
+            }
+
+            @Test
+            @DisplayName("작성자가 아닌 사람이 삭제요청을 하면 삭제가 안되고 BadRequest 오류를 던진다.")
+            void deleteWithOtherWriter() throws Exception{
+                //given
+                Member member = new Member(1l,"id1","pw1","nick1","email1");
+                Member member2 = new Member(2l,"id2","pw2","nick2","email2");
+                Article article = new Article(1l,member.getMemberId(),"title","contents");
+                articleDao.save(article);
+                MockSession session = new MockSession();
+                session.setAttribute("member",member2);
+                MockRequest req = new MockRequest();
+                MockResponse res = new MockResponse();
+                req.setSession(session);
+                req.setPathInfo("/"+article.getId());
+
+                req.setParameter("_method","DELETE");
+
+                //when & then
+                assertThrows(HttpBadRequestException.class,()->{
+                    servlet.doPost(req,res);
+                });
+
+                //수정이 되면 안된다.
+                Optional<Article> byId = articleDao.findById(article.getId());
+                assertTrue(byId.isPresent());
+                Article notDeleted = byId.get();
+                assertEquals(article.getId(),notDeleted.getId());
+                assertEquals(article.getWriter(),notDeleted.getWriter());
+                assertEquals(article.getTitle(),notDeleted.getTitle());
+                assertEquals(article.getContents(),notDeleted.getContents());
             }
         }
     }
