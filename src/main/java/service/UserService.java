@@ -6,6 +6,7 @@ import exception.TomcatException;
 import repository.users.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserService {
 
@@ -33,6 +34,11 @@ public class UserService {
                         });
     }
 
+    public boolean isValidUser(String userId, String password) {
+        Optional<User> user = userRepository.findByUserId(userId);
+        return user.isPresent() && user.get().getPassword().equals(password);
+    }
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -47,5 +53,9 @@ public class UserService {
                 .orElseThrow(() -> new TomcatException("User not found"));
     }
 
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new TomcatException("User not found"));
+    }
 
 }
