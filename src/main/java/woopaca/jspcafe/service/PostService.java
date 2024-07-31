@@ -69,8 +69,12 @@ public class PostService {
     }
 
     private PageInfo getPageInfo(Post post) {
-        List<Post> posts = postRepository.findAll();
-        posts.sort(Comparator.comparing(Post::getWrittenAt).reversed());
+        List<Post> posts = postRepository.findAll()
+                .stream()
+                .filter(Post::isPublished)
+                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
+                .toList();
+
         int postsSize = posts.size();
         int postIndex = posts.indexOf(post);
         boolean hasNext = postIndex < postsSize - 1;
