@@ -39,7 +39,7 @@ public class PostMemoryRepository implements PostRepository {
     }
 
     @Override
-    public Optional<Post> findById(Long postId) {
-        return Optional.ofNullable(posts.get(postId));
+    public Optional<Post> findById(Long id) {
+        return Optional.ofNullable(posts.get(id));
     }
 }
