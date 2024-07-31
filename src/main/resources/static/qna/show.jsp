@@ -206,14 +206,13 @@
                 type: 'DELETE',
                 success: function(response) {
                     // 성공적으로 삭제된 경우
+                    console.log("성공", response)
                     alert('댓글이 삭제되었습니다.');
                     // 필요한 경우 페이지 새로고침 또는 DOM 업데이트
                     form.closest("article").remove();
                 },
-                error: function(xhr, status, error) {
-                    // 오류 처리
-                    console.error('Error:', error);
-                    alert('삭제 중 오류가 발생했습니다.');
+                error: function(xhr, status) {
+                    alert("댓글 삭제 권한이 없습니다.")
                 }
             });
         });

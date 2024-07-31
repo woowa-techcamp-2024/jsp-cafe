@@ -86,8 +86,9 @@ public class FindQuestionServlet extends HttpServlet {
                     .split("/");  // {questionId}/{replyId}
             questionId = split[0];
             String replyId = split[1];
+            resp.setContentType("application/json; charset=utf-8");
             ResponseEntity response = replyHandler.deleteReply(userId, questionId, replyId);
-            resp.sendRedirect(response.getLocation());
+            resp.setStatus(204);
         } else {
             ResponseEntity response = questionHandler.deleteQuestion(userId, questionId);
             resp.sendRedirect(response.getLocation());

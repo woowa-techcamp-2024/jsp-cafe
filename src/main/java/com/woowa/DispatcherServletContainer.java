@@ -43,7 +43,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         dispatcherServlet.init(beanFactory);
 
         addServlet(ctx, dispatcherServlet, beanFactory);
-        addFilter(ctx);
+        addFilter(ctx, beanFactory);
     }
 
     private void addServlet(ServletContext ctx, DispatcherServlet dispatcherServlet, BeanFactory beanFactory) {
@@ -82,12 +82,12 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         findQuestionServlet.addMapping("/questions/*");
     }
 
-    private void addFilter(ServletContext ctx) {
+    private void addFilter(ServletContext ctx, BeanFactory beanFactory) {
         FilterRegistration.Dynamic httpMethodFilter = ctx.addFilter("httpMethodFilter", new HttpMethodFilter());
         httpMethodFilter.addMappingForUrlPatterns(null, true, "/*");
 
         FilterRegistration.Dynamic errorHandlingFilter = ctx.addFilter("errorHandlingFilter",
-                new ErrorHandlingFilter());
+                new ErrorHandlingFilter(beanFactory.getBean(ObjectMapper.class)));
         errorHandlingFilter.addMappingForUrlPatterns(null, true, "/*");
     }
 }
