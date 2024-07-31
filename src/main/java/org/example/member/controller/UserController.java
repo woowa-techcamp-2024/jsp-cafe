@@ -10,7 +10,7 @@ import org.example.config.annotation.RequestMapping;
 import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
 import org.example.member.model.dao.User;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.member.service.UserQueryService;
 import org.example.member.service.UserService;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class UserController {
     @RequestMapping(method = HttpMethod.GET)
     public ModelAndView getUserList() throws SQLException {
         ModelAndView mv = new ModelAndView("user/UserList");
-        List<UserResponseDto> allUsers = userQueryService.findAllUsers();
+        List<UserDto> allUsers = userQueryService.findAllUsers();
         mv.addAttribute("users", allUsers);
         return mv;
     }
@@ -42,7 +42,7 @@ public class UserController {
     public ModelAndView showEditForm(@PathVariable(value = "id") String userId) throws SQLException {
         logger.info("userId: {}", userId);
         ModelAndView mv = new ModelAndView("user/UserEditForm");
-        UserResponseDto response = userQueryService.findUserByUserId(userId);
+        UserDto response = userQueryService.findUserByUserId(userId);
         mv.addAttribute("user", response);
         return mv;
     }
@@ -51,7 +51,7 @@ public class UserController {
     public ModelAndView showUserProfile(@PathVariable(value = "id") String userId) throws SQLException {
         logger.info("userId: {}", userId);
         ModelAndView mv = new ModelAndView("user/UserProfile");
-        UserResponseDto response = userQueryService.findUserByUserId(userId);
+        UserDto response = userQueryService.findUserByUserId(userId);
         mv.addAttribute("user", response);
         return mv;
     }

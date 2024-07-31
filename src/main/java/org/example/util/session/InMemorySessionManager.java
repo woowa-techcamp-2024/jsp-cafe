@@ -9,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.member.service.UserService;
 
 @Component
@@ -27,7 +27,7 @@ public class InMemorySessionManager implements SessionManager {
     @Override
     public HttpSession addSessionToManager(HttpSession session) throws SQLException {
         String userId = (String) session.getAttribute("userId");
-        UserResponseDto user = userService.getUserFromUserId(userId);
+        UserDto user = userService.getUserFromUserId(userId);
 
         // 내부용 세션 객체 생성
         InternalSession internalSession = new InternalSession(session);
@@ -53,10 +53,10 @@ public class InMemorySessionManager implements SessionManager {
     }
 
     @Override
-    public UserResponseDto getUserDetails(String sessionId) {
+    public UserDto getUserDetails(String sessionId) {
         InternalSession internalSession = sessions.get(sessionId);
         if (internalSession != null) {
-            return (UserResponseDto) internalSession.getAttribute("userDetails");
+            return (UserDto) internalSession.getAttribute("userDetails");
         }
         return null;
     }

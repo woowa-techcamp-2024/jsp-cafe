@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.member.model.dao.User;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.member.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +20,16 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserResponseDto register(User user) throws SQLException, IllegalArgumentException {
+    public UserDto register(User user) throws SQLException, IllegalArgumentException {
         if (existsByUserId(user.getUserId())) {
             throw new IllegalArgumentException("user already exists");
         }
         userValidate(user);
-        return UserResponseDto.toResponse(userRepository.save(user));
+        return UserDto.toResponse(userRepository.save(user));
     }
 
-    public UserResponseDto getUserFromUserId(String userId) throws SQLException, IllegalArgumentException {
-        return UserResponseDto.toResponse(userRepository.findUserByUserId(userId));
+    public UserDto getUserFromUserId(String userId) throws SQLException, IllegalArgumentException {
+        return UserDto.toResponse(userRepository.findUserByUserId(userId));
     }
 
     public boolean existsByUserId(String userId) throws SQLException {

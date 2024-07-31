@@ -26,7 +26,7 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/${userId}" class="article-author-name">${post.writer}</a>
+                            <a href="/users/${post.writer}" class="article-author-name">${post.writer}</a>
                             <a href="/questions/${post.id}" class="article-header-time" title="퍼머링크">
                                 <i class="icon-link"></i>
                             </a>
@@ -56,7 +56,20 @@
 
                 <!-- 댓글 섹션 -->
                 <div class="qna-comment">
-                    <!-- 댓글 내용 -->
+                    <div class="qna-comment-slipp">
+                        <div class="qna-comment-slipp-articles">
+                            <ul id="replyList">
+                                <!-- 댓글 목록이 여기에 동적으로 추가됩니다 -->
+                            </ul>
+                        </div>
+                        <form class="submit-write">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea class="form-control" id="replyContents" placeholder="댓글을 입력하세요" rows="4"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="button" onclick="addReply()">댓글 쓰기</button>
+                            <div class="clearfix" />
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,6 +91,86 @@
                     }
                 } else {
                     alert('게시글 삭제에 실패했습니다: ' + xhr.responseText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('네트워크 오류가 발생했습니다.');
+            };
+            xhr.send();
+        }
+    }
+</script>
+<script>
+    // 페이지 로드 시 댓글 목록 불러오기
+    window.onload = function() {
+        loadReplies();
+    }
+
+    function loadReplies() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/reply/${post.id}', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                document.getElementById('replyList').innerHTML = xhr.responseText;
+            } else {
+                alert('댓글을 불러오는데 실패했습니다.');
+            }
+        };
+        xhr.onerror = function() {
+            alert('네트워크 오류가 발생했습니다.');
+        };
+        xhr.send();
+    }
+
+    function addReply() {
+        var contents = document.getElementById('replyContents').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/reply/${post.id}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 201) {
+                document.getElementById('replyList').innerHTML += xhr.responseText;
+                document.getElementById('replyContents').value = '';
+            } else {
+                alert('댓글 추가에 실패했습니다: ' + xhr.responseText);
+            }
+        };
+        xhr.onerror = function() {
+            alert('네트워크 오류가 발생했습니다.');
+        };
+        xhr.send('contents=' + encodeURIComponent(contents));
+    }
+
+    function editReply(replyId) {
+        var newContents = prompt("수정할 내용을 입력하세요:");
+        if (newContents) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('PUT', '/reply/' + replyId, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.querySelector('#reply-' + replyId + ' p').textContent = xhr.responseText;
+                } else {
+                    alert('댓글 수정에 실패했습니다: ' + xhr.responseText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('네트워크 오류가 발생했습니다.');
+            };
+            xhr.send('contents=' + encodeURIComponent(newContents));
+        }
+    }
+
+    function deleteReply(replyId) {
+        if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('DELETE', '/reply/' + replyId, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var replyElement = document.getElementById('reply-' + replyId);
+                    replyElement.parentNode.removeChild(replyElement);
+                } else {
+                    alert('댓글 삭제에 실패했습니다: ' + xhr.responseText);
                 }
             };
             xhr.onerror = function() {

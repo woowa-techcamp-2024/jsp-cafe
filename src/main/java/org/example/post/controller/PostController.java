@@ -12,7 +12,7 @@ import org.example.config.annotation.PathVariable;
 import org.example.config.annotation.RequestMapping;
 import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostDto;
 import org.example.post.service.PostService;
@@ -47,7 +47,7 @@ public class PostController {
     @RequestMapping(path = "/questions", method = HttpMethod.GET)
     public ModelAndView getQuestionForm(HttpSession session) {
         ModelAndView mav = new ModelAndView("/post/PostForm");
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         if (userDetails == null) {
             return new ModelAndView("redirect:/user/login");
         }
@@ -59,7 +59,7 @@ public class PostController {
     public ModelAndView addQuestion(@RequestParam("title") String title,
                                     @RequestParam("contents") String contents,
                                     HttpSession session) throws SQLException {
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         Post post = Post.create(userDetails.getName(), title, contents);
         postService.create(post);
         ModelAndView mv = new ModelAndView("redirect:/");
@@ -70,7 +70,7 @@ public class PostController {
     public ModelAndView getQuestion(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostDetail");
         PostDto post = postService.getPostById(id);
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         mv.addAttribute("userId", userDetails.getUserId());
         mv.addAttribute("isAuthor", isAuthor(userDetails, post));
         mv.addAttribute("post", post);
@@ -93,7 +93,7 @@ public class PostController {
     public void deleteQuestion(@PathVariable("id") Long id, HttpSession session, HttpServletResponse response)
             throws SQLException, IOException {
         PostDto post = postService.getPostById(id);
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         //TODO: 요구사항 구체화 + 서비스단으로 이동이 맞다.
         if (userDetails != null) {
             if (post.getWriter().equals(userDetails.getName())) {
@@ -110,7 +110,7 @@ public class PostController {
     public ModelAndView getQuestionEditForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostEditForm");
         PostDto post = postService.getPostById(id);
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         boolean isAuthor = isAuthor(userDetails, post);
         if (!isAuthor) {
             return new ModelAndView("redirect:/questions/" + id);
@@ -120,7 +120,7 @@ public class PostController {
         return mv;
     }
 
-    private boolean isAuthor(UserResponseDto userDetails, PostDto post) {
+    private boolean isAuthor(UserDto userDetails, PostDto post) {
         boolean isAuthor = false;
 
         if (userDetails != null) {

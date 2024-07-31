@@ -12,9 +12,10 @@ public class Reply {
     private ReplyStatus replyStatus;
     private LocalDateTime createdAt;
 
-    public static Reply create(String writer, String contents) {
+    public static Reply create(String writer, Long postId, String contents) {
         Reply reply = new Reply();
         reply.writer = writer;
+        reply.postId = postId;
         reply.contents = contents;
         reply.replyStatus = ReplyStatus.AVAILABLE;
         reply.createdAt = LocalDateTime.now();
@@ -56,6 +57,11 @@ public class Reply {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void updateContents(String contents) {
+        this.contents = contents;
+        validate();
     }
 
     @Override

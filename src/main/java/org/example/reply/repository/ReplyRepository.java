@@ -73,17 +73,17 @@ public class ReplyRepository {
         throw new SQLException("User not found");
     }
 
-    public List<Reply> findAll() throws SQLException {
-        String sql = "SELECT * FROM posts WHERE status = ?";
+    public List<Reply> findAll(Long postId) throws SQLException {
+        String sql = "SELECT * FROM replies WHERE post_id = ? AND status = ?";
         List<Reply> replies = new ArrayList<>();
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
         ) {
-            ps.setString(1, PostStatus.AVAILABLE.name());
+            ps.setLong(1, postId);
+            ps.setString(2, PostStatus.AVAILABLE.name());
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Long id = rs.getLong("id");
-                    Long postId = rs.getLong("post_id");
                     String writer = rs.getString("writer");
                     String contents = rs.getString("contents");
                     String status = rs.getString("status");
@@ -102,7 +102,7 @@ public class ReplyRepository {
 
     public Reply update(Reply reply) throws SQLException {
         logger.info("Updating reply: {}", reply);
-        String sql = "UPDATE posts SET contents = ? WHERE id = ?";
+        String sql = "UPDATE replies SET contents = ? WHERE id = ?";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

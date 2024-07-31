@@ -53,7 +53,7 @@ public class DispatcherServlet extends HttpServlet {
             getServletContext().getNamedDispatcher("default").forward(req, resp);
             return;
         }
-
+        req.getParameterNames().asIterator().forEachRemaining(name -> logger.info("param name: {}", name));
 
         String requestURI = req.getRequestURI();
         HttpMethod httpMethod = HttpMethod.valueOf(req.getMethod());
