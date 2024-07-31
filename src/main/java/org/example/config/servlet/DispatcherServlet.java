@@ -53,20 +53,19 @@ public class DispatcherServlet extends HttpServlet {
             getServletContext().getNamedDispatcher("default").forward(req, resp);
             return;
         }
-        req.getParameterNames().asIterator().forEachRemaining(name -> logger.info("param name: {}", name));
 
         String requestURI = req.getRequestURI();
         HttpMethod httpMethod = HttpMethod.valueOf(req.getMethod());
 
         try {
             Entry<HandlerKey, MethodHandler> handlerEntry = handlerMapping.getHandler(requestURI, httpMethod);
-            MethodHandler handler = handlerEntry.getValue();
-            req.setAttribute("currentUrlPattern", handlerEntry.getKey().getUrl());
-            if (handler == null) {
+            if (handlerEntry == null) {
                 logger.warn("No handler found for request: {} {}", httpMethod, requestURI);
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
+            MethodHandler handler = handlerEntry.getValue();
+            req.setAttribute("currentUrlPattern", handlerEntry.getKey().getUrl());
 
             Object result = methodInvoker.invokeHandlerMethod(handler, req, resp);
             if (result instanceof ModelAndView) {
@@ -82,10 +81,18 @@ public class DispatcherServlet extends HttpServlet {
 
         } catch (IllegalArgumentException e) {
             logger.error("Error processing request", e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            req.setAttribute("errorMessage", e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            req.getRequestDispatcher("/WEB-INF/views/error/400.jsp").forward(req, resp);
         } catch (SQLException e) {
             logger.error("Error processing request", e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            if (e.getSQLState().startsWith("08")) {
+                resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            } else if (e.getSQLState().startsWith("23")) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            } else {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
         } catch (Exception e) {
             logger.error("Error processing request", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
