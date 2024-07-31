@@ -23,6 +23,7 @@ public class AuthenticationFilter extends HttpFilter {
 
         List<RequestMapper> permittedRequests = List.of(
                 RequestMapper.permittedGetMapping("/"),
+                RequestMapper.permittedGetMapping("/users"),
                 RequestMapper.permittedPostMapping("/users"),
                 RequestMapper.permittedGetMapping("/users/login"),
                 RequestMapper.permittedPostMapping("/users/login"),
