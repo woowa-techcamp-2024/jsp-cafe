@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="kr">
 <jsp:include page="/components/header.jsp"/>
@@ -29,19 +30,15 @@
                 %>
                 <tr>
                     <th scope="row">
-                        <a href="users/<%= user.getId() %>">
-                            <%= user.getId() %>
+                        <a href="users/<c:out value="${user.id}" />">
+                            <c:out value="${user.id}" />
                         </a>
                     </th>
-                    <td><%= user.getUserId() %>
-                    </td>
-                    <td><%= user.getPassword() %>
-                    </td>
-                    <td><%= user.getName() %>
-                    </td>
-                    <td><%= user.getEmail() %>
-                    </td>
-                    <td><a href="/users/<%=user.getId()%>/form" class="btn btn-success" role="button">수정</a></td>
+                    <td><c:out value="${user.userId}" /></td>
+                    <td><c:out value="${user.password}" /></td>
+                    <td><c:out value="${user.name}" /></td>
+                    <td><c:out value="${user.email}" /></td>
+                    <td><a href="/users/<c:out value="${user.id}" />/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
                     }
