@@ -33,7 +33,7 @@
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
-                                <span class="point">8</span>
+<%--                                <span class="point">댓글 개수</span>--%>
                             </div>
                         </div>
                     </div>
