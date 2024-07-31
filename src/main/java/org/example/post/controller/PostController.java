@@ -70,7 +70,9 @@ public class PostController {
     public ModelAndView getQuestion(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostDetail");
         PostDto post = postService.getPostById(id);
-        mv.addAttribute("isAuthor", isAuthor(session, post));
+        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        mv.addAttribute("userId", userDetails.getUserId());
+        mv.addAttribute("isAuthor", isAuthor(userDetails, post));
         mv.addAttribute("post", post);
         return mv;
     }
@@ -108,7 +110,8 @@ public class PostController {
     public ModelAndView getQuestionEditForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostEditForm");
         PostDto post = postService.getPostById(id);
-        boolean isAuthor = isAuthor(session, post);
+        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        boolean isAuthor = isAuthor(userDetails, post);
         if (!isAuthor) {
             return new ModelAndView("redirect:/questions/" + id);
         }
@@ -117,11 +120,10 @@ public class PostController {
         return mv;
     }
 
-    private boolean isAuthor(HttpSession session, PostDto post) {
+    private boolean isAuthor(UserResponseDto userDetails, PostDto post) {
         boolean isAuthor = false;
 
-        if (session != null) {
-            UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        if (userDetails != null) {
             isAuthor = userDetails.getName().equals(post.getWriter());
             logger.info("isAuthor: " + isAuthor);
         }
