@@ -6,9 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.example.util.LoggerUtil;
+import org.slf4j.Logger;
 
 public class ArticleRepositoryDBImpl implements ArticleRepository {
     private static ArticleRepository instance;
+    private final Logger logger = LoggerUtil.getLogger();
 
 
     private ArticleRepositoryDBImpl() {
@@ -18,6 +21,8 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
     public static ArticleRepository getInstance() {
         if (instance == null) {
             instance = new ArticleRepositoryDBImpl();
+            instance.save(new Article("title1", "content1", "test"));
+            instance.save(new Article("title2", "content2", "test2"));
         }
         return instance;
     }
@@ -37,7 +42,7 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to save article", e);
         }
         return article;
     }
@@ -45,7 +50,7 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
     @Override
     public List<Article> findAll() {
         List<Article> articles = new ArrayList<>();
-        String sql = "SELECT * FROM articles";
+        String sql = "SELECT * FROM articles WHERE deleted = FALSE";
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -60,14 +65,14 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
                 articles.add(article);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to find articles", e);
         }
         return articles;
     }
 
     @Override
     public Optional<Article> findById(int id) {
-        String sql = "SELECT * FROM articles WHERE article_id = ?";
+        String sql = "SELECT * FROM articles WHERE article_id = ? AND deleted = FALSE";
         Article article = null;
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -83,8 +88,36 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to find article", e);
         }
         return Optional.ofNullable(article);
+    }
+
+    @Override
+    public void update(int id, String title, String content, String userId) {
+        String sql = "UPDATE articles SET title = ?, content = ? WHERE article_id = ? AND author = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.setString(2, content);
+            pstmt.setInt(3, id);
+            pstmt.setString(4, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Failed to update article", e);
+        }
+    }
+
+    @Override
+    public void deleteById(int id) {
+        //soft delete
+        String sql = "UPDATE articles SET deleted = TRUE WHERE article_id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Failed to delete article", e);
+        }
     }
 }

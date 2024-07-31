@@ -5,6 +5,11 @@
   version="6.0">
   <!-- 기본 서블릿에 대한 URL 매핑 설정 -->
   <!-- 기본 서블릿 설정 -->
+  <mime-mapping>
+    <extension>css</extension>
+    <mime-type>text/css</mime-type>
+  </mime-mapping>
+
   <jsp-config>
     <jsp-property-group>
       <url-pattern>*.jsp</url-pattern>
@@ -17,12 +22,26 @@
   </jsp-config>
 
   <filter>
-    <filter-name>staticResourceFilter</filter-name>
+    <filter-name>Authfilter</filter-name>
+    <filter-class>org.example.filter.AuthFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>StaticResourceFilter</filter-name>
     <filter-class>org.example.filter.StaticResourceFilter</filter-class>
   </filter>
+
   <filter-mapping>
-    <filter-name>staticResourceFilter</filter-name>
+    <filter-name>Authfilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <filter-mapping>
+    <filter-name>StaticResourceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <error-page>
+    <exception-type>org.example.exception.NotSameAuthorException</exception-type>
+    <location>/WEB-INF/error/not-same-author.jsp</location>
+  </error-page>
 </web-app>
 

@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.example.entity.Article;
 
 public interface ArticleRepository {
-
-
     Article save(Article article);
     List<Article> findAll();
     Optional<Article> findById(int i);
+    void update(int i, String title, String content, String userId);
+    void deleteById(int i);
 }

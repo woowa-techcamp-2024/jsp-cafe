@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import jdk.jshell.spi.ExecutionControl.NotImplementedException;
 import org.example.entity.Article;
 
 public class ArticleRepositoryMemoryImpl implements ArticleRepository {
@@ -41,5 +42,15 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     @Override
     public Optional<Article> findById(int id) {
         return Optional.ofNullable(articles.get(id));
+    }
+
+    @Override
+    public void update(int id, String title, String content, String userId) {
+        return;
+    }
+
+    @Override
+    public void deleteById(int id) {
+        return;
     }
 }
