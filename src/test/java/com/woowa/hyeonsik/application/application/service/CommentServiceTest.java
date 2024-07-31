@@ -1,4 +1,4 @@
-package com.woowa.hyeonsik.application.service;
+package com.woowa.hyeonsik.application.application.service;
 
 import com.woowa.hyeonsik.application.application.MemoryDbTest;
 import com.woowa.hyeonsik.application.dao.ArticleDao;
@@ -8,6 +8,7 @@ import com.woowa.hyeonsik.application.dao.JdbcCommentDao;
 import com.woowa.hyeonsik.application.domain.Article;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.exception.AuthenticationException;
+import com.woowa.hyeonsik.application.service.CommentService;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
 import com.woowa.hyeonsik.server.database.property.H2Property;
 import org.junit.jupiter.api.*;

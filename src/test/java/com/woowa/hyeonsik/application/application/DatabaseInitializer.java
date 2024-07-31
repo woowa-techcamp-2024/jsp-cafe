@@ -40,6 +40,7 @@ public class DatabaseInitializer {
                 `writer_id`  VARCHAR(255) null,
                 `contents`   VARCHAR(255) null,
                 `created_at` timestamp     null,
+                `is_deleted` tinyint NOT NULL DEFAULT 0,
                 primary key (`id`)
             );
             """

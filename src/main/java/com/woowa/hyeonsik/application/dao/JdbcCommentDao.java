@@ -38,7 +38,7 @@ public class JdbcCommentDao implements CommentDao {
         String sql = """
                 SELECT id, article_id, writer_id, contents, created_at
                 FROM comment
-                WHERE id = ?
+                WHERE id = ? AND is_deleted = 0
                 """;
 
         return databaseConnector.executeQuery(sql, List.of(String.valueOf(id)),
@@ -65,7 +65,7 @@ public class JdbcCommentDao implements CommentDao {
         String sql = """
                 SELECT id, article_id, writer_id, contents, created_at
                 FROM comment
-                WHERE article_id = ?
+                WHERE article_id = ? AND is_deleted = 0
                 """;
 
         return databaseConnector.executeQuery(sql, List.of(String.valueOf(articleId)),
@@ -102,7 +102,8 @@ public class JdbcCommentDao implements CommentDao {
     @Override
     public void removeByReplyId(final long replyId) {
         String sql = """
-            DELETE FROM comment
+            UPDATE comment
+            SET is_deleted = 1
             WHERE id = ?
             """;
 
