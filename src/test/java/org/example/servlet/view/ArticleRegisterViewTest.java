@@ -1,15 +1,19 @@
 package org.example.servlet.view;
 
-import jakarta.servlet.ServletException;
-import org.example.domain.User;
-import org.example.mock.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.example.constance.SessionName;
+import org.example.domain.User;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestHttpSession;
+import org.example.mock.TestRequestDispatcher;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArticleRegisterViewTest {
 
@@ -34,7 +38,7 @@ public class ArticleRegisterViewTest {
     public void testDoGetWithValidSession() throws ServletException, IOException {
         // Given
         User user = new User(1L, "test@example.com", "password", "Test User", LocalDateTime.now());
-        session.setAttribute("user", user);
+        session.setAttribute(SessionName.USER.getName(), user);
         request.setSession(session);
         requestDispatcher = new TestRequestDispatcher("/article/register.jsp");
         request.setRequestDispatcher(requestDispatcher);

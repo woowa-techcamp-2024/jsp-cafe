@@ -1,16 +1,19 @@
 package org.example.servlet.api;
 
-import jakarta.servlet.ServletException;
-import org.example.config.DataHandler;
-import org.example.domain.User;
-import org.example.mock.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import jakarta.servlet.ServletException;
+import java.io.IOException;
+import org.example.constance.DataHandler;
+import org.example.domain.User;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestServletConfig;
+import org.example.mock.TestServletContext;
+import org.example.mock.TestUserDataHandler;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 
 public class UserRegisterApiTest {

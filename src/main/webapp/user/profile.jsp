@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.example.domain.User" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="org.example.constance.SessionName" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -17,7 +18,7 @@
         </div>
 
         <%
-            User user = (User) request.getAttribute("user");
+            User user = (User) request.getAttribute(SessionName.USER.getName());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         %>
 

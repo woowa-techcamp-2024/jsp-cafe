@@ -41,7 +41,7 @@
                 <textarea readonly><%= errorMessage %></textarea>
             </div>
 
-            <button class="btn-submit" onclick="window.history.back();">이전 페이지로 돌아가기</button>
+            <button class="btn" onclick="window.history.back();">이전 페이지로 돌아가기</button>
         </main>
     </div>
 </body>

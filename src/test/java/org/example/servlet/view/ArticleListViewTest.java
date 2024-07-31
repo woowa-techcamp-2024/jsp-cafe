@@ -1,18 +1,24 @@
 package org.example.servlet.view;
 
-import jakarta.servlet.ServletException;
-import org.example.config.DataHandler;
-import org.example.domain.Article;
-import org.example.mock.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.example.constance.AliveStatus;
+import org.example.constance.DataHandler;
+import org.example.domain.Article;
+import org.example.mock.TestArticleDataHandler;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestRequestDispatcher;
+import org.example.mock.TestServletConfig;
+import org.example.mock.TestServletContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArticleListViewTest {
     private ArticlesListView servlet;
@@ -43,10 +49,11 @@ public class ArticleListViewTest {
     public void testDoGetWithArticles() throws ServletException, IOException {
         // Given
         List<Article> articles = Arrays.asList(
-                new Article(1L, "Title 1", "Content 1", "Author 1", LocalDateTime.now()),
-                new Article(2L, "Title 2", "Content 2", "Author 2", LocalDateTime.now().minusDays(1))
+                new Article(1L, "Title 1", "Content 1", "Author 1", LocalDateTime.now(), AliveStatus.ALIVE, 1L),
+                new Article(2L, "Title 2", "Content 2", "Author 2", LocalDateTime.now().minusDays(1), AliveStatus.ALIVE,
+                        2L)
         );
-        for(Article article : articles){
+        for (Article article : articles) {
             articleDataHandler.insert(article);
         }
 

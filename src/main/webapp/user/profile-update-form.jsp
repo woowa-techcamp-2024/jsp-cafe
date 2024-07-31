@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.example.domain.User" %>
+<%@ page import="org.example.constance.SessionName" %>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -9,16 +11,14 @@
 <body>
     <div class="container">
         <%@ include file="/common/header.jsp" %>
-
-
         <div class="info-box">
             <h2>사용자 상세 정보 수정</h2>
             <p>사용자의 상세 정보를 수정 할 수 있습니다.</p>
         </div>
         <%
-            User user = (User) request.getAttribute("user");
+            User user = (User) request.getAttribute(SessionName.USER.getName());
         %>
-        <form method="post" action="/api/users/update/${user.userId}">
+        <form method="post" action="/api/users/${user.userId}">
             <input type="hidden" name="userId" value="${user.userId}">
             <div class="form-group">
                 <label for="email">이메일</label>
@@ -32,7 +32,7 @@
                 <label for="password">비밀번호 확인</label>
                 <input name="password" type="password" id="password" placeholder="기존 비밀번호를 입력해주세요">
             </div>
-            <button type="submit" class="btn-submit">수정 완료</button>
+            <button type="submit" class="btn">수정 완료</button>
         </form>
     </div>
 </body>

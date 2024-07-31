@@ -6,13 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.DataHandler;
+import java.io.IOException;
+import org.example.constance.DataHandler;
+import org.example.constance.SessionName;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/users/*"})
 public class UserProfileView extends HttpServlet {
@@ -26,20 +26,21 @@ public class UserProfileView extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         log.debug("[UserProfileView] called");
         String pathInfo = request.getPathInfo();
         Long userId = Long.valueOf(pathInfo.substring(1));
-        log.debug("[UserProfileView] "+userId);
+        log.debug("[UserProfileView] " + userId);
         User user = userDataHandler.findByUserId(userId);
-        if(user == null){
+        if (user == null) {
             request.setAttribute("status_code", HttpServletResponse.SC_BAD_REQUEST);
             request.setAttribute("message", "조회하려는 회원이 없습니다.");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             request.getRequestDispatcher("/error/error.jsp").forward(request, response);
             return;
         }
-        request.setAttribute("user", user);
+        request.setAttribute(SessionName.USER.getName(), user);
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
     }
 }

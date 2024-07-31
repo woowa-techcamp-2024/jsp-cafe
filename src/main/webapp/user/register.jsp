@@ -24,7 +24,7 @@
                 <label for="password">비밀번호</label>
                 <input name="password" type="password" id="password" placeholder="비밀번호를 입력해주세요">
             </div>
-            <button type="submit" class="btn-submit">회원가입</button>
+            <button type="submit" class="btn">회원가입</button>
         </form>
     </main>
 </div>

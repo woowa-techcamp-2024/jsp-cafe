@@ -12,7 +12,7 @@ public class DatabaseConnectionManager {
     private static String password = "userpassword";
 
     static {
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

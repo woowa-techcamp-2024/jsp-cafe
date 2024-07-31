@@ -38,34 +38,40 @@ h2 {
     margin-bottom: 30px;
 }
 
+.user-info {
+    font-size: 14px;
+    color: #62CBC6;
+}
+
+
 .buttons {
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
 }
 
-.btn {
+.btn{
     padding: 10px 20px;
     background-color: #62CBC6;
     color: white;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    flex: 1;
+    font-size: 14px;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
 }
 
-.btn-submit{
-    width: 100%;
-    padding: 10px 20px;
-    background-color: #62CBC6;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.btn:hover {
+    background-color: #4FA8A3;
 }
 
 
 .action-buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 10px;
     margin-top: 10%;
 }

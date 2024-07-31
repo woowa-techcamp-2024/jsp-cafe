@@ -6,14 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.DataHandler;
+import java.io.IOException;
+import java.util.List;
+import org.example.constance.DataHandler;
 import org.example.data.ArticleDataHandler;
 import org.example.domain.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
 
 @WebServlet("")
 public class ArticlesListView extends HttpServlet {
@@ -23,11 +22,13 @@ public class ArticlesListView extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleDataHandler = (ArticleDataHandler) config.getServletContext().getAttribute(DataHandler.ARTICLE.getValue());
+        articleDataHandler = (ArticleDataHandler) config.getServletContext()
+                .getAttribute(DataHandler.ARTICLE.getValue());
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         log.debug("[ArticlesListView] called");
         List<Article> articles = articleDataHandler.findAll();
         request.setAttribute("articles", articles);

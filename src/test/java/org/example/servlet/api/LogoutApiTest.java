@@ -1,13 +1,15 @@
 package org.example.servlet.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.servlet.ServletException;
-import org.example.mock.*;
+import java.io.IOException;
+import org.example.constance.SessionName;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestHttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutApiTest {
 
@@ -28,7 +30,7 @@ public class LogoutApiTest {
     public void testDoGetWithExistingSession() throws ServletException, IOException {
         // Given
         request.setSession(session);
-        session.setAttribute("user", "testUser");
+        session.setAttribute(SessionName.USER.getName(), "testUser");
 
         // When
         servlet.doGet(request, response);

@@ -1,8 +1,9 @@
-package org.example.config;
+package org.example.constance;
 
 public enum DataHandler {
     USER("userDataHandler"),
-    ARTICLE("articleDataHandler")
+    ARTICLE("articleDataHandler"),
+    REPLY("replyDataHandler"),
     ;
     private final String value;
 

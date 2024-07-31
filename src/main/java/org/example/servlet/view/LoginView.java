@@ -10,7 +10,8 @@ import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginView extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.getRequestDispatcher("/user/login.jsp").forward(request, response);
     }
 }

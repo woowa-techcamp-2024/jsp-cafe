@@ -1,18 +1,23 @@
 package org.example.servlet.view;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.DataHandler;
-import org.example.domain.Article;
-import org.example.mock.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.example.constance.AliveStatus;
+import org.example.constance.DataHandler;
+import org.example.domain.Article;
+import org.example.mock.TestArticleDataHandler;
+import org.example.mock.TestHttpServletRequest;
+import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestRequestDispatcher;
+import org.example.mock.TestServletConfig;
+import org.example.mock.TestServletContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArticleDetailViewTest {
 
@@ -43,7 +48,8 @@ public class ArticleDetailViewTest {
     public void testDoGetWithExistingArticle() throws ServletException, IOException {
         // Given
         Long articleId = 1L;
-        Article article = new Article(articleId, "Test Title", "Test Content", "Test Author", LocalDateTime.now());
+        Article article = new Article(articleId, "Test Title", "Test Content", "Test Author", LocalDateTime.now(),
+                AliveStatus.ALIVE, 1L);
         articleDataHandler.insert(article);
         request.setPathInfo("/" + articleId);
         requestDispatcher = new TestRequestDispatcher("/article/detail.jsp");
