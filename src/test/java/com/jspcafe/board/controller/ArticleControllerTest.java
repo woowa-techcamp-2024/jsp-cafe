@@ -129,6 +129,25 @@ class ArticleControllerTest {
     }
 
     @Test
+    void 게시글_작성자가_아닐시_게시글_수정폼을_요청할_수_없다() throws ServletException, IOException {
+        // Given
+        User user = User.create("test@test", "테스트 작성자", "testPassword");
+        Article article = Article.create(user.id(), "테스트 제목", "테스트 작성자", "테스트 내용");
+        articleDao.save(article);
+
+        User otherUser = User.create("test2@test", "테스트 작성자2", "testPassword2");
+        request.setPathInfo("/" + article.id() + "/form");
+        HttpSession session = request.getSession();
+        session.setAttribute("userInfo", otherUser);
+
+        // When
+        articleController.doGet(request, response);
+
+        // Then
+        assertEquals("/error/403", response.getRedirectLocation());
+    }
+
+    @Test
     void 게시글_수정을_할_수_있다() throws ServletException, IOException {
         // Given
         Article article = Article.create("testUserId", "테스트 제목", "테스트 작성자", "테스트 내용");
