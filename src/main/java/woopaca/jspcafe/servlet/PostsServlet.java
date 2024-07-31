@@ -33,9 +33,16 @@ public class PostsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
         Long postId = Long.parseLong(pathInfo.substring(1));
+        request.setAttribute("postId", postId);
+        super.service(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long postId = (Long) request.getAttribute("postId");
         PostDetailsResponse post = postService.getPostDetails(postId);
         request.setAttribute("post", post);
         request.setAttribute("separator", '\n');
@@ -45,13 +52,20 @@ public class PostsServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String pathInfo = request.getPathInfo();
-        Long postId = Long.parseLong(pathInfo.substring(1));
+        Long postId = (Long) request.getAttribute("postId");
         InputStream inputStream = request.getInputStream();
         String queryString = InputStreamResolver.convertToString(inputStream);
         PostEditRequest postEditRequest = QueryStringResolver.resolve(queryString, PostEditRequest.class);
         HttpSession session = request.getSession();
         Authentication authentication = (Authentication) session.getAttribute("authentication");
         postService.updatePost(postId, postEditRequest, authentication);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long postId = (Long) request.getAttribute("postId");
+        HttpSession session = request.getSession();
+        Authentication authentication = (Authentication) session.getAttribute("authentication");
+        postService.deletePost(postId, authentication);
     }
 }
