@@ -1,61 +1,46 @@
 package cafe.domain.entity;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArticleTest {
     @Test
-    @DisplayName("Article 객체가 올바르게 생성되는지 테스트")
-    public void testArticleCreation() {
-        Article article = Article.of("author1", "Test Title", "Test Contents");
-        assertNotNull(article);
-        assertEquals("author1", article.getWriter());
-        assertEquals("Test Title", article.getTitle());
-        assertEquals("Test Contents", article.getContents());
-        assertNotNull(article.getCreated());
+    void 올바른_인자가_들어간_객체를_생성한다() {
+        // given
+        String articleId = "articleId";
+        String writer = "writer";
+        String title = "title";
+        String contents = "contents";
+
+        // when
+        Article article = Article.of(articleId, writer, title, contents);
+
+        // then
+        assertEquals(article.getArticleId(), articleId);
+        assertEquals(article.getWriter(), writer);
+        assertEquals(article.getTitle(), title);
+        assertEquals(article.getContents(), contents);
     }
 
-    @Test
-    @DisplayName("작성자가 null이거나 빈 값일 때 예외를 던지는지 테스트")
-    public void testInvalidWriter() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Article.of("", "Test Title", "Test Contents");
-        });
-        assertEquals("Writer is empty!", exception.getMessage());
-
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            Article.of(null, "Test Title", "Test Contents");
-        });
-        assertEquals("Writer is empty!", exception.getMessage());
+    @ParameterizedTest
+    @MethodSource("provideInvalidArticleInputs")
+    void 인자에_null이_들어가면_오류가_발생한다(String articleId, String title, String contents, String author) {
+        // given, when, then
+        assertThrows(IllegalArgumentException.class, () -> Article.of(articleId, title, contents, author));
     }
 
-    @Test
-    @DisplayName("제목이 null이거나 빈 값일 때 예외를 던지는지 테스트")
-    public void testInvalidTitle() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Article.of("author1", "", "Test Contents");
-        });
-        assertEquals("Title is empty!", exception.getMessage());
-
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            Article.of("author1", null, "Test Contents");
-        });
-        assertEquals("Title is empty!", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("내용이 null이거나 빈 값일 때 예외를 던지는지 테스트")
-    public void testInvalidContents() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Article.of("author1", "Test Title", "");
-        });
-        assertEquals("Contents is empty!", exception.getMessage());
-
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            Article.of("author1", "Test Title", null);
-        });
-        assertEquals("Contents is empty!", exception.getMessage());
+    private static Stream<Arguments> provideInvalidArticleInputs() {
+        return Stream.of(
+                Arguments.of(null, "test", "test", "test"),
+                Arguments.of("test", null, "test", "test"),
+                Arguments.of("test", "test", null, "test"),
+                Arguments.of("test", "test", "test", null)
+        );
     }
 }

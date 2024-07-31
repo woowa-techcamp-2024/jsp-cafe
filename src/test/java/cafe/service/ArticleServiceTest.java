@@ -2,73 +2,106 @@ package cafe.service;
 
 import cafe.domain.db.ArticleDatabase;
 import cafe.domain.entity.Article;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import cafe.domain.entity.User;
+import cafe.domain.util.DatabaseConnector;
+import cafe.domain.util.H2Connector;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 class ArticleServiceTest {
-    private ArticleDatabase articleDatabase;
-    private ArticleService articleService;
+    private static ArticleDatabase articleDatabase;
+    private static ArticleService articleService;
 
-    @BeforeEach
-    void setUp() {
-        articleDatabase = Mockito.mock(ArticleDatabase.class);
+    @BeforeAll
+    static void setUp() {
+        DatabaseConnector databaseConnector = new H2Connector();
+        articleDatabase = new ArticleDatabase(databaseConnector);
         articleService = new ArticleService(articleDatabase);
     }
 
-    @Test
-    @DisplayName("기사 저장")
-    void save() {
-        articleService.save("작성자", "제목", "내용");
-
-        verify(articleDatabase, times(1)).insert(any(Article.class));
+    @AfterEach
+    void tearDown() {
+        articleDatabase.deleteAll();
     }
 
     @Test
-    @DisplayName("ID로 기사 조회")
-    void find() {
-        Article article = Article.of("작성자", "제목", "내용");
-        when(articleDatabase.selectById("1")).thenReturn(article);
+    void 올바른_글을_저장한다() {
+        // given
+        String articleId = "id";
+        String writer = "writer";
+        String title = "title";
+        String contents = "contents";
 
-        Article foundArticle = articleService.find("/articles/1");
+        // when
+        articleService.save(articleId, writer, title, contents);
 
-        assertNotNull(foundArticle);
-        assertEquals("작성자", foundArticle.getWriter());
-        assertEquals("제목", foundArticle.getTitle());
-        assertEquals("내용", foundArticle.getContents());
+        // then
+        Article article = articleDatabase.selectById(articleId);
+        assertEquals(writer, article.getWriter());
+        assertEquals(title, article.getTitle());
+        assertEquals(contents, article.getContents());
     }
 
     @Test
-    @DisplayName("모든 기사 조회")
-    void findAll() {
-        Map<String, Article> articles = new HashMap<>();
-        articles.put("1", Article.of("작성자1", "제목1", "내용1"));
-        articles.put("2", Article.of("작성자2", "제목2", "내용2"));
-        when(articleDatabase.selectAll()).thenReturn(articles);
+    void 경로의_아이디로_글을_조회한다() {
+        // given
+        String articleId = "id";
+        String writer = "writer";
+        String title = "title";
+        String contents = "contents";
+        articleService.save(articleId, writer, title, contents);
 
-        Map<String, Article> foundArticles = articleService.findAll();
+        // when
+        String uri = "/articles/id";
+        String id = uri.split("/")[2];
+        var article = articleDatabase.selectById(id);
 
-        assertNotNull(foundArticles);
-        assertEquals(2, foundArticles.size());
-        assertEquals("제목1", foundArticles.get("1").getTitle());
-        assertEquals("제목2", foundArticles.get("2").getTitle());
+        // then
+        assertEquals(writer, article.getWriter());
+        assertEquals(title, article.getTitle());
+        assertEquals(contents, article.getContents());
     }
 
     @Test
-    @DisplayName("존재하지 않는 ID로 기사 조회시 예외 발생")
-    void findNonExistent() {
-        when(articleDatabase.selectById("1")).thenReturn(null);
+    void 아이디에_해당하는_글이_없다면_예외가_발생한다() {
+        // given, when, then
+        assertThrows(IllegalArgumentException.class, () -> articleService.find("/users/id"));
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            articleService.find("/articles/1");
-        });
+    @Test
+    void 전체_글을_조회한다() {
+        // given
+        String writer1 = "writer1";
+        String title1 = "title1";
+        String contents1 = "contents1";
+        articleService.save(writer1, title1, contents1);
+
+        String writer2 = "writer2";
+        String title2 = "title2";
+        String contents2 = "contents2";
+        articleService.save(writer2, title2, contents2);
+
+        // when
+        var articles = articleService.findAll();
+
+        // then
+        assertEquals(2, articles.size());
+    }
+
+    @Test
+    void 경로의_아이디와_글이_같은_지_확인한다() {
+        // given
+        String articleId = "id";
+        String writer = "writer";
+        String title = "title";
+        String contents = "contents";
+        articleService.save(articleId, writer, title, contents);
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () ->
+                articleService.verifyArticleId(User.of(writer, "name", "password", "email@email"), "/articles/id1"));
     }
 }
