@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Component
 public class InMemoryUserRepository extends InMemoryRepository<User> implements UserRepository {
     @Override
     public List<User> findAllById(Collection<Long> collectUserId) {

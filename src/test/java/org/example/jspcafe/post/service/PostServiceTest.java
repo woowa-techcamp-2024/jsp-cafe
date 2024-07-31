@@ -1,9 +1,12 @@
 package org.example.jspcafe.post.service;
 
 import org.example.jspcafe.AbstractRepositoryTestSupport;
+import org.example.jspcafe.comment.model.Comment;
+import org.example.jspcafe.comment.repository.JdbcCommentRepository;
 import org.example.jspcafe.post.model.Post;
 import org.example.jspcafe.post.repository.JdbcPostRepository;
 import org.example.jspcafe.post.request.PostCreateRequest;
+import org.example.jspcafe.post.request.PostModifyRequest;
 import org.example.jspcafe.post.response.PostListResponse;
 import org.example.jspcafe.post.response.PostResponse;
 import org.example.jspcafe.user.model.User;
@@ -21,7 +24,203 @@ class PostServiceTest extends AbstractRepositoryTestSupport {
 
     private JdbcPostRepository postRepository = new JdbcPostRepository(super.connectionManager);
     private JdbcUserRepository userRepository = new JdbcUserRepository(super.connectionManager);
-    private PostService postService = new PostService(postRepository, userRepository);
+    private JdbcCommentRepository commentRepository = new JdbcCommentRepository(super.connectionManager);
+    private PostService postService = new PostService(postRepository, commentRepository, userRepository);
+
+    @DisplayName("본인의 게시글을 삭제할 수 있다.")
+    @Test
+    void deletePost() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        postService.deletePost(userId, post.getPostId());
+
+        // then
+        assertThat(postRepository.findById(post.getPostId()))
+                .isEmpty();
+    }
+
+    @DisplayName("본인의 게시글이 아니면 예외가 발생한다.")
+    @Test
+    void deletePostWithInvalidUser() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        Long invalidUserId = 2L;
+
+        // when & then
+        assertThatThrownBy(() -> postService.deletePost(invalidUserId, post.getPostId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("삭제 권한이 없습니다.");
+
+    }
+
+
+    @DisplayName("게시글에 댓글이 없는 경우 게시글을 삭제할 수 있다.")
+    @Test
+    void deletePostWithoutComment() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        postService.deletePost(userId, post.getPostId());
+
+        // then
+        assertThat(postRepository.findById(post.getPostId()))
+                .isEmpty();
+    }
+
+    @DisplayName("게시글을 수정할 수 있다.")
+    @Test
+    void modifyPost() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        String modifiedTitle = "modifiedTitle";
+        String modifiedContent = "modifiedContent";
+
+        PostModifyRequest request = new PostModifyRequest(userId, post.getPostId(), modifiedTitle, modifiedContent);
+
+        // when
+        postService.modifyPost(request);
+
+        // then
+        assertThat(postRepository.findById(post.getPostId())).isPresent()
+                .get()
+                .extracting("title.value", "content.value")
+                .containsExactly(modifiedTitle, modifiedContent);
+    }
+
+    @DisplayName("getPostById를 요청하면 게시글을 조회할 수 있다.")
+    @Test
+    void getPostById() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        Post foundPost = postService.getPostById(post.getPostId());
+
+        // then
+        assertThat(foundPost).isNotNull()
+                .extracting("title.value", "content.value")
+                .containsExactly(title, content);
+    }
+
+    @DisplayName("없는 포스트에 대해 getPostById를 요청하면 예외가 발생한다.")
+    @Test
+    void getPostByIdWithInvalidPost() {
+        // given
+        Long invalidPostId = 1L;
+
+        // when & then
+        assertThatThrownBy(() -> postService.getPostById(invalidPostId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게시글을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("없는 게시글을 수정하려는 경우 예외가 발생한다.")
+    @Test
+    void modifyPostWithInvalidPost() {
+        // given
+        Long userId = 1L;
+        Long invalidPostId = 2L;
+        String modifiedTitle = "modifiedTitle";
+        String modifiedContent = "modifiedContent";
+
+        PostModifyRequest request = new PostModifyRequest(userId, invalidPostId, modifiedTitle, modifiedContent);
+
+        // when & then
+        assertThatThrownBy(() -> postService.modifyPost(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게시글을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("본인 게시글이 아닌 경우 수정할 수 없다.")
+    @Test
+    void modifyPostWithInvalidUser() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        Long invalidUserId = 2L;
+        String modifiedTitle = "modifiedTitle";
+        String modifiedContent = "modifiedContent";
+
+        PostModifyRequest request = new PostModifyRequest(invalidUserId, post.getPostId(), modifiedTitle, modifiedContent);
+
+        // when & then
+        assertThatThrownBy(() -> postService.modifyPost(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("수정 권한이 없습니다.");
+    }
+
+    @DisplayName("게시글 주인의 댓글만 있으면 게시글과 댓글을 모두 삭제할 수 있다.")
+    @Test
+    void deletePostWithOwnerComment() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        commentRepository.save(new Comment(post.getPostId(), userId, "content", LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when
+        postService.deletePost(userId, post.getPostId());
+
+        // then
+        assertAll(
+                () -> assertThat(postRepository.findById(post.getPostId()))
+                        .isEmpty(),
+                () -> assertThat(commentRepository.findAllByPostId(post.getPostId()))
+                        .isEmpty()
+        );
+    }
+
+    @DisplayName("다른 사용자의 댓글이 존재하면 게시글을 삭제할 수 없다.")
+    @Test
+    void deletePostWithComment() {
+        // given
+        Long userId = 1L;
+        String title = "title";
+        String content = "content";
+
+        Long otherUserId = 2L;
+        Post post = postRepository.save(new Post(userId, title, content, LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        commentRepository.save(new Comment(post.getPostId(), otherUserId, "content", LocalDateTime.of(2021, 1, 1, 0, 0, 0)));
+
+        // when & then
+        assertThatThrownBy(() -> postService.deletePost(userId, post.getPostId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("댓글이 존재하는 게시글은 삭제할 수 없습니다.");
+
+    }
 
     @DisplayName("게시글을 생성할 수 있다.")
     @Test

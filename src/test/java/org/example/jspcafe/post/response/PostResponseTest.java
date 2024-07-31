@@ -14,13 +14,14 @@ class PostResponseTest {
     void createPostResponse() {
         // given
         Long postId = 1L;
+        Long userId = 1L;
         String nickname = "nickname";
         String title = "title";
         String content = "content";
         LocalDateTime createdAt = LocalDateTime.of(2021, 1, 1, 0, 0);
 
         // when
-        PostResponse postResponse = new PostResponse(postId, nickname, title, content, createdAt);
+        PostResponse postResponse = new PostResponse(postId, userId, nickname, title, content, createdAt);
 
         // then
         assertThat(postResponse)

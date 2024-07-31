@@ -35,7 +35,8 @@ public abstract class AbstractRepositoryTestSupport {
                     "nickname VARCHAR(255) NOT NULL, " +
                     "email VARCHAR(255) NOT NULL UNIQUE, " +
                     "password VARCHAR(255) NOT NULL, " +
-                    "created_at TIMESTAMP NOT NULL" +
+                    "created_at TIMESTAMP NOT NULL, " +
+                    "deleted_at TIMESTAMP NULL " +
                     ");";
 
             String createPostsTable = "CREATE TABLE IF NOT EXISTS posts (" +
@@ -43,11 +44,22 @@ public abstract class AbstractRepositoryTestSupport {
                     "user_id BIGINT NOT NULL, " +
                     "title VARCHAR(255) NOT NULL, " +
                     "content VARCHAR(255) NOT NULL, " +
-                    "created_at TIMESTAMP NOT NULL" +
+                    "created_at TIMESTAMP NOT NULL, " +
+                    "deleted_at TIMESTAMP NULL " +
+                    ");";
+
+            String createCommentsTable = "CREATE TABLE IF NOT EXISTS comments (" +
+                    "comment_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "post_id BIGINT NOT NULL, " +
+                    "user_id BIGINT NOT NULL, " +
+                    "content VARCHAR(255) NOT NULL, " +
+                    "created_at TIMESTAMP NOT NULL, " +
+                    "deleted_at TIMESTAMP NULL " +
                     ");";
 
             statement.execute(createUsersTable);
             statement.execute(createPostsTable);
+            statement.execute(createCommentsTable);
         }
     }
 }

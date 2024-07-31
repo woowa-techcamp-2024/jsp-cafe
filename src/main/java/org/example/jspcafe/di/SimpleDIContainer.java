@@ -1,5 +1,8 @@
 package org.example.jspcafe.di;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.jspcafe.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,11 @@ public class SimpleDIContainer {
 
     public SimpleDIContainer(String basePackage) throws Exception {
         componentClasses = scan(basePackage);
+        final ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        instances.put(ObjectMapper.class, objectMapper);
         createInstances(componentClasses);
     }
 
