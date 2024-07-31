@@ -18,7 +18,7 @@ public class MockArticleQuery implements ArticleQuery {
     }
 
     @Override
-    public List<ArticleResponse> findAll() {
+    public List<ArticleResponse> findAll(QueryRequest queryRequest) {
         if (articleResponse == null) {
             return Collections.emptyList();
         }

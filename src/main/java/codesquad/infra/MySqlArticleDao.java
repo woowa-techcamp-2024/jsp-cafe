@@ -102,10 +102,11 @@ public class MySqlArticleDao implements ArticleDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = connectionManager.getConnection();
-            String sql = "update articles set content = ? where id = ?";
+            String sql = "update articles set content = ?, status = ? where id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, article.getContent());
-            preparedStatement.setLong(2, article.getId());
+            preparedStatement.setString(2, article.getStatus().name());
+            preparedStatement.setLong(3, article.getId());
             int updatedRows = preparedStatement.executeUpdate();
             if (updatedRows == 0) {
                 throw new SQLException("Failed to update article");

@@ -1,7 +1,9 @@
 package codesquad.servlet;
 
+import codesquad.domain.article.Status;
 import codesquad.servlet.dao.ArticleQuery;
 import codesquad.servlet.dao.ArticleQuery.ArticleResponse;
+import codesquad.servlet.dao.ArticleQuery.QueryRequest;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -32,7 +34,8 @@ public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<ArticleResponse> articleResponses = articleQuery.findAll();
+        QueryRequest queryRequest = new QueryRequest(1, 10, Status.PUBLISHED);
+        List<ArticleResponse> articleResponses = articleQuery.findAll(queryRequest);
         req.setAttribute("articleResponses", articleResponses);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }

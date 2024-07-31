@@ -48,7 +48,7 @@ public class MySqlArticleQuery implements ArticleQuery {
     }
 
     @Override
-    public List<ArticleResponse> findAll() {
+    public List<ArticleResponse> findAll(QueryRequest queryRequest) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -56,8 +56,13 @@ public class MySqlArticleQuery implements ArticleQuery {
             connection = connectionManager.getConnection();
             String sql = "SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer " +
                     "FROM articles a " +
-                    "LEFT JOIN users u ON a.writer = u.user_id";
+                    "LEFT JOIN users u ON a.writer = u.user_id " +
+                    "WHERE a.status = ? " +
+                    "LIMIT ? OFFSET ?";
             preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, queryRequest.getStatus().name());
+            preparedStatement.setInt(2, queryRequest.getPageSize());
+            preparedStatement.setInt(3, queryRequest.getOffset());
             resultSet = preparedStatement.executeQuery();
             List<ArticleResponse> articles = new ArrayList<>();
             while (resultSet.next()) {

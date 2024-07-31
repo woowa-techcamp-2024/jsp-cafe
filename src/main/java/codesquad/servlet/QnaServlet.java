@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,11 +117,18 @@ public class QnaServlet extends HttpServlet {
         try {
             article.delete(loginUser.getUserId());
         } catch (UnauthorizedRequestException e) {
-            req.setAttribute("errorMsg", "다른 사람의 글을 삭제할 수 없습니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            HttpServletRequestWrapper request = new HttpServletRequestWrapper(req) {
+                @Override
+                public String getMethod() {
+                    return "GET";
+                }
+            };
+            request.setAttribute("errorMsg", "다른 사람의 글을 삭제할 수 없습니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(request, resp);
             return;
         }
         articleDao.update(article);
+        resp.sendRedirect(req.getContextPath() + "/");
     }
 
     private void processUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
