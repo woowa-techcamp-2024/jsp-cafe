@@ -1,84 +1,130 @@
 package org.example.util.session;
 
 import jakarta.servlet.http.HttpSession;
-import java.time.Duration;
-import java.time.Instant;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.example.config.annotation.Autowired;
+import org.example.config.annotation.Component;
+import org.example.member.model.dto.UserResponseDto;
+import org.example.member.service.UserService;
 
+@Component
 public class InMemorySessionManager implements SessionManager {
+    private final Map<String, InternalSession> sessions = new HashMap<>();
+    private final UserService userService;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    private final Map<String, HttpSession> sessions = new HashMap<>();
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Duration sessionTimeout = Duration.ofMinutes(30);
-
-    private static final class InstanceHolder {
-        private static final SessionManager INSTANCE = new InMemorySessionManager();
-    }
-
-    public static SessionManager getInstance() {
-        return InstanceHolder.INSTANCE;
-    }
-
-
-    private InMemorySessionManager() {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(this::cleanExpiredSessions, 0, 1, TimeUnit.MINUTES);
+    @Autowired
+    public InMemorySessionManager(UserService userService) {
+        this.userService = userService;
+        startCleanupTask();
     }
 
     @Override
-    public HttpSession getSession(String sessionId) {
-        lock.readLock().lock();
-        try {
-            HttpSession session = sessions.get(sessionId);
-            if (session != null && session instanceof Session) {
-                ((Session) session).access();
-            }
-            return session;
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
+    public HttpSession addSessionToManager(HttpSession session) throws SQLException {
+        String userId = (String) session.getAttribute("userId");
+        UserResponseDto user = userService.getUserFromUserId(userId);
 
-    @Override
-    public HttpSession createSession(String sessionId, HttpSession session) {
-        lock.writeLock().lock();
-        try {
-            sessions.put(sessionId, session);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        // 내부용 세션 객체 생성
+        InternalSession internalSession = new InternalSession(session);
+        internalSession.setAttribute("userDetails", user);
+
+        sessions.put(session.getId(), internalSession);
         return session;
     }
 
     @Override
-    public void invalidateSession(String sessionId) {
-        lock.writeLock().lock();
-        try {
-            HttpSession session = sessions.remove(sessionId);
-            if (session != null) {
-                session.invalidate();
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+    public HttpSession getSessionFromManager(String sessionId) {
+        InternalSession internalSession = sessions.get(sessionId);
+        return internalSession != null ? internalSession.getOriginalSession() : null;
     }
 
-    private void cleanExpiredSessions() {
-        Instant now = Instant.now();
-        sessions.entrySet().removeIf(entry -> {
-            HttpSession session = entry.getValue();
-            if (session instanceof Session) {
-                Session customSession = (Session) session;
-                Duration sessionAge = Duration.between(customSession.getLastAccess(), now);
-                return sessionAge.compareTo(sessionTimeout) > 0;
-            }
-            return false;
-        });
+    @Override
+    public void invalidateSession(String sessionId) {
+        InternalSession internalSession = sessions.get(sessionId);
+        if (internalSession != null) {
+            internalSession.getOriginalSession().invalidate();
+        }
+        sessions.remove(sessionId);
+    }
+
+    @Override
+    public UserResponseDto getUserDetails(String sessionId) {
+        InternalSession internalSession = sessions.get(sessionId);
+        if (internalSession != null) {
+            return (UserResponseDto) internalSession.getAttribute("userDetails");
+        }
+        return null;
+    }
+
+    private void startCleanupTask() {
+        scheduler.scheduleAtFixedRate(this::cleanExpiredSessions, 1, 1, TimeUnit.MINUTES);
+    }
+
+    public void cleanExpiredSessions() {
+        long now = System.currentTimeMillis();
+        sessions.entrySet().removeIf(entry -> isSessionExpired(entry.getValue(), now));
+    }
+
+    private boolean isSessionExpired(InternalSession session, long now) {
+        return now - session.getLastAccessTime() > session.getOriginalSession().getMaxInactiveInterval() * 1000;
+    }
+
+    @Override
+    public String toString() {
+        return "InMemorySessionManager{" +
+                "sessions=" + sessions +
+                ", userService=" + userService +
+                ", scheduler=" + scheduler +
+                '}';
+    }
+
+    // 내부용 세션 클래스
+    private static class InternalSession {
+        private final HttpSession originalSession;
+        private final Map<String, Object> internalAttributes = new HashMap<>();
+        private long lastAccessTime;
+
+        InternalSession(HttpSession session) {
+            this.originalSession = session;
+            this.lastAccessTime = System.currentTimeMillis();
+        }
+
+        void setAttribute(String name, Object value) {
+            internalAttributes.put(name, value);
+        }
+
+        Object getAttribute(String name) {
+            return internalAttributes.get(name);
+        }
+
+        HttpSession getOriginalSession() {
+            return originalSession;
+        }
+
+        void updateLastAccessTime() {
+            this.lastAccessTime = System.currentTimeMillis();
+        }
+
+        public Map<String, Object> getInternalAttributes() {
+            return internalAttributes;
+        }
+
+        public long getLastAccessTime() {
+            return lastAccessTime;
+        }
+
+        @Override
+        public String toString() {
+            return "InternalSession{" +
+                    "originalSession=" + originalSession +
+                    ", internalAttributes=" + internalAttributes +
+                    ", lastAccessTime=" + lastAccessTime +
+                    '}';
+        }
     }
 }

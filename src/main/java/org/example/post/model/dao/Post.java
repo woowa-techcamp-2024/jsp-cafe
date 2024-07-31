@@ -1,17 +1,21 @@
 package org.example.post.model.dao;
 
+import org.example.post.model.PostStatus;
+
 public class Post {
 
     private Long id;
     private String writer;
     private String title;
     private String contents;
+    private PostStatus postStatus;
 
     public static Post create(String writer, String title, String contents) {
         Post post = new Post();
         post.writer = writer;
         post.title = title;
         post.contents = contents;
+        post.postStatus = PostStatus.AVAILABLE;
         post.validate();
         return post;
     }
@@ -40,6 +44,10 @@ public class Post {
 
     public String getContents() {
         return contents;
+    }
+
+    public PostStatus getPostStatus() {
+        return postStatus;
     }
 
     @Override

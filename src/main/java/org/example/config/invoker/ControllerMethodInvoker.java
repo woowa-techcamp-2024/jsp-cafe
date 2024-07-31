@@ -2,8 +2,11 @@ package org.example.config.invoker;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.example.config.annotation.PathVariable;
 import org.example.config.annotation.RequestParam;
@@ -19,11 +22,12 @@ public class ControllerMethodInvoker {
     public Object invokeHandlerMethod(MethodHandler handler, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         Method method = handler.getMethod();
-        Object[] args = resolveHandlerArguments(method, request, response);
+        Object[] args = resolveHandlerArguments(method, request, response, request.getSession());
         return method.invoke(handler.getInstance(), args);
     }
 
-    private Object[] resolveHandlerArguments(Method method, HttpServletRequest request, HttpServletResponse response) {
+    private Object[] resolveHandlerArguments(Method method, HttpServletRequest request, HttpServletResponse response,
+                                             HttpSession session) {
         Parameter[] parameters = method.getParameters();
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
@@ -36,6 +40,8 @@ public class ControllerMethodInvoker {
                 args[i] = request;
             } else if (parameter.getType().equals(HttpServletResponse.class)) {
                 args[i] = response;
+            } else if (parameter.getType().equals(HttpSession.class)) {
+                args[i] = session;
             }
         }
         return args;
@@ -44,8 +50,7 @@ public class ControllerMethodInvoker {
     private Object resolveRequestParam(Parameter parameter, HttpServletRequest request) {
         RequestParam annotation = parameter.getAnnotation(RequestParam.class);
         String paramName = annotation.value().isEmpty() ? parameter.getName() : annotation.value();
-        String paramValue = request.getParameter(paramName);
-
+        String paramValue = URLDecoder.decode(request.getParameter(paramName), StandardCharsets.UTF_8);
         if (paramValue == null && annotation.required()) {
             throw new IllegalArgumentException("Required parameter '" + paramName + "' is not present");
         }
@@ -58,10 +63,11 @@ public class ControllerMethodInvoker {
         String paramName = annotation.value().isEmpty() ? parameter.getName() : annotation.value();
         String requestURI = request.getRequestURI();
 
-        String urlPattern =  (String) request.getAttribute("currentUrlPattern");
+        String urlPattern = (String) request.getAttribute("currentUrlPattern");
         Map<String, String> pathVariables = UrlMatcher.extractPathVariables(urlPattern, requestURI);
 
-        String paramValue = pathVariables.get(paramName);
+        String paramValue = URLDecoder.decode(pathVariables.get(paramName), StandardCharsets.UTF_8);
+
         if (paramValue == null && annotation.required()) {
             throw new IllegalArgumentException("Required path variable '" + paramName + "' is not present");
         }

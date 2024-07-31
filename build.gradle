@@ -3,6 +3,12 @@ plugins {
     id 'war'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -32,5 +38,5 @@ test {
 }
 
 war {
-    archiveFileName = "${project.name}.war"
+    archiveFileName = "ROOT.war"
 }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Map.Entry;
 import org.example.config.HttpMethod;
 import org.example.config.conatiner.ApplicationContext;
@@ -46,15 +47,16 @@ public class DispatcherServlet extends HttpServlet {
         logger.info("view resolver: {}", viewResolver);
     }
 
+    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (isStaticResource(req)) {
             getServletContext().getNamedDispatcher("default").forward(req, resp);
             return;
         }
 
+
         String requestURI = req.getRequestURI();
         HttpMethod httpMethod = HttpMethod.valueOf(req.getMethod());
-        logger.info("Handling request: {} {}", httpMethod, requestURI);
 
         try {
             Entry<HandlerKey, MethodHandler> handlerEntry = handlerMapping.getHandler(requestURI, httpMethod);
