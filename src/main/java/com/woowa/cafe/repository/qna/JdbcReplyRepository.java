@@ -142,4 +142,16 @@ public class JdbcReplyRepository implements ReplyRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void deleteByArticleId(final Long articleId) {
+        String sql = "UPDATE replies SET is_deleted = true WHERE article_id = ?";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, articleId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

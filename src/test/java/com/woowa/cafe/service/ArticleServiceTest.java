@@ -1,6 +1,7 @@
 package com.woowa.cafe.service;
 
 import com.woowa.cafe.domain.Member;
+import com.woowa.cafe.domain.Reply;
 import com.woowa.cafe.dto.article.ArticleDto;
 import com.woowa.cafe.dto.article.ArticleListDto;
 import com.woowa.cafe.dto.article.SaveArticleDto;
@@ -169,9 +170,29 @@ class ArticleServiceTest {
 
         articleService.delete(articleId, writerId);
 
-        assertThatThrownBy(() -> articleService.findById(articleId))
+        assertAll(
+                () -> assertThat(articleRepository.findById(articleId)).isEmpty()
+        );
+    }
+
+    @Test
+    @DisplayName("질문 삭제 테스트 - 삭제 실패(다른 사람의 댓글이 존재)")
+    void delete_fail_exists_reply() {
+        memberRepository.save(member);
+
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        articleService.save(new SaveArticleDto(title, content), writerId);
+
+        replyRepository.save(new Reply(articleId, "otherId", "reply"));
+
+        assertThatThrownBy(() -> articleService.delete(articleId, writerId))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 게시글입니다.");
+                .hasMessage("다른 사람이 작성한 댓글이 있어 삭제할 수 없습니다.");
     }
 
     @Test

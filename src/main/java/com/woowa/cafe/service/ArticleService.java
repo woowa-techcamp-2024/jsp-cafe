@@ -79,6 +79,17 @@ public class ArticleService {
             throw new HttpException(SC_NOT_FOUND, "다른 사람이 삭제할 수 없습니다.");
         }
 
+        List<Reply> replies = replyRepository.findByArticleId(articleId);
+
+        long myReplyCnt = replies.stream()
+                .filter(reply -> reply.isSameWriter(memberId))
+                .count();
+
+        if (replies.size() != myReplyCnt) {
+            throw new HttpException(SC_NOT_FOUND, "다른 사람이 작성한 댓글이 있어 삭제할 수 없습니다.");
+        }
+        replyRepository.deleteByArticleId(articleId);
+
         articleRepository.delete(articleId);
     }
 }

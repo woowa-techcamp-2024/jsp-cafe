@@ -18,4 +18,6 @@ public interface ReplyRepository {
     Optional<Reply> update(final Reply reply);
 
     void delete(final Long replyId);
+
+    void deleteByArticleId(final Long articleId);
 }

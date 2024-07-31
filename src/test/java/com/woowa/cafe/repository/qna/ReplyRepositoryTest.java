@@ -157,4 +157,28 @@ class ReplyRepositoryTest {
         assertEquals(3, all.size());
     }
 
+    @Test
+    @DisplayName("글의 댓글들을 삭제할 수 있다.")
+    void deleteByArticleId() {
+        // given
+        Reply reply1 = new Reply(1L, "writer", "contents");
+        Reply reply2 = new Reply(1L, "writer", "contents");
+        Reply reply3 = new Reply(2L, "writer", "contents");
+
+        replyRepository.save(reply1);
+        replyRepository.save(reply2);
+        replyRepository.save(reply3);
+
+        // when
+        replyRepository.deleteByArticleId(1L);
+
+        // then
+        List<Reply> deleteReplies = replyRepository.findByArticleId(1L);
+        List<Reply> saveReplies = replyRepository.findByArticleId(2L);
+        assertAll(
+                () -> assertEquals(0, deleteReplies.size()),
+                () -> assertEquals(1, saveReplies.size())
+        );
+    }
+
 }

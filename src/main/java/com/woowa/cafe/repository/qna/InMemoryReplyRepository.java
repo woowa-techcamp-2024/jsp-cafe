@@ -53,4 +53,10 @@ public class InMemoryReplyRepository implements ReplyRepository {
     public void delete(final Long replyId) {
         replies.remove(replyId);
     }
+
+    @Override
+    public void deleteByArticleId(final Long articleId) {
+        replies.entrySet()
+                .removeIf(entry -> entry.getValue().getArticleId().equals(articleId));
+    }
 }
