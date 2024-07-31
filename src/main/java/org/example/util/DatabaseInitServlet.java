@@ -9,7 +9,7 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet(urlPatterns = "/init", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/!@!(#()@*#()!@#!@", loadOnStartup = 1)
 public class DatabaseInitServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitServlet.class);
     private DataUtil dataUtil;
@@ -23,6 +23,7 @@ public class DatabaseInitServlet extends HttpServlet {
             logger.info("테이블 초기화");
             stmt.execute(createUserTable());
             stmt.execute(createPostTable());
+            stmt.execute(createReplyTable());
 
         } catch (SQLException e) {
             throw new ServletException("Unable to initialize database", e);
@@ -45,6 +46,17 @@ public class DatabaseInitServlet extends HttpServlet {
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
                 "writer VARCHAR(50) NOT NULL," +
                 "title VARCHAR(50) NOT NULL," +
+                "contents TEXT NOT NULL," +
+                "status VARCHAR(50) NOT NULL," +
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                ")";
+    }
+
+    private String createReplyTable() {
+        return "CREATE TABLE IF NOT EXISTS replies (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                "post_id BIGINT," +
+                "writer VARCHAR(50) NOT NULL," +
                 "contents TEXT NOT NULL," +
                 "status VARCHAR(50) NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
