@@ -24,7 +24,7 @@ public class ArticleService {
 
     public Article findById(long articleId) {
         return articleDao.findByArticleId(articleId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
     }
 
     public void update(Article article, String userId) {
