@@ -11,18 +11,20 @@ public class Post {
     private int viewCount;
     private LocalDateTime writtenAt;
     private Long writerId;
+    private ContentStatus status;
 
-    public Post(Long id, String title, String content, Integer viewCount, LocalDateTime writtenAt, Long writerId) {
+    public Post(Long id, String title, String content, Integer viewCount, LocalDateTime writtenAt, Long writerId, ContentStatus status) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.writtenAt = writtenAt;
         this.writerId = writerId;
+        this.status = status;
     }
 
     public Post(String title, String content, Long writerId) {
-        this(null, title, content, 0, LocalDateTime.now(), writerId);
+        this(null, title, content, 0, LocalDateTime.now(), writerId, ContentStatus.PUBLISHED);
     }
 
     public Long getId() {
@@ -49,6 +51,10 @@ public class Post {
         return writerId;
     }
 
+    public ContentStatus getStatus() {
+        return status;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -60,6 +66,18 @@ public class Post {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void softDelete() {
+        this.status = ContentStatus.DELETED;
+    }
+
+    public boolean isDeleted() {
+        return status == ContentStatus.DELETED;
+    }
+
+    public boolean isPublished() {
+        return status == ContentStatus.PUBLISHED;
     }
 
     @Override
