@@ -1,7 +1,7 @@
 package repository.article;
 
 import domain.Article;
-import domain.Users;
+import domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.DatabaseUtils;
@@ -26,7 +26,7 @@ public class JDBCArticleRepository implements ArticleRepository {
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContent());
             pstmt.executeUpdate();
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,7 +47,7 @@ public class JDBCArticleRepository implements ArticleRepository {
             while (rs.next()) {
                 articles.add(new Article(
                         rs.getLong("article_id"),
-                        new Users(
+                        new User(
                                 rs.getLong("writer_id"),
                                 rs.getString("userId"),
                                 rs.getString("password"),
@@ -59,7 +59,7 @@ public class JDBCArticleRepository implements ArticleRepository {
                 ));
             }
             pstmt.close();
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +81,7 @@ public class JDBCArticleRepository implements ArticleRepository {
             if (rs.next()) {
                 return Optional.of(new Article(
                         rs.getLong("article_id"),
-                        new Users(
+                        new User(
                                 rs.getLong("writer_id"),
                                 rs.getString("userId"),
                                 rs.getString("password"),
@@ -93,7 +93,7 @@ public class JDBCArticleRepository implements ArticleRepository {
                 ));
             }
             pstmt.close();
-            DatabaseUtils.closeConnection();
+            DatabaseUtils.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }

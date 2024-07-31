@@ -1,21 +1,20 @@
 package repository.users;
 
-import domain.Users;
-import dto.UsersDao;
+import domain.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
 
-    void saveUser(Users user);
+    void saveUser(User user);
 
-    Optional<Users> findById(Long id);
+    Optional<User> findById(Long id);
 
-    Optional<Users> findByUserId(String userId);
+    Optional<User> findByUserId(String userId);
 
-    List<Users> findAll();
+    List<User> findAll();
 
-    void updateUser(Users user);
+    void updateUser(User user);
 
 }
