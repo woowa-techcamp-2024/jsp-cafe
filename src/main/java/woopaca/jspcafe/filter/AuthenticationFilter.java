@@ -28,6 +28,7 @@ public class AuthenticationFilter implements Filter {
         includeMatchers.addMatcher("GET", "/posts/*");
         includeMatchers.addMatcher("POST", "/posts/*");
         includeMatchers.addMatcher("PUT", "/posts/*");
+        includeMatchers.addMatcher("POST", "/replies/*");
     }
 
     @Override
