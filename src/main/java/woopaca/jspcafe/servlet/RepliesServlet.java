@@ -15,8 +15,8 @@ import woopaca.jspcafe.servlet.dto.request.WriteReplyRequest;
 
 import java.io.IOException;
 
-@WebServlet("/replies")
-public class ReplyServlet extends HttpServlet {
+@WebServlet("/replies/*")
+public class RepliesServlet extends HttpServlet {
 
     private ReplyService replyService;
 
@@ -35,5 +35,14 @@ public class ReplyServlet extends HttpServlet {
         Authentication authentication = (Authentication) session.getAttribute("authentication");
         replyService.writeReply(writeReplyRequest, authentication);
         response.sendRedirect("/posts/" + writeReplyRequest.postId());
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+        String pathInfo = request.getPathInfo();
+        Long replyId = Long.parseLong(pathInfo.substring(1));
+        HttpSession session = request.getSession();
+        Authentication authentication = (Authentication) session.getAttribute("authentication");
+        replyService.deleteReply(replyId, authentication);
     }
 }
