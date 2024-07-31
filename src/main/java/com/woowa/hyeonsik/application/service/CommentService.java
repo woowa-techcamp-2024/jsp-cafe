@@ -4,7 +4,7 @@ import com.woowa.hyeonsik.application.dao.ArticleDao;
 import com.woowa.hyeonsik.application.dao.CommentDao;
 import com.woowa.hyeonsik.application.domain.Reply;
 
-import com.woowa.hyeonsik.application.exception.AuthenticationException;
+import com.woowa.hyeonsik.application.exception.AuthorizationException;
 import java.util.List;
 
 public class CommentService {
@@ -53,7 +53,7 @@ public class CommentService {
             .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
 
         if (!reply.getWriter().equals(userId)) {
-            throw new AuthenticationException("다른 사람이 쓴 댓글은 수정할 수 없습니다.");
+            throw new AuthorizationException("다른 사람이 쓴 댓글은 수정할 수 없습니다.");
         }
     }
 }
