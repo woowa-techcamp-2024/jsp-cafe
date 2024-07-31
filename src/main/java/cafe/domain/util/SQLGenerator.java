@@ -46,7 +46,7 @@ public class SQLGenerator {
         if (className == null) {
             throw new IllegalArgumentException("Invalid arguments");
         }
-        return "SELECT * FROM `" + className + "s`;";
+        return "SELECT * FROM `" + className + "s` ORDER BY `created` ASC;";
     }
 
     public String generateUpdateSQL(String className, Field[] fields) {
@@ -75,6 +75,6 @@ public class SQLGenerator {
         if (className == null) {
             throw new IllegalArgumentException("Invalid arguments");
         }
-        return "DELETE FROM `" + className + "s` WHERE `" + className + "Id` = ?;";
+        return "UPDATE `" + className + "s` SET `deleted`=true WHERE `" + className + "Id` = ?;";
     }
 }

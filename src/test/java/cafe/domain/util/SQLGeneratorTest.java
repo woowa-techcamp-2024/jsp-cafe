@@ -67,7 +67,7 @@ class SQLGeneratorTest {
         String expectedSQL = sqlGenerator.generateSelectAllSQL("test_table");
 
         // then
-        assertEquals(expectedSQL, "SELECT * FROM `test_tables`;");
+        assertEquals(expectedSQL, "SELECT * FROM `test_tables` ORDER BY `created` ASC;");
     }
 
     @ParameterizedTest
