@@ -19,19 +19,21 @@ import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 public class DbArticleDao implements ArticleDao {
     private static final Logger log = LoggerFactory.getLogger(DbArticleDao.class);
 
-    private static final RowMapper<Article> ARTICLE_ROW_MAPPER = (resultSet) -> new Article(
-            resultSet.getLong("id"),
-            resultSet.getString("title"),
-            resultSet.getString("contents"),
-            resultSet.getLong("author_id"),
-            toOffsetDateTime(resultSet.getTimestamp("created_at"))
-    );
+    private static final RowMapper<Article> ARTICLE_ROW_MAPPER = (resultSet) -> Article.builder()
+            .id(resultSet.getLong("id"))
+            .title(resultSet.getString("title"))
+            .contents(resultSet.getString("contents"))
+            .authorId(resultSet.getLong("author_id"))
+            .createdAt(toOffsetDateTime(resultSet.getTimestamp("created_at")))
+            .activate(resultSet.getBoolean("activate"))
+            .build();
 
     private static final RowMapper<ArticleDto> ARTICLE_DTO_ROW_MAPPER = (resultSet) -> ArticleDto.builder()
             .id(resultSet.getLong("id"))
             .title(resultSet.getString("title"))
             .contents(resultSet.getString("contents"))
             .createdAt(toStringForUser(resultSet.getTimestamp("created_at")))
+            .activate(resultSet.getBoolean("activate"))
             .author(new UserDto(
                     resultSet.getLong("author_id"),
                     resultSet.getString("user_id"),

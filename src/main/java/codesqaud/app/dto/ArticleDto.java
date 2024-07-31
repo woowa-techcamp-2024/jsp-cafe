@@ -6,13 +6,15 @@ public class ArticleDto {
     private final String contents;
     private final String createdAt;
     private final UserDto author;
+    private final Boolean activate;
 
-    public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author) {
+    public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author, Boolean activate) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.createdAt = createdAt;
         this.author = author;
+        this.activate = activate;
     }
 
     public Long getId() {
@@ -31,6 +33,9 @@ public class ArticleDto {
         return createdAt;
     }
 
+    public Boolean getActivate() {
+        return activate;
+    }
 
     public UserDto getAuthor() {
         return author;
@@ -46,6 +51,7 @@ public class ArticleDto {
         private String contents;
         private String createdAt;
         private UserDto author;
+        private Boolean activate;
 
         private Builder() {
         }
@@ -70,13 +76,18 @@ public class ArticleDto {
             return this;
         }
 
+        public Builder activate(Boolean activate) {
+            this.activate = activate;
+            return this;
+        }
+
         public Builder author(UserDto author) {
             this.author = author;
             return this;
         }
 
         public ArticleDto build() {
-            return new ArticleDto(id, title, contents, createdAt, author);
+            return new ArticleDto(id, title, contents, createdAt, author, activate);
         }
     }
 }
