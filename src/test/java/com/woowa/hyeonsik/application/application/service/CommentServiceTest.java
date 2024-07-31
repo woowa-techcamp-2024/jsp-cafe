@@ -8,6 +8,7 @@ import com.woowa.hyeonsik.application.dao.JdbcCommentDao;
 import com.woowa.hyeonsik.application.domain.Article;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.exception.AuthenticationException;
+import com.woowa.hyeonsik.application.exception.AuthorizationException;
 import com.woowa.hyeonsik.application.service.CommentService;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
 import com.woowa.hyeonsik.server.database.property.H2Property;
@@ -100,7 +101,7 @@ class CommentServiceTest extends MemoryDbTest {
         Reply newReply = new Reply(1L, 1L, "TEST_USER", "CHANGED");
         commentService.addComment(reply);
 
-        assertThrows(AuthenticationException.class, () -> commentService.updateComment(newReply, "ANOTHER_USER"));
+        assertThrows(AuthorizationException.class, () -> commentService.updateComment(newReply, "ANOTHER_USER"));
     }
 
     @Test
@@ -124,6 +125,6 @@ class CommentServiceTest extends MemoryDbTest {
         Reply reply = new Reply(null, 1L, "TEST_USER", "COMMENT");
         commentService.addComment(reply);
 
-        assertThrows(AuthenticationException.class, () -> commentService.deleteComment(1L, "ANOTHER_USER"));
+        assertThrows(AuthorizationException.class, () -> commentService.deleteComment(1L, "ANOTHER_USER"));
     }
 }
