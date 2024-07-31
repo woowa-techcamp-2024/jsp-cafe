@@ -124,7 +124,7 @@ public class ReplyController {
             return;
         }
 
-        boolean isDeleted = replyService.deleteReply(replyId, userDetails.getUserId());
+        boolean isDeleted = replyService.deleteReply(replyId, userDetails);
         if (isDeleted) {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("success");
