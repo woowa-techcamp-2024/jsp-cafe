@@ -1,5 +1,6 @@
 package org.example.post.model.dao;
 
+import java.time.LocalDateTime;
 import org.example.post.model.PostStatus;
 
 public class Post {
@@ -9,6 +10,8 @@ public class Post {
     private String title;
     private String contents;
     private PostStatus postStatus;
+    private LocalDateTime createdAt;
+
 
     public static Post create(String writer, String title, String contents) {
         Post post = new Post();
@@ -16,6 +19,7 @@ public class Post {
         post.title = title;
         post.contents = contents;
         post.postStatus = PostStatus.AVAILABLE;
+        post.createdAt = LocalDateTime.now();
         post.validate();
         return post;
     }
@@ -26,6 +30,7 @@ public class Post {
         post.writer = writer;
         post.title = title;
         post.contents = contents;
+        post.createdAt = LocalDateTime.now();
         post.validate();
         return post;
     }
@@ -48,6 +53,10 @@ public class Post {
 
     public PostStatus getPostStatus() {
         return postStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override
