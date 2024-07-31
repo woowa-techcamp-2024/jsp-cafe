@@ -8,6 +8,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 import org.example.cafe.domain.QuestionRepository;
+import org.example.cafe.domain.ReplyRepository;
 import org.example.cafe.domain.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -18,6 +19,7 @@ abstract public class TomcatBaseTestEnvironment {
 
     protected static UserRepository userRepository;
     protected static QuestionRepository questionRepository;
+    protected static ReplyRepository replyRepository;
 
     static {
         String webappPath = new File("src/main/webapp").getAbsolutePath();
@@ -47,11 +49,13 @@ abstract public class TomcatBaseTestEnvironment {
 
         userRepository = (UserRepository) context.getServletContext().getAttribute("UserRepository");
         questionRepository = (QuestionRepository) context.getServletContext().getAttribute("QuestionRepository");
+        replyRepository = (ReplyRepository) context.getServletContext().getAttribute("ReplyRepository");
     }
 
     @BeforeEach
     public void setUpEach() {
-        userRepository.deleteAll();
+        replyRepository.deleteAll();
         questionRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }

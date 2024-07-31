@@ -15,11 +15,11 @@ import org.example.cafe.infrastructure.database.DbConnector;
 public class QuestionJdbcRepository implements QuestionRepository {
 
     private static final String INSERT = "INSERT INTO QUESTION (title, content, writer) VALUES (?, ?, ?)";
-    private static final String SELECT = "SELECT * FROM QUESTION";
-    private static final String SELECT_BY_ID = "SELECT * FROM QUESTION WHERE question_id = ?";
+    private static final String SELECT = "SELECT * FROM QUESTION WHERE is_deleted = false";
+    private static final String SELECT_BY_ID = "SELECT * FROM QUESTION WHERE question_id = ? and is_deleted = false";
     private static final String DELETE = "DELETE FROM QUESTION";
     private static final String DELETE_BY_ID = "DELETE FROM QUESTION WHERE question_id = ?";
-    private static final String UPDATE_BY_ID = "UPDATE QUESTION SET title = ?, content = ?, writer = ? WHERE question_id = ?";
+    private static final String UPDATE_BY_ID = "UPDATE QUESTION SET title = ?, content = ?, writer = ?, is_deleted = ? WHERE question_id = ?";
 
     private final DbConnector dbConnector;
 
@@ -64,6 +64,7 @@ public class QuestionJdbcRepository implements QuestionRepository {
                             resultSet.getString("title"),
                             resultSet.getString("content"),
                             resultSet.getString("writer"),
+                            resultSet.getBoolean("is_deleted"),
                             resultSet.getTimestamp("created_at").toLocalDateTime());
                 }
                 return null;
@@ -85,6 +86,7 @@ public class QuestionJdbcRepository implements QuestionRepository {
                             resultSet.getString("title"),
                             resultSet.getString("content"),
                             resultSet.getString("writer"),
+                            resultSet.getBoolean("is_deleted"),
                             resultSet.getTimestamp("created_at").toLocalDateTime()));
                 }
 
@@ -102,7 +104,8 @@ public class QuestionJdbcRepository implements QuestionRepository {
             preparedStatement.setString(1, question.getTitle());
             preparedStatement.setString(2, question.getContent());
             preparedStatement.setString(3, question.getWriter());
-            preparedStatement.setLong(4, question.getQuestionId());
+            preparedStatement.setBoolean(4, question.isDeleted());
+            preparedStatement.setLong(5, question.getQuestionId());
 
             int row = preparedStatement.executeUpdate();
             if (row != 1) {

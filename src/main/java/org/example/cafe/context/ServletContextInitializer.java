@@ -10,10 +10,13 @@ import jakarta.servlet.annotation.WebListener;
 import java.util.function.Supplier;
 import org.example.cafe.application.AuthService;
 import org.example.cafe.application.QuestionService;
+import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.UserService;
 import org.example.cafe.domain.QuestionRepository;
+import org.example.cafe.domain.ReplyRepository;
 import org.example.cafe.domain.UserRepository;
 import org.example.cafe.infrastructure.QuestionJdbcRepository;
+import org.example.cafe.infrastructure.ReplyJdbcRepository;
 import org.example.cafe.infrastructure.UserJdbcRepository;
 import org.example.cafe.infrastructure.database.DbConnector;
 import org.slf4j.Logger;
@@ -40,15 +43,20 @@ public class ServletContextInitializer implements ServletContextListener {
 
             setContext("UserRepository", () ->
                     new UserJdbcRepository(getBean("DbConnector", DbConnector.class)));
+            setContext("ReplyRepository", () ->
+                    new ReplyJdbcRepository(getBean("DbConnector", DbConnector.class)));
+            setContext("QuestionRepository", () ->
+                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
+
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));
             setContext("AuthService", () ->
                     new AuthService(getBean("UserRepository", UserRepository.class)));
-
-            setContext("QuestionRepository", () ->
-                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
             setContext("QuestionService", () ->
-                    new QuestionService(getBean("QuestionRepository", QuestionRepository.class)));
+                    new QuestionService(getBean("QuestionRepository", QuestionRepository.class),
+                            getBean("ReplyRepository", ReplyRepository.class)));
+            setContext("ReplyService", () ->
+                    new ReplyService(getBean("ReplyRepository", ReplyRepository.class)));
         } catch (Exception e) {
             log.error("Failed to register beans", e);
             System.exit(-1);

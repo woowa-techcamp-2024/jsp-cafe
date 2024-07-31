@@ -35,22 +35,4 @@ class Step2 extends TomcatBaseTestEnvironment {
             assertThat(getResponse(con)).contains("title1", "title2", "writer1", "writer2");
         });
     }
-
-    @Test
-    void 사용자는_특정_게시글을_상세_조회할_수_있다() throws IOException {
-        //given
-        Question question = new Question("title1", "content1", "writer1");
-        Long questionId = questionRepository.save(question);
-
-        con = createGetConnection("/questions/" + questionId);
-
-        //when
-        con.connect();
-
-        //then
-        assertAll(() -> {
-            assertThat(con.getResponseCode()).isEqualTo(200);
-            assertThat(getResponse(con)).contains("title1", "content1", "writer1");
-        });
-    }
 }

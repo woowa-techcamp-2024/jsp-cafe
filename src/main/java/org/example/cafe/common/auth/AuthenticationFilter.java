@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import org.example.cafe.common.endpoint.Endpoint;
-import org.example.cafe.common.endpoint.PathEndPoint;
 import org.slf4j.Logger;
 
 /**
@@ -27,8 +26,10 @@ public class AuthenticationFilter implements Filter {
 
     private static final Logger log = getLogger(AuthenticationFilter.class);
     private static final List<Endpoint> ENDPOINT_PATTERNS = List.of(
+            new Endpoint("POST", "/replies"),
+            new Endpoint("DELETE", "/replies/*"),
             new Endpoint("GET", "/questions"),
-            new PathEndPoint("GET", "/questions/*", "edit=true"),
+            new Endpoint("GET", "/questions/*"),
             new Endpoint("POST", "/questions"),
             new Endpoint("PUT", "/questions/*"),
             new Endpoint("DELETE", "/questions/*"),
