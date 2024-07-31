@@ -24,13 +24,14 @@ public class Post {
         return post;
     }
 
-    public static Post createWithId(Long id, String writer, String title, String contents) {
+    public static Post createWithAll(Long id, String writer, String title, String contents, PostStatus postStatus, LocalDateTime createdAt) {
         Post post = new Post();
         post.id = id;
         post.writer = writer;
         post.title = title;
         post.contents = contents;
-        post.createdAt = LocalDateTime.now();
+        post.postStatus = postStatus;
+        post.createdAt = createdAt;
         post.validate();
         return post;
     }

@@ -39,7 +39,7 @@ public class PostTest {
         String contents = "Sample Contents";
 
         // When
-        Post post = Post.createWithId(id, writer, title, contents);
+        Post post = Post.createWithAll(id, writer, title, contents);
 
         // Then
         assertNotNull(post);
@@ -147,7 +147,7 @@ public class PostTest {
         String contents = "Sample Contents";
 
         // When
-        Post post = Post.createWithId(id, writer, title, contents);
+        Post post = Post.createWithAll(id, writer, title, contents);
 
         // Then
         assertNotNull(post);

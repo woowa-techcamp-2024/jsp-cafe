@@ -7,7 +7,7 @@ import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
-import org.example.post.model.dto.PostResponse;
+import org.example.post.model.dto.PostDto;
 import org.example.post.repository.PostRepository;
 
 @Component
@@ -20,27 +20,27 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public PostResponse create(Post post) throws SQLException {
-        return PostResponse.toResponse(postRepository.save(post));
+    public PostDto create(Post post) throws SQLException {
+        return PostDto.toResponse(postRepository.save(post));
     }
 
-    public List<PostResponse> getAll() throws SQLException {
+    public List<PostDto> getAll() throws SQLException {
         return postRepository.findAll().stream()
-                .map(PostResponse::toResponse)
+                .map(PostDto::toResponse)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public PostResponse getPostById(long id) throws SQLException {
+    public PostDto getPostById(long id) throws SQLException {
         Post post = postRepository.findById(id);
         if (post.getPostStatus() == PostStatus.DELETED) {
             throw new IllegalArgumentException("Post with id " + id + " is deleted");
         }
-        return PostResponse.toResponse(post);
+        return PostDto.toResponse(post);
     }
 
-    public PostResponse updatePost(PostResponse postDto) throws SQLException {
-        Post post = Post.createWithId(postDto.getId(), postDto.getWriter(), postDto.getTitle(), postDto.getContents());
-        return PostResponse.toResponse(postRepository.update(post));
+    public PostDto updatePost(PostDto postDto) throws SQLException {
+        Post post = Post.createWithAll(postDto.getId(), postDto.getWriter(), postDto.getTitle(), postDto.getContents(), postDto.getStatus(), postDto.getCreatedAt());
+        return PostDto.toResponse(postRepository.update(post));
     }
 
     public void deleteById(Long id) throws SQLException {

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.rowset.serial.SerialException;
@@ -28,7 +29,7 @@ public class PostRepository {
 
     public Post save(Post post) throws SQLException {
         logger.info("Saving post: {}", post);
-        String sql = "insert into posts (writer, title, contents, status) values (?, ?, ?, ?)";
+        String sql = "insert into posts (writer, title, contents, status, created_at) values (?, ?, ?, ?, ?)";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -36,6 +37,7 @@ public class PostRepository {
             ps.setString(2, post.getTitle());
             ps.setString(3, post.getContents());
             ps.setString(4, post.getPostStatus().name());
+            ps.setObject(5, post.getCreatedAt());
             ps.executeUpdate();
             return post;
         } catch (SQLException e) {
@@ -58,8 +60,10 @@ public class PostRepository {
                     String writer = rs.getString("writer");
                     String title = rs.getString("title");
                     String contents = rs.getString("contents");
+                    String status = rs.getString("status");
+                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
 
-                    Post post = Post.createWithId(id, writer, title, contents);
+                    Post post = Post.createWithAll(id, writer, title, contents, PostStatus.valueOf(status), createdAt);
                     return post;
                 }
             }
@@ -80,7 +84,9 @@ public class PostRepository {
                     String writer = rs.getString("writer");
                     String title = rs.getString("title");
                     String contents = rs.getString("contents");
-                    Post post = Post.createWithId(id, writer, title, contents);
+                    String status = rs.getString("status");
+                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
+                    Post post = Post.createWithAll(id, writer, title, contents, PostStatus.valueOf(status), createdAt);
                     posts.add(post);
                 }
             }

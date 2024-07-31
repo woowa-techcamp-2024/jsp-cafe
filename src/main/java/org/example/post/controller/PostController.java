@@ -14,7 +14,7 @@ import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
 import org.example.member.model.dto.UserResponseDto;
 import org.example.post.model.dao.Post;
-import org.example.post.model.dto.PostResponse;
+import org.example.post.model.dto.PostDto;
 import org.example.post.service.PostService;
 import org.example.util.session.SessionManager;
 import org.slf4j.Logger;
@@ -36,7 +36,8 @@ public class PostController {
 
     @RequestMapping(path = "/", method = HttpMethod.GET)
     public ModelAndView list() throws SQLException {
-        List<PostResponse> postResponses = postService.getAll();
+        List<PostDto> postResponses = postService.getAll();
+        logger.info(postResponses.toString());
         ModelAndView mv = new ModelAndView("post/PostList");
         mv.addAttribute("posts", postResponses);
 
@@ -68,7 +69,7 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.GET)
     public ModelAndView getQuestion(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostDetail");
-        PostResponse post = postService.getPostById(id);
+        PostDto post = postService.getPostById(id);
         mv.addAttribute("isAuthor", isAuthor(session, post));
         mv.addAttribute("post", post);
         return mv;
@@ -77,7 +78,7 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.PUT)
     public void editQuestion(@PathVariable("id") Long id, @RequestParam("title") String title, @RequestParam("contents") String contents,
                                      HttpServletResponse response) throws SQLException, IOException {
-        PostResponse post = postService.getPostById(id);
+        PostDto post = postService.getPostById(id);
         post.setTitle(title);
         post.setContents(contents);
         postService.updatePost(post);
@@ -89,7 +90,7 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.DELETE)
     public void deleteQuestion(@PathVariable("id") Long id, HttpSession session, HttpServletResponse response)
             throws SQLException, IOException {
-        PostResponse post = postService.getPostById(id);
+        PostDto post = postService.getPostById(id);
         UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
         //TODO: 요구사항 구체화 + 서비스단으로 이동이 맞다.
         if (userDetails != null) {
@@ -106,7 +107,7 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}/form", method = HttpMethod.GET)
     public ModelAndView getQuestionEditForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostEditForm");
-        PostResponse post = postService.getPostById(id);
+        PostDto post = postService.getPostById(id);
         boolean isAuthor = isAuthor(session, post);
         if (!isAuthor) {
             return new ModelAndView("redirect:/questions/" + id);
@@ -116,7 +117,7 @@ public class PostController {
         return mv;
     }
 
-    private boolean isAuthor(HttpSession session, PostResponse post) {
+    private boolean isAuthor(HttpSession session, PostDto post) {
         boolean isAuthor = false;
 
         if (session != null) {

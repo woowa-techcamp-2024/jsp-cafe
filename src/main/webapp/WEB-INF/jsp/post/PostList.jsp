@@ -25,7 +25,7 @@
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
-                                    <span class="time">작성 시간</span>
+                                    <span class="time">작성 시간 ${post.createdAt}</span>
                                     <a href="#" class="author">${post.writer}</a>
                                 </div>
                                 <div class="reply" title="댓글">
