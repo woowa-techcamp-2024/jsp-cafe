@@ -195,11 +195,12 @@
     });
 
     $(document).ready(function() {
-        $('.delete-answer-form').on('submit', function(e) {
+        $(document).on('submit', '.delete-answer-form', function(e) {
             e.preventDefault(); // 기본 폼 제출 동작 방지
 
             const form = $(this);
             const url = form.attr('action');
+            console.log("작동한다.");
 
             $.ajax({
                 url: url,
