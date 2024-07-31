@@ -3,6 +3,7 @@ package org.example.demo.repository;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.Comment;
 import org.example.demo.domain.User;
+import org.example.demo.exception.InternalServerError;
 import org.example.demo.model.CommentCreateDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class CommentRepository {
         this.dbConfig = dbConfig;
     }
 
-    public void saveComment(CommentCreateDao dao) {
+    public Comment  saveComment(CommentCreateDao dao) {
         String sql = "INSERT INTO comments (post_id, writer_id, contents, created_at) VALUES (?, ?, ?, ?)";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -35,9 +36,15 @@ public class CommentRepository {
             if (generatedKeys.next()) {
                 long id = generatedKeys.getLong(1);
                 logger.info("Generated Comment ID: " + id);
+
+                return getComment(id).get();
+            } else {
+                logger.error("Error getting saved comment");
+                throw new InternalServerError("Error getting saved comment");
             }
         } catch (SQLException e) {
-            logger.error("Error saving comment", e);
+            logger.error("Error saving comments", e);
+            throw new InternalServerError("Error saving comments "+ e.getMessage());
         }
     }
 
@@ -49,18 +56,22 @@ public class CommentRepository {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             logger.error("Error deleting comment", e);
+            throw new InternalServerError("Error deleting comment "+ e.getMessage());
         }
     }
 
-    public void updateComment(Long commentId, String contents) {
+    public Comment updateComment(Long commentId, String contents) {
         String sql = "UPDATE comments SET contents = ? WHERE id = ?";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, contents);
             pstmt.setLong(2, commentId);
             pstmt.executeUpdate();
+
+            return getComment(commentId).orElseThrow(() -> new InternalServerError("Error updating comment"));
         } catch (SQLException e) {
             logger.error("Error updating comment", e);
+            throw new InternalServerError("Error updating comment "+ e.getMessage());
         }
     }
 
@@ -75,13 +86,14 @@ public class CommentRepository {
             }
         } catch (SQLException e) {
             logger.error("Error getting comment", e);
+            throw new InternalServerError("Error getting comment "+ e.getMessage());
         }
         return Optional.empty();
     }
 
     public List<Comment> getComments(Long postId) {
         List<Comment> comments = new ArrayList<>();
-        String sql = "SELECT c.*, u.user_id, u.name FROM comments c JOIN users u ON c.writer_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC";
+        String sql = "SELECT c.*, u.user_id, u.name FROM comments c JOIN users u ON c.writer_id = u.id WHERE c.post_id = ?";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, postId);
@@ -111,5 +123,26 @@ public class CommentRepository {
                 rs.getString("contents"),
                 rs.getTimestamp("created_at").toLocalDateTime()
         );
+    }
+
+    public List<Comment> getMoreComments(Long postId, Long lastCommentId) {
+        List<Comment> comments = new ArrayList<>();
+        String sql = "SELECT c.*, u.user_id, u.name " +
+                "FROM comments c " +
+                "JOIN users u ON c.writer_id = u.id " +
+                "WHERE c.post_id = ? AND c.id > ? AND c.is_present = true ;";
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, postId);
+            pstmt.setLong(2, lastCommentId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                comments.add(createCommentFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            logger.error("Error getting comments", e);
+        }
+        return comments;
     }
 }

@@ -27,7 +27,8 @@ public class PostRepository {
                 "FROM posts p\n" +
                 "JOIN users u ON p.writer_id = u.id\n" +
                 "LEFT JOIN comments c ON p.id = c.post_id\n" +
-                "WHERE p.id = ?;\n";
+                "WHERE p.id = ?\n" +
+                "AND c.is_present = true;";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, postId);
@@ -64,7 +65,7 @@ public class PostRepository {
 
     public List<Post> getPosts() {
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id WHERE p.is_present = true ORDER BY p.created_at DESC";
+        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id WHERE p.is_present = true";
 
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();

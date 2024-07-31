@@ -1,35 +1,61 @@
 package org.example.demo.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.demo.domain.Comment;
 import org.example.demo.model.CommentCreateDao;
 import org.example.demo.repository.CommentRepository;
 import org.example.demo.validator.AuthValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommentHandler {
     private static final Logger logger = LoggerFactory.getLogger(CommentHandler.class);
     private CommentRepository commentRepository;
     private AuthValidator authValidator;
+    private ObjectMapper objectMapper;
 
     public CommentHandler(CommentRepository commentRepository, AuthValidator authValidator) {
         this.commentRepository = commentRepository;
         this.authValidator = authValidator;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     public void createComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
-        Long postId = Long.parseLong(request.getParameter("postId"));
-        Long writerId = Long.parseLong(request.getParameter("writerId"));
+        Long postId = Long.valueOf(pathVariables.get(0));
+        Long lastCommentId = Long.valueOf(request.getParameter("lastCommentId"));
         String contents = request.getParameter("contents");
 
-        commentRepository.saveComment(new CommentCreateDao(
+        Comment comment = commentRepository.saveComment(new CommentCreateDao(
                 postId,
-                writerId,
+                (Long) request.getSession().getAttribute("user"),
                 contents
         ));
+
+        // 업데이트된 comment 반환
+        List<Comment> updatedComments = new ArrayList<>();
+        updatedComments.add(comment);
+        updatedComments.addAll(getUpdatedComments(postId, comment.getId()));
+
+        logger.info("lastCommentId: {}", lastCommentId);
+        logger.info("Comment created: {}", comment);
+        logger.info("Updated comments: {}", updatedComments);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(updatedComments));
+        } catch (Exception e) {
+            logger.error("Error writing response", e);
+        }
     }
 
     public void deleteComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
@@ -37,6 +63,9 @@ public class CommentHandler {
 
         authValidator.checkIdenticalUser(request, getUser(request), commentRepository.getComment(commentId).get());
         commentRepository.deleteComment(commentId);
+
+        response.setContentType("application/json");
+        logger.info("Comment deleted: {}", commentId);
     }
 
     public void updateComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
@@ -44,10 +73,14 @@ public class CommentHandler {
         String contents = request.getParameter("contents");
 
         authValidator.checkIdenticalUser(request, getUser(request), commentRepository.getComment(commentId).get());
-        commentRepository.updateComment(commentId, contents);
+        Comment comment = commentRepository.updateComment(commentId, contents);
     }
 
     private static Long getUser(HttpServletRequest request) {
         return (Long) request.getSession().getAttribute("user");
+    }
+
+    private List<Comment> getUpdatedComments(Long postId, Long lastCommentId) {
+        return commentRepository.getMoreComments(postId, lastCommentId);
     }
 }

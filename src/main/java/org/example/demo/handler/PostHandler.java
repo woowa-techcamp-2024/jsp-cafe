@@ -31,6 +31,7 @@ public class PostHandler {
         Post post = checkPostExistence(postId);
 
         request.setAttribute("post", post);
+        request.setAttribute("comments", post.getComments());
         request.getRequestDispatcher("/WEB-INF/post/show.jsp").forward(request, response);
     }
 
