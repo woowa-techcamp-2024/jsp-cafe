@@ -3,6 +3,8 @@ package codesqaud.app.config;
 import codesqaud.app.dao.*;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.article.DbArticleDao;
+import codesqaud.app.dao.reply.DbReplyDao;
+import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dao.user.DbUserDao;
 import codesqaud.app.dao.user.UserDao;
 import jakarta.servlet.ServletContext;
@@ -59,6 +61,10 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private static void executeDropTable(JdbcTemplate jdbcTemplate) {
         jdbcTemplate.execute("""
+                DROP TABLE IF EXISTS replies;
+                """);
+
+        jdbcTemplate.execute("""
                 DROP TABLE IF EXISTS articles;
                 """);
 
@@ -83,7 +89,19 @@ public class ServletContextInitializer implements ServletContextListener {
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     title VARCHAR (200) NOT NULL,
                     contents TEXT NOT NULL,
-                    author_id VARCHAR (50) NOT NULL,
+                    activate BOOLEAN NOT NULL,
+                    author_id BIGINT REFERENCES users(id),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS replies (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    contents TEXT NOT NULL,
+                    activate BOOLEAN NOT NULL,
+                    article_id BIGINT REFERENCES articles(id),
+                    author_id BIGINT REFERENCES users(id),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
                 """);
@@ -95,5 +113,8 @@ public class ServletContextInitializer implements ServletContextListener {
 
         ArticleDao articleDao = new DbArticleDao(jdbcTemplate);
         servletContext.setAttribute("articleDao", articleDao);
+
+        ReplyDao replyDao = new DbReplyDao(jdbcTemplate);
+        servletContext.setAttribute("replyDao", replyDao);
     }
 }
