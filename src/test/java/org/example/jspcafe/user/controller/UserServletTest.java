@@ -60,7 +60,14 @@ class UserServletTest {
         void testDoGet() throws ServletException, IOException {
             // Given
             Long userId = 1L;
-            User user = new User(userId, "testUser", "password", "Test User", "test@example.com");
+            User user = User.builder()
+                    .id(userId)
+                    .userId("testUser")
+                    .email("test@example.com")
+                    .nickname("Test User")
+                    .password("password")
+                    .build();
+
             when(request.getPathInfo()).thenReturn("/1");
             when(userService.findById(userId)).thenReturn(user);
             when(request.getRequestDispatcher("/user/edit.jsp")).thenReturn(requestDispatcher);
@@ -118,7 +125,14 @@ class UserServletTest {
             when(request.getParameter("nickname")).thenReturn("Updated User");
             when(request.getParameter("password")).thenReturn("newPassword");
             when(request.getParameter("email")).thenReturn("updated@example.com");
-            when(request.getSession().getAttribute("user")).thenReturn(new User(id, "testUser", "password", "Test User", "test@example.com"));
+            when(request.getSession().getAttribute("user")).thenReturn(
+                    User.builder()
+                            .id(id)
+                            .userId("testUser")
+                            .email("test@example.com")
+                            .nickname("Test User")
+                            .password("password")
+                            .build());
 
             // When
             userServlet.doPut(request, response);

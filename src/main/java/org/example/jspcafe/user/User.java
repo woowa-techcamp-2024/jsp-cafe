@@ -1,5 +1,6 @@
 package org.example.jspcafe.user;
 
+import lombok.Builder;
 import java.util.Objects;
 
 public class User {
@@ -10,22 +11,9 @@ public class User {
     private String email;
 
 
-    public User(Long id, String userId, String email, String nickname, String password) {
+    @Builder
+    private User(Long id, String userId, String email, String nickname, String password) {
         this.id = id;
-        this.userId = userId;
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-    }
-
-    public User(Long id, String email, String nickname, String password) {
-        this.id = id;
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-    }
-
-    public User(String userId, String password, String nickname, String email) {
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
@@ -71,6 +59,8 @@ public class User {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

@@ -13,6 +13,7 @@ import org.example.jspcafe.user.service.UserService;
 import java.io.IOException;
 
 import static org.example.jspcafe.common.RequestUtil.getPathInfo;
+import static org.example.jspcafe.common.RequestUtil.userSessionKey;
 
 
 @WebServlet("/auth/*")
@@ -40,7 +41,7 @@ public class AuthServlet extends HttpServlet {
             String userId = req.getParameter("userId");
             String password = req.getParameter("password");
             User user = userService.findByIdAndPw(userId, password);
-            req.getSession().setAttribute("user", user);
+            req.getSession().setAttribute(userSessionKey, user);
             resp.sendRedirect("/");
             return;
         }
