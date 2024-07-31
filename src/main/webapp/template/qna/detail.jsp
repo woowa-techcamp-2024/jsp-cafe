@@ -32,7 +32,8 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="" class="article-author-name"><%=question.authorName()%></a>
+                            <a href="" class="article-author-name"><%=question.authorName()%>
+                            </a>
                             <a href="" class="article-header-time" title="퍼머링크">
                                 <%=question.getPostTime()%>
                                 <i class="icon-link"></i>
@@ -50,14 +51,25 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/question/<%=question.id()%>/form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
+                                <a class="link-modify-article" onclick="delete_question()">삭제</a>
                             </li>
+                            <script>
+                                function delete_question() {
+                                    const url = "/question/<%=question.id()%>";
+                                    fetch(url, {
+                                        method: 'DELETE'
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            window.location.href = "/";
+                                        } else {
+                                            alert('삭제에 실패했습니다.');
+                                        }
+                                    });
+                                }
+                            </script>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>
                             </li>

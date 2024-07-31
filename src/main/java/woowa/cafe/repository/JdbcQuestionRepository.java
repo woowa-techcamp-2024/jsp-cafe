@@ -24,7 +24,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
     private Logger logger = LoggerFactory.getLogger(JdbcQuestionRepository.class);
 
     public JdbcQuestionRepository(JdbcConfig config) {
-        this.dataSource = config.dataSource;
+        this.dataSource = config.getDataSource();
         createTable();
     }
 
@@ -33,7 +33,9 @@ public class JdbcQuestionRepository implements QuestionRepository {
                        "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                        "authorName VARCHAR(255), " +
                        "title VARCHAR(255), " +
-                       "content VARCHAR(255))";
+                       "content VARCHAR(255)," +
+                       "userId VARCHAR(255)" +
+                       ")";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.execute();
@@ -46,12 +48,13 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public void save(Question question) {
-        String query = "INSERT INTO questions (authorName, title, content) VALUES (?, ?, ?)";
+        String query = "INSERT INTO questions (authorName, title, content, userId) VALUES (?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, question.getAuthorName());
             ps.setString(2, question.getTitle());
             ps.setString(3, question.getContent());
+            ps.setString(4, question.getUserId());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,7 +75,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                 Question entity = new Question(
                         rs.getString("authorName"),
                         rs.getString("title"),
-                        rs.getString("content")
+                        rs.getString("content"),
+                        rs.getString("userId")
                 );
                 idField.set(entity, id);
                 questions.add(entity);
@@ -98,7 +102,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                     Question entity = new Question(
                             rs.getString("authorName"),
                             rs.getString("title"),
-                            rs.getString("content")
+                            rs.getString("content"),
+                            rs.getString("userId")
                     );
                     idField.set(entity, id);
                     return entity;
@@ -111,5 +116,40 @@ public class JdbcQuestionRepository implements QuestionRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void update(Question question) {
+
+        String query = "UPDATE questions SET " +
+                       "authorName = ?, " +
+                       "title = ?, " +
+                       "content = ?, " +
+                       "userId = ? " +
+                       "WHERE id = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, question.getAuthorName());
+            ps.setString(2, question.getTitle());
+            ps.setString(3, question.getContent());
+            ps.setString(4, question.getUserId());
+            ps.setString(5, question.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteById(String id) {
+        String query = "DELETE FROM questions WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -45,6 +45,11 @@ public class DispatcherServlet extends HttpServlet {
                 }
             }
 
+            if (result instanceof Integer) {
+                response.setStatus((Integer) result);
+                return;
+            }
+
             forward(request, response, "/error/404.html");
         } else {
             forward(request, response, "/error/404.html");

@@ -1,24 +1,16 @@
-package woowa.cafe.config;
+package woowa.cafe.repository;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import woowa.frame.core.annotation.Component;
+import woowa.cafe.config.JdbcConfig;
 
 import javax.sql.DataSource;
 
-@Component
-public class JdbcConfig {
+public class TestJdbcConfig extends JdbcConfig {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    public JdbcConfig() {
-    }
-
-    public void init() {
-        String jdbcUrl = "jdbc:mysql://localhost:3306/woowa";
-        String user = "user1";
-        String password = "test1234@";
-
+    public TestJdbcConfig(String jdbcUrl, String user, String password) {
         if (System.getenv("DB_URL") != null) {
             jdbcUrl = System.getenv("DB_URL");
         }
@@ -42,10 +34,8 @@ public class JdbcConfig {
         this.dataSource = new HikariDataSource(config);
     }
 
+    @Override
     public DataSource getDataSource() {
-        if (dataSource == null) {
-            init();
-        }
-        return dataSource;
+        return this.dataSource;
     }
 }

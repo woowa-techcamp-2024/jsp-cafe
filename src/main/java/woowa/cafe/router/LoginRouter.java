@@ -22,6 +22,14 @@ public class LoginRouter {
         return "/template/login/login.jsp";
     }
 
+    /**
+     * 로그인 요청을 처리합니다.
+     * <li> POST /login </li>
+     * <p>로그인 성공시 세션을 생성하고 세션에 "userInfo" to {@link woowa.cafe.dto.UserInfo}, "userId" to {@link String} 속성에 유저 정보를 입력합니다.</p>
+     * @param request
+     * @param response
+     * @return
+     */
     @HttpMapping(method = "POST", urlTemplate = "/login")
     public String login(HttpServletRequest request, HttpServletResponse response) {
         String userId = request.getParameter("userId");

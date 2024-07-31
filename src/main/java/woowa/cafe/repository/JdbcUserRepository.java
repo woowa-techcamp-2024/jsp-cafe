@@ -24,7 +24,7 @@ public class JdbcUserRepository implements UserRepository {
     private Logger logger = LoggerFactory.getLogger(JdbcUserRepository.class);
 
     public JdbcUserRepository(JdbcConfig config) {
-        this.dataSource = config.dataSource;
+        this.dataSource = config.getDataSource();
         createTable();
     }
 
