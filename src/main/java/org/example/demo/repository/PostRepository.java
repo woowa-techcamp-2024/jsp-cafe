@@ -25,13 +25,13 @@ public class PostRepository {
     public Optional<Post> getPost(Long postId) {
         String sql = "SELECT p.*,\n" +
                 "       pu.id AS post_user_id, pu.user_id AS post_user_userid, pu.name AS post_user_name,\n" +
-                "       c.id AS comment_id, c.contents AS comment_contents, c.created_at AS comment_created_at,\n" +
+                "       c.id AS comment_id, c.contents AS comment_contents, c.created_at AS comment_created_at, c.is_present,\n" +
                 "       cu.id AS comment_user_id, cu.user_id AS comment_user_userid, cu.name AS comment_user_name\n" +
                 "FROM posts p\n" +
                 "JOIN users pu ON p.writer_id = pu.id\n" +
-                "LEFT JOIN comments c ON p.id = c.post_id\n" +
+                "LEFT JOIN comments c ON p.id = c.post_id AND c.is_present = true\n" +
                 "LEFT JOIN users cu ON c.writer_id = cu.id\n" +
-                "WHERE p.id = ?;";
+                "WHERE p.id = ?";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, postId);
