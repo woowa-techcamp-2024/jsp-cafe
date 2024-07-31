@@ -1,8 +1,8 @@
-package camp.woowa.jspcafe.services;
+package camp.woowa.jspcafe.service;
 
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
-import camp.woowa.jspcafe.models.User;
+import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.repository.UserRepository;
 
 import java.util.List;

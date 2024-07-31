@@ -1,9 +1,9 @@
-package camp.woowa.jspcafe.servlets;
+package camp.woowa.jspcafe.servlet;
 
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
-import camp.woowa.jspcafe.models.User;
-import camp.woowa.jspcafe.services.UserService;
+import camp.woowa.jspcafe.model.User;
+import camp.woowa.jspcafe.service.UserService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

@@ -1,6 +1,6 @@
 package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.models.User;
+import camp.woowa.jspcafe.model.User;
 
 import java.util.List;
 

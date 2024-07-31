@@ -2,8 +2,8 @@ package camp.woowa.jspcafe;
 
 import camp.woowa.jspcafe.db.DatabaseManager;
 import camp.woowa.jspcafe.repository.*;
-import camp.woowa.jspcafe.services.QuestionService;
-import camp.woowa.jspcafe.services.UserService;
+import camp.woowa.jspcafe.service.QuestionService;
+import camp.woowa.jspcafe.service.UserService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;

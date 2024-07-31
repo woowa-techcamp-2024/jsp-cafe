@@ -1,6 +1,6 @@
-package models;
+package camp.woowa.jspcafe.model;
 
-import camp.woowa.jspcafe.models.User;
+import camp.woowa.jspcafe.model.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

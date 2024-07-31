@@ -1,6 +1,7 @@
-package repository;
+package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.exception.CustomException;
+import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuestionRepositoryTest {
     QuestionRepository questionRepository;
@@ -20,7 +22,7 @@ class QuestionRepositoryTest {
     }
 
     @Test
-    void TestSave() {
+    void testSave() {
         // given
         String title = "title";
         String content = "content";
@@ -35,7 +37,7 @@ class QuestionRepositoryTest {
     }
 
     @Test
-    void findAll() {
+    void testFindAll() {
         // given
         String title = "title";
         String content = "content";
@@ -52,7 +54,7 @@ class QuestionRepositoryTest {
     }
 
     @Test
-    void findById() {
+    void testFindById() {
         // given
         String title = "title";
         String content = "content";
@@ -66,5 +68,42 @@ class QuestionRepositoryTest {
         assertEquals(title, question.getTitle());
         assertEquals(content, question.getContent());
         assertEquals(writer, question.getWriter());
+    }
+
+    @Test
+    void testUpdate() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionRepository.save(title, content, writer, 1L);
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+        Question target = questionRepository.findById(id);
+
+        target.update(updatedTitle, updatedContent);
+
+        // when
+        questionRepository.update(target);
+
+        // then
+        Question question = questionRepository.findById(id);
+        assertEquals(updatedTitle, question.getTitle());
+        assertEquals(updatedContent, question.getContent());
+    }
+
+    @Test
+    void testDeleteById() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionRepository.save(title, content, writer, 1L);
+
+        // when
+        questionRepository.deleteById(id);
+
+        // then
+        assertEquals(0, questionRepository.findAll().size());
     }
 }

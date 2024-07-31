@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="../template/header.jsp"%>
 <%@ include file="../template/nav.jsp"%>
 
@@ -25,22 +26,21 @@
                   <div class="article-doc">
                       <p> ${question.content} </p>
                   </div>
+                  <c:if test="${question.writerId == sessionScope.user.id}">
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/questions/423/form">수정</a>
+                              <a class="link-modify-article" href="${pageContext.request.contextPath}/qna/${question.id}/form">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/423" method="POST">
-                                  <input type="hidden" name="_method" value="DELETE">
-                                  <button class="link-delete-article" type="submit">삭제</button>
-                              </form>
+                              <button class="link-delete-article" type="button" onclick="deleteQuestion()">삭제</button>
                           </li>
                           <li>
                               <a class="link-modify-article" href="${pageContext.request.contextPath}/">목록</a>
                           </li>
                       </ul>
                   </div>
+                  </c:if>
               </article>
 
               <div class="qna-comment">
@@ -152,3 +152,26 @@
 </script>
 
 <%@ include file="../template/footer.jsp"%>
+
+<script>
+    const deleteQuestion = () => {
+        if (confirm("삭제하시겠습니까?")) {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/questions/${question.id}',
+                type: 'DELETE',
+                success: function(response) {
+                    if (response['result'] === 'success') {
+                        window.location.href = '/';
+                    }
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
+                    if (xhr.status === 403 && xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert('Error:' + errorMessage);
+                }
+            });
+        }
+    }
+</script>

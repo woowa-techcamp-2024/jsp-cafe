@@ -1,10 +1,9 @@
-package repository;
+package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.models.User;
+import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.repository.InMemUserRepository;
 import camp.woowa.jspcafe.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

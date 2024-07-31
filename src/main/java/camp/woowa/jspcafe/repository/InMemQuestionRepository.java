@@ -1,6 +1,6 @@
 package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.model.Question;
 
 import java.util.List;
 import java.util.Map;
@@ -32,5 +32,15 @@ public class InMemQuestionRepository implements QuestionRepository {
     public void deleteAll() {
         questions.clear();
         sequence_id.set(1L);
+    }
+
+    @Override
+    public void update(Question target) {
+        questions.put(target.getId(), target);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        questions.remove(id);
     }
 }

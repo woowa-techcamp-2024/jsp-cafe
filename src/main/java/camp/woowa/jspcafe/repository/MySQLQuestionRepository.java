@@ -2,7 +2,7 @@ package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.model.Question;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,13 +28,13 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
             try (var gk = pstmt.getGeneratedKeys()) {
                 if (!gk.next()) {
-                    throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+                    throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to get generated key.");
                 }
                 return gk.getLong(1);
             }
 
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
                 questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writerId")));
             }
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         return questions;
@@ -62,7 +62,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
                 return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writerId"));
             }
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return null;
     }
@@ -72,7 +72,29 @@ public class MySQLQuestionRepository implements QuestionRepository {
         try (var pstmt = conn.prepareStatement("DELETE FROM question");){
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public void update(Question target) {
+        try (var pstmt = conn.prepareStatement("UPDATE question SET title = ?, content = ? WHERE id = ?");){
+            pstmt.setString(1, target.getTitle());
+            pstmt.setString(2, target.getContent());
+            pstmt.setLong(3, target.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()) ;
+        }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        try (var pstmt = conn.prepareStatement("DELETE FROM question WHERE id = ?");){
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

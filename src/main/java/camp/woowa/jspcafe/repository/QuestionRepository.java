@@ -1,6 +1,6 @@
 package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.models.Question;
+import camp.woowa.jspcafe.model.Question;
 
 import java.util.List;
 
@@ -12,4 +12,8 @@ public interface QuestionRepository {
     Question findById(Long id);
 
     void deleteAll();
+
+    void update(Question target);
+
+    void deleteById(Long id);
 }
