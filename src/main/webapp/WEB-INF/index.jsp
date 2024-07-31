@@ -21,7 +21,7 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="${pageContext.request.contextPath}/posts/<%=post.getId()%>"><%=post.getContents()%>
+                                <a href="${pageContext.request.contextPath}/posts/<%=post.getId()%>"><%=post.getTitle()%>
                                 </a>
                             </strong>
                             <div class="auth-info">
