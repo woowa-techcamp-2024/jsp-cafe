@@ -86,7 +86,7 @@
                                   <div class="article-header-text">
                                       <a href="/users/${reply.author.userId}" class="article-author-name">${reply.author.nickname}</a>
                                       <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          ${replyDateTime}
+                                          ${createdAt}
                                       </a>
                                   </div>
                               </div>
@@ -143,7 +143,7 @@
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+				<form class="delete-answer-form" action="<c:url value="/questions/{3}/replies/{4}"/>" method="POST">
 					<input type="hidden" name="_method" value="DELETE">
                      <button type="submit" class="delete-answer-button">삭제</button>
 				</form>
@@ -157,7 +157,42 @@
 <script src="../js/jquery-2.2.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/scripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $('.submit-write').on('submit', function(e) {
+            e.preventDefault(); // 기본 폼 제출 동작 방지
+
+            const form = $(this);
+            const url = form.attr('action');
+            const formData = form.serialize(); // 폼 데이터를 직렬화
+
+            console.log(formData)
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                data: formData,
+                success: function(data, status) {
+                    // 성공적으로 답변이 등록된 경우
+                    alert('댓글이 등록되었습니다.');
+                    // 텍스트 영역 초기화
+                    const createdAt = dayjs(data.createdAt).format('YYYY-MM-DD hh:mm');
+                    const answerTemplate = $("#answerTemplate").html();
+                    const template = answerTemplate.format(data.author.nickname, createdAt, data.content, data.questionInfo.questionId, data.replyId);
+                    $(".qna-comment-slipp-articles").prepend(template);
+                    form.find('textarea[name="content"]').val('');
+                },
+                error: function(xhr, status, error) {
+                    // 오류 처리
+                    console.error('Error:', error);
+                    alert('댓글 등록 중 오류가 발생했습니다.');
+                }
+            });
+        });
+    });
+
     $(document).ready(function() {
         $('.delete-answer-form').on('submit', function(e) {
             e.preventDefault(); // 기본 폼 제출 동작 방지
