@@ -55,10 +55,13 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
+                <% if (session.getAttribute("userId") == null) { %>
                 <li><a href="/login" role="button">로그인</a></li>
                 <li><a href="/user" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <% } else { %>
+                <li><a href="/logout" role="button">로그아웃</a></li>
+                <li><a href="/user/form" role="button">개인정보수정</a></li>
+                <% } %>
             </ul>
         </div>
     </div>

@@ -13,6 +13,8 @@ public interface UserRepository {
 
     User findById(String id);
 
+    User findByUserIdAndPassword(String userId, String password);
+
     void save(User user);
 
     List<User> findAll();

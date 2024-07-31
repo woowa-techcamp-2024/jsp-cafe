@@ -20,6 +20,14 @@ public class SimpleUserRepository implements UserRepository {
     }
 
     @Override
+    public User findByUserIdAndPassword(String userId, String password) {
+        return database.values().stream()
+                .filter(user -> user.getUserId().equals(userId) && user.getPassword().equals(password))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public void save(User user) {
         try {
             String uuid = UUID.randomUUID().toString();

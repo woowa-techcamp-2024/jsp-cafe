@@ -131,4 +131,34 @@ public class JdbcUserRepository implements UserRepository {
         }
         return null;
     }
+
+    @Override
+    public User findByUserIdAndPassword(String userId, String password) {
+        String query = "SELECT * FROM users WHERE userId = ? AND password = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, userId);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("id");
+                    Field idField = User.class.getDeclaredField("id");
+                    idField.setAccessible(true);
+                    User entity = new User(
+                            rs.getString("userId"),
+                            rs.getString("password"),
+                            rs.getString("name"),
+                            rs.getString("email")
+                    );
+                    idField.set(entity, id);
+                    return entity;
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
