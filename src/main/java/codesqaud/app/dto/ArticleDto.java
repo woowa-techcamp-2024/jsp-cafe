@@ -1,5 +1,7 @@
 package codesqaud.app.dto;
 
+import java.util.List;
+
 public class ArticleDto {
     private final Long id;
     private final String title;
@@ -7,6 +9,7 @@ public class ArticleDto {
     private final String createdAt;
     private final UserDto author;
     private final Boolean activate;
+    private List<ReplyDto> replies;
 
     public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author, Boolean activate) {
         this.id = id;
@@ -39,6 +42,10 @@ public class ArticleDto {
 
     public UserDto getAuthor() {
         return author;
+    }
+
+    public void setReplies(List<ReplyDto> replies) {
+        this.replies = replies;
     }
 
     public static Builder builder() {

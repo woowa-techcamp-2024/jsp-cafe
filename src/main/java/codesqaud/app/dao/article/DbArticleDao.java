@@ -56,12 +56,13 @@ public class DbArticleDao implements ArticleDao {
             throw new HttpException(SC_INTERNAL_SERVER_ERROR);
         }
 
-        String sql = "INSERT INTO articles (title, contents, author_id, created_at) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (title, contents, author_id, created_at, activate) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 article.getTitle(),
                 article.getContents(),
                 article.getAuthorId(),
-                toStringForQuery(article.getCreatedAt())
+                toStringForQuery(article.getCreatedAt()),
+                article.isActivate()
         );
     }
 
@@ -105,7 +106,7 @@ public class DbArticleDao implements ArticleDao {
     @Override
     public Optional<ArticleDto> findByIdAsDto(Long id) {
         String sql = """
-                SELECT articles.id, articles.title, articles.contents, articles.author_id, articles.created_at,
+                SELECT articles.id, articles.title, articles.contents, articles.author_id, articles.created_at, articles.activate,
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM articles JOIN users ON articles.author_id = users.id
                 WHERE articles.id = ?
@@ -118,7 +119,7 @@ public class DbArticleDao implements ArticleDao {
     @Override
     public List<ArticleDto> findAllAsDto() {
         String sql = """
-                SELECT articles.id, articles.title, articles.contents, articles.author_id, articles.created_at,
+                SELECT articles.id, articles.title, articles.contents, articles.author_id, articles.created_at, articles.activate,
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM articles JOIN users ON articles.author_id = users.id
                 """;
