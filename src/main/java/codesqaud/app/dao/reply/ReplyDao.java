@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ReplyDao extends CommonDao<Reply, Long> {
     Optional<ReplyDto> findByIdAsDto(Long id);
     List<ReplyDto> findAllAsDto();
+
+    List<Reply> findByArticleId(Long articleId);
 }
