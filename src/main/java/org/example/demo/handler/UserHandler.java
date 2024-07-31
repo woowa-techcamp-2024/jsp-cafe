@@ -97,12 +97,12 @@ public class UserHandler {
             return;
         }
 
-        request.getSession().setAttribute("user", user.get().getId());
+        request.getSession(false).setAttribute("user", user.get().getId());
         response.sendRedirect("/users/" + user.get().getId());
     }
 
     public void handleUserLogout(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
-        request.getSession().removeAttribute("user");
+        request.getSession(false).invalidate();
         response.sendRedirect("/");
     }
 

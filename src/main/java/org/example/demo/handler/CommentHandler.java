@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.domain.Comment;
+import org.example.demo.exception.UnauthorizedException;
 import org.example.demo.model.CommentCreateDao;
 import org.example.demo.repository.CommentRepository;
 import org.example.demo.validator.AuthValidator;
@@ -15,15 +16,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.demo.validator.AuthValidator.isIdenticalUser;
+
 public class CommentHandler {
     private static final Logger logger = LoggerFactory.getLogger(CommentHandler.class);
     private CommentRepository commentRepository;
-    private AuthValidator authValidator;
     private ObjectMapper objectMapper;
 
-    public CommentHandler(CommentRepository commentRepository, AuthValidator authValidator) {
+    public CommentHandler(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
-        this.authValidator = authValidator;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -36,7 +37,7 @@ public class CommentHandler {
 
         Comment comment = commentRepository.saveComment(new CommentCreateDao(
                 postId,
-                (Long) request.getSession().getAttribute("user"),
+                (Long) request.getSession(false).getAttribute("user"),
                 contents
         ));
 
@@ -60,8 +61,13 @@ public class CommentHandler {
 
     public void deleteComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
         Long commentId = Long.parseLong(pathVariables.get(1));
+        Comment comment = commentRepository.getComment(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
-        authValidator.checkIdenticalUser(request, getUser(request), commentRepository.getComment(commentId).get());
+        if(!isIdenticalUser(getUserId(request), comment)) {
+            request.setAttribute("error", "User not authorized");
+            throw new UnauthorizedException("User not authorized");
+        }
+
         commentRepository.deleteComment(commentId);
 
         response.setContentType("application/json");
@@ -71,13 +77,18 @@ public class CommentHandler {
     public void updateComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
         Long commentId = Long.parseLong(pathVariables.get(1));
         String contents = request.getParameter("contents");
+        Comment comment = commentRepository.getComment(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
-        authValidator.checkIdenticalUser(request, getUser(request), commentRepository.getComment(commentId).get());
-        Comment comment = commentRepository.updateComment(commentId, contents);
+        if(!isIdenticalUser(getUserId(request), comment)) {
+            request.setAttribute("error", "User not authorized");
+            throw new UnauthorizedException("User not authorized");
+        }
+
+        commentRepository.updateComment(commentId, contents);
     }
 
-    private static Long getUser(HttpServletRequest request) {
-        return (Long) request.getSession().getAttribute("user");
+    private static Long getUserId(HttpServletRequest request) {
+        return (Long) request.getSession(false).getAttribute("user");
     }
 
     private List<Comment> getUpdatedComments(Long postId, Long lastCommentId) {
