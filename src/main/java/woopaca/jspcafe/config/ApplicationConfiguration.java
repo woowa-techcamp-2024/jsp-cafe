@@ -18,6 +18,7 @@ public class ApplicationConfiguration implements ServletContextListener {
         servletContext.setAttribute("userService", InstanceFactory.userService());
         servletContext.setAttribute("postService", InstanceFactory.postService());
         servletContext.setAttribute("authService", InstanceFactory.authService());
+        servletContext.setAttribute("replyService", InstanceFactory.replyService());
     }
 
     @Override
