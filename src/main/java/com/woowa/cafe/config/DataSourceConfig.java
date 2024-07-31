@@ -44,7 +44,8 @@ public class DataSourceConfig {
                     "reply_count BIGINT, " +
                     "is_deleted BOOLEAN, " +
                     "create_at TIMESTAMP, " +
-                    "modified_at TIMESTAMP)";
+                    "modified_at TIMESTAMP, " +
+                    "index idx_article_is_deleted (is_deleted))";
 
             String dropReplyTable = "DROP TABLE IF EXISTS replies";
             String createReplyTable = "CREATE TABLE replies (" +
@@ -54,7 +55,8 @@ public class DataSourceConfig {
                     "contents TEXT, " +
                     "is_deleted BOOLEAN, " +
                     "create_at TIMESTAMP, " +
-                    "modified_at TIMESTAMP)";
+                    "modified_at TIMESTAMP, " +
+                    "index idx_reply_is_deleted (is_deleted))";
 
             try (var connection = dataSource.getConnection()) {
                 connection.prepareStatement(dropMemberTable).execute();
