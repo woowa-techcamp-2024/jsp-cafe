@@ -22,13 +22,14 @@ public class Reply {
         return reply;
     }
 
-    public static Reply createWithId(Long id, Long postId, String writer, String title, String contents) {
+    public static Reply createWithAll(Long id, Long postId, String writer, String contents, ReplyStatus replyStatus, LocalDateTime createdAt) {
         Reply reply = new Reply();
         reply.id = id;
         reply.postId = postId;
         reply.writer = writer;
         reply.contents = contents;
-        reply.createdAt = LocalDateTime.now();
+        reply.replyStatus = replyStatus;
+        reply.createdAt = createdAt;
         reply.validate();
         return reply;
     }
@@ -51,6 +52,10 @@ public class Reply {
 
     public ReplyStatus getReplyStatus() {
         return replyStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override
