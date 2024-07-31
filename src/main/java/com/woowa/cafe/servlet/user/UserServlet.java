@@ -1,7 +1,9 @@
 package com.woowa.cafe.servlet.user;
 
+import com.woowa.cafe.domain.Member;
 import com.woowa.cafe.dto.member.SaveMemberDto;
 import com.woowa.cafe.dto.member.UpdateMemberDto;
+import com.woowa.cafe.exception.HttpException;
 import com.woowa.cafe.service.MemberService;
 import com.woowa.cafe.utils.HttpMessageUtils;
 import jakarta.servlet.ServletException;
@@ -74,7 +76,11 @@ public class UserServlet extends HttpServlet {
     }
 
     private void getUpdateForm(final HttpServletRequest req, final HttpServletResponse resp, final String userId) throws ServletException, IOException {
-        req.setAttribute("member", memberService.findById(userId));
+        Member member = memberService.findById(userId);
+        if (!member.getMemberId().equals(userId)) {
+            throw new HttpException(HttpServletResponse.SC_FORBIDDEN, "다른 사용자의 정보는 수정할 수 없습니다.");
+        }
+        req.setAttribute("member", member);
         req.getRequestDispatcher("/WEB-INF/views/user/updateForm.jsp").forward(req, resp);
     }
 

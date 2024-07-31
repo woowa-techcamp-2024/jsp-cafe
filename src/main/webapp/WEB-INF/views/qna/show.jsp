@@ -145,7 +145,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', (event) => {
-        const commentDoc = document.querySelector('.comment-doc');
+        const commentDoc = document.querySelector('.article-doc comment-doc');
         commentDoc.innerHTML = commentDoc.innerHTML.trim();
     });
 
