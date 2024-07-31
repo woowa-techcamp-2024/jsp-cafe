@@ -86,20 +86,17 @@ public class PostService {
         return new PostEditResponse(post.getId(), post.getTitle(), post.getContent());
     }
 
-    public void validateWriter(Long postId, Authentication authentication) {
+    public Post validateWriter(Long postId, Authentication authentication) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
         if (!authentication.isPrincipal(post.getWriterId())) {
-            throw new ForbiddenException("[ERROR] 작성자만 수정할 수 있습니다.");
+            throw new ForbiddenException("[ERROR] 작성자만 수정•삭제할 수 있습니다.");
         }
+        return post;
     }
 
     public void updatePost(Long postId, PostEditRequest postEditRequest, Authentication authentication) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
-        if (!authentication.isPrincipal(post.getWriterId())) {
-            throw new ForbiddenException("[ERROR] 작성자만 수정할 수 있습니다.");
-        }
+        Post post = validateWriter(postId, authentication);
 
         validatePostTitleAndContent(postEditRequest.title(), postEditRequest.content());
         post.update(postEditRequest.title(), postEditRequest.content());
@@ -117,11 +114,7 @@ public class PostService {
     }
 
     public void deletePost(Long postId, Authentication authentication) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
-        if (!authentication.isPrincipal(post.getWriterId())) {
-            throw new ForbiddenException("[ERROR] 작성자만 삭제할 수 있습니다.");
-        }
+        Post post = validateWriter(postId, authentication);
         post.softDelete();
         postRepository.save(post);
     }
