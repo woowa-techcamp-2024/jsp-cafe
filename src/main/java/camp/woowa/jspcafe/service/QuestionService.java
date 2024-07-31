@@ -3,15 +3,18 @@ package camp.woowa.jspcafe.service;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Question;
+import camp.woowa.jspcafe.model.Reply;
 import camp.woowa.jspcafe.repository.QuestionRepository;
 
 import java.util.List;
 
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final ReplyService replyService;
 
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository, ReplyService replyService) {
         this.questionRepository = questionRepository;
+        this.replyService = replyService;
     }
 
     public Long save(String title, String content, String writer, Long writerId) {
@@ -43,6 +46,16 @@ public class QuestionService {
             throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to delete this question.");
         }
 
+        if (!isAvailableToDelete(target)) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to delete this question.");
+        }
         questionRepository.deleteById(id);
+    }
+
+    private boolean isAvailableToDelete(Question question) {
+        List<Reply> replies = replyService.findByQuestionId(question.getId());
+
+        // 댓글이 없는 경우 || 자신의 댓글만 있는 경우 삭제 가능
+        return replies.isEmpty() || replies.stream().allMatch(reply -> reply.getWriterId().equals(question.getWriterId()));
     }
 }
