@@ -57,7 +57,9 @@ public class TestDataSource {
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     title VARCHAR (200) NOT NULL,
                     contents TEXT NOT NULL,
-                    author_id VARCHAR (50) NOT NULL
+                    created_at TIMESTAMP DEFAULT CURRENT_TIME,
+                    author_id BIGINT NOT NULL,
+                    activate BOOLEAN NOT NULL
                 );
                 """);
     }
