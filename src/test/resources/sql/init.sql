@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS users (
     userId VARCHAR(255) NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL
+    email VARCHAR(255) NOT NULL,
+    created VARCHAR(255) NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS articles (
@@ -13,5 +15,6 @@ CREATE TABLE IF NOT EXISTS articles (
     writer VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     contents CLOB NOT NULL,
-    created VARCHAR(255) NOT NULL
+    created VARCHAR(255) NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT false
 );
