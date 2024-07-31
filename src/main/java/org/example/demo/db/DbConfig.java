@@ -20,24 +20,6 @@ public class DbConfig {
     private DataSource dataSource;
 
     public DbConfig(String jdbcUrl, String user, String password) {
-        try {
-            // JDBC 드라이버 로드
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new InternalServerError("Failed to load JDBC driver " + e.getMessage());
-        }
-
-        // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
-        HikariConfig initialConfig = new HikariConfig();
-        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
-        initialConfig.setUsername(user);
-        initialConfig.setPassword(password);
-
-        this.dataSource = new HikariDataSource(initialConfig);
-
-        createDatabaseIfNotExists();
-        initializeSchema();
-
         // 데이터 소스 설정 (cafe 데이터베이스 사용)
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
@@ -65,7 +47,7 @@ public class DbConfig {
         return dataSource.getConnection();
     }
 
-    private void initializeSchema() {
+    public void initializeSchema() {
         logger.info("initializing database...");
         try {
             // 데이터베이스 연결 (기본 연결)
@@ -76,7 +58,7 @@ public class DbConfig {
                 String schema = readSchemaFile();
 
                 // 데이터베이스 사용 및 테이블 생성
-                stmt.execute("USE cafe;");
+//                stmt.execute("USE cafe;");
                 for (String sql : schema.split(";")) {
                     if (!sql.trim().isEmpty()) {
                         stmt.execute(sql);
@@ -92,7 +74,15 @@ public class DbConfig {
         }
     }
 
-    private void createDatabaseIfNotExists() {
+    public static void createDatabaseIfNotExists(String jdbcUrl, String user, String password) {
+        // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
+        HikariConfig initialConfig = new HikariConfig();
+        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
+        initialConfig.setUsername(user);
+        initialConfig.setPassword(password);
+
+        var dataSource = new HikariDataSource(initialConfig);
+
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute("CREATE DATABASE IF NOT EXISTS cafe");
