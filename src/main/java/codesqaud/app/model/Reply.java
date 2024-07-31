@@ -5,19 +5,22 @@ import java.time.OffsetDateTime;
 public class Reply extends BaseTimeModel {
     private Long id;
     private String contents;
+    private Long articleId;
     private Long authorId;
     private Boolean activate = true;
 
-    public Reply(Long id, String contents, Long authorId, Boolean activate, OffsetDateTime createdAt) {
+    public Reply(Long id, String contents, Long articleId, Long authorId, Boolean activate, OffsetDateTime createdAt) {
         this.id = id;
         this.contents = contents;
+        this.articleId = articleId;
         this.authorId = authorId;
         this.activate = activate;
         this.createdAt = createdAt;
     }
 
-    public Reply(String contents, Long authorId) {
+    public Reply(String contents, Long articleId, Long authorId) {
         this.contents = contents;
+        this.articleId = articleId;
         this.authorId = authorId;
     }
 
@@ -27,6 +30,10 @@ public class Reply extends BaseTimeModel {
 
     public String getContents() {
         return contents;
+    }
+
+    public Long getArticleId() {
+        return articleId;
     }
 
     public Long getAuthorId() {
@@ -41,9 +48,11 @@ public class Reply extends BaseTimeModel {
         return new Builder();
     }
 
+
     public static final class Builder {
         private Long id;
         private String contents;
+        private Long articleId;
         private Long authorId;
         private Boolean activate;
         private OffsetDateTime createdAt;
@@ -61,13 +70,13 @@ public class Reply extends BaseTimeModel {
             return this;
         }
 
-        public Builder authorId(Long authorId) {
-            this.authorId = authorId;
+        public Builder articleId(Long articleId) {
+            this.articleId = articleId;
             return this;
         }
 
-        public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = createdAt;
+        public Builder authorId(Long authorId) {
+            this.authorId = authorId;
             return this;
         }
 
@@ -76,8 +85,13 @@ public class Reply extends BaseTimeModel {
             return this;
         }
 
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
         public Reply build() {
-            return new Reply(id, contents, authorId, activate, createdAt);
+            return new Reply(id, contents, articleId, authorId, activate, createdAt);
         }
     }
 }
