@@ -13,8 +13,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.example.constance.SessionName;
 
+
+/*
+ * 등록된 url 에 GET 요청시
+ * 로그인 상태가 아니면 로그인 페이지로 redirect 합니다
+ * */
 @WebFilter(
-        urlPatterns = {"/articles/register", "/articles/*", "/articles/update-form/*"}
+        urlPatterns = {"/articles/register", "/articles/*", "/articles/update-form/*", "/users/update-form/*"}
 )
 public class AuthenticationFilter implements Filter {
     @Override
