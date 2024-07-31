@@ -36,11 +36,11 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>articleViewServlet</servlet-name>
-        <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleViewServlet</servlet-class>
+        <servlet-name>articleControlServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.article.servlet.ArticleControlServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>articleViewServlet</servlet-name>
+        <servlet-name>articleControlServlet</servlet-name>
         <url-pattern>/questions/*</url-pattern>
     </servlet-mapping>
     <servlet>
@@ -49,9 +49,9 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>articleRegisterServlet</servlet-name>
-        <url-pattern>/questions</url-pattern>
+        <url-pattern>/questions/regist</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>memberLoginServlet</servlet-name>
         <servlet-class>com.hyeonuk.jspcafe.member.servlets.MemberLoginServlet</servlet-class>
@@ -80,7 +80,7 @@
     <filter-mapping>
         <filter-name>sessionFilter</filter-name>
         <url-pattern>/members/*/form</url-pattern>
-        <url-pattern>/questions</url-pattern>
+        <url-pattern>/questions/*</url-pattern>
     </filter-mapping>
 
     <filter>

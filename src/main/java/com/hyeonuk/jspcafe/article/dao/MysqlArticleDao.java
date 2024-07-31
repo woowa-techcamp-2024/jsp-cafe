@@ -1,9 +1,9 @@
 package com.hyeonuk.jspcafe.article.dao;
 
 import com.hyeonuk.jspcafe.article.domain.Article;
-import com.hyeonuk.jspcafe.global.db.mysql.MysqlManager;
+import com.hyeonuk.jspcafe.global.db.DBManager;
+import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
-import com.hyeonuk.jspcafe.member.domain.Member;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class MysqlArticleDao implements ArticleDao{
-    private final MysqlManager manager;
+    private final DBManager manager;
 
-    public MysqlArticleDao(MysqlManager manager) {
+    public MysqlArticleDao(DBManager manager) {
         this.manager = manager;
     }
 
@@ -102,6 +102,19 @@ public class MysqlArticleDao implements ArticleDao{
             }
             return Optional.ofNullable(article);
         } catch (SQLException e) {
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        try(Connection conn = manager.getConnection()){
+            String sql = "delete from article where id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, id);
+
+            pstmt.executeUpdate();
+        }catch(SQLException e){
             throw new DataIntegrityViolationException("error");
         }
     }

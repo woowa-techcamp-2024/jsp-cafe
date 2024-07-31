@@ -1,9 +1,9 @@
 package com.hyeonuk.jspcafe.article.dao;
 
 import com.hyeonuk.jspcafe.article.domain.Article;
-import com.hyeonuk.jspcafe.global.db.mysql.MysqlManager;
+import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
+import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
-import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +20,8 @@ class MysqlArticleDaoTest {
 
     @BeforeEach
     void setUp() throws SQLException, ClassNotFoundException {
-        MysqlManager manager = new MysqlManager();
+        DBConnectionInfo connectionInfo = new DBConnectionInfo("application-testdb.yml");
+        DBManagerIml manager = new DBManagerIml(connectionInfo);
         articleDao = new MysqlArticleDao(manager);
     }
 
@@ -140,6 +141,24 @@ class MysqlArticleDaoTest {
         void findNonExistingArticleById() {
             Optional<Article> foundArticle = articleDao.findById(999L);
             assertFalse(foundArticle.isPresent());
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteById 메서드는")
+    class DeleteById{
+        @Test
+        @DisplayName("존재하는 article id면 삭제한다.")
+        void deleteArticleByIdSuccess() throws Exception{
+            //given
+            Article article = new Article(1l,"writer","title","contents");
+            articleDao.save(article);
+
+            //when
+            articleDao.deleteById(article.getId());
+
+            //then
+            assertTrue(articleDao.findById(article.getId()).isEmpty());
         }
     }
 }

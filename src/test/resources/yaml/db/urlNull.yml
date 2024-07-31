@@ -1,0 +1,5 @@
+db:
+  datasource:
+    username: username
+    password: passwordall.yml
+    driver-class-name: driverClassName

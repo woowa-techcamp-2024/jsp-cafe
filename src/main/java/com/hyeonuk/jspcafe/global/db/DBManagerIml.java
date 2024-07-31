@@ -1,39 +1,26 @@
-package com.hyeonuk.jspcafe.global.db.mysql;
-
-import com.hyeonuk.jspcafe.global.db.DBManager;
-import com.hyeonuk.jspcafe.utils.Yaml;
-import com.hyeonuk.jspcafe.utils.YamlParser;
+package com.hyeonuk.jspcafe.global.db;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
 
-public class MysqlManager implements DBManager {
-    private final String url;
-    private final String username;
-    private final String password;
-    public MysqlManager() throws ClassNotFoundException, SQLException {
-        YamlParser yamlParser = new YamlParser();
-        Yaml yaml = yamlParser.parse("application-db.yml");
-
-        url = yaml.getString("db.datasource.url");
-        username = yaml.getString("db.datasource.username");
-        password = yaml.getString("db.datasource.password");
-        String driver = yaml.getString("db.datasource.driver-class-name");
-
-        Class.forName(driver);
+public class DBManagerIml implements DBManager {
+    private final DBConnectionInfo connectionInfo;
+    public DBManagerIml(DBConnectionInfo connectionInfo) throws ClassNotFoundException, SQLException {
+        this.connectionInfo = connectionInfo;
+        Class.forName(connectionInfo.getDriverClassName());
         try(Connection conn = getConnection()) {
             executeSqlScript(conn,"init.sql");
         }
     }
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url,username,password);
+        return DriverManager.getConnection(connectionInfo.getUrl(),connectionInfo.getUsername(),connectionInfo.getPassword());
     }
     private String readSqlFile(String fileName) {
         StringBuilder sb = new StringBuilder();
-        try (InputStream is = MysqlManager.class.getClassLoader().getResourceAsStream(fileName);
+        try (InputStream is = DBManagerIml.class.getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -51,7 +38,7 @@ public class MysqlManager implements DBManager {
         for (String sql : sqls) {
             try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 if (!sql.trim().isEmpty()) {
-                    pstmt.execute(sql);
+                    pstmt.execute();
                 }
             }
         }

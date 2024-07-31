@@ -32,6 +32,8 @@ dependencies {
     // https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
     implementation 'com.mysql:mysql-connector-j:8.4.0'
 
+// https://mvnrepository.com/artifact/com.h2database/h2
+    testImplementation 'com.h2database:h2:2.3.230'
 
     // https://mvnrepository.com/artifact/jakarta.servlet.jsp/jakarta.servlet.jsp-api
     compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:4.0.0'
