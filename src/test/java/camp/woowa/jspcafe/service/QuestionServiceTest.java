@@ -113,7 +113,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void testDeleteById() {
+    void testDeleteById_With_Blank_Replies() {
         // given
         String title = "title";
         String content = "content";
@@ -126,6 +126,43 @@ class QuestionServiceTest {
         // then
         assertEquals(0, questionService.findAll().size());
     }
+
+    @Test
+    void testDeleteById_With_My_Replies() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer, 1L);
+
+        // when
+        questionService.deleteById(id, 1L);
+        replyService.createReply(id, 1L, "writer", "content1");
+        replyService.createReply(id, 1L, "writer", "content2");
+        replyService.createReply(id, 1L, "writer", "content3");
+
+        // then
+        assertEquals(0, questionService.findAll().size());
+    }
+
+    @Test
+    void testDeleteById_With_Others_Replies() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Long id = questionService.save(title, content, writer, 1L);
+
+        // when
+        replyService.createReply(id, 1L, "writer", "content1");
+        replyService.createReply(id, 2L, "writer2", "content2");
+        replyService.createReply(id, 3L, "writer3", "content3");
+
+        // then
+        CustomException e = assertThrows(CustomException.class, () -> questionService.deleteById(id, 1L));
+        assertEquals("You can't delete this question. Because there are replies from other users.", e.getMessage());
+    }
+
 
     @Test
     void testDeleteById_Forbidden() {
