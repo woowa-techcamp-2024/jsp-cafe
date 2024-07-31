@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import woopaca.jspcafe.error.ForbiddenException;
 import woopaca.jspcafe.model.Authentication;
+import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.UserService;
 import woopaca.jspcafe.servlet.dto.request.UpdateProfileRequest;
@@ -54,7 +55,9 @@ public class UserProfileServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         Authentication authentication = (Authentication) session.getAttribute("authentication");
-        userService.updateUserProfile(userId, updateProfileRequest, authentication);
+        User updatedUser = userService.updateUserProfile(userId, updateProfileRequest, authentication);
+        Authentication newAuthentication = authentication.updatePrincipal(updatedUser);
+        session.setAttribute("authentication", newAuthentication);
         response.sendRedirect("/users/" + userId);
     }
 }
