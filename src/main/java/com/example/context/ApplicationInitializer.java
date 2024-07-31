@@ -34,7 +34,8 @@ public class ApplicationInitializer implements ServletContextListener {
 		sce.getServletContext().setAttribute("userDatabase", userDatabase);
 		sce.getServletContext().setAttribute("replyDatabase", replyDatabase);
 		sce.getServletContext().setAttribute("articleDatabase", articleDatabase);
-		sce.getServletContext().setAttribute("userService", new UserService(userDatabase, articleDatabase, replyDatabase));
+		sce.getServletContext()
+			.setAttribute("userService", new UserService(userDatabase, articleDatabase, replyDatabase));
 		sce.getServletContext().setAttribute("articleService", new ArticleService(articleDatabase, replyDatabase));
 		sce.getServletContext().setAttribute("replyService", new ReplyService(replyDatabase));
 		String url = "jdbc:mysql://localhost:3306/codesquad";

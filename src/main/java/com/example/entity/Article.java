@@ -12,7 +12,8 @@ public class Article {
 	private boolean deleted;
 	private String userName;
 
-	public Article(Long id, String userId, String title, String contents, LocalDateTime createdAt, boolean deleted, String userName) {
+	public Article(Long id, String userId, String title, String contents, LocalDateTime createdAt, boolean deleted,
+		String userName) {
 		this.id = id;
 		this.userId = userId;
 		this.title = title;

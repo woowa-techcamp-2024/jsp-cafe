@@ -2,7 +2,6 @@ package com.example.servlet;
 
 import java.io.IOException;
 
-import com.example.db.UserDatabase;
 import com.example.entity.User;
 import com.example.service.UserService;
 
