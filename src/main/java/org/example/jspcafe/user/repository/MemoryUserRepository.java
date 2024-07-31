@@ -34,4 +34,9 @@ public class MemoryUserRepository implements UserRepository{
     public Optional<User> findById(Long id) {
         return Optional.of(users.get(id));
     }
+
+    @Override
+    public Optional<User> findByUserId(String userId) {
+        return Optional.empty();
+    }
 }

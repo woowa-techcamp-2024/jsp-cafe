@@ -11,7 +11,7 @@ import org.example.jspcafe.question.repository.QuestionRepository;
 
 import java.io.IOException;
 
-import static org.example.jspcafe.common.RequestUtil.extractPathVariable;
+import static org.example.jspcafe.common.RequestUtil.extractLongPathVariable;
 
 @WebServlet(name = "QuestionServlet", value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
@@ -26,7 +26,7 @@ public class QuestionsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long id = extractPathVariable(req);
+        Long id = extractLongPathVariable(req);
         req.setAttribute("question", questionRepository.findById(id));
         req.getRequestDispatcher("/qna/show.jsp").forward(req, resp);
     }
