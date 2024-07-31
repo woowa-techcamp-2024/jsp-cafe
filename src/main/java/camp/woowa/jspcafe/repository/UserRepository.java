@@ -5,13 +5,13 @@ import camp.woowa.jspcafe.model.User;
 import java.util.List;
 
 public interface UserRepository {
-    Long save(String userId, String password, String name, String email);
+    Long save(User user);
 
     User findById(Long userId);
 
     List<User> findAll();
 
-    Long update(Long id, String updatedName, String updatedEmail);
+    Long update(User user);
 
     void deleteAll();
 

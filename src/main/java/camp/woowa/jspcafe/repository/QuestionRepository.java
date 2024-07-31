@@ -5,7 +5,7 @@ import camp.woowa.jspcafe.model.Question;
 import java.util.List;
 
 public interface QuestionRepository {
-    Long save(String title, String content, String writer, Long writerId);
+    Long save(Question question);
 
     List<Question> findAll();
 

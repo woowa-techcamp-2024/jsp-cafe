@@ -18,12 +18,12 @@ public class MySQLUserRepository implements UserRepository{
     }
 
     @Override
-    public Long save(String userId, String password, String name, String email) {
-        try (var pstmt = conn.prepareStatement("INSERT INTO user (userId, password, name, email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
-            pstmt.setString(1, userId);
-            pstmt.setString(2, password);
-            pstmt.setString(3, name);
-            pstmt.setString(4, email);
+    public Long save(User user) {
+        try (var pstmt = conn.prepareStatement("INSERT INTO user (user_id, password, name, email) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+            pstmt.setString(1, user.getUserId());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getName());
+            pstmt.setString(4, user.getEmail());
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {
@@ -43,7 +43,7 @@ public class MySQLUserRepository implements UserRepository{
             pstmt.setLong(1, userId);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+                return new User(rs.getLong("id"), rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,7 +57,7 @@ public class MySQLUserRepository implements UserRepository{
         try (var pstmt = conn.prepareStatement("SELECT * FROM user");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email")));
+                users.add(new User(rs.getLong("id"), rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email")));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,15 +66,15 @@ public class MySQLUserRepository implements UserRepository{
     }
 
     @Override
-    public Long update(Long id, String updatedName, String updatedEmail) {
+    public Long update(User user) {
         try (var pstmt = conn.prepareStatement("UPDATE user SET name = ?, email = ? WHERE id = ?");){
-            pstmt.setString(1, updatedName);
-            pstmt.setString(2, updatedEmail);
-            pstmt.setLong(3, id);
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setLong(3, user.getId());
 
             pstmt.executeUpdate();
 
-            return id;
+            return user.getId();
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -91,7 +91,7 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public boolean isExistedByUserId(String userId) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE userId = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE user_id = ?");){
             pstmt.setString(1, userId);
             var rs = pstmt.executeQuery();
             return rs.next();
@@ -102,14 +102,14 @@ public class MySQLUserRepository implements UserRepository{
 
     @Override
     public User findByUserId(String w) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE userId = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM user WHERE user_id = ?");){
             pstmt.setString(1, w);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("userId"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+                return new User(rs.getLong("id"), rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
             }
         } catch (SQLException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return null;
     }

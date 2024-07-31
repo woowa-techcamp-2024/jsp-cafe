@@ -15,7 +15,7 @@ public class UserService {
     }
 
     public Long createUser(String userId, String password, String name, String email) {
-        return userRepository.save(userId, password, name, email);
+        return userRepository.save(new User(userId, password, name, email));
     }
 
     public List<User> findAll() {
@@ -30,9 +30,10 @@ public class UserService {
         User targetUser = findById(id);
         if (!sessionUser.equals(targetUser))
             throw new CustomException(HttpStatus.UNAUTHORIZED, "You are not authorized to update this user.");
-        if (targetUser.validatePassword(password))
-            return userRepository.update(id, updatedName, updatedEmail);
-        else
+        if (targetUser.validatePassword(password)) {
+            targetUser.update(updatedName, updatedEmail);
+            return userRepository.update(targetUser);
+        } else
             throw new CustomException(HttpStatus.INVALID_PASSWORD);
     }
 

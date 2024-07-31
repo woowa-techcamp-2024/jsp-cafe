@@ -1,16 +1,12 @@
 package camp.woowa.jspcafe.repository;
 
-import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.model.Question;
-import camp.woowa.jspcafe.repository.InMemQuestionRepository;
-import camp.woowa.jspcafe.repository.QuestionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuestionRepositoryTest {
     QuestionRepository questionRepository;
@@ -28,9 +24,9 @@ class QuestionRepositoryTest {
         String content = "content";
         String writer = "1234";
         Long expectedId = 1L;
-
+        Question save = new Question(title, content, writer, 1L);
         // when
-        Long id = questionRepository.save(title, content, writer, 1L);
+        Long id = questionRepository.save(save);
 
         // then
         assertEquals(expectedId, id);
@@ -42,7 +38,8 @@ class QuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        questionRepository.save(title, content, writer, 1L);
+        Question save = new Question(title, content, writer, 1L);
+        questionRepository.save(save);
 
         int expectedSize = 1;
 
@@ -59,7 +56,9 @@ class QuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long id = questionRepository.save(title, content, writer, 1L);
+        Question save = new Question(title, content, writer, 1L);
+
+        Long id = questionRepository.save(save);;
 
         // when
         Question question = questionRepository.findById(id);
@@ -76,7 +75,10 @@ class QuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long id = questionRepository.save(title, content, writer, 1L);
+        Question save = new Question(title, content, writer, 1L);
+
+        Long id = questionRepository.save(save);;
+
         String updatedTitle = "updatedTitle";
         String updatedContent = "updatedContent";
         Question target = questionRepository.findById(id);
@@ -98,7 +100,9 @@ class QuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long id = questionRepository.save(title, content, writer, 1L);
+        Question save = new Question(title, content, writer, 1L);
+
+        Long id = questionRepository.save(save);;
 
         // when
         questionRepository.deleteById(id);

@@ -18,12 +18,12 @@ public class MySQLQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public Long save(String title, String content, String writer, Long writerId) {
-        try (var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer, writerId) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
-            pstmt.setString(1, title);
-            pstmt.setString(2, content);
-            pstmt.setString(3, writer);
-            pstmt.setLong(4, writerId);
+    public Long save(Question question) {
+        try (var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer, writer_id) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+            pstmt.setString(1, question.getTitle());
+            pstmt.setString(2, question.getContent());
+            pstmt.setString(3, question.getWriter());
+            pstmt.setLong(4, question.getWriterId());
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {
@@ -41,10 +41,10 @@ public class MySQLQuestionRepository implements QuestionRepository {
     @Override
     public List<Question> findAll() {
         List<Question> questions = new ArrayList<>();
-        try (var pstmt = conn.prepareStatement("SELECT * FROM question");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM question WHERE is_deleted = FALSE");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
-                questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writerId")));
+                questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id")));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -55,11 +55,11 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public Question findById(Long id) {
-        try (var pstmt = conn.prepareStatement("SELECT * FROM question WHERE id = ?");){
+        try (var pstmt = conn.prepareStatement("SELECT * FROM question WHERE id = ? AND is_deleted = FALSE");){
             pstmt.setLong(1, id);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writerId"));
+                return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id"));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -90,9 +90,18 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (var pstmt = conn.prepareStatement("DELETE FROM question WHERE id = ?");){
+        try {
+            conn.setAutoCommit(false);
+            var pstmt = conn.prepareStatement("UPDATE question SET is_deleted = TRUE WHERE id = ?");
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
+
+            var pstmt2 = conn.prepareStatement("UPDATE reply SET is_deleted = TRUE WHERE question_id = ?");
+            pstmt2.setLong(1, id);
+            pstmt2.executeUpdate();
+
+            conn.commit();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
