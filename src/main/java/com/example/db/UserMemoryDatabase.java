@@ -14,13 +14,14 @@ public class UserMemoryDatabase implements UserDatabase {
 	private final Map<String, User> users = new ConcurrentHashMap<>();
 
 	@Override
-	public void insert(User user) {
+	public String insert(User user) {
 		users.compute(user.id(), (k, v) -> {
 			if (v != null) {
 				throw BaseException.exception(409, "user already exists");
 			}
 			return new User(user.id(), user.password(), user.name(), user.email());
 		});
+		return user.id();
 	}
 
 	@Override

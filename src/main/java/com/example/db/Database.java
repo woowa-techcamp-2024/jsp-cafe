@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface Database<ID, T> {
 
-	void insert(T t);
+	ID insert(T t);
 
 	Optional<T> findById(ID id);
 

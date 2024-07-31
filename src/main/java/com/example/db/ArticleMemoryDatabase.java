@@ -15,10 +15,11 @@ public class ArticleMemoryDatabase implements ArticleDatabase {
 	private final AtomicLong idGenerator = new AtomicLong(0);
 
 	@Override
-	public void insert(Article article) {
+	public Long insert(Article article) {
 		Long id = getNextId();
 		article.updateId(id);
 		articles.put(id, article);
+		return id;
 	}
 
 	@Override
@@ -43,5 +44,9 @@ public class ArticleMemoryDatabase implements ArticleDatabase {
 	@Override
 	public void delete(Long id) {
 		articles.remove(id);
+	}
+
+	@Override
+	public void updateUserName(String userId, String updateName) {
 	}
 }
