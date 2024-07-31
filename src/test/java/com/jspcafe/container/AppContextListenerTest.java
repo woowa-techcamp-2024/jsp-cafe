@@ -1,7 +1,9 @@
 package com.jspcafe.container;
 
 import com.jspcafe.board.model.ArticleDao;
+import com.jspcafe.board.model.ReplyDao;
 import com.jspcafe.board.service.ArticleService;
+import com.jspcafe.board.service.ReplyService;
 import com.jspcafe.test_util.StubServletContext;
 import com.jspcafe.user.model.UserDao;
 import com.jspcafe.user.service.UserService;
@@ -45,5 +47,11 @@ class AppContextListenerTest {
 
         assertNotNull(servletContext.getAttribute("articleService"));
         assertInstanceOf(ArticleService.class, servletContext.getAttribute("articleService"));
+
+        assertNotNull(servletContext.getAttribute("replyDao"));
+        assertInstanceOf(ReplyDao.class, servletContext.getAttribute("replyDao"));
+
+        assertNotNull(servletContext.getAttribute("replyService"));
+        assertInstanceOf(ReplyService.class, servletContext.getAttribute("replyService"));
     }
 }

@@ -1,7 +1,9 @@
 package com.jspcafe.container;
 
 import com.jspcafe.board.model.ArticleDao;
+import com.jspcafe.board.model.ReplyDao;
 import com.jspcafe.board.service.ArticleService;
+import com.jspcafe.board.service.ReplyService;
 import com.jspcafe.user.model.UserDao;
 import com.jspcafe.user.service.UserService;
 import com.jspcafe.util.DatabaseConnector;
@@ -21,6 +23,8 @@ public class AppContextListener implements ServletContextListener {
         initUserService(ctx);
         initArticleDao(ctx);
         initArticleService(ctx);
+        initReplyDao(ctx);
+        initReplyService(ctx);
     }
 
     private void initDatabaseConnector(ServletContext ctx) {
@@ -41,5 +45,13 @@ public class AppContextListener implements ServletContextListener {
 
     private void initArticleService(ServletContext ctx) {
         ctx.setAttribute("articleService", new ArticleService((ArticleDao) ctx.getAttribute("articleDao")));
+    }
+
+    private void initReplyDao(ServletContext ctx) {
+        ctx.setAttribute("replyDao", new ReplyDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
+    }
+
+    private void initReplyService(ServletContext ctx) {
+        ctx.setAttribute("replyService", new ReplyService((ReplyDao) ctx.getAttribute("replyDao")));
     }
 }
