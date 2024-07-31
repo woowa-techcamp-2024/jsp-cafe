@@ -33,6 +33,29 @@ public class JdbcTemplate {
         }
     }
 
+    public void update(final String query, final PreparedStatementSetter psSetter, final KeyHolder keyHolder) {
+        try (Connection conn = dataSourceManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            psSetter.setValues(ps);
+            ps.executeUpdate();
+
+            holdGeneratedKey(keyHolder, ps);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void holdGeneratedKey(final KeyHolder keyHolder, final PreparedStatement ps)
+            throws SQLException {
+        try (ResultSet keyResultSet = ps.getGeneratedKeys()) {
+            if (keyResultSet.next()) {
+                keyHolder.setId(keyResultSet.getLong(1));
+            }
+        }
+    }
+
     public <T> T selectOne(final String query, final PreparedStatementSetter setter,
                            final ResultSetMapper<T> mapper) {
         try (Connection conn = dataSourceManager.getConnection();

@@ -1,18 +1,24 @@
 package com.wootecam.jspcafe.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wootecam.jspcafe.config.DataSourceManager;
 import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
+import com.wootecam.jspcafe.domain.ReplyRepository;
 import com.wootecam.jspcafe.domain.UserRepository;
 import com.wootecam.jspcafe.repository.JdbcQuestionRepository;
+import com.wootecam.jspcafe.repository.JdbcReplyRepository;
 import com.wootecam.jspcafe.repository.JdbcUserRepository;
 import com.wootecam.jspcafe.service.QuestionService;
+import com.wootecam.jspcafe.service.ReplyService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDeleteServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionEditServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionServlet;
+import com.wootecam.jspcafe.servlet.reply.ReplyServlet;
 import com.wootecam.jspcafe.servlet.user.SignInServlet;
 import com.wootecam.jspcafe.servlet.user.SignOutServlet;
 import com.wootecam.jspcafe.servlet.user.SignupServlet;
@@ -33,13 +39,18 @@ public class ApplicationContextListener implements ServletContextListener {
         DataSourceManager dataSourceManager = new DataSourceManager();
         servletContext.setAttribute("dataSourceManager", dataSourceManager);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceManager);
 
         UserRepository userRepository = new JdbcUserRepository(jdbcTemplate);
         QuestionRepository questionRepository = new JdbcQuestionRepository(jdbcTemplate);
+        ReplyRepository replyRepository = new JdbcReplyRepository(jdbcTemplate);
 
         UserService userService = new UserService(userRepository);
         QuestionService questionService = new QuestionService(questionRepository);
+        ReplyService replyService = new ReplyService(replyRepository);
 
         servletContext.addServlet("homeServlet", new HomeServlet(questionService))
                 .addMapping("/");
@@ -64,6 +75,9 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/questions/edit/*");
         servletContext.addServlet("questionDeleteServlet", new QuestionDeleteServlet(questionService))
                 .addMapping("/questions/delete/*");
+
+        servletContext.addServlet("replyServlet", new ReplyServlet(replyService, objectMapper))
+                .addMapping("/reply");
     }
 
     @Override
