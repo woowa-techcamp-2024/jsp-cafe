@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class PostServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(PostServlet.class);
+    private  final Logger log = LoggerFactory.getLogger(getClass());
 
     private PostRepository postRepository;
 
@@ -71,6 +71,7 @@ public class PostServlet extends HttpServlet {
         try {
             Long postId = parsePathVariable(req.getPathInfo());
             PostUpdateRequest requestDto = RequestParamModelMapper.map(req.getParameterMap(), PostUpdateRequest.class);
+            requestDto.validate();
 
             // find original post
             Optional<Post> optionalPost = postRepository.findById(postId);

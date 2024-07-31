@@ -1,4 +1,4 @@
-<%--<%@ page language="java" contentType="text/html; charset=UTF-8" %>--%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/WEB-INF/views/include/header.jsp" %>
 
@@ -6,24 +6,22 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
             <c:if test="${not empty error}">
-                <script type="text/javascript">
-                    alert("${error}");
-                </script>
+                <div class="alert alert-danger" role="alert">${error}</div>
             </c:if>
             <form name="userModify" method="post" action="/users/edit">
-                <input type="hidden" name="userId" value="${user.id}">
+                <input type="hidden" name="id" value="${user.id}">
                 <input type="hidden" name="username" value="${user.username}">
                 <div class="form-group">
-                    <label for="userId">사용자 아이디</label>
-                    <input type="text" class="form-control" id="userId" name="username" placeholder="User ID"
-                           value="${user.username}" readonly>
+                    <label for="originalPassword">기존 비밀번호</label>
+                    <input type="password" class="form-control" id="originalPassword" name="originalPassword"
+                           placeholder="Original Password">
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
+                    <label for="password">새로운 비밀번호</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                 </div>
                 <div class="form-group">
-                    <label for="confirmPassword">비밀번호 확인</label>
+                    <label for="confirmPassword">새로운 비밀번호 확인</label>
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            placeholder="Confirm Password">
                 </div>

@@ -22,11 +22,10 @@
                                 <c:when test="${user.deleted}">
                                     <h4 class="media-heading">탈퇴한 유저입니다.</h4>
                                 </c:when>
-                                <c:when test="${not user.deleted}">
+                                <c:when test="${not user.deleted and not empty userPrincipal.id and userPrincipal.id == user.id}">
                                     <a class="link-modify-article" href="/users/edit?id=${user.id}">수정</a>
-                                    <form class="form-delete" action="/users/${user.id}" method="POST">
+                                    <form class="form-delete" action="/users" method="POST">
                                         <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="id" value="${user.id}">
                                         <button class="link-delete-article" type="submit">탈퇴</button>
                                     </form>
                                 </c:when>

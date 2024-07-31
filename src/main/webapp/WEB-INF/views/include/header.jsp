@@ -44,20 +44,21 @@
                data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <c:choose>
-                    <c:when test="${empty loginedUser}">
-                        <a href="/users">
-                            <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
-                            사용자 목록
-                        </a>
-                    </c:when>
-                    <c:when test="${not empty loginedUser}">
-                        <a href="/user/${loginedUser.id}">
+                <li>
+                    <a href="/users/list">
+                        <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
+                        사용자 목록
+                    </a>
+                </li>
+
+                <c:if test="${not empty sessionScope.userPrincipal}">
+                    <li>
+                        <a href="/users/${sessionScope.userPrincipal.id}">
                             <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
                             Profile
                         </a>
-                    </c:when>
-                </c:choose>
+                    </li>
+                </c:if>
             </ul>
 
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse2">
@@ -71,13 +72,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
                 <c:choose>
-                    <c:when test="${empty loginedUser}">
+                    <c:when test="${empty sessionScope.userPrincipal}">
                         <li><a href="/login" role="button">로그인</a></li>
                         <li><a href="/users/join" role="button">회원가입</a></li>
                     </c:when>
-                    <c:when test="${not empty loginedUser}">
-                        <li><a href="/logout" role="button">로그인</a></li>
-                        <li><a href="/users/${loginedUser.id}" role="button">개인정보수정</a></li>
+                    <c:when test="${not empty sessionScope.userPrincipal}">
+                        <li><a href="/logout" role="button">로그아웃</a></li>
+                        <li><a href="/users/edit" role="button">개인정보수정</a></li>
                     </c:when>
                 </c:choose>
             </ul>

@@ -1,9 +1,11 @@
 package com.codesquad.cafe.servlet;
 
+import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
+
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.exception.ModelMappingException;
 import com.codesquad.cafe.model.PostCreateRequest;
+import com.codesquad.cafe.model.UserPrincipal;
 import com.codesquad.cafe.util.RequestParamModelMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -15,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class PostCreateServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(PostServlet.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private PostRepository postRepository;
 
@@ -35,20 +37,27 @@ public class PostCreateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            PostCreateRequest requestDto = RequestParamModelMapper.map(req.getParameterMap(),
-                    PostCreateRequest.class);
+        PostCreateRequest requestDto;
 
-            if (userRepository.findById(requestDto.getAuthorId()).isEmpty()) {
-                throw new IllegalArgumentException("user not found by id : " + requestDto.getAuthorId());
-            }
+        requestDto = RequestParamModelMapper.map(req.getParameterMap(),
+                PostCreateRequest.class);
 
-            postRepository.save(requestDto.toPost());
+        requestDto.validate();
 
-            resp.sendRedirect("/");
-        } catch (IllegalArgumentException | ModelMappingException e) {
-            resp.sendError(400);
+        UserPrincipal userPrincipal = getUserPrincipal(req);
+        if (userPrincipal == null || !requestDto.getAuthorId().equals(userPrincipal.getId())) {
+            resp.sendError(401);
+            return;
         }
+
+        if (userRepository.findById(requestDto.getAuthorId()).isEmpty()) {
+            resp.sendError(400);
+            return;
+        }
+
+        postRepository.save(requestDto.toPost());
+
+        resp.sendRedirect("/");
     }
 
 }

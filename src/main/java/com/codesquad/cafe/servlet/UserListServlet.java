@@ -11,9 +11,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UsersServlet extends HttpServlet {
+public class UserListServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(UsersServlet.class);
+    private  final Logger log = LoggerFactory.getLogger(getClass());
 
     private UserRepository userRepository;
 

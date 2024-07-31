@@ -2,10 +2,12 @@ package com.codesquad.cafe.servlet;
 
 import static com.codesquad.cafe.TestUtil.assertErrorPageResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
+import com.codesquad.cafe.TestUtil;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.Post;
@@ -16,8 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.http.HttpResponse;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,26 +35,31 @@ class IndexServletTest extends E2ETestBase {
 
     private static final String path = "/";
 
-    private static User user;
+    private User user;
 
-    private static List<Post> posts;
+    private List<Post> posts;
 
     @BeforeAll
     static void beforeAll() throws Exception {
         userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
         postRepository = (PostRepository) context.getServletContext().getAttribute("postRepository");
+    }
+
+    @BeforeEach
+    void setUp() {
         posts = new ArrayList<>();
         user = userRepository.save(User.of("woowa", "1234", "김수현", "woowa@gmail.com"));
         posts.add(postRepository.save(Post.of(user.getId(), "title1", "content1", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title2", "content2", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title3", "content3", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title4", "content4", null)));
+
     }
 
-    @AfterAll
-    static void afterAll() {
-        userRepository.deleteAll();
+    @AfterEach
+    void tearDown() {
         postRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -68,6 +76,30 @@ class IndexServletTest extends E2ETestBase {
         assertTrue(html.contains("사용자 목록"));
         assertTrue(html.contains("로그인"));
         assertTrue(html.contains("회원가입"));
+        assertTrue(html.contains("전체 글 " + posts.size()));
+    }
+
+    @Test
+    @DisplayName("기본 페이지를 반환한다. - 로그인 O")
+    void testDoGetAuthenticated() throws IOException {
+        //when
+        HttpResponse loginResponse = post("/login",
+                "username=" + user.getUsername() + "&password=" + user.getPassword());
+        String sessionId = TestUtil.getSessionIdFromSetCookieHeader(
+                loginResponse.getFirstHeader("Set-Cookie").getValue());
+        SavedHttpResponse response = get(path, sessionId);
+        String html = response.getBody();
+
+        //then
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals("text/html;charset=UTF-8", response.getContentType());
+
+        assertTrue(html.contains("사용자 목록"));
+        assertTrue(html.contains("Profile"));
+        assertFalse(html.contains("로그인"));
+        assertFalse(html.contains("회원가입"));
+        assertTrue(html.contains("로그아웃"));
+        assertTrue(html.contains("개인정보수정"));
 
         assertTrue(html.contains("전체 글 " + posts.size()));
     }
@@ -75,7 +107,8 @@ class IndexServletTest extends E2ETestBase {
     @DisplayName("page parameter에 맞는 게시글을 반환한다.")
     @ParameterizedTest
     @MethodSource
-    void testDoGetPageParam(String pathWithQueryString, List<Post> expectedPosts) throws IOException {
+    void testDoGetPageParam(String pathWithQueryString, List<String> expectedPostsTitle, List<String> excludePosts)
+            throws IOException {
         //when
         SavedHttpResponse response = get(pathWithQueryString);
         String html = response.getBody();
@@ -83,22 +116,22 @@ class IndexServletTest extends E2ETestBase {
         //then
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals("text/html;charset=UTF-8", response.getContentType());
-        assertTrue(html.contains("사용자 목록"));
         assertTrue(html.contains("로그인"));
         assertTrue(html.contains("회원가입"));
         assertTrue(html.contains("전체 글 " + posts.size()));
 
-        expectedPosts.forEach(post -> {
-            assertTrue(html.contains(post.getTitle()));
+        expectedPostsTitle.forEach(title -> {
+            assertTrue(html.contains(title));
+        });
+        excludePosts.forEach(title -> {
+            assertTrue(!html.contains(title));
         });
     }
 
     public static Stream<Arguments> testDoGetPageParam() {
         return Stream.of(
-                Arguments.of(path, posts.stream().toList()),
-                Arguments.of(path + "?pageNum=1&pageSize=2", List.of(posts.get(3), posts.get(2))),
-                Arguments.of(path + "?pageNum=2&pageSize=2", List.of(posts.get(1), posts.get(0))),
-                Arguments.of(path + "?pageNum=2&pageSize=3", List.of())
+                Arguments.of(path + "?pageNum=1&pageSize=2", List.of("title4", "title3"), List.of("title2", "title1")),
+                Arguments.of(path + "?pageNum=2&pageSize=2", List.of("title2", "title1"), List.of("title4", "title3"))
         );
     }
 

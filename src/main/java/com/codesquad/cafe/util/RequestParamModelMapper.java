@@ -27,7 +27,7 @@ public final class RequestParamModelMapper {
 
             return model;
         } catch (Exception e) {
-            log.warn("fail to map parameters to model {} : {} ", type.getName(), e);
+            log.warn("fail to map parameters to model {} : {} ", type.getName(), e.getMessage());
             throw new ModelMappingException("fail to map parameters to model " + type.getName());
         }
     }

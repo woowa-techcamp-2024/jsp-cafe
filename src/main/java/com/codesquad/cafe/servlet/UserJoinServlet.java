@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserJoinServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(UserJoinServlet.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String USER_JOIN_FORM_JSP = "/WEB-INF/views/user_join_form.jsp";
 
@@ -33,6 +33,7 @@ public class UserJoinServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserJoinRequest user = RequestParamModelMapper.map(req.getParameterMap(), UserJoinRequest.class);
+        user.validate();
 
         log.debug("user: {}", user);
 
@@ -49,7 +50,7 @@ public class UserJoinServlet extends HttpServlet {
             return;
         }
 
-        resp.sendRedirect("/users");
+        resp.sendRedirect("/users/list");
     }
 
 }

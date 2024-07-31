@@ -13,8 +13,9 @@ import com.codesquad.cafe.db.entity.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.http.HttpResponse;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,9 +25,9 @@ class PostServletTest extends E2ETestBase {
 
     private static UserRepository userRepository;
 
-    private static User user;
+    private User user;
 
-    private static Post post;
+    private Post post;
 
     private final String path = "/posts/";
 
@@ -35,14 +36,18 @@ class PostServletTest extends E2ETestBase {
     static void beforeAll() {
         postRepository = (PostRepository) context.getServletContext().getAttribute("postRepository");
         userRepository = (UserRepository) context.getServletContext().getAttribute("userRepository");
+    }
+
+    @BeforeEach
+    void setUp() {
         user = userRepository.save(User.of("javajigi", "1234", "박재성", "test@gmail.com"));
         post = postRepository.save(Post.of(user.getId(), "title1", "content1", null));
     }
 
-    @AfterAll
-    static void afterAll() {
-        userRepository.deleteAll();
+    @AfterEach
+    void tearDown() {
         postRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
