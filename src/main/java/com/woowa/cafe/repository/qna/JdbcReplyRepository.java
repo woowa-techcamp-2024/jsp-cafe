@@ -21,13 +21,14 @@ public class JdbcReplyRepository implements ReplyRepository {
     @Override
     public Long save(Reply reply) {
         try (var connection = dataSource.getConnection()) {
-            String sql = "INSERT INTO replies (article_id, writer_id, contents, create_at, modified_at) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO replies (article_id, writer_id, contents, is_deleted,create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?)";
             var pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setLong(1, reply.getArticleId());
             pstmt.setString(2, reply.getWriterId());
             pstmt.setString(3, reply.getContents());
-            pstmt.setObject(4, reply.getCreateAt());
-            pstmt.setObject(5, reply.getUpdateAt());
+            pstmt.setBoolean(4, false);
+            pstmt.setObject(5, reply.getCreateAt());
+            pstmt.setObject(6, reply.getUpdateAt());
             pstmt.executeUpdate();
 
             ResultSet resultSet = pstmt.getGeneratedKeys();
@@ -47,7 +48,7 @@ public class JdbcReplyRepository implements ReplyRepository {
     @Override
     public Optional<Reply> findById(Long replyId) {
         try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("SELECT * FROM replies WHERE reply_id = ?");
+            var pstmt = connection.prepareStatement("SELECT * FROM replies WHERE reply_id = ? AND is_deleted = false");
             pstmt.setLong(1, replyId);
 
             var resultSet = pstmt.executeQuery();
@@ -71,7 +72,7 @@ public class JdbcReplyRepository implements ReplyRepository {
     public List<Reply> findByArticleId(Long articleId) {
         List<Reply> replies = new ArrayList<>();
         try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("SELECT * FROM replies WHERE article_id = ?");
+            var pstmt = connection.prepareStatement("SELECT * FROM replies WHERE article_id = ? AND is_deleted = false");
             pstmt.setLong(1, articleId);
 
             var resultSet = pstmt.executeQuery();
@@ -137,7 +138,7 @@ public class JdbcReplyRepository implements ReplyRepository {
     @Override
     public void delete(Long replyId) {
         try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("DELETE FROM replies WHERE reply_id = ?");
+            var pstmt = connection.prepareStatement("UPDATE replies SET is_deleted = true WHERE reply_id = ?");
             pstmt.setLong(1, replyId);
             pstmt.executeUpdate();
         } catch (SQLException e) {

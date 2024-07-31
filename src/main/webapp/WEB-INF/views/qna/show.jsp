@@ -79,16 +79,13 @@
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
+                                        <%--                                        ---%>
                                         <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
+                                            <input type="hidden" name="replyArticleId" id="replyArticleId"
+                                                   value="<%=article.articleId()%>">
+                                            <button type="submit" class="delete-answer-button"
+                                                    onclick="deleteReply(<%=reply.replyId()%>)">삭제
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
@@ -111,35 +108,35 @@
     </div>
 </div>
 
-<script type="text/template" id="answerTemplate">
-    <article class="article">
-        <div class="article-header">
-            <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-            </div>
-            <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
-            </div>
-        </div>
-        <div class="article-doc comment-doc">
-            {2}
-        </div>
-        <div class="article-util">
-            <ul class="article-util-list">
-                <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </article>
-</script>
+<%--<script type="text/template" id="answerTemplate">--%>
+<%--    <article class="article">--%>
+<%--        <div class="article-header">--%>
+<%--            <div class="article-header-thumb">--%>
+<%--                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">--%>
+<%--            </div>--%>
+<%--            <div class="article-header-text">--%>
+<%--                <a href="#" class="article-author-name">{0}</a>--%>
+<%--                <div class="article-header-time">{1}</div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--        <div class="article-doc comment-doc">--%>
+<%--            {2}--%>
+<%--        </div>--%>
+<%--        <div class="article-util">--%>
+<%--            <ul class="article-util-list">--%>
+<%--                <li>--%>
+<%--                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>--%>
+<%--                </li>--%>
+<%--                <li>--%>
+<%--                    <form class="delete-answer-form">--%>
+<%--                        <input type="hidden" name="_method" value="DELETE">--%>
+<%--                        <button type="submit" class="delete-answer-button">삭제</button>--%>
+<%--                    </form>--%>
+<%--                </li>--%>
+<%--            </ul>--%>
+<%--        </div>--%>
+<%--    </article>--%>
+<%--</script>--%>
 
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -164,6 +161,36 @@
                     window.location.href = "/";
                 } else if (response.ok) {
                     return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function deleteReply(replyId) {
+        const replyArticleId = document.getElementById('replyArticleId');
+        const formData = new FormData();
+        formData.append('replyArticleId', replyArticleId.value);
+        const urlParams = new URLSearchParams(formData);
+
+        fetch(`/reply/` + replyId, {
+            method: 'DELETE',
+            body: urlParams.toString(),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(response => {
+                if (response.status === 303) {
+                    window.location.reload();
+                } else if (response.ok) {
+                    window.location.reload();
                 } else {
                     throw new Error('Network response was not ok');
                 }

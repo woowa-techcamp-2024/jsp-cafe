@@ -31,7 +31,6 @@ public class ReplyServlet extends HttpServlet {
 
     @Override
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
-        log.info("ReplyServlet doPost");
         Map<String, String> bodyFormData = HttpMessageUtils.getBodyFormData(req);
 
         Long articleId = replyService.save(SaveReplyDto.from(bodyFormData), (String) req.getSession().getAttribute("memberId"));
@@ -40,22 +39,23 @@ public class ReplyServlet extends HttpServlet {
     }
 
     @Override
-    public void doPut(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-
-    }
-
-    @Override
     public void doDelete(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("ReplyServlet doDelete");
         String pathInfo = req.getPathInfo();
 
         String[] split = pathInfo.split("/");
-        if (split.length != 5) {
+        if (split.length != 2) {
             throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "잘못된 요청입니다.");
         }
-        Long replyId = Long.parseLong(split[4]);
+
+        Long replyId = Long.parseLong(split[1]);
         HttpSession session = req.getSession();
         String memberId = (String) session.getAttribute("memberId");
 
         replyService.delete(replyId, memberId);
+        Map<String, String> bodyFormData = HttpMessageUtils.getBodyFormData(req);
+        resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        String input = bodyFormData.get("replyArticleId").trim();
+        resp.setHeader("Location", "/question/" + Long.parseLong(input));
     }
 }

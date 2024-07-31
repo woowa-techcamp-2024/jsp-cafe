@@ -42,6 +42,7 @@ public class DataSourceConfig {
                     "title VARCHAR(255), " +
                     "contents TEXT, " +
                     "reply_count BIGINT, " +
+                    "is_deleted BOOLEAN, " +
                     "create_at TIMESTAMP, " +
                     "modified_at TIMESTAMP)";
 
@@ -51,6 +52,7 @@ public class DataSourceConfig {
                     "article_id BIGINT, " +
                     "writer_id VARCHAR(255), " +
                     "contents TEXT, " +
+                    "is_deleted BOOLEAN, " +
                     "create_at TIMESTAMP, " +
                     "modified_at TIMESTAMP)";
 

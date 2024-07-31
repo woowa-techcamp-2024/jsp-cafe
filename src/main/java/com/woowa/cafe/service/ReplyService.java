@@ -33,17 +33,6 @@ public class ReplyService {
         return reply.getArticleId();
     }
 
-    public void update(final Long replyId, final SaveReplyDto replyDto, final String memberId) {
-        Reply reply = replyRepository.findById(replyId)
-                .orElseThrow(() -> new HttpException(SC_NOT_FOUND, "존재하지 않는 댓글입니다."));
-
-        if (!reply.isSameWriter(memberId)) {
-            throw new HttpException(SC_FORBIDDEN, "다른 사람이 수정할 수 없습니다.");
-        }
-
-        reply.update(replyDto.contents());
-    }
-
     public void delete(final Long replyId, final String memberId) {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new HttpException(SC_NOT_FOUND, "존재하지 않는 댓글입니다."));

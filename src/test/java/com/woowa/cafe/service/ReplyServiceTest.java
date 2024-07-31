@@ -75,4 +75,63 @@ class ReplyServiceTest {
         assertThrows(IllegalArgumentException.class, () -> replyService.save(new SaveReplyDto(2L, replyContent), writerId));
     }
 
+    @Test
+    @DisplayName("댓글 삭제 테스트")
+    void delete() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        String replyContent = "replyContent";
+        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.delete(replyId, writerId);
+        List<ReplyDto> replies = articleService.findById(articleId).replies();
+        List<ArticleListDto> articles = articleService.findAll();
+
+
+        assertAll(
+                () -> assertEquals(0, replies.size()),
+                () -> assertEquals(0, articles.get(0).replyCount())
+        );
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패 테스트 - 댓글이 없는 경우")
+    void deleteFail() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        String replyContent = "replyContent";
+        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        List<ReplyDto> replies = articleService.findById(articleId).replies();
+        List<ArticleListDto> articles = articleService.findAll();
+
+        assertThrows(IllegalArgumentException.class, () -> replyService.delete(2L, writerId));
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패 테스트 - 다른 사람이 삭제하는 경우")
+    void deleteFail2() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        String replyContent = "replyContent";
+        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        List<ReplyDto> replies = articleService.findById(articleId).replies();
+        List<ArticleListDto> articles = articleService.findAll();
+
+        assertThrows(IllegalArgumentException.class, () -> replyService.delete(replyId, "otherId"));
+    }
+
 }
