@@ -52,7 +52,7 @@
             <div class="comment-date"><c:out value="${reply.writtenAt()}" /></div>
             <c:choose>
               <c:when test="${reply.writer() == sessionScope.authentication.principal().getNickname()}">
-                <div class="comment-delete-button" onclick="handleReplyDelete()">삭제</div>
+                <div class="comment-delete-button" onclick="handleReplyDelete(${reply.id()})">삭제</div>
               </c:when>
             </c:choose>
           </div>
@@ -115,9 +115,9 @@
     }
   };
 
-  const handleReplyDelete = () => {
+  const handleReplyDelete = (replyId) => {
     if (confirm('댓글을 삭제하시겠습니까?')) {
-      fetch('${pageContext.request.contextPath}/replies/${reply.id()}', {
+      fetch('${pageContext.request.contextPath}/replies/' + replyId, {
         method: 'DELETE',
       }).then(response => {
         if (response.ok) {
