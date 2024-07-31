@@ -5,7 +5,7 @@ import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.exception.CommonException;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
-import com.wootecam.jspcafe.servlet.HttpBodyParser;
+import com.wootecam.jspcafe.servlet.util.HttpBodyParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

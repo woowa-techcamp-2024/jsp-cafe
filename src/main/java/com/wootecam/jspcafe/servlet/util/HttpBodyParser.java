@@ -1,4 +1,4 @@
-package com.wootecam.jspcafe.servlet;
+package com.wootecam.jspcafe.servlet.util;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;

@@ -2,6 +2,7 @@ package com.wootecam.jspcafe.servlet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.wootecam.jspcafe.servlet.util.HttpBodyParser;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
