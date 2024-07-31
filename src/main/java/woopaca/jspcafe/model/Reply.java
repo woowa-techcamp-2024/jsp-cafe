@@ -49,6 +49,14 @@ public class Reply {
         return status;
     }
 
+    public boolean isPublished() {
+        return status == ContentStatus.PUBLISHED;
+    }
+
+    public void softDelete() {
+        this.status = ContentStatus.DELETED;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

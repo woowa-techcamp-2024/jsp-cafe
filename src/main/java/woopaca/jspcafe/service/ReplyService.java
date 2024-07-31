@@ -70,4 +70,15 @@ public class ReplyService {
                 .map(User::getNickname)
                 .orElse("사용자");
     }
+
+    public void deleteReply(Long replyId, Authentication authentication) {
+        Reply reply = replyRepository.findById(replyId)
+                .orElseThrow(() -> new NotFoundException("[ERROR] 댓글을 찾을 수 없습니다."));
+        if (authentication.isPrincipal(reply.getWriterId())) {
+            throw new BadRequestException("[ERROR] 댓글 작성자만 삭제할 수 있습니다.");
+        }
+
+        reply.softDelete();
+        replyRepository.save(reply);
+    }
 }
