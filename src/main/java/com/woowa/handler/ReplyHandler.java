@@ -42,6 +42,7 @@ public class ReplyHandler {
         );
         replyDatabase.save(reply);
         return ResponseEntity.builder()
+                .add("reply", reply)
                 .found("/questions/" + questionId);
     }
 

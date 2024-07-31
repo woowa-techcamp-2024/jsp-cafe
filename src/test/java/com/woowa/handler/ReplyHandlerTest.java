@@ -71,6 +71,20 @@ class ReplyHandlerTest {
                         assertThat(reply.getContent()).isEqualTo(content);
                     });
         }
+
+        @Test
+        @DisplayName("댓글을 응답으로 반환한다.")
+        void addReplyToModel() {
+            //given
+            String content = "content";
+
+            //when
+            ResponseEntity response = replyHandler.createReply(user.getUserId(), question.getQuestionId(), content);
+
+            //then
+            assertThat(response.getModel().get("reply")).isNotNull()
+                    .isInstanceOf(Reply.class);
+        }
     }
 
     @Nested

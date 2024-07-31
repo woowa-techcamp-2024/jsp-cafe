@@ -3,6 +3,9 @@ package com.woowa.servlet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
 import com.woowa.database.ReplyDatabase;
@@ -39,12 +42,16 @@ class FindQuestionServletTest {
 
     @BeforeEach
     void setUp() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
+
         questionDatabase = new QuestionMemoryDatabase();
         userDatabase = new UserMemoryDatabase();
         questionHandler = new QuestionHandler(userDatabase, questionDatabase);
         replyDatabase = new ReplyMemoryDatabase();
         replyHandler = new ReplyHandler(userDatabase, questionDatabase, replyDatabase);
-        findQuestionServlet = new FindQuestionServlet(questionHandler, replyHandler);
+        findQuestionServlet = new FindQuestionServlet(questionHandler, replyHandler, objectMapper);
     }
 
     @Nested
