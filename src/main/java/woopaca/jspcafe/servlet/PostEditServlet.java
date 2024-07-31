@@ -27,19 +27,12 @@ public class PostEditServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
         Long postId = Long.parseLong(pathInfo.substring(1));
         HttpSession session = request.getSession();
         Authentication authentication = (Authentication) session.getAttribute("authentication");
         postService.validateWriter(postId, authentication);
-        super.service(request, response);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-        Long postId = Long.parseLong(pathInfo.substring(1));
         PostEditResponse postEditResponse = postService.getPostTitleContent(postId);
         request.setAttribute("post", postEditResponse);
         request.getRequestDispatcher("/post/edit.jsp")
