@@ -1,7 +1,7 @@
 package codesquad.servlet;
 
 import codesquad.servlet.dao.ArticleQuery;
-import codesquad.servlet.dto.ArticleResponse;
+import codesquad.servlet.dao.ArticleQuery.ArticleResponse;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="codesquad.servlet.dto.ArticleResponse" %>
+<%@ page import="codesquad.servlet.dao.ArticleQuery.ArticleResponse" %>
 <%@ page import="java.util.StringTokenizer" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -60,7 +60,7 @@
                                 <a class="link-modify-article" href="/questions/<%=article.articleId()%>/update-form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/questions/<%=article.articleId()%>" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
