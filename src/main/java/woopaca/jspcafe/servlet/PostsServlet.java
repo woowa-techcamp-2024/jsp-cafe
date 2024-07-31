@@ -12,10 +12,13 @@ import jakarta.servlet.http.HttpSession;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.resolver.QueryStringResolver;
 import woopaca.jspcafe.service.PostService;
+import woopaca.jspcafe.service.ReplyService;
 import woopaca.jspcafe.servlet.dto.request.PostEditRequest;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
+import woopaca.jspcafe.servlet.dto.response.RepliesResponse;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @MultipartConfig
@@ -23,21 +26,19 @@ import java.util.stream.Collectors;
 public class PostsServlet extends HttpServlet {
 
     private PostService postService;
+    private ReplyService replyService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
         this.postService = (PostService) servletContext.getAttribute("postService");
+        this.replyService = (ReplyService) servletContext.getAttribute("replyService");
     }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo.contains("replies")) {
-            // forwarding?
-        }
-
         Long postId = Long.parseLong(pathInfo.substring(1));
         request.setAttribute("postId", postId);
         super.service(request, response);
@@ -47,8 +48,10 @@ public class PostsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long postId = (Long) request.getAttribute("postId");
         PostDetailsResponse post = postService.getPostDetails(postId);
+        List<RepliesResponse> replies = replyService.getReplies(postId);
         request.setAttribute("post", post);
         request.setAttribute("separator", '\n');
+        request.setAttribute("replies", replies);
         request.getRequestDispatcher("/post/details.jsp")
                 .forward(request, response);
     }
