@@ -1,13 +1,13 @@
 package codesquad.servlet;
 
-import codesquad.servlet.dao.ArticleQueryDao;
+import codesquad.servlet.dao.ArticleQuery;
 import codesquad.servlet.dto.ArticleResponse;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class MockArticleQueryDao implements ArticleQueryDao {
+public class MockArticleQuery implements ArticleQuery {
     private ArticleResponse articleResponse;
 
     @Override

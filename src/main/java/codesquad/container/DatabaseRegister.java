@@ -3,7 +3,7 @@ package codesquad.container;
 import codesquad.domain.article.ArticleDao;
 import codesquad.domain.user.UserDao;
 import codesquad.infra.*;
-import codesquad.servlet.dao.ArticleQueryDao;
+import codesquad.servlet.dao.ArticleQuery;
 import jakarta.servlet.ServletContext;
 
 import javax.naming.Context;
@@ -20,9 +20,9 @@ public class DatabaseRegister implements AppInit {
         ConnectionManager connectionManager = new ServerConnectionManager(ds);
         UserDao userDao = new MySqlUserDao(connectionManager);
         ArticleDao articleDao = new MySqlArticleDao(connectionManager);
-        ArticleQueryDao articleQueryDao = new MySqlArticleQueryDao(connectionManager);
+        ArticleQuery articleQuery = new MySqlArticleQuery(connectionManager);
         servletContext.setAttribute("userDao", userDao);
         servletContext.setAttribute("articleDao", articleDao);
-        servletContext.setAttribute("articleQueryDao", articleQueryDao);
+        servletContext.setAttribute("articleQuery", articleQuery);
     }
 }

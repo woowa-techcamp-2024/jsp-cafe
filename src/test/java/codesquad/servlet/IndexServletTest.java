@@ -12,13 +12,13 @@ import java.io.IOException;
 
 class IndexServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
-    private MockArticleQueryDao mockArticleQueryDao;
+    private MockArticleQuery mockArticleQueryDao;
     private IndexServlet indexServlet;
 
     @BeforeEach
     void setUp() {
         mockRequestDispatcher = new MockRequestDispatcher();
-        mockArticleQueryDao = new MockArticleQueryDao();
+        mockArticleQueryDao = new MockArticleQuery();
         indexServlet = new IndexServlet(mockArticleQueryDao);
     }
 

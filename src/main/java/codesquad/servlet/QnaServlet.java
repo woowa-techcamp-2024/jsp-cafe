@@ -5,7 +5,7 @@ import codesquad.domain.article.ArticleDao;
 import codesquad.domain.user.User;
 import codesquad.exception.UnauthorizedRequestException;
 import codesquad.servlet.annotation.authentication.Authorized;
-import codesquad.servlet.dao.ArticleQueryDao;
+import codesquad.servlet.dao.ArticleQuery;
 import codesquad.servlet.dto.ArticleResponse;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -25,21 +25,21 @@ import java.util.Optional;
 public class QnaServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
 
-    private ArticleQueryDao articleQueryDao;
+    private ArticleQuery articleQuery;
     private ArticleDao articleDao;
 
     public QnaServlet() {
     }
 
-    public QnaServlet(ArticleQueryDao articleQueryDao, ArticleDao articleDao) {
-        this.articleQueryDao = articleQueryDao;
+    public QnaServlet(ArticleQuery articleQuery, ArticleDao articleDao) {
+        this.articleQuery = articleQuery;
         this.articleDao = articleDao;
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        articleQueryDao = (ArticleQueryDao) servletContext.getAttribute("articleQueryDao");
+        articleQuery = (ArticleQuery) servletContext.getAttribute("articleQuery");
         articleDao = (ArticleDao) servletContext.getAttribute("articleDao");
     }
 
@@ -95,6 +95,34 @@ public class QnaServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/questions/" + article.getId());
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        long articleId;
+        try {
+            articleId = getArticleId(req);
+        } catch (NumberFormatException e) {
+            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        User loginUser = (User) req.getSession().getAttribute("loginUser");
+        Optional<Article> findArticle = articleDao.findById(articleId);
+        if (findArticle.isEmpty()) {
+            req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        Article article = findArticle.get();
+        try {
+            article.delete(loginUser.getUserId());
+        } catch (UnauthorizedRequestException e) {
+            req.setAttribute("errorMsg", "다른 사람의 글을 삭제할 수 없습니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        articleDao.update(article);
+    }
+
     private void processUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         long articleId;
         try {
@@ -105,7 +133,7 @@ public class QnaServlet extends HttpServlet {
             return;
         }
         User loginUser = (User) req.getSession().getAttribute("loginUser");
-        Optional<ArticleResponse> findArticleResponse = articleQueryDao.findById(articleId);
+        Optional<ArticleResponse> findArticleResponse = articleQuery.findById(articleId);
         if (findArticleResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
@@ -129,7 +157,7 @@ public class QnaServlet extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        Optional<ArticleResponse> articleResponse = articleQueryDao.findById(articleId);
+        Optional<ArticleResponse> articleResponse = articleQuery.findById(articleId);
         if (articleResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);

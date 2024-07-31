@@ -1,6 +1,6 @@
 package codesquad.servlet;
 
-import codesquad.servlet.dao.ArticleQueryDao;
+import codesquad.servlet.dao.ArticleQuery;
 import codesquad.servlet.dto.ArticleResponse;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -15,24 +15,24 @@ import java.util.List;
 
 @WebServlet(urlPatterns = "/")
 public class IndexServlet extends HttpServlet {
-    private ArticleQueryDao articleQueryDao;
+    private ArticleQuery articleQuery;
 
     public IndexServlet() {
     }
 
-    public IndexServlet(ArticleQueryDao articleQueryDao) {
-        this.articleQueryDao = articleQueryDao;
+    public IndexServlet(ArticleQuery articleQuery) {
+        this.articleQuery = articleQuery;
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        articleQueryDao = (ArticleQueryDao) servletContext.getAttribute("articleQueryDao");
+        articleQuery = (ArticleQuery) servletContext.getAttribute("articleQuery");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<ArticleResponse> articleResponses = articleQueryDao.findAll();
+        List<ArticleResponse> articleResponses = articleQuery.findAll();
         req.setAttribute("articleResponses", articleResponses);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }

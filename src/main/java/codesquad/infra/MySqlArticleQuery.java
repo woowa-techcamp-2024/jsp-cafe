@@ -1,6 +1,6 @@
 package codesquad.infra;
 
-import codesquad.servlet.dao.ArticleQueryDao;
+import codesquad.servlet.dao.ArticleQuery;
 import codesquad.servlet.dto.ArticleResponse;
 
 import java.sql.Connection;
@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MySqlArticleQueryDao implements ArticleQueryDao {
+public class MySqlArticleQuery implements ArticleQuery {
     private ConnectionManager connectionManager;
 
-    public MySqlArticleQueryDao(ConnectionManager connectionManager) {
+    public MySqlArticleQuery(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
