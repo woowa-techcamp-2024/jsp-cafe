@@ -4,6 +4,7 @@ import cafe.controller.handler.articles.*;
 import cafe.controller.handler.DefaultHandler;
 import cafe.controller.handler.comments.CommentCreateHandler;
 import cafe.controller.handler.comments.CommentDeleteHandler;
+import cafe.controller.handler.comments.CommentListHandler;
 import cafe.controller.handler.users.UserInfoEditHandler;
 import cafe.controller.handler.users.UserInfoHandler;
 import cafe.controller.handler.users.UserInfoListHandler;
@@ -42,6 +43,7 @@ public class DIHandlerInitializer implements ServletContextListener {
     }
 
     private void commentHandlerInit(ServletContext servletContext) {
+        servletContext.setAttribute("commentListHandler", new CommentListHandler(servletContext));
         servletContext.setAttribute("commentCreateHandler", new CommentCreateHandler(servletContext));
         servletContext.setAttribute("commentDeleteHandler", new CommentDeleteHandler(servletContext));
     }
