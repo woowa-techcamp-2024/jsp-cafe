@@ -29,7 +29,7 @@
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%= article.getCreatedAt() %></span>
                                 <a href="users/profile/<%= article.getUserId() %>"
-                                   class="author"><%= article.getUserId() %>></a>
+                                   class="author"><%= article.getUserName() %>></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>

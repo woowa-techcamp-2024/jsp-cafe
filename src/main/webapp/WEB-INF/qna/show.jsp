@@ -1,4 +1,5 @@
-<%@ page import="com.example.entity.Article" %><%--
+<%@ page import="com.example.entity.Article, com.example.entity.Reply" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: woowatech04
   Date: 2024. 7. 23.
@@ -20,8 +21,7 @@
                 Article article = (Article)request.getAttribute("article");
             %>
             <header class="qna-header">
-                <h2 class="qna-title"><%= article.getTitle() %>
-                </h2>
+                <h2 class="qna-title"><%= article.getTitle() %></h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -32,8 +32,7 @@
                         </div>
                         <div class="article-header-text">
                             <a href="/users/profile/<%= article.getUserId() %>"
-                               class="article-author-name"><%= article.getUserId() %>
-                            </a>
+                               class="article-author-name"><%= article.getUserName() %></a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
                                 <%= article.getCreatedAt()%>
                                 <i class="icon-link"></i>
@@ -64,81 +63,42 @@
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                        <div class="qna-comment-slipp-articles">
-
-                            <article class="article" id="answer-1405">
+                        <p class="qna-comment-count"><strong id="comment-count"><%=request.getAttribute("replyCount")%></strong>개의 의견</p>
+                        <div class="qna-comment-slipp-articles" id="comment-list">
+                            <%
+                                List<Reply> replies = (List<Reply>) request.getAttribute("replies");
+                                for (Reply reply : replies) {
+                            %>
+                            <article class="article" id="comment-<%= reply.getId() %>">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                             class="article-author-thumb" alt="">
+                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
+                                        <a href="#" class="article-author-name"><%= reply.getUserName() %></a>
+                                        <div class="article-header-time"><%= reply.getCreatedAt() %></div>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
+                                    <%= reply.getContents() %>
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
+                                            <button class="delete-comment-button" data-id="<%= reply.getId() %>">삭제</button>
                                         </li>
                                     </ul>
                                 </div>
                             </article>
-                            <article class="article" id="answer-1406">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                             class="article-author-thumb" alt="">
-                                    </div>
-                                    <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="form-delete" action="/questions/413/answers/1405"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <form class="submit-write">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
-                                <div class="clearfix"/>
-                            </form>
+                            <% } %>
                         </div>
+                        <form id="comment-form" class="submit-write">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea id="comment-content" class="form-control" placeholder="Update your status"></textarea>
+                            </div>
+                            <button id="submit-comment" class="btn btn-success pull-right" type="button">답변하기</button>
+                            <div class="clearfix"></div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -146,34 +106,82 @@
     </div>
 </div>
 
-<script type="text/template" id="answerTemplate">
-    <article class="article">
+<script type="text/template" id="comment-template">
+    <article class="article" id="comment-{commentId}">
         <div class="article-header">
             <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                <img src="{authorThumb}" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
+                <a href="#" class="article-author-name">{authorName}</a>
+                <div class="article-header-time">{commentTime}</div>
             </div>
         </div>
         <div class="article-doc comment-doc">
-            {2}
+            {commentContent}
         </div>
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
+                    <button class="delete-comment-button" data-id="{commentId}">삭제</button>
                 </li>
             </ul>
         </div>
     </article>
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function updateCommentCount() {
+            $('#comment-count').text($('#comment-list .article').length);
+        }
+
+        function addComment(comment) {
+            var template = $('#comment-template').html();
+            template = template.replace(/{commentId}/g, comment.id)
+                .replace('{authorThumb}', 'https://graph.facebook.com/v2.3/1324855987/picture')
+                .replace('{authorName}', comment.author)
+                .replace('{commentTime}', comment.time)
+                .replace('{commentContent}', comment.content);
+            $('#comment-list').append(template);
+            updateCommentCount();
+        }
+
+        $('#submit-comment').on('click', function () {
+            var content = $('#comment-content').val();
+            if (content.trim() === '') return;
+
+            $.ajax({
+                url: '/replies',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ articleId: '<%= article.getId() %>', content: content }),
+                success: function (response) {
+                    addComment(response);
+                    $('#comment-content').val('');
+                },
+                error: function () {
+                    alert('댓글 추가에 실패했습니다.');
+                }
+            });
+        });
+
+        $('#comment-list').on('click', '.delete-comment-button', function () {
+            var commentId = $(this).data('id');
+            $.ajax({
+                url: '/replies/' + commentId,
+                method: 'DELETE',
+                success: function () {
+                    $('#comment-' + commentId).remove();
+                    updateCommentCount();
+                },
+                error: function () {
+                    alert('댓글 삭제에 실패했습니다.');
+                }
+            });
+        });
+    });
 </script>
 
 <!-- script references -->
