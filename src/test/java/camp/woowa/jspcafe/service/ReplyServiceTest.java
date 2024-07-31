@@ -17,6 +17,8 @@ class ReplyServiceTest {
     void setUp() {
         ReplyRepository replyRepository = new InMemReplyRepository();
         replyService = new ReplyService(replyRepository);
+
+        replyRepository.deleteAll();
     }
 
     @Test
