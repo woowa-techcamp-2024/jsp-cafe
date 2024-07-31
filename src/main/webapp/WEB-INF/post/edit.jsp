@@ -24,7 +24,8 @@
                     </div>
                     <div class="form-group">
                         <label for="contents">내용</label>
-                        <textarea class="form-control" id="contents" name="contents" rows="5"><%=post.getContents()%></textarea>
+                        <textarea class="form-control" id="contents" name="contents"
+                                  rows="5"><%=post.getContents()%></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">저장</button>
                 </form>

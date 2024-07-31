@@ -22,7 +22,7 @@ public class CommentRepository {
         this.dbConfig = dbConfig;
     }
 
-    public Comment  saveComment(CommentCreateDao dao) {
+    public Comment saveComment(CommentCreateDao dao) {
         String sql = "INSERT INTO comments (post_id, writer_id, contents, created_at) VALUES (?, ?, ?, ?)";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -44,7 +44,7 @@ public class CommentRepository {
             }
         } catch (SQLException e) {
             logger.error("Error saving comments", e);
-            throw new InternalServerError("Error saving comments "+ e.getMessage());
+            throw new InternalServerError("Error saving comments " + e.getMessage());
         }
     }
 
@@ -56,7 +56,7 @@ public class CommentRepository {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             logger.error("Error deleting comment", e);
-            throw new InternalServerError("Error deleting comment "+ e.getMessage());
+            throw new InternalServerError("Error deleting comment " + e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class CommentRepository {
             return getComment(commentId).orElseThrow(() -> new InternalServerError("Error updating comment"));
         } catch (SQLException e) {
             logger.error("Error updating comment", e);
-            throw new InternalServerError("Error updating comment "+ e.getMessage());
+            throw new InternalServerError("Error updating comment " + e.getMessage());
         }
     }
 
@@ -86,7 +86,7 @@ public class CommentRepository {
             }
         } catch (SQLException e) {
             logger.error("Error getting comment", e);
-            throw new InternalServerError("Error getting comment "+ e.getMessage());
+            throw new InternalServerError("Error getting comment " + e.getMessage());
         }
         return Optional.empty();
     }

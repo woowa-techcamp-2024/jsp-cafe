@@ -36,7 +36,7 @@ function addAnswer(e) {
             // Assuming the response is in JSON format with necessary data
             var answerTemplate = $("#answerTemplate").html();
 
-            data.forEach(function(comment) {
+            data.forEach(function (comment) {
                 var formattedTemplate = answerTemplate.format(
                     comment.writer.name,
                     comment.createdAt,

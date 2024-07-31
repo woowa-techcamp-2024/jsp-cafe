@@ -47,8 +47,7 @@ public class Router {
                         throw new InternalServerError(e.getMessage());
                     } catch (UnauthorizedException e) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
                     }

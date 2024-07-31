@@ -69,7 +69,7 @@ public class PostHandler {
         Post post = checkPostExistence(postId);
         Long userId = getUserIdFromSession(request);
 
-        if(!isIdenticalUser(userId, post)) {
+        if (!isIdenticalUser(userId, post)) {
             request.setAttribute("error", "User not authorized");
             throw new UnauthorizedException("User not authorized");
         }
@@ -89,7 +89,7 @@ public class PostHandler {
         Post post = checkPostExistence(postId);
         Long userId = getUserIdFromSession(request);
 
-        if(!isIdenticalUser(userId, post)) {
+        if (!isIdenticalUser(userId, post)) {
             request.setAttribute("error", "User not authorized");
             throw new UnauthorizedException("User not authorized");
         }
@@ -112,7 +112,7 @@ public class PostHandler {
         Post post = checkPostExistence(postId);
         Long userId = getUserIdFromSession(request);
 
-        if(!isIdenticalUser(userId, post)) {
+        if (!isIdenticalUser(userId, post)) {
             request.setAttribute("error", "User not authorized");
             throw new UnauthorizedException("User not authorized");
         }

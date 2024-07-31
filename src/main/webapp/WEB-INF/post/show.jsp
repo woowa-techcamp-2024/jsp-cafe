@@ -61,7 +61,7 @@
                 %>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-<%--                        <p class="qna-comment-count"><strong><%=comments.size()%></strong>개의 의견</p>--%>
+                        <%--                        <p class="qna-comment-count"><strong><%=comments.size()%></strong>개의 의견</p>--%>
                         <div class="qna-comment-slipp-articles">
                             <%
                                 for (Comment comment : comments) {
@@ -85,7 +85,8 @@
                                 </div>
                                 <ul class="article-util-list">
                                     <li>
-                                        <form class="delete-answer-form" action="/posts/<%=post.getId()%>/comments/<%=comment.getId()%>"
+                                        <form class="delete-answer-form"
+                                              action="/posts/<%=post.getId()%>/comments/<%=comment.getId()%>"
                                               method="POST">
                                             <input type="hidden" name="_method" value="DELETE">
                                             <button type="submit" class="delete-answer-button">삭제</button>

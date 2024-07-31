@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PostRepositoryTest extends RepositoryTestSupport{
+class PostRepositoryTest extends RepositoryTestSupport {
     UserRepository userRepository;
     PostRepository postRepository;
 

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserRepositoryTest extends RepositoryTestSupport{
+class UserRepositoryTest extends RepositoryTestSupport {
     UserRepository userRepository;
 
     @BeforeEach

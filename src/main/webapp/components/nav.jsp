@@ -41,7 +41,7 @@
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
                 <li><a href="${pageContext.request.contextPath}/users"><i class="glyphicon glyphicon-user"
-                                                                                     style="color:#1111dd;"></i> Profile</a>
+                                                                          style="color:#1111dd;"></i> Profile</a>
                 </li>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>

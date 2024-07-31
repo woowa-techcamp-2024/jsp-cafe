@@ -63,7 +63,7 @@ public class CommentHandler {
         Long commentId = Long.parseLong(pathVariables.get(1));
         Comment comment = commentRepository.getComment(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
-        if(!isIdenticalUser(getUserId(request), comment)) {
+        if (!isIdenticalUser(getUserId(request), comment)) {
             request.setAttribute("error", "User not authorized");
             throw new UnauthorizedException("User not authorized");
         }
@@ -79,7 +79,7 @@ public class CommentHandler {
         String contents = request.getParameter("contents");
         Comment comment = commentRepository.getComment(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
-        if(!isIdenticalUser(getUserId(request), comment)) {
+        if (!isIdenticalUser(getUserId(request), comment)) {
             request.setAttribute("error", "User not authorized");
             throw new UnauthorizedException("User not authorized");
         }

@@ -33,7 +33,7 @@
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
-<%--                                <span class="point">댓글 개수</span>--%>
+                                <%--                                <span class="point">댓글 개수</span>--%>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,8 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="${pageContext.request.contextPath}/posts/form" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="${pageContext.request.contextPath}/posts/form" class="btn btn-primary pull-right"
+                       role="button">질문하기</a>
                 </div>
             </div>
         </div>
