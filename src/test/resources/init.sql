@@ -13,8 +13,9 @@ CREATE TABLE articles (
     title VARCHAR(200) NOT NULL,
     nickname VARCHAR(50),
     content CLOB NOT NULL,
-    create_at TIMESTAMP NOT NULL
+    create_at TIMESTAMP NOT NULL,
+    update_at TIMESTAMP NOT NULL
 );
 
 CREATE INDEX idx_articles_nickname ON articles(nickname);
-CREATE INDEX idx_articles_create_at ON articles(create_at);
+CREATE INDEX idx_articles_create_at ON articles(update_at);

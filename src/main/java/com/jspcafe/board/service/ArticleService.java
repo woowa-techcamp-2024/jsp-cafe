@@ -4,9 +4,7 @@ import com.jspcafe.board.model.Article;
 import com.jspcafe.board.model.ArticleDao;
 import com.jspcafe.exception.ArticleNotFoundException;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ArticleService {
     private final ArticleDao articleDao;
@@ -27,8 +25,16 @@ public class ArticleService {
     }
 
     public List<Article> findAll() {
-        return articleDao.findAll().stream()
-                .sorted(Comparator.comparing(Article::createAt).reversed())
-                .collect(Collectors.toList());
+        return articleDao.findAll();
+    }
+
+    public void update(final String id, final String title, final String content) {
+        Article article = findById(id);
+        Article updateArticle = article.update(title, content);
+        articleDao.update(updateArticle);
+    }
+
+    public void delete(final String id) {
+        articleDao.delete(id);
     }
 }

@@ -3,10 +3,9 @@ package com.jspcafe.board.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record Article(String id, String title, String nickname, String content, LocalDateTime createAt) {
-
+public record Article(String id, String title, String nickname, String content, LocalDateTime createAt, LocalDateTime updateAt) {
     public static Article create(String title, String nickname, String content) {
-        return new Article(UUID.randomUUID().toString(), title, nickname, content, LocalDateTime.now());
+        return new Article(UUID.randomUUID().toString(), title, nickname, content, LocalDateTime.now(), LocalDateTime.now());
     }
 
     public Article {
@@ -31,5 +30,9 @@ public record Article(String id, String title, String nickname, String content, 
         if (content == null || content.isEmpty() || content.isBlank()) {
             throw new IllegalArgumentException("Invalid content: " + content);
         }
+    }
+
+    public Article update(final String title, final String content) {
+        return new Article(id, title, nickname, content, createAt, LocalDateTime.now());
     }
 }
