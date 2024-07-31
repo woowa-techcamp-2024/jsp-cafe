@@ -32,6 +32,8 @@ dependencies {
     compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
 
     testImplementation 'org.assertj:assertj-core:3.26.0'
+    testImplementation 'org.testcontainers:mysql:1.19.8'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }

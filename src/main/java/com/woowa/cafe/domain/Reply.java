@@ -2,6 +2,7 @@ package com.woowa.cafe.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Reply {
 
@@ -76,5 +77,17 @@ public class Reply {
 
     public boolean isSameWriter(final String memberId) {
         return writerId.equals(memberId);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reply reply)) return false;
+        return Objects.equals(replyId, reply.replyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(replyId);
     }
 }
