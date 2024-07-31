@@ -108,6 +108,7 @@
                               </div>
                           </article>
                           </c:forEach>
+                          <div id="article-prepend"></div>
                           <form class="submit-write" action="/questions/${question.questionId}/replies" method="post">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" name="content" placeholder="Update your status"></textarea>
@@ -181,7 +182,7 @@
                     const createdAt = dayjs(data.createdAt).format('YYYY-MM-DD hh:mm');
                     const answerTemplate = $("#answerTemplate").html();
                     const template = answerTemplate.format(data.author.nickname, createdAt, data.content, data.questionInfo.questionId, data.replyId);
-                    $(".qna-comment-slipp-articles").prepend(template);
+                    $("#article-prepend").append(template);
                     form.find('textarea[name="content"]').val('');
                 },
                 error: function(xhr, status, error) {
