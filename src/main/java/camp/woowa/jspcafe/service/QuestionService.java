@@ -47,7 +47,7 @@ public class QuestionService {
         }
 
         if (!isAvailableToDelete(target)) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "You are not authorized to delete this question.");
+            throw new CustomException(HttpStatus.FORBIDDEN, "You can't delete this question. Because there are replies from other users.");
         }
         questionRepository.deleteById(id);
     }
