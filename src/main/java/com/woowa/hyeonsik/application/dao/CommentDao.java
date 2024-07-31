@@ -11,4 +11,5 @@ public interface CommentDao {
     List<Reply> findAllByArticleId(long articleId);
     void update(Reply reply);
     void removeByReplyId(long replyId);
+    void removeByArticleId(long articleId);
 }

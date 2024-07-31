@@ -109,4 +109,15 @@ public class JdbcCommentDao implements CommentDao {
 
         databaseConnector.execute(sql, List.of(String.valueOf(replyId)));
     }
+
+    @Override
+    public void removeByArticleId(final long articleId) {
+        String sql = """
+            UPDATE comment
+            SET is_deleted = 1
+            WHERE article_id = ?
+            """;
+
+        databaseConnector.execute(sql, List.of(String.valueOf(articleId)));
+    }
 }

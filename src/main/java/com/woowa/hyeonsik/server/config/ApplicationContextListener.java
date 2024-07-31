@@ -23,10 +23,11 @@ public class ApplicationContextListener implements ServletContextListener {
 
         DatabaseConnector connector = new DatabaseConnector(new MysqlProperty());
         UserDao userDao = new JdbcUserDao(connector);
-        UserService userService = new UserService(userDao);
         ArticleDao articleDao = new JdbcArticleDao(connector);
-        ArticleService articleService = new ArticleService(articleDao);
         CommentDao commentDao = new JdbcCommentDao(connector);
+
+        UserService userService = new UserService(userDao);
+        ArticleService articleService = new ArticleService(articleDao, commentDao);
         CommentService commentService = new CommentService(commentDao, articleDao);
 
         sce.getServletContext().addServlet("qnaPathServlet", new QnaPathServlet(articleService))
