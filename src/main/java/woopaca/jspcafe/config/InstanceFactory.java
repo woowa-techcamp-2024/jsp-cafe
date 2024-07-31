@@ -77,7 +77,7 @@ public final class InstanceFactory {
 
     public static ReplyService replyService() {
         if (replyService == null) {
-            replyService = new ReplyService(replyRepository(), postRepository());
+            replyService = new ReplyService(replyRepository(), postRepository(), userRepository());
         }
         return replyService;
     }
