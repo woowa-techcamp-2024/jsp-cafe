@@ -10,7 +10,7 @@ import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
 import woowa.camp.jspcafe.service.dto.UserResponse;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 public class UserService {
 
@@ -51,14 +51,14 @@ public class UserService {
                 .orElseThrow(() -> new UserException("User with id " + id + " not found"));
     }
 
-    public UserResponse updateUserInfo(Long userId, String password, UserUpdateRequest userUpdateRequest) {
+    public void updateUserInfo(Long userId, String password, UserUpdateRequest userUpdateRequest) {
         User user = findById(userId);
 
         if (!user.getPassword().equals(password)) {
             throw new UserException("비밀번호가 일치하지 않습니다.");
         }
 
-        return UserResponse.of(userRepository.update(user, userUpdateRequest));
+        userRepository.update(user, userUpdateRequest);
     }
 
     public User authenticateUser(String email, String password) {

@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.servlet;
+package woowa.camp.jspcafe.web.servlet.article;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 
@@ -46,8 +47,8 @@ public class ArticleWriteServlet extends HttpServlet {
         String content = req.getParameter("content");
         log.info("title: " + title + ", content: " + content);
 
-        // TODO: 로그인 기능 도입 후, authorId 수정 필요
-        ArticleWriteRequest articleWriteRequest = new ArticleWriteRequest(null, title, content);
+        User sessionUser = (User) req.getSession().getAttribute("WOOWA_SESSIONID");
+        ArticleWriteRequest articleWriteRequest = new ArticleWriteRequest(sessionUser.getId(), title, content);
         articleService.writeArticle(articleWriteRequest);
 
         String contextPath = req.getContextPath();

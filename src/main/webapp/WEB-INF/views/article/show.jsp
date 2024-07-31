@@ -15,6 +15,14 @@
 
     <div class="article-content">${article.content}</div>
 
+    <div class="article-actions">
+        <a href="${pageContext.request.contextPath}/articles/edit/${article.articleId}" class="edit-button">수정</a>
+        <form action="${pageContext.request.contextPath}/articles/edit/${article.articleId}" method="post" style="display:inline;">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <button class="delete-button">삭제</button>
+        </form>
+    </div>
+
     <div class="comment-section">
         <h3>댓글 ${comments.size()}개</h3>
         <c:forEach var="comment" items="${comments}">

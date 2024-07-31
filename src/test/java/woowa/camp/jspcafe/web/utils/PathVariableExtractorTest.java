@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.utils;
+package woowa.camp.jspcafe.web.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 

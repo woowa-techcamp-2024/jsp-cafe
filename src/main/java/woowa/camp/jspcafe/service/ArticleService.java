@@ -7,14 +7,16 @@ import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
+import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 public class ArticleService {
 
@@ -46,10 +48,6 @@ public class ArticleService {
         upHits(article);
         article = findArticle(id);
 
-        if (article.isAnonymousAuthor()) {
-            return ArticleDetailsResponse.of(article, null, "익명");
-        }
-
         User author = findAuthor(article.getAuthorId());
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
@@ -61,10 +59,6 @@ public class ArticleService {
 
         List<ArticlePreviewResponse> articlePreviewRespons = new ArrayList<>();
         for (Article article : articles) {
-            if (article.isAnonymousAuthor()) {
-                articlePreviewRespons.add(ArticlePreviewResponse.of(article, null, "익명"));
-                continue;
-            }
             User author = findAuthor(article.getAuthorId());
             articlePreviewRespons.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
         }
@@ -84,7 +78,41 @@ public class ArticleService {
 
     private void upHits(Article article) {
         article.upHits();
-        articleRepository.update(article.getId(), new ArticleUpdateRequest(article.getHits()));
+        Article updateArticle = Article.update(article, article.getTitle(), article.getContent(), article.getUpdatedAt());
+        articleRepository.update(updateArticle);
+    }
+
+    public ArticleUpdateResponse findUpdateArticle(User user, Long articleId) {
+        Article article = findArticle(articleId);
+        User author = findAuthor(article.getAuthorId());
+        validateEditable(user, author);
+
+        return ArticleUpdateResponse.from(article);
+    }
+
+    public void updateArticle(User user, Long articleId, ArticleUpdateRequest request) {
+        Article article = findArticle(articleId);
+        User author = findAuthor(article.getAuthorId());
+        validateEditable(user, author);
+
+        Article updateArticle = Article.update(article, request.title(), request.content(), dateTimeProvider.getNow());
+        articleRepository.update(updateArticle);
+    }
+
+    public void deleteArticle(User user, Long articleId) {
+        Article article = findArticle(articleId);
+        User author = findAuthor(article.getAuthorId());
+        validateEditable(user, author);
+
+        articleRepository.deleteById(articleId);
+    }
+
+    private void validateEditable(User user, User author) {
+        String userEmail = user.getEmail();
+        String authorEmail = author.getEmail();
+        if (!userEmail.equals(authorEmail)) {
+            throw new UnAuthorizationException("게시글 수정은 작성자의 이메일과 동일해야 합니다. %s, %s".formatted(userEmail, authorEmail));
+        }
     }
 
 }

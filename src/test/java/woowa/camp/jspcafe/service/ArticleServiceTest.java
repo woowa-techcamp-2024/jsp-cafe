@@ -13,19 +13,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
+import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.fixture.ArticleFixture;
 import woowa.camp.jspcafe.fixture.UserFixture;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
+import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 class ArticleServiceTest {
 
@@ -71,22 +74,15 @@ class ArticleServiceTest {
         }
 
         @Test
-        @DisplayName("[Success] 익명 사용자로 게시글을 작성할 수 있다")
+        @DisplayName("[Success] 익명 사용자로 게시글을 작성할 수 없다")
         void writeAnonymousArticle() {
             // given
             String title = "익명 제목";
             String content = "익명 내용";
             ArticleWriteRequest request = new ArticleWriteRequest(null, title, content);
 
-            // when
-            Article result = articleService.writeArticle(request);
-
-            // then
-            assertThat(result).isNotNull();
-            assertThat(result.getId()).isNotNull();
-            assertThat(result.getTitle()).isEqualTo(title);
-            assertThat(result.getContent()).isEqualTo(content);
-            assertThat(result.isAnonymousAuthor()).isTrue();
+            // when then
+            assertThatThrownBy(() -> articleService.writeArticle(request)).isInstanceOf(ArticleException.class);
         }
 
     }
@@ -111,19 +107,14 @@ class ArticleServiceTest {
             assertArticleDetailsResponse(response, article, title, content, authorId, user1.getNickname());
         }
 
-        private User setupUser() {
-            User user1 = UserFixture.createUser1();
-            userRepository.save(user1);
-            return user1;
-        }
-
         @Test
-        @DisplayName("[Success] 익명 게시글을 조회할 수 있다")
+        @DisplayName("[Success] 회원이 작성한 게시글을 조회할 수 있다")
         void findAnonymousArticle() {
             // given
+            User user = setupUser();
             String title = "익명 제목";
             String content = "익명 내용";
-            Article article = articleService.writeArticle(new ArticleWriteRequest(null, title, content));
+            Article article = articleService.writeArticle(new ArticleWriteRequest(user.getId(), title, content));
             System.out.println("article = " + article);
 
             // when
@@ -131,7 +122,7 @@ class ArticleServiceTest {
             System.out.println("response = " + response);
 
             // then
-            assertArticleDetailsResponse(response, article, title, content, null, "익명");
+            assertArticleDetailsResponse(response, article, title, content, user.getId(), user.getNickname());
         }
 
         private void assertArticleDetailsResponse(ArticleDetailsResponse response,
@@ -155,8 +146,9 @@ class ArticleServiceTest {
         @DisplayName("[Success] 조회수가 1 증가한다")
         void test() {
             // given
+            User user = setupUser();
             ArticleWriteRequest articleWriteRequest = ArticleFixture.createArticleWriteRequestWithAuthorId(
-                    null, fixedDateTime.getNow());
+                    user.getId(), fixedDateTime.getNow());
             Article article = articleService.writeArticle(articleWriteRequest);
             assertThat(article.getHits()).isEqualTo(0);
             // when
@@ -205,18 +197,20 @@ class ArticleServiceTest {
         }
 
         @Test
-        @DisplayName("[Success] 익명 게시글과 일반 게시글이 혼합된 목록을 조회할 수 있다")
+        @DisplayName("[Success] 여러 회원의 일반 게시글 목록을 조회할 수 있다")
         void findMixedArticleList() {
             // given
             User user1 = UserFixture.createUser(1, fixedDateTime.getNow());
+            User user2 = UserFixture.createUser(2, fixedDateTime.getNow());
             userRepository.save(user1);
+            userRepository.save(user2);
             Article article1 = articleService.writeArticle(new ArticleWriteRequest(1L, "일반 제목", "일반 내용"));
-            Article article2 = articleService.writeArticle(new ArticleWriteRequest(null, "익명 제목", "익명 내용"));
+            Article article2 = articleService.writeArticle(new ArticleWriteRequest(2L, "익명 제목", "익명 내용"));
             // when
             List<ArticlePreviewResponse> responses = articleService.findArticleList(1);
             // then
             assertThat(responses).hasSize(2);
-            assertArticleResponse(responses.get(0), "익명", null, article2);
+            assertArticleResponse(responses.get(0), user2.getNickname(), user2.getId(), article2);
             assertArticleResponse(responses.get(1), user1.getNickname(), user1.getId(), article1);
         }
 
@@ -232,6 +226,101 @@ class ArticleServiceTest {
             assertThat(response.getCreatedAt()).isEqualTo(expectedArticle.getCreatedAt());
             assertThat(response.getTitle()).isEqualTo(expectedArticle.getTitle());
         }
+    }
+
+    @Nested
+    @DisplayName("수정할 게시글을 조회하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
+    class FindUpdateArticleTest {
+
+        @Test
+        @DisplayName("[Success] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 일치하면 조회에 성공한다")
+        void successWhenEmailMatches() {
+            // given
+            User user = setupUser();
+            Article article = setupArticle();
+            // when
+            ArticleUpdateResponse response = articleService.findUpdateArticle(user, article.getId());
+            // then
+            assertThat(response).isNotNull();
+            assertThat(response.getId()).isEqualTo(article.getId());
+            assertThat(response.getTitle()).isEqualTo(article.getTitle());
+            assertThat(response.getContent()).isEqualTo(article.getContent());
+        }
+
+        @Test
+        @DisplayName("[Exception] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 다르면 예외가 발생한다")
+        void test2() {
+            // given
+            User user1 = new User("email@naver.com", "닉네임1", "123", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            User updateRequestUser = new User("email1@naver.com", "닉네임2", "12345", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            Article article = new Article(user1.getId(), "제목", "내용", 0, fixedDateTime.getNow(), fixedDateTime.getNow());
+            articleRepository.save(article);
+            // when then
+            assertThatThrownBy(() -> articleService.findUpdateArticle(updateRequestUser, article.getId()))
+                    .isInstanceOf(UnAuthorizationException.class);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("게시글을 수정하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
+    class UpdateArticleTest {
+
+        @Test
+        @DisplayName("[Success] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 일치하면 수정에 성공한다")
+        void test() {
+            // given
+            User user = setupUser();
+            Article article = setupArticle();
+            ArticleUpdateRequest updateRequest = new ArticleUpdateRequest("Updated Title", "Updated Content");
+            // when
+            articleService.updateArticle(user, article.getId(), updateRequest);
+
+            // then
+            Article updatedArticle = articleRepository.findById(article.getId()).orElseThrow();
+            assertThat(updatedArticle.getTitle()).isEqualTo(updateRequest.title());
+            assertThat(updatedArticle.getContent()).isEqualTo(updateRequest.content());
+            assertThat(updatedArticle.getUpdatedAt()).isEqualTo(fixedDateTime.getNow());
+            assertThat(updatedArticle.getHits()).isEqualTo(0);  // 수정 시 조회수는 변동 없음
+        }
+
+        @Test
+        @DisplayName("[Exception] 게시글을 수정하는 회원과 게시글 작성자의 이메일이 다르면 예외가 발생한다")
+        void test2() {
+            // given
+            User user1 = new User("email@naver.com", "닉네임1", "123", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            User updateRequestUser = new User("email1@naver.com", "닉네임2", "12345", fixedDateTime.getNow());
+            userRepository.save(user1);
+
+            Article article = new Article(user1.getId(), "제목", "내용", 0, fixedDateTime.getNow(), fixedDateTime.getNow());
+            articleRepository.save(article);
+
+            ArticleUpdateRequest updateRequest = new ArticleUpdateRequest("Updated Title", "Updated Content");
+            // when then
+            assertThatThrownBy(() -> articleService.updateArticle(updateRequestUser, article.getId(), updateRequest))
+                    .isInstanceOf(UnAuthorizationException.class);
+        }
+
+    }
+
+    private User setupUser() {
+        User user1 = UserFixture.createUser1();
+        userRepository.save(user1);
+        return user1;
+    }
+
+    private Article setupArticle() {
+        Article article = ArticleFixture.createArticle1(fixedDateTime.getNow());
+        articleRepository.save(article);
+        return article;
     }
 
 }

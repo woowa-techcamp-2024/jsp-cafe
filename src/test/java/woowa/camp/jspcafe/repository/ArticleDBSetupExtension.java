@@ -36,7 +36,8 @@ public class ArticleDBSetupExtension implements BeforeEachCallback, AfterEachCal
                         title VARCHAR(255) NOT NULL,
                         content VARCHAR(5000) NOT NULL,
                         hits INT DEFAULT 0,
-                        created_at DATE NOT NULL
+                        created_at DATE NOT NULL,
+                        updated_at DATE
                     )
                     """;
 

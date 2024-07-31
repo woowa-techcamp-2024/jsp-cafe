@@ -13,8 +13,8 @@ import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.UserService;
-import woowa.camp.jspcafe.utils.time.DateTimeProvider;
-import woowa.camp.jspcafe.utils.time.LocalDateTimeProvider;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.LocalDateTimeProvider;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {

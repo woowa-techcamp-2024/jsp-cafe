@@ -4,13 +4,13 @@
 <jsp:include page="../common/header.jsp" />
 
 <div class="login-container">
-    <h2>로그인</h2>
+    <h2>개인 정보 수정</h2>
     <form name="login" action="${pageContext.request.contextPath}/users/edit/${user.id}" method="post" class="login-form">
         <input type="email" id="email" name="email" value="${user.email}" readonly>
         <input type="nickname" id="newNickname" name="newNickname" value="${user.nickname}" placeholder="새로운 닉네임을 입력해주세요" required>
         <input type="password" id="newPassword" name="newPassword" placeholder="새로운 비밀번호를 입력해주세요" required>
         <input type="password" id="password" name="password" placeholder="기존 비밀번호를 입력해주세요" required>
-        <button type="submit">로그인</button>
+        <button type="submit">수정하기</button>
     </form>
 </div>
 

@@ -1,6 +1,7 @@
 package woowa.camp.jspcafe.repository.article;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
-import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 
 public class DBArticleRepository implements ArticleRepository {
 
@@ -23,7 +23,7 @@ public class DBArticleRepository implements ArticleRepository {
 
     @Override
     public Long save(Article article) {
-        String sql = "INSERT INTO articles (author_id, title, content, hits, created_at) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (author_id, title, content, hits, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -37,7 +37,8 @@ public class DBArticleRepository implements ArticleRepository {
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContent());
             pstmt.setInt(4, article.getHits());
-            pstmt.setDate(5, java.sql.Date.valueOf(article.getCreatedAt()));
+            pstmt.setDate(5, Date.valueOf(article.getCreatedAt()));
+            pstmt.setDate(6, Date.valueOf(article.getUpdatedAt()));
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -154,31 +155,43 @@ public class DBArticleRepository implements ArticleRepository {
     }
 
     @Override
-    public void update(Long id, ArticleUpdateRequest updateRequest) {
-        StringBuffer sql = new StringBuffer("UPDATE articles SET ");
-        List<Object> params = new ArrayList<>();
-
-        if (updateRequest.hitIncrease() != null) {
-            sql.append("hits = ?");
-            params.add(updateRequest.hitIncrease());
-        }
-
-        sql.append(" WHERE id = ?");
-        params.add(id);
+    public void update(Article article) {
+        String sql = "UPDATE articles SET title = ?, content = ?, hits = ?, updated_at = ? WHERE id = ?";
 
         try (Connection connection = connector.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql.toString())) {
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-            for (int count = 0; count < params.size(); count ++) {
-                pstmt.setObject(count + 1, params.get(count));
-            }
+            pstmt.setString(1, article.getTitle());
+            pstmt.setString(2, article.getContent());
+            pstmt.setInt(3, article.getHits());
+            pstmt.setDate(4, Date.valueOf(article.getUpdatedAt()));
+            pstmt.setLong(5, article.getId());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
-                throw new RuntimeException("Article with id " + id + " not found");
+                throw new RuntimeException("Article with id " + article.getId() + " not found");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update article", e);
+        }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM articles WHERE id = ?";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting article failed, no rows affected.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete article", e);
         }
     }
 
@@ -192,9 +205,11 @@ public class DBArticleRepository implements ArticleRepository {
                 resultSet.getString("title"),
                 resultSet.getString("content"),
                 resultSet.getInt("hits"),
-                resultSet.getDate("created_at").toLocalDate()
+                resultSet.getDate("created_at").toLocalDate(),
+                resultSet.getDate("updated_at").toLocalDate()
         );
         article.setId(resultSet.getLong("id"));
         return article;
     }
+
 }
