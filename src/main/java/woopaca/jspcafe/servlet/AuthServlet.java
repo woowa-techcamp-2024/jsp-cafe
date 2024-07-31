@@ -40,7 +40,8 @@ public class AuthServlet extends HttpServlet {
 
     private void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
-            LoginRequest loginRequest = RequestParametersResolver.resolve(request.getParameterMap(), LoginRequest.class);
+            LoginRequest loginRequest =
+                    RequestParametersResolver.resolve(request.getParameterMap(), LoginRequest.class);
             Authentication authentication = authService.authenticate(loginRequest);
             HttpSession session = request.getSession();
             session.setAttribute("authentication", authentication);
