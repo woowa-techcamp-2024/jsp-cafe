@@ -20,9 +20,9 @@ public class JdbcReplyRepository implements ReplyRepository {
 
     @Override
     public Long save(Reply reply) {
-        try (var connection = dataSource.getConnection()) {
-            String sql = "INSERT INTO replies (article_id, writer_id, contents, is_deleted,create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?)";
-            var pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        String sql = "INSERT INTO replies (article_id, writer_id, contents, is_deleted, create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?)";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setLong(1, reply.getArticleId());
             pstmt.setString(2, reply.getWriterId());
             pstmt.setString(3, reply.getContents());
@@ -31,75 +31,72 @@ public class JdbcReplyRepository implements ReplyRepository {
             pstmt.setObject(6, reply.getUpdateAt());
             pstmt.executeUpdate();
 
-            ResultSet resultSet = pstmt.getGeneratedKeys();
-
-            if (resultSet.next()) {
-                reply.setId(resultSet.getLong(1));
-                return reply.getId();
+            try (ResultSet resultSet = pstmt.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    reply.setId(resultSet.getLong(1));
+                    return reply.getId();
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         return null;
     }
 
-
     @Override
     public Optional<Reply> findById(Long replyId) {
-        try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("SELECT * FROM replies WHERE reply_id = ? AND is_deleted = false");
+        String sql = "SELECT * FROM replies WHERE reply_id = ? AND is_deleted = false";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
             pstmt.setLong(1, replyId);
 
-            var resultSet = pstmt.executeQuery();
-
-            if (resultSet.next()) {
-                return Optional.of(new Reply(resultSet.getLong("reply_id"),
-                        resultSet.getLong("article_id"),
-                        resultSet.getString("writer_id"),
-                        resultSet.getString("contents"),
-                        resultSet.getTimestamp("create_at").toLocalDateTime(),
-                        resultSet.getTimestamp("modified_at").toLocalDateTime()));
+            try (var resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(new Reply(resultSet.getLong("reply_id"),
+                            resultSet.getLong("article_id"),
+                            resultSet.getString("writer_id"),
+                            resultSet.getString("contents"),
+                            resultSet.getTimestamp("create_at").toLocalDateTime(),
+                            resultSet.getTimestamp("modified_at").toLocalDateTime()));
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         return Optional.empty();
     }
 
     @Override
     public List<Reply> findByArticleId(Long articleId) {
         List<Reply> replies = new ArrayList<>();
-        try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("SELECT * FROM replies WHERE article_id = ? AND is_deleted = false");
+        String sql = "SELECT * FROM replies WHERE article_id = ? AND is_deleted = false";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
             pstmt.setLong(1, articleId);
 
-            var resultSet = pstmt.executeQuery();
-
-            while (resultSet.next()) {
-                replies.add(new Reply(resultSet.getLong("reply_id"),
-                        resultSet.getLong("article_id"),
-                        resultSet.getString("writer_id"),
-                        resultSet.getString("contents"),
-                        resultSet.getTimestamp("create_at").toLocalDateTime(),
-                        resultSet.getTimestamp("modified_at").toLocalDateTime()));
+            try (var resultSet = pstmt.executeQuery()) {
+                while (resultSet.next()) {
+                    replies.add(new Reply(resultSet.getLong("reply_id"),
+                            resultSet.getLong("article_id"),
+                            resultSet.getString("writer_id"),
+                            resultSet.getString("contents"),
+                            resultSet.getTimestamp("create_at").toLocalDateTime(),
+                            resultSet.getTimestamp("modified_at").toLocalDateTime()));
+                }
             }
-
-            return replies;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return replies;
     }
 
     @Override
     public List<Reply> findAll() {
         List<Reply> replies = new ArrayList<>();
-        try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("SELECT * FROM replies");
-
-            var resultSet = pstmt.executeQuery();
-
+        String sql = "SELECT * FROM replies";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql);
+             var resultSet = pstmt.executeQuery()) {
             while (resultSet.next()) {
                 replies.add(new Reply(resultSet.getLong("reply_id"),
                         resultSet.getLong("article_id"),
@@ -108,17 +105,17 @@ public class JdbcReplyRepository implements ReplyRepository {
                         resultSet.getTimestamp("create_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime()));
             }
-
-            return replies;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return replies;
     }
 
     @Override
     public Optional<Reply> update(Reply reply) {
-        try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("UPDATE replies SET contents = ?, modified_at = ? WHERE reply_id = ?");
+        String sql = "UPDATE replies SET contents = ?, modified_at = ? WHERE reply_id = ?";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, reply.getContents());
             pstmt.setObject(2, reply.getUpdateAt());
             pstmt.setLong(3, reply.getId());
@@ -131,14 +128,14 @@ public class JdbcReplyRepository implements ReplyRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return Optional.empty();
     }
 
     @Override
     public void delete(Long replyId) {
-        try (var connection = dataSource.getConnection()) {
-            var pstmt = connection.prepareStatement("UPDATE replies SET is_deleted = true WHERE reply_id = ?");
+        String sql = "UPDATE replies SET is_deleted = true WHERE reply_id = ?";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
             pstmt.setLong(1, replyId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
