@@ -31,14 +31,15 @@ public class DIContextListener implements ServletContextListener {
         UserService userService = new UserService(userRepository);
         sc.setAttribute("userService", userService);
 
-        // QuestionRepository를 생성하고 QuestionService에 주입
-        QuestionRepository questionRepository = new MySQLQuestionRepository(conn);
-        QuestionService questionService = new QuestionService(questionRepository);
-        sc.setAttribute("questionService", questionService);
-
         // ReplyRepository를 생성하고 ReplyService에 주입
         ReplyRepository replyRepository = new MySQLReplyRepository(conn);
         ReplyService replyService = new ReplyService(replyRepository);
         sc.setAttribute("replyService", replyService);
+
+        // QuestionRepository를 생성하고 QuestionService에 주입
+        QuestionRepository questionRepository = new MySQLQuestionRepository(conn);
+        QuestionService questionService = new QuestionService(questionRepository, replyService);
+        sc.setAttribute("questionService", questionService);
+
     }
 }
