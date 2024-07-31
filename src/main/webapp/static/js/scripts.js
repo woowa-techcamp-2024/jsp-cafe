@@ -49,7 +49,7 @@ function addAnswer(e) {
         },
         error: function (e) {
             console.log(e)
-            alert("Error adding comment. Please try again.");
+            // alert("Error adding comment. Please try again.");
         }
     });
 }
@@ -70,8 +70,11 @@ function deleteAnswer(e) {
             deleteBtn.closest("article").remove(); // Remove the comment from the DOM
         },
         error: function (e) {
+            if (e.status === 403) {
+                alert("You do not have permission to delete this comment.");
+                return;
+            }
             console.log(e)
-            alert("Error deleting comment. Please try again.");
         }
     });
 }

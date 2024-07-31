@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.exception.InternalServerError;
+import org.example.demo.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,10 @@ public class Router {
                         route.handler.handle(request, response, params);
                     } catch (IOException | ServletException e) {
                         throw new InternalServerError(e.getMessage());
-                    } catch (Exception e) {
+                    } catch (UnauthorizedException e) {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                         throw e;
                     }
