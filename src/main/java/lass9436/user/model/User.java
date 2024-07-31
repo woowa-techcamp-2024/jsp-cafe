@@ -8,7 +8,8 @@ public class User {
 	private String email;
 
 	// 기본 생성자
-	public User() {}
+	public User() {
+	}
 
 	// 매개변수를 받는 생성자
 	public User(String userId, String password, String name, String email) {
@@ -19,9 +20,13 @@ public class User {
 	}
 
 	// Getters and Setters
-	public long getUserSeq() { return userSeq; }
+	public long getUserSeq() {
+		return userSeq;
+	}
 
-	public void setUserSeq(long userSeq) { this.userSeq = userSeq; }
+	public void setUserSeq(long userSeq) {
+		this.userSeq = userSeq;
+	}
 
 	public String getUserId() {
 		return userId;

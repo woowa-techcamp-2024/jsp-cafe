@@ -19,8 +19,8 @@ public class AuthenticationFilter implements Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws
 		IOException,
 		ServletException {
-		HttpServletRequest req = (HttpServletRequest) servletRequest;
-		HttpServletResponse resp = (HttpServletResponse) servletResponse;
+		HttpServletRequest req = (HttpServletRequest)servletRequest;
+		HttpServletResponse resp = (HttpServletResponse)servletResponse;
 		String fullUri = req.getRequestURI() + "?" + req.getQueryString();
 		try {
 			// 글 목록 페이지는 로그인을 하지 않아도 보여줌
@@ -30,7 +30,7 @@ public class AuthenticationFilter implements Filter {
 			}
 
 			// 그 외의 페이지는 로그인하지 않으면 볼 수 없음
-			long userSeq = (long) req.getSession().getAttribute("userSeq");
+			long userSeq = (long)req.getSession().getAttribute("userSeq");
 			filterChain.doFilter(req, resp);
 		} catch (RuntimeException e) {
 			resp.sendRedirect("/userPage?action=login");

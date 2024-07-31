@@ -23,12 +23,12 @@ public class QuestionPageServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		questionRepository = (QuestionRepository) config.getServletContext().getAttribute("questionRepository");
+		questionRepository = (QuestionRepository)config.getServletContext().getAttribute("questionRepository");
 		actionMethodMap = Map.of(
-		"register", this::handleRegister,
-		"list", this::handleList,
-		"detail", this::handleDetail,
-		"update", this::handleUpdate
+			"register", this::handleRegister,
+			"list", this::handleList,
+			"detail", this::handleDetail,
+			"update", this::handleUpdate
 		);
 	}
 
@@ -45,8 +45,10 @@ public class QuestionPageServlet extends HttpServlet {
 	}
 
 	private BiFunction<HttpServletRequest, HttpServletResponse, String> getHandler(String action) {
-		if (action == null || action.isEmpty()) throw new IllegalArgumentException("action is null or empty");
-		if (!actionMethodMap.containsKey(action)) throw new IllegalArgumentException("unknown action: " + action);
+		if (action == null || action.isEmpty())
+			throw new IllegalArgumentException("action is null or empty");
+		if (!actionMethodMap.containsKey(action))
+			throw new IllegalArgumentException("unknown action: " + action);
 		return actionMethodMap.get(action);
 	}
 
@@ -69,7 +71,7 @@ public class QuestionPageServlet extends HttpServlet {
 	private String handleUpdate(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
 		Question question = questionRepository.findByQuestionSeq(seq);
-		long userSeq = (long) req.getSession().getAttribute("userSeq");
+		long userSeq = (long)req.getSession().getAttribute("userSeq");
 		if (question.getUserSeq() != userSeq) {
 			throw new IllegalArgumentException("you are not allowed to update this question");
 		}

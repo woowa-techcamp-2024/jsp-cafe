@@ -1,7 +1,8 @@
 package lass9436.question.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+
+import org.json.JSONObject;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -14,7 +15,6 @@ import lass9436.question.model.QuestionRepository;
 import lass9436.user.model.User;
 import lass9436.user.model.UserRepository;
 import lass9436.utils.JsonUtil;
-import org.json.JSONObject;
 
 @WebServlet("/questions")
 public class QuestionServlet extends HttpServlet {
@@ -31,15 +31,15 @@ public class QuestionServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		 	// 폼 데이터 추출
+		// 폼 데이터 추출
 		String writer = req.getParameter("writer");
 		String title = req.getParameter("title");
 		String contents = req.getParameter("contents");
 
-		String userId = (String) req.getSession().getAttribute("userId");
+		String userId = (String)req.getSession().getAttribute("userId");
 		User user = userRepository.findByUserId(userId);
 
-		if (user != null && user.getName().equals(writer)){
+		if (user != null && user.getName().equals(writer)) {
 			questionRepository.save(new Question(user.getUserSeq(), writer, title, contents));
 			resp.sendRedirect("/");
 			return;
@@ -73,8 +73,8 @@ public class QuestionServlet extends HttpServlet {
 		JSONObject json = JsonUtil.parseJson(req);
 		long seq = json.getLong("seq");
 		Question question = questionRepository.findByQuestionSeq(seq);
-		long userSeq = (long) req.getSession().getAttribute("userSeq");
-		if (question.getUserSeq() != userSeq){
+		long userSeq = (long)req.getSession().getAttribute("userSeq");
+		if (question.getUserSeq() != userSeq) {
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
 		}
 		questionRepository.deleteByQuestionSeq(seq);

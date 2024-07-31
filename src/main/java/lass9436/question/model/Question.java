@@ -8,7 +8,8 @@ public class Question {
 	private String contents;
 
 	// 기본 생성자
-	public Question() {}
+	public Question() {
+	}
 
 	// 매개변수를 받는 생성자
 	public Question(long userSeq, String writer, String title, String contents) {
