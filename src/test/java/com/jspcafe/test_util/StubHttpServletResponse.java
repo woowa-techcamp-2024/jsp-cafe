@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 public class StubHttpServletResponse implements HttpServletResponse {
@@ -13,6 +14,14 @@ public class StubHttpServletResponse implements HttpServletResponse {
     private final Map<String, String> headers = new HashMap<>();
     private String redirectLocation;
     private String forwardPath;
+    private String contentType;
+    private StringWriter stringWriter;
+    private PrintWriter writer;
+
+    public StubHttpServletResponse() {
+        stringWriter = new StringWriter();
+        writer = new PrintWriter(stringWriter);
+    }
 
     @Override
     public void setStatus(int status) {
@@ -39,6 +48,10 @@ public class StubHttpServletResponse implements HttpServletResponse {
 
     public String getForwardPath() {
         return forwardPath;
+    }
+
+    public String getWriterContent() {
+        return stringWriter.toString();
     }
 
     @Override
@@ -123,7 +136,7 @@ public class StubHttpServletResponse implements HttpServletResponse {
 
     @Override
     public String getContentType() {
-        return "";
+        return contentType;
     }
 
     @Override
@@ -133,7 +146,7 @@ public class StubHttpServletResponse implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return null;
+        return writer;
     }
 
     @Override
@@ -153,7 +166,7 @@ public class StubHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setContentType(String s) {
-
+        this.contentType = s;
     }
 
     @Override
