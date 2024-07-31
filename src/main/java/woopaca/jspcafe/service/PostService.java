@@ -39,6 +39,7 @@ public class PostService {
     public List<PostsResponse> getAllPosts() {
         return postRepository.findAll()
                 .stream()
+                .filter(Post::isPublished)
                 .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
                 .map(post -> {
                     User user = userRepository.findById(post.getWriterId())
@@ -51,6 +52,10 @@ public class PostService {
     public PostDetailsResponse getPostDetails(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("[ERROR] 게시글을 찾을 수 없습니다."));
+        if (post.isDeleted()) {
+            throw new NotFoundException("[ERROR] 삭제된 게시글입니다.");
+        }
+
         updateViewCount(post);
         PageInfo pageInfo = getPageInfo(post);
         User user = userRepository.findById(post.getWriterId())
@@ -109,5 +114,15 @@ public class PostService {
         if (title.length() < 2 || content.length() < 2) {
             throw new BadRequestException("[ERROR] 제목과 내용은 2자 이상 입력해야 합니다.");
         }
+    }
+
+    public void deletePost(Long postId, Authentication authentication) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
+        if (!authentication.isPrincipal(post.getWriterId())) {
+            throw new ForbiddenException("[ERROR] 작성자만 삭제할 수 있습니다.");
+        }
+        post.softDelete();
+        postRepository.save(post);
     }
 }
