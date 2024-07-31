@@ -13,7 +13,7 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title">${article.title}</h2>
+                <h2 class="qna-title">🏕️ ${article.title}</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -23,12 +23,12 @@
                         </div>
                         <div class="article-header-text">
                             <a href="${pageContext.request.contextPath}/users/${article.writer}" class="article-author-name">${article.writer}</a>
-                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                            <a class="article-header-time">
                                 ${article.createdAt}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
-                        <div class="article-util">
+                        <div class="article-util" style="text-align: right">
                             <ul class="article-util-list">
                                 <li>
                                     <a class="link-modify-article" href="${pageContext.request.contextPath}/questions/${article.id}/form">수정</a>
@@ -42,7 +42,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="article-doc">
+                    <div class="article-doc" style="padding: 50px">
                         ${article.contents}
                     </div>
                 </article>
@@ -50,13 +50,9 @@
                 <%--댓글 부분--%>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <div class="qna-comment-slipp-articles">
-                            <div class="qna-comment-slipp">
-                                <p class="qna-comment-count"><strong id="commentCount">0</strong>개의 의견</p>
-                                <div class="qna-comment-slipp-articles" id="commentList">
-                                    <%-- 댓글 목록이 여기에 동적으로 삽입됩니다 --%>
-                                </div>
-                            </div>
+                        <p class="qna-comment-count"><strong id="commentCount">0</strong>개의 의견</p>
+                        <div class="qna-comment-slipp-articles" id="commentList">
+                            <%-- 댓글 목록이 여기에 동적으로 삽입됩니다 --%>
                         </div>
 
                         <%-- 댓글 작성 폼 --%>
@@ -67,7 +63,6 @@
                             <button class="btn btn-success pull-right" type="button" onclick="addComment()">댓글 작성</button>
                             <div class="clearfix"></div>
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -112,7 +107,7 @@
                 '</div>' +
                 '</div>' +
                 '<div class="article-doc comment-doc">' +
-                '<p>' + comment.contents + '</p>' +
+                '<p style="padding-top: 1em">' + comment.contents + '</p>' +
                 '</div>' +
                 '<div class="article-util">' +
                 '<ul class="article-util-list">' +
