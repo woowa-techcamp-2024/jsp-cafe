@@ -28,6 +28,10 @@ public class HttpMessageUtils {
         return Arrays.stream(requestBody.toString().split("&"))
                 .map(param -> param.split("=", 2))
                 .filter(entry -> entry.length == 2)
-                .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
+                .collect(Collectors.toMap(entry -> entry[0], entry -> sanitize(entry[1])));
+    }
+
+    private static String sanitize(String input) {
+        return input.replaceAll("<[^>]*>", "");
     }
 }

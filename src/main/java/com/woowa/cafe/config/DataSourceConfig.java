@@ -2,21 +2,22 @@ package com.woowa.cafe.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.ServletContext;
 
 import javax.sql.DataSource;
 
 public class DataSourceConfig {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/woowa";
-    private static final String USERNAME = "root";
-
     private final DataSource dataSource;
 
-    public DataSourceConfig() {
+    public DataSourceConfig(ServletContext servletContext) {
+        String jdbcUrl = servletContext.getInitParameter("jdbcUrl");
+        String dbUsername = servletContext.getInitParameter("dbUsername");
+
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl(URL);
-        config.setUsername(USERNAME);
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(dbUsername);
         config.setMinimumIdle(5);
         config.setMaximumPoolSize(5);
 

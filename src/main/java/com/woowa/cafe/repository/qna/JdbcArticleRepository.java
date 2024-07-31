@@ -112,6 +112,13 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public void delete(final Long articleId) {
+        try (Connection connection = this.dataSource.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM articles WHERE article_id = ?");
+            pstmt.setLong(1, articleId);
 
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

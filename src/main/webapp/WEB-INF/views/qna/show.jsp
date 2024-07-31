@@ -1,5 +1,5 @@
-<%@ page import="com.woowa.cafe.domain.Article" %>
 <%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -27,25 +27,23 @@
                                class="article-author-name"><%= article.writerName()%>
                                 ></a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                <%= article.createdAt()%>
+                                <%= article.updatedAt()%>
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="article-doc">
-                        <%= article.contents()%>
+                    <div class="article-doc" style="white-space: pre-wrap;">
+                        <%= StringEscapeUtils.escapeHtml4(article.contents().trim()) %>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="<%="/question/" + article.articleId() +"/form"%>">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
-                            </li>
+                                <button type="button" class="link-modify-article"
+                                        onclick="deleteArticle()">삭제
+                                </button>
                             <li>
                                 <a class="link-modify-article" href="/index.html">목록</a>
                             </li>
@@ -165,6 +163,37 @@
             </ul>
         </div>
     </article>
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const articleDoc = document.querySelector('.article-doc');
+        articleDoc.innerHTML = articleDoc.innerHTML.trim();
+    });
+    
+    var articleId = <%=article.articleId()%>;
+
+    function deleteArticle() {
+
+        fetch(`/question/` + articleId, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.status === 303) {
+                    window.location.href = "/";
+                } else if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
 </script>
 
 <!-- script references -->
