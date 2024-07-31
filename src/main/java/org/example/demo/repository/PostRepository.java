@@ -126,6 +126,7 @@ public class PostRepository {
                 Comment comment = new Comment(
                         commentId,
                         postId,
+                        writer,
                         rs.getString("comment_contents"),
                         rs.getTimestamp("comment_created_at").toLocalDateTime()
                 );

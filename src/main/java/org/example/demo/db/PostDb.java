@@ -21,7 +21,7 @@ public class PostDb {
     public static void addPost(PostCreateDao dao) {
         //TODO User 로직 분리 필요
         User user = UserDb.getUserByUserId(dao.getWriter()).orElseThrow(() -> new NotFoundExceptoin("user not found"));
-        Post post = new Post(generateNxtId(), user, dao.getTitle(), dao.getContents(), LocalDateTime.now());
+        Post post = new Post(generateNxtId(), user, dao.getTitle(), dao.getContents(), LocalDateTime.now(), null);
         posts.putIfAbsent(post.getId(), post);
     }
 
