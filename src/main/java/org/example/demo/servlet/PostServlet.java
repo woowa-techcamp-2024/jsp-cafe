@@ -21,6 +21,7 @@ public class PostServlet extends HttpServlet {
     @Override
     public void init() {
         postHandler = (PostHandler) getServletContext().getAttribute("postHandler");
+        commentHandler = (CommentHandler) getServletContext().getAttribute("commentHandler");
         router = new Router();
         router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/?$", postHandler::handleGetPost);
         router.addRoute(HttpMethod.POST, "^/posts/?$", postHandler::handleCreatePost);
