@@ -112,8 +112,8 @@ public class PostService {
             throw new BadRequestException("[ERROR] 제목과 내용은 필수 입력 사항입니다.");
         }
 
-        if (title.length() < 2 || content.length() < 2) {
-            throw new BadRequestException("[ERROR] 제목과 내용은 2자 이상 입력해야 합니다.");
+        if (title.length() < 2 || content.length() < 2 || title.length() > 30 || content.length() > 1000) {
+            throw new BadRequestException("[ERROR] 제목: 2 ~ 30자, 내용: 2 ~ 1000자");
         }
     }
 
