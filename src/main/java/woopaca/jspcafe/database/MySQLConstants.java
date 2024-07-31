@@ -18,7 +18,8 @@ public abstract class MySQLConstants {
             content VARCHAR(1000) NOT NULL,
             view_count INT NOT NULL DEFAULT 0,
             written_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            writer_id BIGINT NOT NULL
+            writer_id BIGINT NOT NULL,
+            status ENUM('PUBLISHED', 'DELETED') DEFAULT 'PUBLISHED'
             );
             """;
 }
