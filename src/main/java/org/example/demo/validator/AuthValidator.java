@@ -19,8 +19,6 @@ public class AuthValidator {
             logger.warn("User not logged in");
             request.setAttribute("error", "User not logged in");
             request.getRequestDispatcher("/WEB-INF/user/login.jsp").forward(request, response);
-
-            throw new UnauthorizedException("User not logged in");
         }
     }
 
@@ -43,7 +41,7 @@ public class AuthValidator {
     }
 
     private boolean isLoggedIn(HttpServletRequest request) {
-        return request.getSession().getAttribute("user") != null;
+        return request.getSession() != null;
     }
 
     private boolean isIdenticalUser(Long userId, Post post) {
