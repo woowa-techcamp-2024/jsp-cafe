@@ -22,4 +22,14 @@ public abstract class MySQLConstants {
             status ENUM('PUBLISHED', 'DELETED') DEFAULT 'PUBLISHED'
             );
             """;
+    public static final String CREATE_REPLY_TABLE = """
+            CREATE TABLE IF NOT EXISTS `reply` (
+            id BIGINT PRIMARY KEY AUTO_INCREMENT,
+            content VARCHAR(200) NOT NULL,
+            written_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            writer_id BIGINT NOT NULL,
+            post_id BIGINT NOT NULL,
+            status ENUM('PUBLISHED', 'DELETED') DEFAULT 'PUBLISHED'
+            );
+            """;
 }
