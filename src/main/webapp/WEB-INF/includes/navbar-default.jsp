@@ -23,14 +23,14 @@
                     String userId = (String) session.getAttribute("userId");
                     if (userId == null) {
                 %>
-                <li class="active"><a href="../index.jsp">Posts</a></li>
-                <li><a href="/users/login" role="button">로그인</a></li>
+                <li class="active"><a href="/">Posts</a></li>
+                <li><a href="/userPage?action=login" role="button">로그인</a></li>
                 <li><a href="/userPage?action=register" role="button">회원가입</a></li>
                 <%
                 } else {
                 %>
-                <li><a href="/users/logout" role="button">로그아웃</a></li>
-                <li><a href="/users/update/<%=(long)session.getAttribute("userSeq")%>" role="button">개인정보수정</a></li>
+                <li><a href="/users/auth" role="button" onclick="logout(event)">로그아웃</a></li>
+                <li><a href="/userPage?action=update&seq=<%=(long)session.getAttribute("userSeq")%>" role="button">개인정보수정</a></li>
                 <%
                     }
                 %>
@@ -38,3 +38,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    function logout(event) {
+        event.preventDefault(); // 기본 동작을 막음
+        const url = "/users/auth";
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/'; // 성공 시 메인 페이지로 리다이렉트
+            } else {
+                alert('로그아웃 실패: ' + response.statusText);
+            }
+        }).catch(error => {
+            console.error('로그아웃 중 에러 발생:', error);
+            alert('로그아웃 중 에러 발생');
+        });
+    }
+</script>

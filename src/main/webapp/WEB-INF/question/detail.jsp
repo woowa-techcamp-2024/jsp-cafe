@@ -3,15 +3,8 @@
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>SLiPP Java Web Programming</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="../css/styles.css" rel="stylesheet">
+    <title>질문 상세 페이지</title>
+    <%@include file="/WEB-INF/includes/head.jsp"%>
 </head>
 <body>
 
@@ -31,8 +24,8 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/${question.userSeq}" class="article-author-name">${question.writer}</a>
-                            <a href="/questions/${question.questionSeq}" class="article-header-time" title="퍼머링크">
+                            <a href="/userPage?action=detail&seq=${question.userSeq}" class="article-author-name">${question.writer}</a>
+                            <a href="/questionPage?action=detail&seq=${question.questionSeq}" class="article-header-time" title="퍼머링크">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
                             </a>
@@ -43,15 +36,17 @@
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
+                            <c:if test="${question.userSeq == sessionScope.userSeq}">
                             <li>
-                                <a class="link-modify-article" href="/questions/${question.questionSeq}/form">수정</a>
+                                <a class="link-modify-article" href="/questionPage?action=update&seq=${question.questionSeq}">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/${question.questionSeq}" method="POST">
+                                <form class="form-delete" id="form-delete">
                                     <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
+                                    <button class="link-delete-article" type="button" onclick="deleteQuestion()">삭제</button>
                                 </form>
                             </li>
+                            </c:if>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>
                             </li>
@@ -167,6 +162,31 @@
     </article>
 </script>
 
+<script>
+function deleteQuestion() {
+    const jsonData = {
+        "seq": "${question.questionSeq}"
+    };
+
+    fetch(`/questions`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = "/"; // 질문 목록 페이지로 리디렉트
+        } else {
+            // 오류 처리
+            alert("질문 삭제 중 오류가 발생했습니다.");
+        }
+    }).catch(error => {
+        console.error("Error:", error);
+        alert("질문 삭제 중 오류가 발생했습니다.");
+    });
+}
+</script>
 <!-- script references -->
 <%@include file="/WEB-INF/includes/script-references.jsp"%>
 </body>

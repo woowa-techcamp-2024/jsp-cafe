@@ -20,6 +20,8 @@ dependencies {
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     // mysql
     implementation 'mysql:mysql-connector-java:8.0.29'
+    // json
+    implementation 'org.json:json:20210307'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
