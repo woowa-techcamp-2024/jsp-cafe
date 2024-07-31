@@ -39,9 +39,10 @@ public class ArticleUpdateServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String userId = (String)req.getSession().getAttribute("id");
+		String userName = (String)req.getSession().getAttribute("name");
 		UpdateArticleRequest dto = DtoCreationUtil.createDto(UpdateArticleRequest.class, req);
 
-		articleService.updateArticle(userId, Long.parseLong(req.getPathInfo().substring(1)), dto);
+		articleService.updateArticle(userId, userName, Long.parseLong(req.getPathInfo().substring(1)), dto);
 		resp.sendRedirect("/index.jsp");
 	}
 }

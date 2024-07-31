@@ -9,13 +9,17 @@ public class Article {
 	private String title;
 	private String contents;
 	private LocalDateTime createdAt;
+	private boolean deleted;
+	private String userName;
 
-	public Article(Long id, String userId, String title, String contents, LocalDateTime createdAt) {
+	public Article(Long id, String userId, String title, String contents, LocalDateTime createdAt, boolean deleted, String userName) {
 		this.id = id;
 		this.userId = userId;
 		this.title = title;
 		this.contents = contents;
 		this.createdAt = createdAt;
+		this.deleted = deleted;
+		this.userName = userName;
 	}
 
 	public Long getId() {
@@ -40,5 +44,17 @@ public class Article {
 
 	public void updateId(Long id) {
 		this.id = id;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void delete() {
+		deleted = true;
+	}
+
+	public String getUserName() {
+		return userName;
 	}
 }

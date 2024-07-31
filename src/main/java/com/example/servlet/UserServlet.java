@@ -39,6 +39,6 @@ public class UserServlet extends HttpServlet {
 		SignupRequest dto = createDto(SignupRequest.class, req);
 		dto.validate();
 		userService.signup(dto);
-		resp.sendRedirect("/users");
+		resp.sendRedirect("/");
 	}
 }
