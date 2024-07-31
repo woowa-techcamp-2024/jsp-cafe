@@ -1,7 +1,6 @@
 <%@ page import="org.example.demo.domain.User" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="kr">
 <jsp:include page="/components/header.jsp"/>
@@ -21,9 +20,12 @@
                             User user = (User) request.getAttribute("user");
                         %>
                         <div class="media-body">
-                            <h4 class="media-heading"><c:out value="${user.name}" /></h4>
+                            <h4 class="media-heading"><%= user.getName()%>
+                            </h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;<c:out value="${user.email}" /></a>
+                                <a href="#" class="btn btn-xs btn-default"><span
+                                        class="glyphicon glyphicon-envelope"></span>&nbsp <%= user.getEmail()%>
+                                </a>
                             </p>
                         </div>
                     </div>

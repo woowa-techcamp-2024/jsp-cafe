@@ -1,8 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="kr" xmlns:jsp="http://java.sun.com/JSP/Page">
+
 
 <jsp:include page="/components/header.jsp"/>
 <body>
