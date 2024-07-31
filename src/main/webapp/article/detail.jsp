@@ -71,10 +71,10 @@
     </div>
     <script>
     $(document).ready(function() {
+        // 글 삭제
         $('#deleteArticle').click(function() {
             if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
                 var articleId = <%= article.getArticleId() %>;
-                console.log("click " + articleId)
                 $.ajax({
                     url: '/api/articles/' + articleId,
                     type: 'DELETE',
@@ -94,8 +94,50 @@
             }
         });
 
+        loadReplies();
 
-        // 댓글 작성
+        function loadReplies() {
+            $.ajax({
+                url: '/api/articles/replies/' + <%= article.getArticleId() %>,
+                type: 'GET',
+                success: function(replies) {
+                    updateReplyList(replies);
+                },
+                error: function(xhr, status, error) {
+                    alert('댓글을 불러오는데 실패했습니다: ' + error);
+                }
+            });
+        }
+
+        function updateReplyList(replies) {
+            var $replyList = $('.reply-list');
+            $replyList.empty();
+
+            var currentUserId = '<%= currentUser != null ? currentUser.getUserId() : "" %>';
+
+            replies.forEach(function(reply) {
+                var deleteButton = '';
+                if (reply.userId == currentUserId) {
+                    deleteButton = '<button class="btn delete-reply" data-reply-id="' + reply.replyId + '">삭제</button>';
+                }
+
+                var replyHtml =
+                    '<div class="reply" data-reply-id="' + reply.replyId + '">' +
+                        '<div class="reply-header">' +
+                            '<span class="reply-author">' + reply.author + '</span>' +
+                            '<span class="reply-date">' + reply.createdDt + '</span>' +
+                        '</div>' +
+                        '<div class="reply-comment">' + reply.comment + '</div>' +
+                        deleteButton +
+                    '</div>';
+
+                $replyList.append(replyHtml);
+            });
+
+            // 삭제 버튼에 이벤트 리스너 다시 추가
+            $('.delete-reply').click(deleteReplyHandler);
+        }
+
         $('#submitReply').click(function() {
             var comment = $('#replyComment').val();
             var articleId = <%= article.getArticleId() %>;
@@ -106,7 +148,8 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ articleId: articleId, comment: comment }),
                 success: function(response) {
-                    location.reload();
+                    $('#replyComment').val(''); // 입력 필드 비우기
+                    loadReplies(); // 댓글 목록 새로고침
                 },
                 error: function(xhr, status, error) {
                     alert('댓글 작성에 실패했습니다: ' + error);
@@ -114,25 +157,25 @@
             });
         });
 
-        // 댓글 삭제
-        $('.delete-reply').click(function() {
+        function deleteReplyHandler() {
             var replyId = $(this).data('reply-id');
             if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
                 $.ajax({
                     url: '/api/replies/' + replyId,
                     type: 'DELETE',
                     success: function(response) {
-                        location.reload();
+                        loadReplies(); // 댓글 목록 새로고침
                     },
                     error: function(xhr, status, error) {
                         alert('댓글 삭제에 실패했습니다(작성자만 삭제 가능합니다) ' + error);
                     }
                 });
             }
-        });
+        }
+
+        // 동적으로 추가된 삭제 버튼에 대한 이벤트 위임
+        $(document).on('click', '.delete-reply', deleteReplyHandler);
     });
-
-
     </script>
 </body>
 </html>
