@@ -20,6 +20,7 @@ import com.example.dto.util.DtoCreationUtil;
 import com.example.entity.Article;
 import com.example.exception.BaseException;
 import com.example.service.ArticleService;
+import com.example.service.ReplyService;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -38,12 +39,14 @@ class ArticleServletTest {
 	private HttpSession session;
 	private RequestDispatcher requestDispatcher;
 	private ArticleService articleService;
+	private ReplyService replyService;
 	private static MockedStatic<DtoCreationUtil> mockedDtoCreationUtil;
 
 	@BeforeEach
 	void setUp() throws ServletException {
 		articleServlet = new ArticleServlet();
 		articleService = mock(ArticleService.class);
+		replyService = mock(ReplyService.class);
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		session = mock(HttpSession.class);
@@ -55,6 +58,7 @@ class ArticleServletTest {
 		ServletContext context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
 		when(context.getAttribute("articleService")).thenReturn(articleService);
+		when(context.getAttribute("replyService")).thenReturn(replyService);
 		when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 		when(request.getSession()).thenReturn(session);
 
@@ -82,7 +86,7 @@ class ArticleServletTest {
 
 		// then
 		ArgumentCaptor<SaveArticleRequest> captor = ArgumentCaptor.forClass(SaveArticleRequest.class);
-		verify(articleService, times(1)).savePost(eq("id"), captor.capture());
+		verify(articleService, times(1)).savePost(eq("id"), eq(null), captor.capture());
 		SaveArticleRequest capturedRequest = captor.getValue();
 		assertThat(capturedRequest.title()).isEqualTo("title");
 		assertThat(capturedRequest.contents()).isEqualTo("contents");
@@ -97,7 +101,6 @@ class ArticleServletTest {
 		when(session.getAttribute("login")).thenReturn(true);
 		when(session.getAttribute("id")).thenReturn("id");
 
-		// No title and contents set up in request
 		SaveArticleRequest saveArticleRequest = new SaveArticleRequest(null, null);
 		mockedDtoCreationUtil.when(() -> DtoCreationUtil.createDto(eq(SaveArticleRequest.class), any(HttpServletRequest.class)))
 			.thenReturn(saveArticleRequest);
@@ -112,7 +115,7 @@ class ArticleServletTest {
 	void doGet_validArticleId_displaysArticle() throws Exception {
 		// given
 		Long articleId = 1L;
-		Article article = new Article(articleId, "user1", "title", "contents", LocalDateTime.now());
+		Article article = new Article(articleId, "user1", "title", "contents", LocalDateTime.now(), false, "username");
 		when(request.getPathInfo()).thenReturn("/1");
 		when(articleService.getArticle(articleId)).thenReturn(article);
 

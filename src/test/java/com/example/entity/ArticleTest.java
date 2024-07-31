@@ -20,7 +20,7 @@ class ArticleTest {
 		String contents = "contents";
 
 		// when
-		Article article = new Article(id, writer, title, contents, LocalDateTime.now());
+		Article article = new Article(id, writer, title, contents, LocalDateTime.now(), false, "username");
 
 		// then
 		assertThat(article.getId()).isEqualTo(id);
@@ -33,7 +33,7 @@ class ArticleTest {
 	@DisplayName("아티클 ID 업데이트")
 	void updateArticleId() {
 		// given
-		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now());
+		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now(), false, "username");
 		Long newId = 2L;
 
 		// when

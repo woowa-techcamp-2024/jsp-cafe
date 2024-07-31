@@ -72,7 +72,7 @@ class UserServletTest {
 
 		// then
 		verify(userService, times(1)).signup(signupRequest);
-		verify(response).sendRedirect("/users");
+		verify(response).sendRedirect("/");
 	}
 
 	@Test

@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.db.ArticleDatabase;
+import com.example.db.ReplyDatabase;
 import com.example.db.UserDatabase;
 import com.example.dto.LoginRequest;
 import com.example.dto.SignupRequest;
@@ -22,11 +24,15 @@ class UserServiceTest {
 
 	private UserService userService;
 	private UserDatabase userDatabase;
+	private ArticleDatabase articleDatabase;
+	private ReplyDatabase replyDatabase;
 
 	@BeforeEach
 	void setUp() {
 		userDatabase = mock(UserDatabase.class);
-		userService = new UserService(userDatabase);
+		articleDatabase = mock(ArticleDatabase.class);
+		replyDatabase = mock(ReplyDatabase.class);
+		userService = new UserService(userDatabase, articleDatabase, replyDatabase);
 	}
 
 	@Test

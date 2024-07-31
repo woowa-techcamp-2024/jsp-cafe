@@ -18,7 +18,7 @@ class ArticleMemoryDatabaseTest {
 	@DisplayName("아티클을 데이터베이스에 추가할 수 있다")
 	void insertArticle() {
 		ArticleMemoryDatabase articleMemoryDatabase = new ArticleMemoryDatabase();
-		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now());
+		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now(), false, "username");
 
 		articleMemoryDatabase.insert(article);
 
@@ -33,8 +33,8 @@ class ArticleMemoryDatabaseTest {
 	@DisplayName("모든 아티클을 조회할 수 있다")
 	void findAllArticles() {
 		ArticleMemoryDatabase articleMemoryDatabase = new ArticleMemoryDatabase();
-		Article article1 = new Article(null, "writer1", "title1", "contents1", LocalDateTime.now());
-		Article article2 = new Article(null, "writer2", "title2", "contents2", LocalDateTime.now());
+		Article article1 = new Article(null, "writer1", "title1", "contents1", LocalDateTime.now(), false, "username1");
+		Article article2 = new Article(null, "writer2", "title2", "contents2", LocalDateTime.now(), false, "username2");
 		articleMemoryDatabase.insert(article1);
 		articleMemoryDatabase.insert(article2);
 
@@ -47,8 +47,8 @@ class ArticleMemoryDatabaseTest {
 	@DisplayName("아티클 아이디로 아티클을 조회할 수 있다")
 	void findArticleById() {
 		ArticleMemoryDatabase articleMemoryDatabase = new ArticleMemoryDatabase();
-		Article article1 = new Article(null, "writer1", "title1", "contents1", LocalDateTime.now());
-		Article article2 = new Article(null, "writer2", "title2", "contents2", LocalDateTime.now());
+		Article article1 = new Article(null, "writer1", "title1", "contents1", LocalDateTime.now(), false, "username1");
+		Article article2 = new Article(null, "writer2", "title2", "contents2", LocalDateTime.now(), false, "username2");
 		articleMemoryDatabase.insert(article1);
 		articleMemoryDatabase.insert(article2);
 
@@ -72,11 +72,11 @@ class ArticleMemoryDatabaseTest {
 	@DisplayName("아티클을 업데이트할 수 있다")
 	void updateArticle() {
 		ArticleMemoryDatabase articleMemoryDatabase = new ArticleMemoryDatabase();
-		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now());
+		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now(), false, "username");
 		articleMemoryDatabase.insert(article);
 
 		Article updatedArticle = new Article(article.getId(), "newWriter", "newTitle", "newContents",
-			LocalDateTime.now());
+			LocalDateTime.now(), false, "username");
 		articleMemoryDatabase.update(article.getId(), updatedArticle);
 
 		Optional<Article> foundArticle = articleMemoryDatabase.findById(article.getId());
