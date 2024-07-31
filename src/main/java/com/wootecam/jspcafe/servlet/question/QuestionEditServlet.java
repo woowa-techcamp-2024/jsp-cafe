@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
-public class QuestionEditHttpServlet extends AbstractHttpServlet {
+public class QuestionEditServlet extends AbstractHttpServlet {
 
     private final QuestionService questionService;
 
-    public QuestionEditHttpServlet(final QuestionService questionService) {
+    public QuestionEditServlet(final QuestionService questionService) {
         this.questionService = questionService;
     }
 

@@ -10,15 +10,15 @@ import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDeleteServlet;
-import com.wootecam.jspcafe.servlet.question.QuestionDetailHttpServlet;
-import com.wootecam.jspcafe.servlet.question.QuestionEditHttpServlet;
-import com.wootecam.jspcafe.servlet.question.QuestionHttpServlet;
-import com.wootecam.jspcafe.servlet.user.SignInFormHttpServlet;
-import com.wootecam.jspcafe.servlet.user.SignOutHttpServlet;
-import com.wootecam.jspcafe.servlet.user.SignupFormHttpServlet;
-import com.wootecam.jspcafe.servlet.user.UserEditHttpServlet;
-import com.wootecam.jspcafe.servlet.user.UserHttpServlet;
-import com.wootecam.jspcafe.servlet.user.UserProfileHttpServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionEditServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionServlet;
+import com.wootecam.jspcafe.servlet.user.SignInServlet;
+import com.wootecam.jspcafe.servlet.user.SignOutServlet;
+import com.wootecam.jspcafe.servlet.user.SignupServlet;
+import com.wootecam.jspcafe.servlet.user.UserEditServlet;
+import com.wootecam.jspcafe.servlet.user.UserProfileServlet;
+import com.wootecam.jspcafe.servlet.user.UserServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -43,24 +43,24 @@ public class ApplicationContextListener implements ServletContextListener {
 
         servletContext.addServlet("homeServlet", new HomeServlet(questionService))
                 .addMapping("/");
-        servletContext.addServlet("signupFormServlet", new SignupFormHttpServlet())
+        servletContext.addServlet("signupServlet", new SignupServlet())
                 .addMapping("/users/signup");
-        servletContext.addServlet("userServlet", new UserHttpServlet(userService))
+        servletContext.addServlet("userServlet", new UserServlet(userService))
                 .addMapping("/users");
-        servletContext.addServlet("userProfileServlet", new UserProfileHttpServlet(userService))
+        servletContext.addServlet("userProfileServlet", new UserProfileServlet(userService))
                 .addMapping("/users/*");
-        servletContext.addServlet("userEditServlet", new UserEditHttpServlet(userService))
+        servletContext.addServlet("userEditServlet", new UserEditServlet(userService))
                 .addMapping("/users/edit/*");
-        servletContext.addServlet("signInFormServlet", new SignInFormHttpServlet(userService))
+        servletContext.addServlet("signInServlet", new SignInServlet(userService))
                 .addMapping("/users/sign-in");
-        servletContext.addServlet("signOutServlet", new SignOutHttpServlet())
+        servletContext.addServlet("signOutServlet", new SignOutServlet())
                 .addMapping("/users/sign-out");
 
-        servletContext.addServlet("questionServlet", new QuestionHttpServlet(questionService))
+        servletContext.addServlet("questionServlet", new QuestionServlet(questionService))
                 .addMapping("/questions");
-        servletContext.addServlet("questionDetailServlet", new QuestionDetailHttpServlet(questionService))
+        servletContext.addServlet("questionDetailServlet", new QuestionDetailServlet(questionService))
                 .addMapping("/questions/*");
-        servletContext.addServlet("questionEditServlet", new QuestionEditHttpServlet(questionService))
+        servletContext.addServlet("questionEditServlet", new QuestionEditServlet(questionService))
                 .addMapping("/questions/edit/*");
         servletContext.addServlet("questionDeleteServlet", new QuestionDeleteServlet(questionService))
                 .addMapping("/questions/delete/*");

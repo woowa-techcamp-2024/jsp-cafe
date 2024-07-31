@@ -11,13 +11,13 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QuestionHttpServlet extends AbstractHttpServlet {
+public class QuestionServlet extends AbstractHttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(QuestionHttpServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionServlet.class);
 
     private final QuestionService questionService;
 
-    public QuestionHttpServlet(final QuestionService questionService) {
+    public QuestionServlet(final QuestionService questionService) {
         this.questionService = questionService;
     }
 

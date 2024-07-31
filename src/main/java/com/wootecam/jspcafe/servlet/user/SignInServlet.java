@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-public class SignInFormHttpServlet extends AbstractHttpServlet {
+public class SignInServlet extends AbstractHttpServlet {
 
     private final UserService userService;
 
-    public SignInFormHttpServlet(final UserService userService) {
+    public SignInServlet(final UserService userService) {
         this.userService = userService;
     }
 
