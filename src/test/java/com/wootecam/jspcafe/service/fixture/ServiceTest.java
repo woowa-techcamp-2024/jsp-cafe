@@ -3,8 +3,10 @@ package com.wootecam.jspcafe.service.fixture;
 import com.wootecam.jspcafe.config.DataSourceManager;
 import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
+import com.wootecam.jspcafe.domain.ReplyRepository;
 import com.wootecam.jspcafe.domain.UserRepository;
 import com.wootecam.jspcafe.repository.JdbcQuestionRepository;
+import com.wootecam.jspcafe.repository.JdbcReplyRepository;
 import com.wootecam.jspcafe.repository.JdbcUserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +24,8 @@ public class ServiceTest {
 
     protected QuestionRepository questionRepository;
 
+    protected ReplyRepository replyRepository;
+
     protected DatabaseCleaner databaseCleaner;
 
     @BeforeEach
@@ -31,6 +35,7 @@ public class ServiceTest {
         databaseCleaner = new DatabaseCleaner(jdbcTemplate);
         userRepository = new JdbcUserRepository(jdbcTemplate);
         questionRepository = new JdbcQuestionRepository(jdbcTemplate);
+        replyRepository = new JdbcReplyRepository(jdbcTemplate);
     }
 
     @AfterEach
