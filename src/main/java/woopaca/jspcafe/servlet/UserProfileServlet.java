@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import woopaca.jspcafe.error.ForbiddenException;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.UserService;
@@ -32,6 +33,12 @@ public class UserProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
         Long userId = Long.parseLong(pathInfo.substring(1));
+        HttpSession session = request.getSession();
+        Authentication authentication = (Authentication) session.getAttribute("authentication");
+        if (!authentication.isPrincipal(userId)) {
+            throw new ForbiddenException("[ERROR] 다른 사용자의 프로필을 수정할 수 없습니다.");
+        }
+
         UserProfile profile = userService.getUserProfile(userId);
         request.setAttribute("profile", profile);
         request.getRequestDispatcher("/user/profile.jsp")
