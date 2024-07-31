@@ -12,12 +12,14 @@ public class Article extends BaseTimeModel {
     private String title;
     private String contents;
     private Long authorId;
+    private Boolean activate = true;
 
-    public Article(Long id, String title, String contents, Long authorId, OffsetDateTime createdAt) {
+    public Article(Long id, String title, String contents, Long authorId, boolean activate, OffsetDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.authorId = authorId;
+        this.activate = activate;
         this.createdAt = createdAt;
     }
 
@@ -65,6 +67,10 @@ public class Article extends BaseTimeModel {
         return authorId;
     }
 
+    public boolean isActivate() {
+        return activate;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -77,5 +83,56 @@ public class Article extends BaseTimeModel {
     public void setContents(String contents) {
         validateContent(contents);
         this.contents = contents;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private Long id;
+        private String title;
+        private String contents;
+        private Long authorId;
+        private boolean activate;
+        private OffsetDateTime createdAt;
+
+        private Builder() {
+        }
+
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder contents(String contents) {
+            this.contents = contents;
+            return this;
+        }
+
+        public Builder authorId(Long authorId) {
+            this.authorId = authorId;
+            return this;
+        }
+
+        public Builder activate(boolean activate) {
+            this.activate = activate;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Article build() {
+            return new Article(id, title, contents, authorId, activate, createdAt);
+        }
     }
 }
