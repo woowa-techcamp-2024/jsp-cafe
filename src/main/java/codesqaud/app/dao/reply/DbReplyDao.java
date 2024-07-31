@@ -130,6 +130,6 @@ public class DbReplyDao implements ReplyDao {
                 SELECT * FROM replies WHERE article_id = ?
                 """;
 
-        jdbcTemplate.queryForObject(sql, REPLY_ROW_MAPPER, articleId);
+        return jdbcTemplate.query(sql, REPLY_ROW_MAPPER, articleId);
     }
 }
