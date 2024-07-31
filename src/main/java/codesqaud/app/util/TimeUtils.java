@@ -15,7 +15,8 @@ public class TimeUtils {
     }
 
     public static String toStringForUser(Timestamp timestamp) {
-        return timestamp.toLocalDateTime().format(FORMAT_FOR_USER);
+        OffsetDateTime offsetDateTime = toOffsetDateTime(timestamp);
+        return offsetDateTime.toLocalDateTime().format(FORMAT_FOR_USER);
     }
 
     public static String toStringForQuery(OffsetDateTime offsetDateTime) {
