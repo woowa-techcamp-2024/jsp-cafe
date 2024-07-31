@@ -3,6 +3,7 @@ package com.woowa.servlet;
 import com.woowa.exception.AuthenticationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.handler.QuestionHandler;
+import com.woowa.handler.ReplyHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +15,14 @@ public class FindQuestionServlet extends HttpServlet {
 
     private static final String PREFIX = "/questions/";
     private static final String UPDATE_SUFFIX = "/update";
+    private static final String REPLY_SUFFIX = "/replies";
 
     private final QuestionHandler questionHandler;
+    private final ReplyHandler replyHandler;
 
-    public FindQuestionServlet(QuestionHandler questionHandler) {
+    public FindQuestionServlet(QuestionHandler questionHandler, ReplyHandler replyHandler) {
         this.questionHandler = questionHandler;
+        this.replyHandler = replyHandler;
     }
 
     @Override
@@ -37,6 +41,18 @@ public class FindQuestionServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String questionId = req.getRequestURI().replace(PREFIX, "");
+        String userId = getUserIdFromSession(req);
+        if (questionId.endsWith(REPLY_SUFFIX)) {
+            questionId = questionId.replace(REPLY_SUFFIX, "");
+            String content = req.getParameter("content");
+            ResponseEntity response = replyHandler.createReply(userId, questionId, content);
+            resp.sendRedirect(response.getLocation());
+        }
+    }
+
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String questionId = req.getRequestURI().replace(PREFIX, "");
         String userId = getUserIdFromSession(req);
@@ -50,8 +66,18 @@ public class FindQuestionServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String questionId = req.getRequestURI().replace(PREFIX, "");
         String userId = getUserIdFromSession(req);
-        ResponseEntity response = questionHandler.deleteQuestion(userId, questionId);
-        resp.sendRedirect(response.getLocation());
+        if (questionId.contains(REPLY_SUFFIX)) {
+            String[] split = questionId
+                    .replace(REPLY_SUFFIX, "")  // {questionId}/replies/{replyId}
+                    .split("/");  // {questionId}/{replyId}
+            questionId = split[0];
+            String replyId = split[1];
+            ResponseEntity response = replyHandler.deleteReply(userId, questionId, replyId);
+            resp.sendRedirect(response.getLocation());
+        } else {
+            ResponseEntity response = questionHandler.deleteQuestion(userId, questionId);
+            resp.sendRedirect(response.getLocation());
+        }
     }
 
     private String getUserIdFromSession(HttpServletRequest req) {

@@ -12,8 +12,10 @@ import com.woowa.exception.AuthorizationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;
 import com.woowa.model.Question;
+import com.woowa.model.Reply;
 import com.woowa.model.User;
 import com.woowa.support.QuestionFixture;
+import com.woowa.support.ReplyFixture;
 import com.woowa.support.UserFixture;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
@@ -107,8 +109,9 @@ class QuestionHandlerTest {
         void questionsOrderByCreatedAt() {
             //given
             User user = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
-            for(int i=0; i<10; i++) {
-                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content", Author.from(user),
+            for (int i = 0; i < 10; i++) {
+                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content",
+                        Author.from(user),
                         ZonedDateTime.now().plusHours(i));
                 questionDatabase.save(question);
             }
@@ -121,7 +124,7 @@ class QuestionHandlerTest {
             assertThat(questions).isNotNull()
                     .asInstanceOf(LIST)
                     .hasSize(10)
-                    .map(question -> ((Question)question).getCreatedAt())
+                    .map(question -> ((Question) question).getCreatedAt())
                     .isSortedAccordingTo(Comparator.reverseOrder());
         }
 
@@ -130,8 +133,9 @@ class QuestionHandlerTest {
         void pagination() {
             //given
             User user = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
-            for(int i=0; i<20; i++) {
-                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content", Author.from(user),
+            for (int i = 0; i < 20; i++) {
+                Question question = Question.create(UUID.randomUUID().toString(), "title" + i, "content",
+                        Author.from(user),
                         ZonedDateTime.now().plusHours(i));
                 questionDatabase.save(question);
             }
@@ -162,7 +166,6 @@ class QuestionHandlerTest {
             question = QuestionFixture.question(user);
             userDatabase.save(user);
             questionDatabase.save(question);
-
         }
 
         @Test
@@ -181,6 +184,44 @@ class QuestionHandlerTest {
             assertThat(findQuestion.getContent()).isEqualTo(question.getContent());
             assertThat(findQuestion.getAuthor()).isEqualTo(Author.from(user));
             assertThat(findQuestion.getCreatedAt()).isEqualTo(question.getCreatedAt());
+        }
+
+        @Test
+        @DisplayName("댓글을 함께 조회한다.")
+        void withReplies() {
+            //given
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question)
+            ));
+
+            //when
+            ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());
+
+            //then
+            Question findQuestion = (Question) response.getModel().get("question");
+            assertThat(findQuestion.getReplies()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("삭제 상태인 댓글은 조회하지 않는다.")
+        void withoutDeletedReplies() {
+            //given
+            Reply deletedReply = ReplyFixture.reply(user, question);
+            deletedReply.delete();
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question),
+                    deletedReply
+            ));
+
+            //when
+            ResponseEntity response = questionHandler.findQuestion(question.getQuestionId());
+
+            //then
+            Question findQuestion = (Question) response.getModel().get("question");
+            assertThat(findQuestion.getReplies()).hasSize(2)
+                    .doesNotContain(deletedReply);
         }
     }
 
@@ -342,6 +383,59 @@ class QuestionHandlerTest {
 
             //then
             assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+
+        @Test
+        @DisplayName("예외(Authorization): 다른 사용자의 댓글이 포함되어 있으면")
+        void authorization_ContainsOtherUserReplies() {
+            //given
+            User anotherUser = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(anotherUser, question)
+            ));
+
+            //when
+            Exception exception = catchException(
+                    () -> questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId()));
+
+            //then
+            assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+
+        @Test
+        @DisplayName("다른 사용자의 댓글이 포함되어 있지 않으면 삭제한다.")
+        void deleteQuestion_WhenNotContainsOtherUserReplies() {
+            //given
+            question.getReplies().addAll(List.of(
+                    ReplyFixture.reply(user, question),
+                    ReplyFixture.reply(user, question)
+            ));
+
+            //when
+            ResponseEntity response = questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(question.isDeleted()).isTrue();
+            assertThat(question.getReplies()).allSatisfy(reply -> {
+                assertThat(reply.isDeleted()).isTrue();
+            });
+        }
+
+        @Test
+        @DisplayName("다른 사용자의 삭제된 댓글은 무시한다.")
+        void deletedQuestion_WhenContainsDeletedReply() {
+            //given
+            User anotherUser = User.create(UUID.randomUUID().toString(), "test@test.com", "password", "nickname");
+            Reply reply = ReplyFixture.reply(anotherUser, question);
+            reply.delete();
+            question.getReplies().add(reply);
+
+            //when
+            ResponseEntity response = questionHandler.deleteQuestion(user.getUserId(), question.getQuestionId());
+
+            //then
+            assertThat(question.isDeleted()).isTrue();
         }
     }
 }

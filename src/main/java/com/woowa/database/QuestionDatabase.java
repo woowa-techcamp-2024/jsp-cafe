@@ -16,4 +16,8 @@ public interface QuestionDatabase {
     void update(Question question);
 
     void delete(Question question);
+
+    Optional<Question> findByIdWithReplies(String questionId);
+
+    Optional<Question> findByIdWithRepliesContainsDeleted(String questionId);
 }

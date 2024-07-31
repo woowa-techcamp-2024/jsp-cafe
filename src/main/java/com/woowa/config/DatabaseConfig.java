@@ -3,6 +3,8 @@ package com.woowa.config;
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionJdbcDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
+import com.woowa.database.ReplyDatabase;
+import com.woowa.database.ReplyJdbcDatabase;
 import com.woowa.database.UserDatabase;
 import com.woowa.database.UserJdbcDatabase;
 import com.woowa.database.UserMemoryDatabase;
@@ -18,5 +20,10 @@ public class DatabaseConfig {
     @Bean
     public QuestionDatabase questionDatabase() {
         return new QuestionJdbcDatabase();
+    }
+
+    @Bean
+    public ReplyDatabase replyDatabase() {
+        return new ReplyJdbcDatabase();
     }
 }

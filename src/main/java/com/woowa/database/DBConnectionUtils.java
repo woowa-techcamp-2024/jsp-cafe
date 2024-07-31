@@ -73,4 +73,12 @@ public class DBConnectionUtils {
             throw new IllegalArgumentException("트랜잭션 에러", e);
         }
     }
+
+    public static void commit(Connection con) {
+        try {
+            con.commit();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("커밋 에러", e);
+        }
+    }
 }
