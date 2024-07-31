@@ -1,5 +1,6 @@
 package com.woowa;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowa.database.UserDatabase;
 import com.woowa.filter.ErrorHandlingFilter;
 import com.woowa.filter.HttpMethodFilter;
@@ -74,8 +75,10 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
                 new ListQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
         listQuestionServlet.addMapping("/");
 
-        Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet",
-                new FindQuestionServlet(beanFactory.getBean(QuestionHandler.class), beanFactory.getBean(ReplyHandler.class)));
+        Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet", new FindQuestionServlet(
+                beanFactory.getBean(QuestionHandler.class),
+                beanFactory.getBean(ReplyHandler.class),
+                beanFactory.getBean(ObjectMapper.class)));
         findQuestionServlet.addMapping("/questions/*");
     }
 
