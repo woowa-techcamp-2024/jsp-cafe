@@ -9,4 +9,6 @@ public interface ArticleDao {
     void save(Article article);
     Optional<Article> findByArticleId(long articleId);
     List<Article> findAll();
+    void update(Article article);
+    void removeByArticleId(long articleId);
 }

@@ -87,6 +87,10 @@
                     <h1>잘못된 요청입니다.</h1>
                     <c:out value="문제: ${error_message}" />
                 </c:when>
+                <c:when test="${pageContext.errorData.statusCode == 403}">
+                    <h1>권한이 없습니다.</h1>
+                    <c:out value="문제: ${error_message}" />
+                </c:when>
                 <c:when test="${pageContext.errorData.statusCode == 500}">
                     <h1>처리 중 문제가 발생했습니다.</h1>
                     <c:out value="위치: ${pageContext.errorData.requestURI}" />

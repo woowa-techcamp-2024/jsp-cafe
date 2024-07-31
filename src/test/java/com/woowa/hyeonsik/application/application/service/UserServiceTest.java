@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class UserServiceTest extends MemoryDbTest {
@@ -119,5 +120,24 @@ class UserServiceTest extends MemoryDbTest {
         userDao.save(user);
 
         assertThrows(IllegalArgumentException.class, () -> userService.updateUser(newUser));
+    }
+
+    @Test
+    @DisplayName("등록된 아이디/패스워드 조합을 통해 성공적으로 정상유저를 검증한다.")
+    void validate_user_with_good_id_pw() {
+        User user = new User("test", "test", "test", "test@test.test");
+        userDao.save(user);
+
+        userService.validateUser("test", "test");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"wrong:wrong", "wrong:test", "test:wrong"}, delimiter = ':')
+    @DisplayName("등록되지 않은 아이디/패스워드 조합 검증시 예외가 발생한다.")
+    void validate_user_with_wrong_id_pw(String id, String pw) {
+        User user = new User("test", "test", "test", "test@test.test");
+        userDao.save(user);
+
+        assertThrows(IllegalArgumentException.class, () -> userService.validateUser(id, pw));
     }
 }
