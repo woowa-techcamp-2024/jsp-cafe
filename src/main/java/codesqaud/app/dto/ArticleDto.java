@@ -4,12 +4,14 @@ public class ArticleDto {
     private final Long id;
     private final String title;
     private final String contents;
+    private final String createdAt;
     private final UserDto author;
 
-    public ArticleDto(Long id, String title, String contents, UserDto author) {
+    public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author) {
         this.id = id;
         this.title = title;
         this.contents = contents;
+        this.createdAt = createdAt;
         this.author = author;
     }
 
@@ -25,7 +27,56 @@ public class ArticleDto {
         return contents;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+
     public UserDto getAuthor() {
         return author;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private Long id;
+        private String title;
+        private String contents;
+        private String createdAt;
+        private UserDto author;
+
+        private Builder() {
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder contents(String contents) {
+            this.contents = contents;
+            return this;
+        }
+
+        public Builder createdAt(String createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder author(UserDto author) {
+            this.author = author;
+            return this;
+        }
+
+        public ArticleDto build() {
+            return new ArticleDto(id, title, contents, createdAt, author);
+        }
     }
 }
