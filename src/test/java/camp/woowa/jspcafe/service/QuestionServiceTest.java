@@ -3,7 +3,9 @@ package camp.woowa.jspcafe.service;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
+import camp.woowa.jspcafe.repository.InMemReplyRepository;
 import camp.woowa.jspcafe.repository.QuestionRepository;
+import camp.woowa.jspcafe.repository.ReplyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,15 +13,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuestionServiceTest {
+    ReplyRepository replyRepository;
+    ReplyService replyService;
     QuestionRepository questionRepository;
     QuestionService questionService;
 
     @BeforeEach
     void setUp() {
-        questionRepository = new InMemQuestionRepository();
-        questionService = new QuestionService(questionRepository);
+        replyRepository = new InMemReplyRepository();
+        replyService = new ReplyService(replyRepository);
 
+        questionRepository = new InMemQuestionRepository();
+        questionService = new QuestionService(questionRepository, replyService);
         questionRepository.deleteAll();
+        replyRepository.deleteAll();
     }
 
     @Test
