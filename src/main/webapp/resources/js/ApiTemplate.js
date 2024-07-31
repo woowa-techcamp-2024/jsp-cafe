@@ -14,14 +14,14 @@ function postAPI(url, data, successPath) {
     });
 }
 
-function postJsonAPI(url, data, successPath) {
+function postJsonAPI(url, data, successCallback) {
     $.ajax({
         url: url,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: function (response) {
-            window.location.href = successPath;
+            successCallback(response);
         },
         error: function (xhr, status, error) {
             console.error('Error:', xhr.responseJSON.error);

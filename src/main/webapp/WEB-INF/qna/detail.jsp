@@ -57,38 +57,40 @@
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-                            <c:forEach var="reply" items="${replies}">
-                                <article class="article" id="answer-1405">
-                                    <div class="article-header">
-                                        <div class="article-header-thumb">
-                                            <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                                 class="article-author-thumb" alt="">
+                            <div id="reply-list">
+                                <c:forEach var="reply" items="${replies}">
+                                    <article class="article" id="answer-${reply.replyId}">
+                                        <div class="article-header">
+                                            <div class="article-header-thumb">
+                                                <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                                     class="article-author-thumb" alt="">
+                                            </div>
+                                            <div class="article-header-text">
+                                                <a href="/users/${reply.writer}"
+                                                   class="article-author-name">${reply.writer}</a>
+                                                <a href="#answer-1434" class="article-header-time" title="퍼머링크">
+                                                        ${fn:formatDateTime(reply.createdAt)}
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="article-header-text">
-                                            <a href="/users/${reply.writer}"
-                                               class="article-author-name">${reply.writer}</a>
-                                            <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                                    ${fn:formatDateTime(reply.createdAt)}
-                                            </a>
+                                        <div class="article-doc comment-doc">
+                                            <p>${reply.content}</p>
                                         </div>
-                                    </div>
-                                    <div class="article-doc comment-doc">
-                                        <p>${reply.content}</p>
-                                    </div>
-                                    <div class="article-util">
-                                        <ul class="article-util-list">
-                                            <c:if test="${sessionScope.userId == reply.writer}">
-                                                <li>
-                                                    <button id="delete-reply-btn" class="delete-answer-button"
-                                                            onclick="deleteReply(${reply.replyId}, ${question.questionId})">
-                                                        삭제
-                                                    </button>
-                                                </li>
-                                            </c:if>
-                                        </ul>
-                                    </div>
-                                </article>
-                            </c:forEach>
+                                        <div class="article-util">
+                                            <ul class="article-util-list">
+                                                <c:if test="${sessionScope.userId == reply.writer}">
+                                                    <li>
+                                                        <button id="delete-reply-btn" class="delete-answer-button"
+                                                                onclick="deleteReply(${reply.replyId}, ${question.questionId})">
+                                                            삭제
+                                                        </button>
+                                                    </li>
+                                                </c:if>
+                                            </ul>
+                                        </div>
+                                    </article>
+                                </c:forEach>
+                            </div>
                             <form class="submit-write">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" placeholder="Update your status"

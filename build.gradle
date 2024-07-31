@@ -34,6 +34,8 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0'
+
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testImplementation("org.assertj:assertj-core:3.26.0")

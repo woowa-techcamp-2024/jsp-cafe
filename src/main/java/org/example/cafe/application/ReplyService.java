@@ -5,6 +5,7 @@ import org.example.cafe.application.dto.ReplyCreateDto;
 import org.example.cafe.common.error.BadAuthenticationException;
 import org.example.cafe.common.error.DataNotFoundException;
 import org.example.cafe.domain.Reply;
+import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
 
 public class ReplyService {
@@ -15,8 +16,14 @@ public class ReplyService {
         this.replyRepository = replyRepository;
     }
 
-    public void createReply(ReplyCreateDto replyCreateDto, String writer) {
-        replyRepository.save(replyCreateDto.toReply(writer));
+    public Reply createReply(ReplyCreateDto replyCreateDto, String writer) {
+        Long savedReplyId = replyRepository.save(replyCreateDto.toReply(writer));
+        return new ReplyBuilder()
+                .replyId(savedReplyId)
+                .questionId(replyCreateDto.questionId())
+                .writer(writer)
+                .content(replyCreateDto.content())
+                .build();
     }
 
     public List<Reply> findRepliesByQuestionId(Long questionId) {
