@@ -11,6 +11,7 @@ import org.example.demo.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class UserHandler {
     private static UserHandler instance;
@@ -34,21 +35,33 @@ public class UserHandler {
 
     public void handleUpdateForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = userRepository.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
-        request.setAttribute("user", user);
+        Optional<User> user = userRepository.getUser(id);
+        if (user.isEmpty()) {
+            request.setAttribute("error", "User not found");
+            throw new NotFoundExceptoin("User not found");
+        }
+
+        request.setAttribute("user", user.get());
         request.getRequestDispatcher("/user/updateForm.jsp").forward(request, response);
     }
 
     public void handleUserProfile(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         Long id = Long.parseLong(pathVariables.get(0));
-        User user = userRepository.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
-        request.setAttribute("user", user);
+        Optional<User> user = userRepository.getUser(id);
+
+        if (user.isEmpty()) {
+            request.setAttribute("error", "User not found");
+            throw new NotFoundExceptoin("User not found");
+        }
+
+        request.setAttribute("user", user.get());
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
     }
 
     public void handleUserCreate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
         if (userRepository.getUserByUserId(request.getParameter("userId")).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 유저 아이디입니다.");
+            request.setAttribute("error", "이미 존재하는 유저 아이디입니다.");
+            throw new IllegalArgumentException();
         }
 
         UserCreateDao dao = new UserCreateDao(
@@ -66,7 +79,8 @@ public class UserHandler {
         User user = userRepository.getUser(id).orElseThrow(() -> new NotFoundExceptoin("User not found"));
 
         if (!user.getPassword().equals(request.getParameter("passwordCheck"))) {
-            throw new IllegalArgumentException("패스워드가 안 맞아요~ 다시 확인해보세용");
+            request.setAttribute("error", "패스워드가 안 맞아요~ 다시 확인해보세요");
+            throw new IllegalArgumentException();
         }
 
         userRepository.updateUser(new UserUpdateDao(
@@ -79,4 +93,23 @@ public class UserHandler {
         response.sendRedirect("/users/" + id);
     }
 
+    public void handleUserLogin(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException, ServletException {
+        String userId = request.getParameter("userId");
+        String password = request.getParameter("password");
+
+        Optional<User> user = userRepository.getUserByUserId(userId);
+        if (user.isEmpty() || !user.get().getPassword().equals(password)) {
+            request.setAttribute("error", "아이디 또는 패스워드가 틀렸습니다.");
+            request.getRequestDispatcher("/user/login_failed.jsp").forward(request, response);
+            return;
+        }
+
+        request.getSession().setAttribute("user", user.get().getUserId());
+        response.sendRedirect("/users/" + user.get().getId());
+    }
+
+    public void handleUserLogout(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
+        request.getSession().removeAttribute("user");
+        response.sendRedirect("/");
+    }
 }

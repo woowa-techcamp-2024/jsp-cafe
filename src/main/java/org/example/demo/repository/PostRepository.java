@@ -1,10 +1,12 @@
 package org.example.demo.repository;
 
+import org.example.demo.WasInitializeListener;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
-import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.model.PostCreateDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import java.util.Optional;
 
 public class PostRepository {
     private static PostRepository instance;
+    private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
+
     private DbConfig dbConfig;
     private UserRepository userRepository;
 
@@ -61,7 +65,7 @@ public class PostRepository {
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 long id = generatedKeys.getLong(1);
-                System.out.println("Generated Post ID: " + id);
+                logger.info("Generated Post ID: " + id);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,7 +75,6 @@ public class PostRepository {
     public List<Post> getPosts() {
         List<Post> posts = new ArrayList<>();
         String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id ORDER BY p.created_at DESC";
-        System.out.println("Connection established");
 
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();

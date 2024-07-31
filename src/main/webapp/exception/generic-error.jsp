@@ -5,6 +5,7 @@
 </head>
 <body>
 <h1>An Error Occurred</h1>
-<p><%= exception.getMessage() %></p>
+<p><%= exception.getMessage() %>
+</p>
 </body>
 </html>

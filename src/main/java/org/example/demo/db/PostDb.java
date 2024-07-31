@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PostDb{
+public class PostDb {
     private static Map<Long, Post> posts = new ConcurrentHashMap<>();
 
     public static Optional<Post> getPost(Long postId) {

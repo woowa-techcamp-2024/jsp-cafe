@@ -4,9 +4,9 @@
 <%@ page pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
-<jsp:include page="/components/header.jsp" />
+<jsp:include page="/components/header.jsp"/>
 <body>
-<jsp:include page="/components/nav.jsp" />
+<jsp:include page="/components/nav.jsp"/>
 
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
@@ -14,7 +14,12 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>id</th> <th>password</th> <th>name</th> <th>email</th><th></th>
+                    <th>id</th>
+                    <th>userId</th>
+                    <th>password</th>
+                    <th>name</th>
+                    <th>email</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -25,12 +30,17 @@
                 <tr>
                     <th scope="row">
                         <a href="users/<%= user.getId() %>">
-                        <%= user.getId() %>
+                            <%= user.getId() %>
                         </a>
                     </th>
-                    <td><%= user.getPassword() %></td>
-                    <td><%= user.getName() %></td>
-                    <td><%= user.getEmail() %></td>
+                    <td><%= user.getUserId() %>
+                    </td>
+                    <td><%= user.getPassword() %>
+                    </td>
+                    <td><%= user.getName() %>
+                    </td>
+                    <td><%= user.getEmail() %>
+                    </td>
                     <td><a href="/users/<%=user.getId()%>/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
@@ -42,7 +52,7 @@
     </div>
 </div>
 <!-- script references -->
-<jsp:include page="/components/footer.jsp" />
+<jsp:include page="/components/footer.jsp"/>
 
 </body>
 </html>

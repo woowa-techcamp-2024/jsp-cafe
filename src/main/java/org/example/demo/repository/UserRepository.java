@@ -1,9 +1,12 @@
 package org.example.demo.repository;
 
+import org.example.demo.WasInitializeListener;
 import org.example.demo.db.DbConfig;
 import org.example.demo.domain.User;
 import org.example.demo.model.UserCreateDao;
 import org.example.demo.model.UserUpdateDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +15,8 @@ import java.util.Optional;
 
 public class UserRepository {
     private static UserRepository instance;
+    private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
+
     private DbConfig dbConfig;
 
     private UserRepository(DbConfig dbConfig) {
@@ -60,7 +65,7 @@ public class UserRepository {
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 long id = generatedKeys.getLong(1);
-                System.out.println("Generated ID: " + id);
+                logger.info("Generated ID: " + id);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -21,6 +21,10 @@ public class Post {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public User getWriter() {
         return writer;
     }
@@ -33,15 +37,11 @@ public class Post {
         return contents;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 }

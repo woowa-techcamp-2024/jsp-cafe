@@ -26,6 +26,8 @@ public class UserServlet extends HttpServlet {
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/form/?$", userHandler::handleUpdateForm);
         router.addRoute(HttpMethod.POST, "^/users/?$", userHandler::handleUserCreate);
         router.addRoute(HttpMethod.POST, "^/users/(\\d+)/?$", userHandler::handleUserUpdate);
+        router.addRoute(HttpMethod.POST, "^/users/login/?$", userHandler::handleUserLogin);
+        router.addRoute(HttpMethod.POST, "^/users/logout/?$", userHandler::handleUserLogout);
     }
 
     @Override
