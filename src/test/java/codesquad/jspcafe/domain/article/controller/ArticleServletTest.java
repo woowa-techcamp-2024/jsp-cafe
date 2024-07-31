@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import codesquad.jspcafe.common.MockTemplate;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.service.ArticleService;
@@ -17,7 +18,6 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
@@ -30,17 +30,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("ArticleServlet은")
-class ArticleServletTest {
+class ArticleServletTest extends MockTemplate {
 
     @InjectMocks
     private ArticleServlet articleServlet;
@@ -49,12 +46,7 @@ class ArticleServletTest {
     private ArticleService articleService;
     @Mock
     private ReplyService replyService;
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpServletResponse response;
-
-
+    
     @Test
     @DisplayName("서블릿을 초기화하여 서블릿 컨텍스트에서 ArticleService와 ReplyService를 가져온다.")
     void init() throws ServletException {

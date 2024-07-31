@@ -7,14 +7,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import codesquad.jspcafe.common.MockTemplate;
 import codesquad.jspcafe.domain.reply.payload.request.ReplyCreateRequest;
 import codesquad.jspcafe.domain.reply.payload.respose.ReplyCommonResponse;
 import codesquad.jspcafe.domain.reply.service.ReplyService;
 import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
@@ -25,33 +24,25 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("ReplyServlet는")
-class ReplyServletTest {
+class ReplyServletTest extends MockTemplate {
 
     @InjectMocks
     private ReplyServlet replyServlet;
 
     @Mock
     private ReplyService replyService;
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpServletResponse response;
 
     @Test
     @DisplayName("서블릿을 초기화하여 서블릿 컨텍스트에서 ReplyService를 가져온다.")
     void init() throws ServletException {
         // Arrange
-        ServletConfig config = mock(ServletConfig.class);
         ServletContext context = mock(ServletContext.class);
         given(config.getServletContext()).willReturn(context);
         given(context.getAttribute("replyService")).willReturn(replyService);

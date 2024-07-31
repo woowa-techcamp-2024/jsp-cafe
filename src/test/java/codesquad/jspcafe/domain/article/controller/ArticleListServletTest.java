@@ -5,41 +5,27 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import codesquad.jspcafe.common.MockTemplate;
 import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.service.ArticleService;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("ArticleListServlet은")
-class ArticleListServletTest {
+class ArticleListServletTest extends MockTemplate {
 
     @InjectMocks
     private ArticleListServlet articleListServlet;
 
     @Mock
     private ArticleService articleService;
-
-    @Mock
-    private ServletConfig config;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpServletResponse response;
 
 
     @Test

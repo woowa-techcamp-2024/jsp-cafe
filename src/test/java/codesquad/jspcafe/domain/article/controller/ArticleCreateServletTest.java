@@ -6,43 +6,28 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import codesquad.jspcafe.common.MockTemplate;
 import codesquad.jspcafe.domain.article.service.ArticleService;
 import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("ArticleCreateServlet는")
-class ArticleCreateServletTest {
+class ArticleCreateServletTest extends MockTemplate {
 
     @InjectMocks
     private ArticleCreateServlet articleCreateServlet;
 
     @Mock
     private ArticleService articleService;
-
-    @Mock
-    private ServletConfig config;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpServletResponse response;
-
 
     @Test
     @DisplayName("서블릿을 초기화하여 서블릿 컨텍스트에서 ArticleService를 가져온다.")
