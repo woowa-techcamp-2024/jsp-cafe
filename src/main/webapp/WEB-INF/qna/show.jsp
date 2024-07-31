@@ -32,13 +32,14 @@
                     <div class="article-doc" style="margin-top: 28px;">
                         <c:out value="${article.contents}"/>
                     </div>
+                    <c:if test="${isMine}">
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/qna/<c:out value="${article.id}"/>/form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/qna/<c:out value="${article.id}"/>" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -48,6 +49,7 @@
                             </li>
                         </ul>
                     </div>
+                    </c:if>
                 </article>
 
                 <div class="qna-comment">

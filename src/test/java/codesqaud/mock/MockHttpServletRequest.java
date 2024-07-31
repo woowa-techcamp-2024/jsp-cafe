@@ -10,14 +10,24 @@ import java.security.Principal;
 import java.util.*;
 
 public class MockHttpServletRequest implements HttpServletRequest {
+    private String method;
     private String uri;
     private Map<String, String> parameters = new HashMap<>();
     private Map<String, Object> attributes = new HashMap<>();
     private MockHttpSession session;
     private MockRequestDispatcher dispatcher;
 
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     public void setRequestURI(String uri) {
         this.uri = uri;
+    }
+
+
+    public void setSession(MockHttpSession session) {
+        this.session = session;
     }
 
     public void setParameter(String name, String value) {
@@ -42,6 +52,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     public MockRequestDispatcher getRequestDispatcher() {
         return dispatcher;
+    }
+
+
+    @Override
+    public String getMethod() {
+        return method;
     }
 
     @Override
@@ -83,11 +99,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override
     public int getIntHeader(String name) {
         return 0;
-    }
-
-    @Override
-    public String getMethod() {
-        return "";
     }
 
     @Override
@@ -142,8 +153,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public HttpSession getSession(boolean create) {
-        if(session == null) {
-            return new MockHttpSession();
+        if(session == null && create) {
+            MockHttpSession mockHttpSession = new MockHttpSession();
+            this.session = mockHttpSession;
         }
         return session;
     }

@@ -12,8 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.*;
 
 public class InMemoryUserDao implements UserDao {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserDao.class);
@@ -30,10 +29,13 @@ public class InMemoryUserDao implements UserDao {
             throw new HttpException(SC_INTERNAL_SERVER_ERROR);
         }
 
-        user.setId(ID_GENERATOR.incrementAndGet());
-        users.compute(user.getId(), (id, existingUser) -> {
-            userIdIndex.put(user.getUserId(), user.getId());
-            return user;
+        userIdIndex.compute(user.getUserId(), (id, existingUserId) -> {
+            if(existingUserId != null) {
+                throw new HttpException(SC_BAD_REQUEST, "id가 중복되었습니다.");
+            }
+            user.setId(ID_GENERATOR.incrementAndGet());
+            users.put(user.getId(), user);
+            return user.getId();
         });
     }
 

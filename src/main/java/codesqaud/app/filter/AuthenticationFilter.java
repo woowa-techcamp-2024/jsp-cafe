@@ -24,13 +24,10 @@ public class AuthenticationFilter extends HttpFilter {
         List<RequestMapper> permittedRequests = List.of(
                 RequestMapper.permittedGetMapping("/"),
                 RequestMapper.permittedPostMapping("/users"),
+                RequestMapper.permittedGetMapping("/users/login"),
                 RequestMapper.permittedPostMapping("/users/login"),
                 RequestMapper.permittedGetMapping("/users/form"),
-                RequestMapper.permittedGetMapping("/qna/**"),
-
-                RequestMapper.permittedGetMapping("/static/**"),
-
-                RequestMapper.authenticatedGetMapping("/qna/form")
+                RequestMapper.permittedGetMapping("/static/**")
         );
 
         permitAllRequests.addAll(permittedRequests);
