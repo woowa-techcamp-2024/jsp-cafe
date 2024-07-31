@@ -94,7 +94,6 @@ public class PostController {
             throws SQLException, IOException {
         PostDto post = postService.getPostById(id);
         UserDto userDetails = sessionManager.getUserDetails(session.getId());
-        //TODO: 요구사항 구체화 + 서비스단으로 이동이 맞다.
         if (userDetails != null) {
             if (post.getWriter().equals(userDetails.getName())) {
                 // 삭제처리

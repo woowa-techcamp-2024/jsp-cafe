@@ -1,11 +1,13 @@
 package org.example.util;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.example.config.conatiner.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +18,9 @@ public class DatabaseInitServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        dataUtil = new DataUtil();
+        ServletContext servletContext = getServletContext();
+        ApplicationContext applicationContext = (ApplicationContext) servletContext.getAttribute("applicationContext");
+        dataUtil = applicationContext.getBean(DataUtil.class);
         try (Connection conn = dataUtil.getConnection();
              Statement stmt = conn.createStatement()) {
 

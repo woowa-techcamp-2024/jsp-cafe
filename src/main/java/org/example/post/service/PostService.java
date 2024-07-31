@@ -44,7 +44,7 @@ public class PostService {
     }
 
     public void deleteById(Long id) throws SQLException {
-        // TODO: 댓글이 존재한다면 삭제 불가능 한 비즈니스 로직 추가
+        // TODO: 댓글이 존재한다면 삭제 불가능 한 비즈니스 로직 추가 단 모든 댓글이 자신이 작성한것이라면 삭제 가능
         postRepository.delete(id);
     }
 }
