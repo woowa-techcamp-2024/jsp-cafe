@@ -1,5 +1,6 @@
 package com.wootecam.jspcafe.listener;
 
+import com.wootecam.jspcafe.config.DataSourceManager;
 import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
 import com.wootecam.jspcafe.domain.UserRepository;
@@ -8,14 +9,16 @@ import com.wootecam.jspcafe.repository.JdbcUserRepository;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.UserService;
 import com.wootecam.jspcafe.servlet.HomeServlet;
-import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
-import com.wootecam.jspcafe.servlet.question.QuestionServlet;
-import com.wootecam.jspcafe.servlet.user.SignInFormServlet;
-import com.wootecam.jspcafe.servlet.user.SignOutServlet;
-import com.wootecam.jspcafe.servlet.user.SignupFormServlet;
-import com.wootecam.jspcafe.servlet.user.UserEditServlet;
-import com.wootecam.jspcafe.servlet.user.UserProfileServlet;
-import com.wootecam.jspcafe.servlet.user.UserServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionDeleteServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionDetailHttpServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionEditHttpServlet;
+import com.wootecam.jspcafe.servlet.question.QuestionHttpServlet;
+import com.wootecam.jspcafe.servlet.user.SignInFormHttpServlet;
+import com.wootecam.jspcafe.servlet.user.SignOutHttpServlet;
+import com.wootecam.jspcafe.servlet.user.SignupFormHttpServlet;
+import com.wootecam.jspcafe.servlet.user.UserEditHttpServlet;
+import com.wootecam.jspcafe.servlet.user.UserHttpServlet;
+import com.wootecam.jspcafe.servlet.user.UserProfileHttpServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -27,7 +30,10 @@ public class ApplicationContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        DataSourceManager dataSourceManager = new DataSourceManager();
+        servletContext.setAttribute("dataSourceManager", dataSourceManager);
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceManager);
 
         UserRepository userRepository = new JdbcUserRepository(jdbcTemplate);
         QuestionRepository questionRepository = new JdbcQuestionRepository(jdbcTemplate);
@@ -37,22 +43,34 @@ public class ApplicationContextListener implements ServletContextListener {
 
         servletContext.addServlet("homeServlet", new HomeServlet(questionService))
                 .addMapping("/");
-        servletContext.addServlet("signupFormServlet", new SignupFormServlet())
+        servletContext.addServlet("signupFormServlet", new SignupFormHttpServlet())
                 .addMapping("/users/signup");
-        servletContext.addServlet("userServlet", new UserServlet(userService))
+        servletContext.addServlet("userServlet", new UserHttpServlet(userService))
                 .addMapping("/users");
-        servletContext.addServlet("userProfileServlet", new UserProfileServlet(userService))
+        servletContext.addServlet("userProfileServlet", new UserProfileHttpServlet(userService))
                 .addMapping("/users/*");
-        servletContext.addServlet("userEditServlet", new UserEditServlet(userService))
+        servletContext.addServlet("userEditServlet", new UserEditHttpServlet(userService))
                 .addMapping("/users/edit/*");
-        servletContext.addServlet("signInFormServlet", new SignInFormServlet(userService))
+        servletContext.addServlet("signInFormServlet", new SignInFormHttpServlet(userService))
                 .addMapping("/users/sign-in");
-        servletContext.addServlet("signOutServlet", new SignOutServlet())
+        servletContext.addServlet("signOutServlet", new SignOutHttpServlet())
                 .addMapping("/users/sign-out");
 
-        servletContext.addServlet("questionServlet", new QuestionServlet(questionService))
+        servletContext.addServlet("questionServlet", new QuestionHttpServlet(questionService))
                 .addMapping("/questions");
-        servletContext.addServlet("questionDetailServlet", new QuestionDetailServlet(questionService))
+        servletContext.addServlet("questionDetailServlet", new QuestionDetailHttpServlet(questionService))
                 .addMapping("/questions/*");
+        servletContext.addServlet("questionEditServlet", new QuestionEditHttpServlet(questionService))
+                .addMapping("/questions/edit/*");
+        servletContext.addServlet("questionDeleteServlet", new QuestionDeleteServlet(questionService))
+                .addMapping("/questions/delete/*");
+    }
+
+    @Override
+    public void contextDestroyed(final ServletContextEvent sce) {
+        DataSourceManager dataSourceManager = (DataSourceManager) sce.getServletContext()
+                .getAttribute("dataSourceManager");
+
+        dataSourceManager.shutdown();
     }
 }

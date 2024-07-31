@@ -22,6 +22,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
                         + "    title        TEXT,\n"
                         + "    contents     TEXT,\n"
                         + "    created_time DATETIME,\n"
+                        + "    deleted_at   DATETIME,\n"
                         + "    users_primary_id BIGINT,\n"
                         + "    FOREIGN KEY (users_primary_id) REFERENCES users(id)\n"
                         + ")");
@@ -45,7 +46,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public List<Question> findAllOrderByCreatedTimeDesc() {
-        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question ORDER BY created_time DESC";
+        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question WHERE deleted_at IS NULL ORDER BY created_time DESC";
 
         return jdbcTemplate.selectAll(
                 query,
@@ -62,7 +63,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public Optional<Question> findById(final Long id) {
-        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question WHERE id = ?";
+        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question WHERE deleted_at IS NULL AND id = ?";
 
         Question question = jdbcTemplate.selectOne(
                 query,
@@ -78,5 +79,29 @@ public class JdbcQuestionRepository implements QuestionRepository {
         );
 
         return Optional.ofNullable(question);
+    }
+
+    @Override
+    public void update(final Long id, final String editedTitle, final String editedContents) {
+        String query = "UPDATE question SET title = ?, contents = ? WHERE deleted_at IS NULL AND id = ?";
+
+        jdbcTemplate.update(
+                query,
+                ps -> {
+                    ps.setString(1, editedTitle);
+                    ps.setString(2, editedContents);
+                    ps.setLong(3, id);
+                }
+        );
+    }
+
+    @Override
+    public void deleteById(final Long id) {
+        String query = "UPDATE question SET deleted_at = now() WHERE deleted_at IS NULL AND id = ?";
+
+        jdbcTemplate.update(
+                query,
+                ps -> ps.setLong(1, id)
+        );
     }
 }

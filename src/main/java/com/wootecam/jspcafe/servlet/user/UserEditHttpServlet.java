@@ -2,17 +2,18 @@ package com.wootecam.jspcafe.servlet.user;
 
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.UserService;
+import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
-public class UserEditServlet extends HttpServlet {
+public class UserEditHttpServlet extends AbstractHttpServlet {
 
     private final UserService userService;
 
-    public UserEditServlet(final UserService userService) {
+    public UserEditHttpServlet(final UserService userService) {
         this.userService = userService;
     }
 
@@ -24,7 +25,7 @@ public class UserEditServlet extends HttpServlet {
         User user = userService.readSignInUser(id, signInUser);
 
         req.setAttribute("user", user);
-        req.getRequestDispatcher("/WEB-INF/views/user/update_form.jsp")
+        req.getRequestDispatcher("/WEB-INF/views/user/edit_form.jsp")
                 .forward(req, resp);
     }
 
@@ -37,6 +38,13 @@ public class UserEditServlet extends HttpServlet {
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
+        User signInUser = (User) req.getSession().getAttribute("signInUser");
+
+        if (Objects.isNull(signInUser)) {
+            resp.sendRedirect("/users/sign-in");
+            return;
+        }
+
         Long id = parseSuffixPathVariable(req.getPathInfo());
 
         userService.edit(

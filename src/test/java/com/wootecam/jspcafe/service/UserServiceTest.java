@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.User;
+import com.wootecam.jspcafe.exception.BadRequestException;
+import com.wootecam.jspcafe.exception.NotFoundException;
 import com.wootecam.jspcafe.service.fixture.ServiceTest;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +42,7 @@ class UserServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> userService.signup(invalidUserInfo.get(0), invalidUserInfo.get(1), invalidUserInfo.get(2),
                                 invalidUserInfo.get(3)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("회원가입 시 모든 정보를 입력해야 합니다.");
             }
 
@@ -91,7 +93,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 해당_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "id", "password", "name", "email"));
+                userRepository.save(new User("id", "password", "name", "email"));
 
                 // when
                 User user = userService.read(1L);
@@ -113,9 +115,9 @@ class UserServiceTest extends ServiceTest {
         @Test
         void 저장되어있는_모든_사용자를_반환한다() {
             // given
-            userRepository.save(new User(1L, "id", "password", "name", "email"));
-            userRepository.save(new User(2L, "id", "password", "name", "email"));
-            userRepository.save(new User(3L, "id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
 
             // when
             List<User> users = userService.readAll();
@@ -135,7 +137,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 회원정보를_수정한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 userService.edit(1L, "password", "newPassword", "newName", "newEmail");
@@ -159,14 +161,14 @@ class UserServiceTest extends ServiceTest {
             @MethodSource("generateInvalidEditUserInfo")
             void 예외가_발생한다(List<String> invalidEditUserInfo) {
                 // given
-                userRepository.save(new User(1L, "id", "password", "name", "email"));
+                userRepository.save(new User("id", "password", "name", "email"));
 
                 // expect
                 assertThatThrownBy(
                         () -> userService.edit(1L, invalidEditUserInfo.get(0), invalidEditUserInfo.get(1),
                                 invalidEditUserInfo.get(2),
                                 invalidEditUserInfo.get(3)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("회원 수정 시 모든 정보를 입력해야 합니다.");
             }
 
@@ -190,12 +192,12 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                userRepository.save(new User(1L, "id", "password", "name", "email"));
+                userRepository.save(new User("id", "password", "name", "email"));
 
                 // expect
                 assertThatThrownBy(
                         () -> userService.edit(1L, "differentPassword", "newPassword", "name", "email"))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
             }
         }
@@ -243,7 +245,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 비어있는_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 Optional<User> user = userService.signIn("userId", "differentPassword");
@@ -259,7 +261,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 로그인_성공의_의미로_실제_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 User user = userService.signIn("userId", "password").get();
@@ -284,11 +286,11 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                User user = new User(1L, "userId", "password", "name", "email");
+                User user = new User("userId", "password", "name", "email");
 
                 // expect
                 assertThatThrownBy(() -> userService.readSignInUser(2L, user))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(BadRequestException.class)
                         .hasMessage("자신의 프로필만 수정할 수 있습니다.");
             }
         }
@@ -302,7 +304,7 @@ class UserServiceTest extends ServiceTest {
                 // expect
                 assertThatThrownBy(() -> userService.readSignInUser((Long) invalidEditUserInfo.get(0),
                         (User) invalidEditUserInfo.get(1)))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(NotFoundException.class)
                         .hasMessage("프로필 수정을 할 사용자를 찾을 수 없습니다.");
             }
 
@@ -320,7 +322,7 @@ class UserServiceTest extends ServiceTest {
             @Test
             void 수정할_사용자를_반환한다() {
                 // given
-                userRepository.save(new User(1L, "userId", "password", "name", "email"));
+                userRepository.save(new User("userId", "password", "name", "email"));
 
                 // when
                 User findUser = userService.readSignInUser(1L, new User(1L, "userId", "password", "name", "email"));

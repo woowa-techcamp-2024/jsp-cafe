@@ -33,6 +33,7 @@
                                 <i class="icon-link"></i>
                             </a>
                         </div>
+                        1
                     </div>
                     <div class="article-doc">
                         ${question.contents}
@@ -40,11 +41,11 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a id="edit-form-link" class="link-modify-article"
+                                   href="/questions/edit/${currentQuestion.id}">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
+                                <form class="form-delete">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
@@ -171,5 +172,44 @@
 
 <!-- script references -->
 <jsp:include page="../snippet/script.jsp"/>
+<script>
+    $(document).ready(function () {
+        $('.form-delete').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/questions/delete/${currentQuestion.id}",
+                type: 'DELETE',
+
+                success: function () {
+                    window.location.href = '/';
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = '/';
+                }
+            });
+        })
+
+        $('#edit-form-link').on('click', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/questions/edit/${currentQuestion.id}",
+                type: 'GET',
+
+                success: function () {
+                    window.location.href = this.url;
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = '/';
+                }
+            });
+        })
+    });
+</script>
 </body>
 </html>

@@ -14,30 +14,28 @@ public class DataSourceManager {
 
     private static final Logger log = LoggerFactory.getLogger(DataSourceManager.class);
 
-    private static DataSource dataSource;
+    private final DataSource dataSource;
 
     public DataSourceManager() {
-        if (dataSource == null) {
-            Properties props = new Properties();
-            loadProperties(props);
-            String driverClassName = props.getProperty("datasource.driverClassName");
-            try {
-                Class.forName(driverClassName);
-            } catch (ClassNotFoundException e) {
-                log.error("드라이버 클래스를 로딩할 수 없습니다.");
-            }
-            String url = props.getProperty("datasource.url");
-            String user = props.getProperty("datasource.user");
-            String password = props.getProperty("datasource.password");
-
-            HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setDriverClassName(driverClassName);
-            hikariConfig.setJdbcUrl(url);
-            hikariConfig.setUsername(user);
-            hikariConfig.setPassword(password);
-
-            dataSource = new HikariDataSource(hikariConfig);
+        Properties props = new Properties();
+        loadProperties(props);
+        String driverClassName = props.getProperty("datasource.driverClassName");
+        try {
+            Class.forName(driverClassName);
+        } catch (ClassNotFoundException e) {
+            log.error("드라이버 클래스를 로딩할 수 없습니다.");
         }
+        String url = props.getProperty("datasource.url");
+        String user = props.getProperty("datasource.user");
+        String password = props.getProperty("datasource.password");
+
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setDriverClassName(driverClassName);
+        hikariConfig.setJdbcUrl(url);
+        hikariConfig.setUsername(user);
+        hikariConfig.setPassword(password);
+
+        dataSource = new HikariDataSource(hikariConfig);
     }
 
     private void loadProperties(final Properties props) {
@@ -50,5 +48,11 @@ public class DataSourceManager {
 
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    public void shutdown() {
+        if (dataSource != null) {
+            ((HikariDataSource) dataSource).close();
+        }
     }
 }

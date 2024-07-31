@@ -1,5 +1,6 @@
 package com.wootecam.jspcafe.domain;
 
+import com.wootecam.jspcafe.exception.BadRequestException;
 import java.util.Objects;
 
 public class User {
@@ -26,7 +27,7 @@ public class User {
     private void validate(final String userId, final String password, final String name, final String email) {
         if (Objects.isNull(userId) || Objects.isNull(password) || Objects.isNull(name) || Objects.isNull(email)
                 || userId.isEmpty() || password.isEmpty() || name.isEmpty() || email.isEmpty()) {
-            throw new IllegalArgumentException("회원가입 시 모든 정보를 입력해야 합니다.");
+            throw new BadRequestException("회원가입 시 모든 정보를 입력해야 합니다.");
         }
     }
 
@@ -43,13 +44,13 @@ public class User {
         if (Objects.isNull(originalPassword) || Objects.isNull(newPassword) || Objects.isNull(email) || Objects.isNull(
                 name)
                 || originalPassword.isEmpty() || newPassword.isEmpty() || email.isEmpty() || name.isEmpty()) {
-            throw new IllegalArgumentException("회원 수정 시 모든 정보를 입력해야 합니다.");
+            throw new BadRequestException("회원 수정 시 모든 정보를 입력해야 합니다.");
         }
     }
 
     private void validatePassword(final String originalPassword) {
         if (!originalPassword.equals(password)) {
-            throw new IllegalArgumentException("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
+            throw new BadRequestException("입력한 기존 비밀번호와 실제 비밀번호가 다릅니다.");
         }
     }
 
