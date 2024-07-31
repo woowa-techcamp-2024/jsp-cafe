@@ -33,22 +33,24 @@
                         <c:out value="${article.contents}"/>
                     </div>
                     <c:if test="${isMine}">
-                    <div class="article-util">
-                        <ul class="article-util-list">
-                            <li>
-                                <a class="link-modify-article" href="/qna/<c:out value="${article.id}"/>/form">수정</a>
-                            </li>
-                            <li>
-                                <form class="form-delete" action="/qna/<c:out value="${article.id}"/>" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
-                            </li>
-                            <li>
-                                <a class="link-modify-article" href="/">목록</a>
-                            </li>
-                        </ul>
-                    </div>
+                        <div class="article-util">
+                            <ul class="article-util-list">
+                                <li>
+                                    <a class="link-modify-article"
+                                       href="/qna/<c:out value="${article.id}"/>/form">수정</a>
+                                </li>
+                                <li>
+                                    <form class="form-delete" action="/qna/<c:out value="${article.id}"/>"
+                                          method="POST">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button class="link-delete-article" type="submit">삭제</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <a class="link-modify-article" href="/">목록</a>
+                                </li>
+                            </ul>
+                        </div>
                     </c:if>
                 </article>
 
@@ -121,11 +123,11 @@
                             <%--                                    </ul>--%>
                             <%--                                </div>--%>
                             <%--                            </article>--%>
-                            <form class="submit-write">
+                            <form class="submit-write" method="POST" action="/qna/${article.id}/replies">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea name="contents" class="form-control" placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
                                 <div class="clearfix"/>
                             </form>
                         </div>
