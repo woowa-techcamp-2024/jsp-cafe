@@ -17,13 +17,9 @@
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
-                                    <span class="time">${question.date}</span>
-                                    <a href="user/profile.jsp" class="author">${question.writer}</a>
+                                    <span class="time">${question.lastModifiedDate}</span>
+                                    <a href="user/profile.jsp" class="author">${question.userId}</a>
                                 </div>
-<%--                                <div class="reply" title="댓글">--%>
-<%--                                    <i class="icon-reply"></i>--%>
-<%--                                    <span class="point">${question.replies}</span>--%>
-<%--                                </div>--%>
                             </div>
                         </div>
                     </li>
@@ -43,7 +39,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="/qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/questions/form" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>

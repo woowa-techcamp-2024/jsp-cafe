@@ -28,7 +28,6 @@ public class ErrorHandlingFilter implements Filter {
             // 예외 처리
             // 예외가 발생했을 때 원래 요청의 URL로 포워딩
             ex.printStackTrace();
-            String originalUrl = httpRequest.getRequestURI();
             RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
             dispatcher.forward(request, response);
         }

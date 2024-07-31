@@ -69,13 +69,13 @@ public class JdbcUserRepository implements UserRepository {
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                User user = new User(
-                        rs.getLong("id"),
-                        rs.getString("user_id"),
-                        rs.getString("email"),
-                        rs.getString("nickname"),
-                        rs.getString("password")
-                        );
+                User user = User.builder()
+                        .id(rs.getLong("id"))
+                        .userId(rs.getString("user_id"))
+                        .email(rs.getString("email"))
+                        .nickname(rs.getString("nickname"))
+                        .password(rs.getString("password"))
+                        .build();
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -93,13 +93,13 @@ public class JdbcUserRepository implements UserRepository {
             pstmt.setLong(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    User user = new User(
-                            rs.getLong("id"),
-                            rs.getString("user_id"),
-                            rs.getString("email"),
-                            rs.getString("nickname"),
-                            rs.getString("password")
-                    );
+                    User user = User.builder()
+                            .id(rs.getLong("id"))
+                            .userId(rs.getString("user_id"))
+                            .email(rs.getString("email"))
+                            .nickname(rs.getString("nickname"))
+                            .password(rs.getString("password"))
+                            .build();
                     return Optional.of(user);
                 }
             }
@@ -118,13 +118,13 @@ public class JdbcUserRepository implements UserRepository {
             pstmt.setString(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    User user = new User(
-                            rs.getLong("id"),
-                            rs.getString("user_id"),
-                            rs.getString("email"),
-                            rs.getString("nickname"),
-                            rs.getString("password")
-                            );
+                    User user = User.builder()
+                            .id(rs.getLong("id"))
+                            .userId(rs.getString("user_id"))
+                            .email(rs.getString("email"))
+                            .nickname(rs.getString("nickname"))
+                            .password(rs.getString("password"))
+                            .build();
                     return Optional.of(user);
                 }
             }
