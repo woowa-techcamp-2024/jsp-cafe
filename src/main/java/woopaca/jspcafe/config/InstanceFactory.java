@@ -3,19 +3,24 @@ package woopaca.jspcafe.config;
 import woopaca.jspcafe.database.JdbcTemplate;
 import woopaca.jspcafe.repository.PostMySQLRepository;
 import woopaca.jspcafe.repository.PostRepository;
+import woopaca.jspcafe.repository.ReplyMySQLRepository;
+import woopaca.jspcafe.repository.ReplyRepository;
 import woopaca.jspcafe.repository.UserMySQLRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.service.AuthService;
 import woopaca.jspcafe.service.PostService;
+import woopaca.jspcafe.service.ReplyService;
 import woopaca.jspcafe.service.UserService;
 
 public final class InstanceFactory {
 
     private static UserRepository userRepository;
     private static PostRepository postRepository;
+    private static ReplyRepository replyRepository;
     private static UserService userService;
     private static PostService postService;
     private static AuthService authService;
+    private static ReplyService replyService;
     private static JdbcTemplate jdbcTemplate;
 
     private InstanceFactory() {
@@ -33,6 +38,13 @@ public final class InstanceFactory {
             postRepository = new PostMySQLRepository(jdbcTemplate());
         }
         return postRepository;
+    }
+
+    public static ReplyRepository replyRepository() {
+        if (replyRepository == null) {
+            replyRepository = new ReplyMySQLRepository(jdbcTemplate());
+        }
+        return replyRepository;
     }
 
     public static UserService userService() {
@@ -61,5 +73,12 @@ public final class InstanceFactory {
             authService = new AuthService(userRepository());
         }
         return authService;
+    }
+
+    public static ReplyService replyService() {
+        if (replyService == null) {
+            replyService = new ReplyService(replyRepository(), postRepository());
+        }
+        return replyService;
     }
 }
