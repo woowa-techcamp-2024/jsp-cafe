@@ -3,40 +3,41 @@ package com.jspcafe.user.service;
 import com.jspcafe.exception.UserNotFoundException;
 import com.jspcafe.user.model.User;
 import com.jspcafe.user.model.UserDao;
-
 import java.util.List;
 
 public class UserService {
-    private final UserDao userDao;
 
-    public UserService(final UserDao userDao) {
-        this.userDao = userDao;
-    }
+  private final UserDao userDao;
 
-    public void signUp(final String email, final String nickname, final String password) {
-        userDao.save(User.create(email, nickname, password));
-    }
+  public UserService(final UserDao userDao) {
+    this.userDao = userDao;
+  }
 
-    public List<User> findAll() {
-        return userDao.findAll();
-    }
+  public void signUp(final String email, final String nickname, final String password) {
+    userDao.save(User.create(email, nickname, password));
+  }
 
-    public User findById(final String id) {
-        return userDao.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User id not found: id = " + id));
-    }
+  public List<User> findAll() {
+    return userDao.findAll();
+  }
 
-    public void update(final User currentUser, final String email, final String nickname, final String password) {
-        User updateUser = currentUser.update(email, nickname, password);
-        userDao.update(updateUser);
-    }
+  public User findById(final String id) {
+    return userDao.findById(id)
+        .orElseThrow(() -> new UserNotFoundException("User id not found: id = " + id));
+  }
 
-    public User login(final String email, final String password) {
-        User user = userDao.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User email not found: email = " + email));
-        if (user.verifyPassword(password)) {
-            return user;
-        }
-        return null;
+  public void update(final User currentUser, final String email, final String nickname,
+      final String password) {
+    User updateUser = currentUser.update(email, nickname, password);
+    userDao.update(updateUser);
+  }
+
+  public User login(final String email, final String password) {
+    User user = userDao.findByEmail(email)
+        .orElseThrow(() -> new UserNotFoundException("User email not found: email = " + email));
+    if (user.verifyPassword(password)) {
+      return user;
     }
+    return null;
+  }
 }

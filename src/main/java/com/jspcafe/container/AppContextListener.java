@@ -15,43 +15,48 @@ import jakarta.servlet.annotation.WebListener;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        ServletContext ctx = sce.getServletContext();
-        initDatabaseConnector(ctx);
-        initUserDao(ctx);
-        initUserService(ctx);
-        initArticleDao(ctx);
-        initArticleService(ctx);
-        initReplyDao(ctx);
-        initReplyService(ctx);
-    }
 
-    private void initDatabaseConnector(ServletContext ctx) {
-        ctx.setAttribute("databaseConnector", new MysqlConnector());
-    }
+  @Override
+  public void contextInitialized(ServletContextEvent sce) {
+    ServletContext ctx = sce.getServletContext();
+    initDatabaseConnector(ctx);
+    initUserDao(ctx);
+    initUserService(ctx);
+    initArticleDao(ctx);
+    initArticleService(ctx);
+    initReplyDao(ctx);
+    initReplyService(ctx);
+  }
 
-    private void initUserDao(ServletContext ctx) {
-        ctx.setAttribute("userDao", new UserDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
-    }
+  private void initDatabaseConnector(ServletContext ctx) {
+    ctx.setAttribute("databaseConnector", new MysqlConnector());
+  }
 
-    private void initUserService(ServletContext ctx) {
-        ctx.setAttribute("userService", new UserService((UserDao) ctx.getAttribute("userDao")));
-    }
+  private void initUserDao(ServletContext ctx) {
+    ctx.setAttribute("userDao",
+        new UserDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
+  }
 
-    private void initArticleDao(ServletContext ctx) {
-        ctx.setAttribute("articleDao", new ArticleDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
-    }
+  private void initUserService(ServletContext ctx) {
+    ctx.setAttribute("userService", new UserService((UserDao) ctx.getAttribute("userDao")));
+  }
 
-    private void initArticleService(ServletContext ctx) {
-        ctx.setAttribute("articleService", new ArticleService((ArticleDao) ctx.getAttribute("articleDao")));
-    }
+  private void initArticleDao(ServletContext ctx) {
+    ctx.setAttribute("articleDao",
+        new ArticleDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
+  }
 
-    private void initReplyDao(ServletContext ctx) {
-        ctx.setAttribute("replyDao", new ReplyDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
-    }
+  private void initArticleService(ServletContext ctx) {
+    ctx.setAttribute("articleService",
+        new ArticleService((ArticleDao) ctx.getAttribute("articleDao")));
+  }
 
-    private void initReplyService(ServletContext ctx) {
-        ctx.setAttribute("replyService", new ReplyService((ReplyDao) ctx.getAttribute("replyDao")));
-    }
+  private void initReplyDao(ServletContext ctx) {
+    ctx.setAttribute("replyDao",
+        new ReplyDao((DatabaseConnector) ctx.getAttribute("databaseConnector")));
+  }
+
+  private void initReplyService(ServletContext ctx) {
+    ctx.setAttribute("replyService", new ReplyService((ReplyDao) ctx.getAttribute("replyDao")));
+  }
 }

@@ -1,76 +1,76 @@
 package com.jspcafe.error;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.jspcafe.test_util.StubHttpServletRequest;
 import com.jspcafe.test_util.StubHttpServletResponse;
 import jakarta.servlet.ServletException;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class ErrorControllerTest {
-    private ErrorController errorController;
-    private StubHttpServletRequest request;
-    private StubHttpServletResponse response;
 
-    @BeforeEach
-    void setUp() {
-        errorController = new ErrorController();
-        request = new StubHttpServletRequest();
-        response = new StubHttpServletResponse();
-    }
+  private ErrorController errorController;
+  private StubHttpServletRequest request;
+  private StubHttpServletResponse response;
 
-    @Test
-    void 에러_403페이지를_반환한다() throws ServletException, IOException {
-        // Given
-        request.setPathInfo("/403");
+  @BeforeEach
+  void setUp() {
+    errorController = new ErrorController();
+    request = new StubHttpServletRequest();
+    response = new StubHttpServletResponse();
+  }
 
-        // When
-        errorController.doGet(request, response);
+  @Test
+  void 에러_403페이지를_반환한다() throws ServletException, IOException {
+    // Given
+    request.setPathInfo("/403");
 
-        // Then
-        assertEquals(403, response.getStatus());
-        assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
-    }
+    // When
+    errorController.doGet(request, response);
 
-    @Test
-    void 에러_404페이지를_반환한다() throws ServletException, IOException {
-        // Given
-        request.setPathInfo("/404");
+    // Then
+    assertEquals(403, response.getStatus());
+    assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
+  }
 
-        // When
-        errorController.doGet(request, response);
+  @Test
+  void 에러_404페이지를_반환한다() throws ServletException, IOException {
+    // Given
+    request.setPathInfo("/404");
 
-        // Then
-        assertEquals(404, response.getStatus());
-        assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
-    }
+    // When
+    errorController.doGet(request, response);
 
-    @Test
-    void 에러_500페이지를_반환한다() throws ServletException, IOException {
-        // Given
-        request.setPathInfo("/500");
+    // Then
+    assertEquals(404, response.getStatus());
+    assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
+  }
 
-        // When
-        errorController.doGet(request, response);
+  @Test
+  void 에러_500페이지를_반환한다() throws ServletException, IOException {
+    // Given
+    request.setPathInfo("/500");
 
-        // Then
-        assertEquals(500, response.getStatus());
-        assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
-    }
+    // When
+    errorController.doGet(request, response);
 
-    @Test
-    void 기타_에러_페이지를_반환한다() throws ServletException, IOException {
-        // Given
-        request.setPathInfo("/405");
+    // Then
+    assertEquals(500, response.getStatus());
+    assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
+  }
 
-        // When
-        errorController.doGet(request, response);
+  @Test
+  void 기타_에러_페이지를_반환한다() throws ServletException, IOException {
+    // Given
+    request.setPathInfo("/405");
 
-        // Then
-        assertEquals(405, response.getStatus());
-        assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
-    }
+    // When
+    errorController.doGet(request, response);
+
+    // Then
+    assertEquals(405, response.getStatus());
+    assertEquals("/WEB-INF/views/error/error.jsp", request.getForwardedPath());
+  }
 }
