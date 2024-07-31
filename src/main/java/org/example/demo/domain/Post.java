@@ -48,7 +48,15 @@ public class Post {
         return comments;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdAt=" + createdAt +
+                ", comments=" + comments +
+                '}';
     }
 }

@@ -36,4 +36,15 @@ public class Comment {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", postId=" + postId +
+                ", writer=" + writer +
+                ", contents='" + contents + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
