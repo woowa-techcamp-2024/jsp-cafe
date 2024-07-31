@@ -176,7 +176,7 @@ textarea {
 }
 
 #delete-button {
-  background-color: #EE9941;
+  background-color: #FF5370;
 }
 
 #edit-button:hover {
@@ -184,7 +184,7 @@ textarea {
 }
 
 #delete-button:hover {
-  background-color: #D18A3A;
+  background-color: #E35166;
 }
 
 #modify-buttons {
@@ -192,4 +192,12 @@ textarea {
   align-items: center;
   justify-content: end;
   gap: 12px;
+}
+
+.comment-delete-button {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 0.9em;
+  color: #FF5370;
+
+  cursor: pointer;
 }
