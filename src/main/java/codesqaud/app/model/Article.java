@@ -2,20 +2,23 @@ package codesqaud.app.model;
 
 import codesqaud.app.exception.HttpException;
 
+import java.time.OffsetDateTime;
+
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
-public class Article {
+public class Article extends BaseTimeModel {
     private Long id;
     private String title;
     private String contents;
     private Long authorId;
 
-    public Article(Long id, String title, String contents, Long authorId) {
+    public Article(Long id, String title, String contents, Long authorId, OffsetDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.authorId = authorId;
+        this.createdAt = createdAt;
     }
 
     public Article(String title, String contents, Long authorId) {
