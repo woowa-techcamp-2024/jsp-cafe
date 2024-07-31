@@ -2,6 +2,7 @@ package com.woowa.hyeonsik.server.config;
 
 import com.woowa.hyeonsik.application.dao.*;
 import com.woowa.hyeonsik.application.service.ArticleService;
+import com.woowa.hyeonsik.application.service.CommentService;
 import com.woowa.hyeonsik.application.service.UserService;
 import com.woowa.hyeonsik.application.servlet.*;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
@@ -25,6 +26,8 @@ public class ApplicationContextListener implements ServletContextListener {
         UserService userService = new UserService(userDao);
         ArticleDao articleDao = new JdbcArticleDao(connector);
         ArticleService articleService = new ArticleService(articleDao);
+        CommentDao commentDao = new JdbcCommentDao(connector);
+        CommentService commentService = new CommentService(commentDao, articleDao);
 
         sce.getServletContext().addServlet("qnaPathServlet", new QnaPathServlet(articleService))
                 .addMapping("/questions/*");
@@ -40,5 +43,7 @@ public class ApplicationContextListener implements ServletContextListener {
             .addMapping("/auth/logout");
         sce.getServletContext().addServlet("qnaFormServlet", new QnaFormServlet())
                 .addMapping("/questions/form");
+        sce.getServletContext().addServlet("commentServlet", new CommentServlet(commentService))
+                .addMapping("/comments", "/comments/*");
     }
 }

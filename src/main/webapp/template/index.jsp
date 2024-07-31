@@ -134,7 +134,7 @@
 
 <!-- script references -->
 <div>
-    <jsp:include page="/template/component/footer.jsp"></jsp:include>
+    <jsp:include page="/template/component/script.jsp"></jsp:include>
 </div>
 </body>
 </html>
