@@ -3,6 +3,7 @@ package woowa.camp.jspcafe.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -108,10 +109,24 @@ class UserServiceTest {
         void test() {
             User user1 = UserFixture.createUser1();
             User user2 = UserFixture.createUser2();
-            userRepository.save(user1);
-            userRepository.save(user2);
+            Long user1Id = userRepository.save(user1);
+            Long user2Id = userRepository.save(user2);
             List<UserResponse> result = userService.findAll();
             assertThat(result).size().isEqualTo(2);
+
+            assertThat(result)
+                    .hasSize(2)
+                    .satisfies(userResponses -> {
+                        assertThat(userResponses).extracting(
+                                UserResponse::getEmail,
+                                UserResponse::getId,
+                                UserResponse::getNickname,
+                                UserResponse::getRegisterAt
+                        ).containsExactly(
+                                tuple(user1.getEmail(), user1Id, user1.getNickname(), user1.getRegisterAt()),
+                                tuple(user2.getEmail(), user2Id, user2.getNickname(), user2.getRegisterAt())
+                        );
+                    });
         }
     }
 
