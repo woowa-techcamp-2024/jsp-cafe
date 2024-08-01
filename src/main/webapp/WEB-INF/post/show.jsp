@@ -42,10 +42,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/posts/<%=post.getId()%>/edit">수정</a>
+                                <a id="editPostLink" class="link-modify-article" href="/posts/<%=post.getId()%>/edit">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/posts/<%=post.getId()%>" method="POST">
+                                <form id="deletePostForm" class="form-delete" action="/posts/<%=post.getId()%>" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>

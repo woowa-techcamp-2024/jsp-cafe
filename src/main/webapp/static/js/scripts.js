@@ -37,7 +37,7 @@ function addAnswer(e) {
         },
         error: function (e) {
             console.log(e)
-            // alert("Error adding comment. Please try again.");
+            alert("Error adding comment. Please try again.");
         }
     });
 }
@@ -67,8 +67,67 @@ function deleteAnswer(e) {
     });
 }
 
+// Function to handle editing a post
+function editPost(e) {
+    e.preventDefault(); // Prevent the default link click
+
+    var editLink = $(this);
+    var url = editLink.attr("href"); // Get the edit URL
+
+    $.ajax({
+        method: 'GET',
+        url: url,
+        success: function () {
+            window.location.href = url; // Redirect to the edit page on successful permission check
+        },
+        error: function (e) {
+            if (e.status === 403) {
+                alert("You do not have permission to edit this post.");
+                return;
+            }
+            console.log(e)
+        }
+    });
+}
+
 // Event delegation for dynamically added elements
 $(document).ready(function () {
     $(".submit-write button[type='submit']").on("click", addAnswer); // Bind addAnswer function to submit button
     $(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer); // Bind deleteAnswer function to delete buttons
+
+    // Add handlers for post edit and delete forms
+    $("#deletePostForm").on("submit", function(e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var deleteForm = $(this);
+        var url = deleteForm.attr("action"); // Get the form action URL
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: deleteForm.serialize(),
+            success: function () {
+                window.location.href = "/"; // Redirect to the home page on successful delete
+            },
+            error: function (e) {
+                if (e.status === 403) {
+                    alert("You do not have permission to delete this post.");
+                    return;
+                } else if (e.status === 400) {
+                    alert("다른 사람의 댓글이 있는 글은 지울 수 없습니다.");
+                    return;
+                }
+                console.log(e)
+            }
+        });
+    });
+
+    // Bind editPost function to the edit link
+});
+
+// Event delegation for dynamically added elements
+$(document).ready(function () {
+    $(".submit-write button[type='submit']").on("click", addAnswer); // Bind addAnswer function to submit button
+    $(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer); // Bind deleteAnswer function to delete buttons
+    $("#editPostLink").on("click", editPost);
 });
