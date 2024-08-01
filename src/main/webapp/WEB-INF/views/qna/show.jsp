@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="codesquad.servlet.dao.ArticleQuery.ArticleResponse" %>
+<%@ page import="codesquad.ui.dao.ArticleQuery.ArticleResponse" %>
 <%@ page import="java.util.StringTokenizer" %>
 <!DOCTYPE html>
 <html lang="kr">

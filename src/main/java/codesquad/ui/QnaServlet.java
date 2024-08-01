@@ -1,12 +1,12 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import codesquad.domain.article.Article;
 import codesquad.domain.article.ArticleDao;
 import codesquad.domain.user.User;
 import codesquad.exception.UnauthorizedRequestException;
-import codesquad.servlet.annotation.authentication.Authorized;
-import codesquad.servlet.dao.ArticleQuery;
-import codesquad.servlet.dao.ArticleQuery.ArticleResponse;
+import codesquad.ui.annotation.authentication.Authorized;
+import codesquad.ui.dao.ArticleQuery;
+import codesquad.ui.dao.ArticleQuery.ArticleResponse;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

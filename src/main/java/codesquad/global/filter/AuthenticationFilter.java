@@ -1,7 +1,7 @@
 package codesquad.global.filter;
 
 import codesquad.domain.user.User;
-import codesquad.servlet.annotation.authentication.Authorized;
+import codesquad.ui.annotation.authentication.Authorized;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

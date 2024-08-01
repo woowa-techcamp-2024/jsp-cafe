@@ -1,7 +1,7 @@
 package codesquad.infra;
 
 import codesquad.common.db.connection.ConnectionManager;
-import codesquad.servlet.dao.ArticleQuery;
+import codesquad.ui.dao.ArticleQuery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;

@@ -1,4 +1,4 @@
-package codesquad.servlet.annotation.authentication;
+package codesquad.ui.annotation.authentication;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

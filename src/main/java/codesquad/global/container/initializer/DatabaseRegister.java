@@ -8,7 +8,7 @@ import codesquad.infra.MySqlArticleDao;
 import codesquad.infra.MySqlArticleQuery;
 import codesquad.infra.MySqlUserDao;
 import codesquad.common.db.connection.ServerConnectionManager;
-import codesquad.servlet.dao.ArticleQuery;
+import codesquad.ui.dao.ArticleQuery;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

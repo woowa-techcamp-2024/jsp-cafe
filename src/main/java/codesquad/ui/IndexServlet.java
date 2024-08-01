@@ -1,9 +1,9 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import codesquad.domain.article.Status;
-import codesquad.servlet.dao.ArticleQuery;
-import codesquad.servlet.dao.ArticleQuery.ArticleResponse;
-import codesquad.servlet.dao.ArticleQuery.QueryRequest;
+import codesquad.ui.dao.ArticleQuery;
+import codesquad.ui.dao.ArticleQuery.ArticleResponse;
+import codesquad.ui.dao.ArticleQuery.QueryRequest;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

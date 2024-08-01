@@ -1,6 +1,6 @@
-package codesquad.servlet;
+package codesquad.ui;
 
-import codesquad.servlet.annotation.authentication.Authorized;
+import codesquad.ui.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

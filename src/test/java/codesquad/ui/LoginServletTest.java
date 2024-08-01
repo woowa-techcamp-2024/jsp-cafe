@@ -1,4 +1,4 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import codesquad.http.MockRequest;
 import codesquad.http.MockRequestDispatcher;
@@ -10,33 +10,33 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-class IndexServletTest {
+class LoginServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
-    private MockArticleQuery mockArticleQueryDao;
-    private IndexServlet indexServlet;
+    private MockUserDao mockUserDao;
+    private LoginServlet loginServlet;
 
     @BeforeEach
     void setUp() {
         mockRequestDispatcher = new MockRequestDispatcher();
-        mockArticleQueryDao = new MockArticleQuery();
-        indexServlet = new IndexServlet(mockArticleQueryDao);
+        mockUserDao = new MockUserDao();
+        loginServlet = new LoginServlet(mockUserDao);
     }
 
     @Nested
-    @DisplayName("GET /")
+    @DisplayName("GET /login")
     class IndexServletIs {
         @Test
-        @DisplayName("forward to : /WEB-INF/views/index.jsp")
+        @DisplayName("forward to : /WEB-INF/views/user/login.jsp")
         void doGet() throws ServletException, IOException {
             // given
-            HttpServletRequest request = new MockRequest("/", "GET", mockRequestDispatcher);
+            HttpServletRequest request = new MockRequest("/login", "GET", mockRequestDispatcher);
             HttpServletResponse response = new MockResponse();
 
             // when
-            indexServlet.doGet(request, response);
+            loginServlet.doGet(request, response);
 
             // then
-            Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/index.jsp");
+            Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/user/login.jsp");
             Assertions.assertTrue(mockRequestDispatcher.isForwarded());
         }
     }

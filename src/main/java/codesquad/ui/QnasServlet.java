@@ -1,9 +1,9 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import codesquad.domain.article.Article;
 import codesquad.domain.article.ArticleDao;
 import codesquad.domain.user.User;
-import codesquad.servlet.annotation.authentication.Authorized;
+import codesquad.ui.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

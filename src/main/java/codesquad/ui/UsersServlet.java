@@ -1,10 +1,10 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
 import codesquad.exception.DuplicateIdException;
 import codesquad.exception.IncorrectPasswordException;
-import codesquad.servlet.annotation.authentication.Authorized;
+import codesquad.ui.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

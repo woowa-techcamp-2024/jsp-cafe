@@ -1,6 +1,6 @@
-package codesquad.servlet;
+package codesquad.ui;
 
-import codesquad.servlet.dao.ArticleQuery;
+import codesquad.ui.dao.ArticleQuery;
 
 import java.util.Collections;
 import java.util.List;

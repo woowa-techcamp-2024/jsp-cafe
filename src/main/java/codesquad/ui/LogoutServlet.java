@@ -1,4 +1,4 @@
-package codesquad.servlet;
+package codesquad.ui;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -11,21 +11,22 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/users/register-form")
-public class UserRegisterFormServlet extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(UserRegisterFormServlet.class);
+@WebServlet(urlPatterns = "/logout")
+public class LogoutServlet extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(LogoutServlet.class);
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        logger.info("UserRegisterFormServlet initialized");
+        logger.info("LogoutServlet initialized");
     }
 
     /**
-     * 유저 등록 폼 요청
+     * 로그아웃 요청
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/user/form.jsp").forward(req, resp);
+        req.getSession().invalidate();
+        resp.sendRedirect("/");
     }
 }

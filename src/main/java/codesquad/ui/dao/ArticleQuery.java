@@ -1,4 +1,4 @@
-package codesquad.servlet.dao;
+package codesquad.ui.dao;
 
 import codesquad.common.PageRequest;
 import codesquad.domain.article.Status;
