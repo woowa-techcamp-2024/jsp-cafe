@@ -32,10 +32,10 @@ public class PostController implements SubController {
         var method = req.getMethod();
         log.info("[PostController doProcess] method: {}", method);
         switch (method) {
-            case "GET":{
-                var userId = (String)req.getAttribute("userId");
-                log.debug("UserId = {}",userId);
-                SessionManager.getInstance().loginCheck(req,"loginInfo");
+            case "GET": {
+                var userId = (String) req.getAttribute("userId");
+                log.debug("UserId = {}", userId);
+                SessionManager.getInstance().loginCheck(req, "loginInfo");
 
                 var body = Long.parseLong(req.getParameterMap().get("postId")[0]);
                 log.debug("[PostController doProcess] body: {}", body);
@@ -54,59 +54,78 @@ public class PostController implements SubController {
                 dispatcher.forward(req, res);
                 break;
             }
-            case "POST" :{
+            case "POST": {
                 var body = req.getParameterMap();
                 var hiddenMethod = body.get("method");
                 log.debug("HiddenMethod: {}", Arrays.toString(hiddenMethod));
-                log.debug("non null? {}",Objects.nonNull(hiddenMethod));
-                if (Objects.nonNull(hiddenMethod)&&(Objects.equals(hiddenMethod[0], "PUT") || Objects.equals(hiddenMethod[0], "DELETE"))) {
+                log.debug("non null? {}", Objects.nonNull(hiddenMethod));
+                if (Objects.isNull(method) && Objects.isNull(hiddenMethod)) {
+                    throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("request uri = "+req.getRequestURI() + ", request method = "+method);
+                }
+                if (Objects.nonNull(hiddenMethod) && (Objects.equals(hiddenMethod[0], "PUT") || Objects.equals(hiddenMethod[0], "DELETE"))) {
                     log.debug("hiddenMethod: {}", hiddenMethod[0]);
-                    method = hiddenMethod[0];
+                    if(hiddenMethod[0].equals("PUT")) {
+                        updatePost(req);
+                    }else if(hiddenMethod[0].equals("DELETE")) {
+                        deletePost(req);
+                    }
+                    res.sendRedirect("/");
                 } else {
+                    log.debug("hiddenMethod: {}", hiddenMethod);
                     createPost(req);
                     res.sendRedirect("/");
                     break;
                 }
-            }
-            case "PUT":{
-                var postRequestDto = getPostRequestDto(req);
-                var writer = SessionManager.getInstance().getMemberName(req, "loginInfo");
-                postRequestDto.setWriter(writer);
-                var memberId = SessionManager.getInstance().getMemberId(req,"loginInfo");
-                if (memberId != postRequestDto.getMemberId()) {
-                    throw ClientErrorCode.POST_ACCESS_DENIED.customException("memberId = " + memberId + ", request info = " + postRequestDto);
-                }
-
-                PostService.updatePost(postRequestDto);
-                // 캐시 업데이트
-                PostCache.getInstance().updateCache(postRequestDto);
-
-                req.setAttribute("post", PostCache.getInstance().get(postRequestDto.getId()));
-                var dispatcher = req.getRequestDispatcher("/WEB-INF/qna/show.jsp");
-                dispatcher.forward(req, res);
-
-                break;
-            }
-            case "DELETE":{
-
             }
             default:
                 throw ClientErrorCode.PAGE_NOT_FOUND.customException("request uri = " + req.getRequestURI() + ", request method = " + method);
         }
     }
 
+    private void deletePost(HttpServletRequest req) {
+        log.debug("[Delete Post Start]");
+        var body = req.getParameterMap();
+        var postId = Long.parseLong(body.get("postId")[0]);
+        var memberId = Long.parseLong(body.get("memberId")[0]);
+        var sessionMemberId = SessionManager.getInstance().getMemberId(req, "loginInfo");
+
+        if (memberId != sessionMemberId) {
+            throw ClientErrorCode.POST_ACCESS_DENIED.customException("postId = " + postId + ", request memberId = " + memberId);
+        }
+
+        PostService.getInstance().deletePost(postId);
+        PostCache.getInstance().deletePost(postId);
+        log.debug("[Delete Post Cache] cache = {}", PostCache.getInstance().get(postId));
+    }
+
     private void createPost(HttpServletRequest req) {
         var body = req.getParameterMap();
         var postDto = new PostRequestDto(body);
         var writer = SessionManager.getInstance().getMemberName(req, "loginInfo");
-        var memberId = SessionManager.getInstance().getMemberId(req,"loginInfo");
+        var memberId = SessionManager.getInstance().getMemberId(req, "loginInfo");
         postDto.setWriter(writer);
         postDto.setMemberId(memberId);
         log.info("[PostController createPost] postRequestDto: {}", postDto);
         PostService.getInstance().createPost(postDto);
     }
 
-    private PostRequestDto getPostRequestDto(HttpServletRequest req) throws IOException {
+    private void updatePost(HttpServletRequest req) {
+        log.debug("[Update Post Start]");
+        var postRequestDto = getPostRequestDto(req);
+        var writer = SessionManager.getInstance().getMemberName(req, "loginInfo");
+        postRequestDto.setWriter(writer);
+        var memberId = SessionManager.getInstance().getMemberId(req, "loginInfo");
+        if (memberId != postRequestDto.getMemberId()) {
+            throw ClientErrorCode.POST_ACCESS_DENIED.customException("memberId = " + memberId + ", request info = " + postRequestDto);
+        }
+
+        PostService.updatePost(postRequestDto);
+        // 캐시 업데이트
+        PostCache.getInstance().updateCache(postRequestDto);
+        req.setAttribute("post", PostCache.getInstance().get(postRequestDto.getId()));
+    }
+
+    private PostRequestDto getPostRequestDto(HttpServletRequest req) {
         var body = req.getParameterMap();
 
         var id = Long.parseLong(body.get("postId")[0]);
@@ -116,6 +135,6 @@ public class PostController implements SubController {
 
         log.debug("[PostController doProcess] id : {}, title: {}, contents: {}", id, title, contents);
 
-        return new PostRequestDto(id,title, contents,memberId);
+        return new PostRequestDto(id, title, contents, memberId);
     }
 }

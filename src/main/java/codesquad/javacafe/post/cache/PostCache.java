@@ -42,4 +42,8 @@ public class PostCache {
         postDto.update(postRequestDto);
         cache.put(postDto.getId(), postDto);
     }
+
+    public void deletePost(long postId) {
+        cache.remove(postId);
+    }
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import codesquad.javacafe.common.exception.HttpStatus;
+import codesquad.javacafe.common.exception.ServerErrorCode;
 import codesquad.javacafe.post.controller.PostCreatePageController;
 import codesquad.javacafe.post.controller.PostUpdatePageController;
 import com.google.gson.Gson;
@@ -46,7 +47,7 @@ public class FrontController extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse res) {
 		log.info("[FrontController] service, Request URI = {}, Http Method = {}", req.getRequestURI(), req.getMethod());
 		var uri = req.getRequestURI().replace("/api", "");
 		log.debug("[FrontController] uri = {}", uri);
@@ -77,7 +78,18 @@ public class FrontController extends HttpServlet {
 			log.error("[ServletException] message = {}", exception.getMessage());
 		} catch (IOException exception) {
 			log.error("[IOException] message = {}", exception.getMessage());
-		}
+		} catch (Exception exception) {
+			log.error("[Exception] message = {}", exception.getMessage());
+			req.setAttribute("exception", ServerErrorCode.INTERNAL_SERVER_ERROR.customException("Server Error : "+exception.getMessage()));
+			var dispatcher = req.getRequestDispatcher("/WEB-INF/error/customError.jsp");
+			try{
+				dispatcher.forward(req, res);
+			} catch (ServletException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 	}
 
 	public void destroy() {

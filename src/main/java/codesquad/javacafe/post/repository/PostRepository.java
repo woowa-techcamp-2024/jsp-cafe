@@ -19,7 +19,9 @@ public class PostRepository {
     private static final Logger log = LoggerFactory.getLogger(PostRepository.class);
     private static final Map<Long, Post> map = new ConcurrentHashMap<>();
     private static final PostRepository instance = new PostRepository();
-    private PostRepository() {}
+
+    private PostRepository() {
+    }
 
     public static PostRepository getInstance() {
         return instance;
@@ -58,7 +60,7 @@ public class PostRepository {
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
-        }finally {
+        } finally {
             close(con, ps, null);
 
         }
@@ -78,7 +80,7 @@ public class PostRepository {
             rs = ps.executeQuery();
             if (rs.next()) {
                 var postList = new ArrayList<Post>();
-                do{
+                do {
                     var post = new Post();
                     post.setId(rs.getLong("id"));
                     post.setWriter(rs.getString("post_writer"));
@@ -86,7 +88,7 @@ public class PostRepository {
                     post.setContents(rs.getString("post_contents"));
                     post.setCreatedAt(rs.getTimestamp("post_create").toLocalDateTime());
                     postList.add(post);
-                }while(rs.next());
+                } while (rs.next());
 
                 return postList;
             } else {
@@ -97,8 +99,8 @@ public class PostRepository {
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
-        }finally {
-            close(con,ps,rs);
+        } finally {
+            close(con, ps, rs);
         }
     }
 
@@ -113,7 +115,7 @@ public class PostRepository {
         try {
             con = getConnection();
             ps = con.prepareStatement(sql);
-            ps.setLong(1,id);
+            ps.setLong(1, id);
 
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -134,8 +136,8 @@ public class PostRepository {
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
-        }finally {
-            close(con,ps,rs);
+        } finally {
+            close(con, ps, rs);
         }
     }
 
@@ -164,9 +166,30 @@ public class PostRepository {
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
-        }finally {
+        } finally {
             close(con, ps, null);
 
+        }
+    }
+
+    public int delete(long postId) {
+        var sql = "delete from post where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, postId);
+            int result = ps.executeUpdate();
+
+            return result;
+        } catch (SQLException exception) {
+            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            throw new RuntimeException(exception);
+        } finally {
+            close(con, ps, null);
         }
     }
 }

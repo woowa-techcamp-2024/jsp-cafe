@@ -49,8 +49,10 @@
                                 <a class="link-modify-article" id="updateButton" href="/api/post/update?postId=<%=post.getId()%>">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="#" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
+                                <form class="form-delete" action="/api/post" method="POST">
+                                    <input type="hidden" name="method" value="DELETE">
+                                    <input type="hidden" name="postId" value="<%=post.getId()%>">
+                                    <input type="hidden" name="memberId" value="<%=post.getMemberId()%>">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>

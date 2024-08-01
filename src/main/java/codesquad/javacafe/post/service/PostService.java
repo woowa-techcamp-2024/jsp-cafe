@@ -15,7 +15,10 @@ import java.util.stream.Collectors;
 public class PostService {
     private static final Logger log = LoggerFactory.getLogger(PostService.class);
     private static final PostService instance = new PostService();
-    private PostService() {}
+
+    private PostService() {
+    }
+
     public static PostService getInstance() {
         return instance;
     }
@@ -31,7 +34,7 @@ public class PostService {
         var post = PostRepository.getInstance().findById(id);
         if (Objects.isNull(post)) {
             log.error("[PostService] post is null");
-            throw ServerErrorCode.INTERNAL_SERVER_ERROR.customException("post id = "+id);
+            throw ServerErrorCode.INTERNAL_SERVER_ERROR.customException("post id = " + id);
         }
         return new PostResponseDto(post);
     }
@@ -49,5 +52,12 @@ public class PostService {
 
     public void createPost(PostRequestDto postDto) {
         PostRepository.getInstance().save(postDto);
+    }
+
+    public void deletePost(long postId) {
+        int deleteResult = PostRepository.getInstance().delete(postId);
+        if (deleteResult == 0) {
+            throw ClientErrorCode.POST_IS_NULL.customException("request post id = " + postId);
+        }
     }
 }
