@@ -4,19 +4,19 @@
 <%@ page import="com.example.db.ArticleDatabase" %>
 <!DOCTYPE html>
 <html lang="kr">
-<%@ include file="template/head.jsp" %>
+<%@ include file="WEB-INF/template/head.jsp" %>
 <body>
-<%@ include file="template/top-header.jsp" %>
-<%@ include file="template/sub-header.jsp" %>
+<%@ include file="WEB-INF/template/top-header.jsp" %>
+<%@ include file="WEB-INF/template/sub-header.jsp" %>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    ArticleDatabase articleDatabase = (ArticleDatabase)config.getServletContext()
-                            .getAttribute("articleDatabase");
-                    List<Article> articleList = articleDatabase.findAll();
-                    for (Article article : articleList) {
+                    ArticleDatabase articleDatabase = (ArticleDatabase) request.getServletContext().getAttribute("articleDatabase");
+                    List<Article> articles = articleDatabase.findAll();
+					request.setAttribute("articles", articles);
+                    for (Article article : articles) {
                 %>
                 <li>
                     <div class="wrap">
@@ -27,8 +27,9 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time">2016-01-15 18:47</span>
-                                <a href="users/profile/<%= article.getUserId() %>" class="author"><%= article.getUserId() %>></a>
+                                <span class="time"><%= article.getCreatedAt() %></span>
+                                <a href="users/profile/<%= article.getUserId() %>"
+                                   class="author"><%= article.getUserName() %>></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -138,6 +139,6 @@
 -->
 
 <!-- script references -->
-<%@include file="template/footer.jsp" %>
+<%@include file="WEB-INF/template/footer.jsp" %>
 </body>
 </html>

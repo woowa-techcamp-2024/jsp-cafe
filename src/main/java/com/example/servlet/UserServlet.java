@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/users")
+@WebServlet(name = "UserServlet", urlPatterns = "/users")
 public class UserServlet extends HttpServlet {
 
 	private UserDatabase userDatabase;
@@ -31,7 +31,7 @@ public class UserServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setAttribute("userList", userDatabase.findAll());
-		req.getRequestDispatcher("/user/list.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(req, resp);
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class UserServlet extends HttpServlet {
 		SignupRequest dto = createDto(SignupRequest.class, req);
 		dto.validate();
 		userService.signup(dto);
-		resp.sendRedirect("/users");
+		resp.sendRedirect("/");
 	}
 }

@@ -28,7 +28,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="/">Posts</a></li>
+                <li><a href="/">Posts</a></li>
                 <%
                     Object login = session.getAttribute("login");
                     if (login != null) {
@@ -39,7 +39,7 @@
                 } else {
                 %>
                 <li><a href="${pageContext.request.contextPath}/users/login" role="button">로그인</a></li>
-                <li><a href="${pageContext.request.contextPath}/user/form.jsp" role="button">회원가입</a></li>
+                <li><a href="${pageContext.request.contextPath}/form.jsp" role="button">회원가입</a></li>
                 <%
                     }
                 %>

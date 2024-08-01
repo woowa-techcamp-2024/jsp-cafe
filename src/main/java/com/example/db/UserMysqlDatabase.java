@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.entity.User;
+import com.example.exception.BaseException;
 
 public class UserMysqlDatabase implements UserDatabase {
 
@@ -18,7 +19,7 @@ public class UserMysqlDatabase implements UserDatabase {
 	private static final String PASSWORD = "root";
 
 	@Override
-	public void insert(User user) {
+	public String insert(User user) {
 		String sql = "insert into user (id, password, name, email) values (?, ?, ?, ?)";
 		try (
 			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -29,8 +30,9 @@ public class UserMysqlDatabase implements UserDatabase {
 			pstmt.setString(3, user.name());
 			pstmt.setString(4, user.email());
 			pstmt.executeUpdate();
+			return null;
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 	}
 
@@ -52,7 +54,7 @@ public class UserMysqlDatabase implements UserDatabase {
 			}
 			return Optional.ofNullable(user);
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 	}
 
@@ -74,7 +76,7 @@ public class UserMysqlDatabase implements UserDatabase {
 			}
 			return users;
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 	}
 
@@ -90,7 +92,7 @@ public class UserMysqlDatabase implements UserDatabase {
 			pstmt.setString(3, id);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 	}
 }

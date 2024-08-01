@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import com.example.dto.UserUpdateRequest;
 import com.example.dto.util.DtoCreationUtil;
 import com.example.entity.User;
+import com.example.exception.BaseException;
 import com.example.service.UserService;
 
 import jakarta.servlet.RequestDispatcher;
@@ -63,7 +65,7 @@ class UserUpdateServletTest {
 		context = mock(ServletContext.class);
 		when(config.getServletContext()).thenReturn(context);
 		when(context.getAttribute("userService")).thenReturn(userService);
-		when(request.getRequestDispatcher("/user/updateForm.jsp")).thenReturn(requestDispatcher);
+		when(request.getRequestDispatcher("/WEB-INF/user/updateForm.jsp")).thenReturn(requestDispatcher);
 		when(request.getSession()).thenReturn(session);
 		when(session.getAttribute("login")).thenReturn(new Object());
 
@@ -120,7 +122,7 @@ class UserUpdateServletTest {
 		userUpdateServlet.doGet(request, response);
 
 		// then
-		verify(request).setAttribute("id", "1");
+		verify(session).setAttribute("id", "1");
 		verify(requestDispatcher).forward(request, response);
 	}
 
@@ -129,12 +131,11 @@ class UserUpdateServletTest {
 	void doPost_notLogin() throws IOException {
 		// given
 		when(session.getAttribute("login")).thenReturn(null);
+		when(request.getPathInfo()).thenReturn("/1");
 
 		// when
-		userUpdateServlet.doPost(request, response);
-
-		// then
-		verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		Assertions.assertThatThrownBy(() -> userUpdateServlet.doPost(request, response))
+			.isInstanceOf(BaseException.class);
 	}
 
 	@Test

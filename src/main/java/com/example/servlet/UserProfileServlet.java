@@ -2,7 +2,6 @@ package com.example.servlet;
 
 import java.io.IOException;
 
-import com.example.db.UserDatabase;
 import com.example.entity.User;
 import com.example.service.UserService;
 
@@ -13,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/users/profile/*")
+@WebServlet(name = "UserProfileServlet", urlPatterns = "/users/profile/*")
 public class UserProfileServlet extends HttpServlet {
 
 	private UserService userService;
@@ -28,6 +27,6 @@ public class UserProfileServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		User user = userService.getUser(req.getPathInfo().substring(1).split("/")[0]);
 		req.setAttribute("user", user);
-		req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(req, resp);
 	}
 }

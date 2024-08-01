@@ -1,15 +1,26 @@
 package com.example.db;
 
-import com.example.entity.Article;
-import org.junit.jupiter.api.*;
-import org.mockito.MockedStatic;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import com.example.entity.Article;
 
 @DisplayName("ArticleMysqlDatabase 테스트")
 class ArticleMysqlDatabaseTest {
@@ -45,8 +56,12 @@ class ArticleMysqlDatabaseTest {
 	@DisplayName("아티클을 데이터베이스에 추가할 수 있다")
 	void insertArticle() throws SQLException {
 		// given
-		Article article = new Article(null, "writer", "title", "contents");
-		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+		Article article = new Article(null, "writer", "title", "contents", LocalDateTime.now(), false, "username");
+		when(connection.prepareStatement(anyString(), anyInt())).thenReturn(preparedStatement);
+		ResultSet rs = mock(ResultSet.class);
+		when(preparedStatement.getGeneratedKeys()).thenReturn(rs);
+		when(resultSet.next()).thenReturn(true);
+		when(resultSet.getLong(1)).thenReturn(1L);
 
 		// when
 		articleDatabase.insert(article);
@@ -69,6 +84,7 @@ class ArticleMysqlDatabaseTest {
 		when(resultSet.getString("userId")).thenReturn("writer");
 		when(resultSet.getString("title")).thenReturn("title");
 		when(resultSet.getString("contents")).thenReturn("contents");
+		when(resultSet.getTimestamp("createdAt")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
 
 		// when
 		Optional<Article> foundArticle = articleDatabase.findById(id);
@@ -93,6 +109,7 @@ class ArticleMysqlDatabaseTest {
 		when(resultSet.getString("userId")).thenReturn("writer1", "writer2");
 		when(resultSet.getString("title")).thenReturn("title1", "title2");
 		when(resultSet.getString("contents")).thenReturn("contents1", "contents2");
+		when(resultSet.getTimestamp("createdAt")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
 
 		// when
 		List<Article> articles = articleDatabase.findAll();
@@ -107,16 +124,15 @@ class ArticleMysqlDatabaseTest {
 	void updateArticle() throws SQLException {
 		// given
 		Long id = 1L;
-		Article article = new Article(id, "writer", "title", "contents");
+		Article article = new Article(id, "writer", "title", "contents", LocalDateTime.now(), false, "username");
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
 		// when
 		articleDatabase.update(id, article);
 
 		// then
-		verify(preparedStatement).setString(1, article.getUserId());
-		verify(preparedStatement).setString(2, article.getTitle());
-		verify(preparedStatement).setString(3, article.getContents());
+		verify(preparedStatement).setString(1, article.getTitle());
+		verify(preparedStatement).setString(2, article.getContents());
 		verify(preparedStatement).setLong(4, id);
 		verify(preparedStatement).executeUpdate();
 	}

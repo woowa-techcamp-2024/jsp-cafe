@@ -1,12 +1,14 @@
 package com.example.service;
 
 import com.example.db.ArticleDatabase;
+import com.example.db.ReplyDatabase;
 import com.example.dto.SaveArticleRequest;
 import com.example.entity.Article;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,11 +20,13 @@ class ArticleServiceTest {
 
 	private ArticleService articleService;
 	private ArticleDatabase articleDatabase;
+	private ReplyDatabase replyDatabase;
 
 	@BeforeEach
 	void setUp() {
 		articleDatabase = mock(ArticleDatabase.class);
-		articleService = new ArticleService(articleDatabase);
+		replyDatabase = mock(ReplyDatabase.class);
+		articleService = new ArticleService(articleDatabase, replyDatabase);
 	}
 
 	@Test
@@ -33,7 +37,7 @@ class ArticleServiceTest {
 		SaveArticleRequest request = new SaveArticleRequest("title", "contents");
 
 		// when
-		articleService.savePost(userId, request);
+		articleService.savePost(userId, "username", request);
 
 		// then
 		verify(articleDatabase, times(1)).insert(any(Article.class));
@@ -44,7 +48,7 @@ class ArticleServiceTest {
 	void getArticle() {
 		// given
 		Long articleId = 1L;
-		Article article = new Article(articleId, "user1", "title", "contents");
+		Article article = new Article(articleId, "user1", "title", "contents", LocalDateTime.now(), false, "username");
 		when(articleDatabase.findById(articleId)).thenReturn(Optional.of(article));
 
 		// when

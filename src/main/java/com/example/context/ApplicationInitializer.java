@@ -9,10 +9,14 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 import com.example.db.ArticleDatabase;
-import com.example.db.ArticleMemoryDatabase;
+import com.example.db.ArticleMysqlDatabase;
+import com.example.db.ReplyDatabase;
+import com.example.db.ReplyMysqlDatabase;
 import com.example.db.UserDatabase;
 import com.example.db.UserMysqlDatabase;
+import com.example.exception.BaseException;
 import com.example.service.ArticleService;
+import com.example.service.ReplyService;
 import com.example.service.UserService;
 
 import jakarta.servlet.ServletContextEvent;
@@ -25,17 +29,21 @@ public class ApplicationInitializer implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		UserDatabase userDatabase = new UserMysqlDatabase();
-		ArticleDatabase articleDatabase = new ArticleMemoryDatabase();
+		ArticleDatabase articleDatabase = new ArticleMysqlDatabase();
+		ReplyDatabase replyDatabase = new ReplyMysqlDatabase();
 		sce.getServletContext().setAttribute("userDatabase", userDatabase);
+		sce.getServletContext().setAttribute("replyDatabase", replyDatabase);
 		sce.getServletContext().setAttribute("articleDatabase", articleDatabase);
-		sce.getServletContext().setAttribute("userService", new UserService(userDatabase));
-		sce.getServletContext().setAttribute("articleService", new ArticleService(articleDatabase));
+		sce.getServletContext()
+			.setAttribute("userService", new UserService(userDatabase, articleDatabase, replyDatabase));
+		sce.getServletContext().setAttribute("articleService", new ArticleService(articleDatabase, replyDatabase));
+		sce.getServletContext().setAttribute("replyService", new ReplyService(replyDatabase));
 		String url = "jdbc:mysql://localhost:3306/codesquad";
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 
 		try (
@@ -43,7 +51,7 @@ public class ApplicationInitializer implements ServletContextListener {
 			Statement statement = connection.createStatement();
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("schema.sql")) {
 			if (inputStream == null) {
-				throw new RuntimeException("not found schema.sql");
+				throw BaseException.serverException();
 			}
 			Scanner scanner = new Scanner(inputStream);
 			scanner.useDelimiter(";");
@@ -55,7 +63,7 @@ public class ApplicationInitializer implements ServletContextListener {
 			}
 			scanner.close();
 		} catch (SQLException | IOException e) {
-			throw new RuntimeException(e);
+			throw BaseException.serverException();
 		}
 	}
 }

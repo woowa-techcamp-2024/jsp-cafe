@@ -2,37 +2,29 @@ package com.example.entity;
 
 import java.time.LocalDateTime;
 
-public class Article {
+public class Reply {
 
 	private Long id;
-	private String userId;
-	private String title;
 	private String contents;
 	private LocalDateTime createdAt;
 	private boolean deleted;
+	private Long articleId;
+	private String userId;
 	private String userName;
 
-	public Article(Long id, String userId, String title, String contents, LocalDateTime createdAt, boolean deleted,
+	public Reply(Long id, String contents, LocalDateTime createdAt, boolean deleted, Long articleId, String userId,
 		String userName) {
 		this.id = id;
-		this.userId = userId;
-		this.title = title;
 		this.contents = contents;
 		this.createdAt = createdAt;
 		this.deleted = deleted;
+		this.articleId = articleId;
+		this.userId = userId;
 		this.userName = userName;
 	}
 
 	public Long getId() {
 		return id;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public String getTitle() {
-		return title;
 	}
 
 	public String getContents() {
@@ -43,12 +35,16 @@ public class Article {
 		return createdAt;
 	}
 
-	public void updateId(Long id) {
-		this.id = id;
-	}
-
 	public boolean isDeleted() {
 		return deleted;
+	}
+
+	public Long getArticleId() {
+		return articleId;
+	}
+
+	public String getUserId() {
+		return userId;
 	}
 
 	public void delete() {

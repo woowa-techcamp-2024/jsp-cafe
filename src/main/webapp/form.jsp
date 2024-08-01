@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="kr">
-<%@ include file="../template/head.jsp"%>
+<%@ include file="WEB-INF/template/head.jsp"%>
 <body>
-<%@ include file="../template/top-header.jsp"%>
-<%@ include file="../template/sub-header.jsp"%>
+<%@ include file="WEB-INF/template/top-header.jsp"%>
+<%@ include file="WEB-INF/template/sub-header.jsp"%>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -34,6 +34,6 @@
 </div>
 
 <!-- script references -->
-<%@include file="../template/footer.jsp" %>
+<%@include file="WEB-INF/template/footer.jsp" %>
 </body>
 </html>
