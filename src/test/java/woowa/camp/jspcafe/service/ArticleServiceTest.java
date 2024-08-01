@@ -21,6 +21,7 @@ import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
 import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
+import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
@@ -35,6 +36,7 @@ class ArticleServiceTest {
     private DatabaseConnector databaseConnector;
     private ArticleRepository articleRepository;
     private UserRepository userRepository;
+    private ReplyRepository replyRepository;
     private DateTimeProvider fixedDateTime;
     private ArticleService articleService;
 
@@ -44,7 +46,7 @@ class ArticleServiceTest {
         articleRepository = new DBArticleRepository(databaseConnector);
         userRepository = new InMemoryUserRepository();
         fixedDateTime = new FixedDateTimeProvider(2024, 7, 25);
-        articleService = new ArticleService(articleRepository, userRepository, fixedDateTime);
+        articleService = new ArticleService(articleRepository, userRepository, replyRepository, fixedDateTime);
     }
 
     @Nested
