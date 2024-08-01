@@ -1,9 +1,10 @@
 package codesquad.servlet;
 
-import codesquad.exception.DuplicateIdException;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
+import codesquad.exception.DuplicateIdException;
 import codesquad.exception.IncorrectPasswordException;
+import codesquad.servlet.annotation.authentication.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -30,6 +31,10 @@ public class UsersServlet extends HttpServlet {
         userDao = (UserDao) servletContext.getAttribute("userDao");
     }
 
+    /**
+     * 유저 리스트 요청
+     */
+    @Authorized
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Listing all users");
@@ -38,6 +43,9 @@ public class UsersServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/views/user/list.jsp").forward(req, resp);
     }
 
+    /**
+     * 유저 등록 요청
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Registering user");
@@ -58,6 +66,10 @@ public class UsersServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 유저 수정 요청
+     */
+    @Authorized
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Updating user info");

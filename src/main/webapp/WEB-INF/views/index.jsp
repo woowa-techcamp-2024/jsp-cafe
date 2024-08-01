@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="codesquad.servlet.dto.ArticleResponse" %>
+<%@ page import="codesquad.servlet.dao.ArticleQuery.ArticleResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>

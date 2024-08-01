@@ -3,8 +3,6 @@ package codesquad.infra;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
 import codesquad.exception.DuplicateIdException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,21 +10,29 @@ import java.util.List;
 import java.util.Optional;
 
 public class MySqlUserDao implements UserDao {
-    private static final Logger logger = LoggerFactory.getLogger(MySqlUserDao.class);
+    private ConnectionManager connectionManager;
+
+    public MySqlUserDao(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     @Override
     public Long save(User user) throws DuplicateIdException {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
             String sql = "insert into users(user_id,password,name,email) values(?,?,?,?)";
-            PreparedStatement pstmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-            pstmt.executeUpdate();
-            ResultSet generatedKeys = pstmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                long id = generatedKeys.getLong(1);
+            preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, user.getUserId());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getName());
+            preparedStatement.setString(4, user.getEmail());
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                long id = resultSet.getLong(1);
                 user = new User(id, user);
                 return id;
             }
@@ -35,16 +41,22 @@ public class MySqlUserDao implements UserDao {
             throw new DuplicateIdException("중복된 아이디 입니다.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
             String sql = "select * from users where id = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setLong(1, id);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String userId = resultSet.getString("user_id");
                 String password = resultSet.getString("password");
@@ -55,16 +67,22 @@ public class MySqlUserDao implements UserDao {
             return Optional.empty();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public Optional<User> findByUserId(String userId) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
             String sql = "select * from users where user_id = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, userId);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userId);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 String password = resultSet.getString("password");
@@ -75,15 +93,21 @@ public class MySqlUserDao implements UserDao {
             return Optional.empty();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public List<User> findAll() {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
             String sql = "select * from users";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            ResultSet resultSet = pstmt.executeQuery();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             List<User> users = new ArrayList<>();
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
@@ -96,23 +120,30 @@ public class MySqlUserDao implements UserDao {
             return users;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
         }
     }
 
     @Override
     public void update(User user) {
-        try (Connection connection = MySqlConnectionManager.getConnection()) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = connectionManager.getConnection();
             String sql = "update users set name = ?, email = ? where id = ?";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, user.getName());
-            pstmt.setString(2, user.getEmail());
-            pstmt.setLong(3, user.getId());
-            int updatedRows = pstmt.executeUpdate();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setLong(3, user.getId());
+            int updatedRows = preparedStatement.executeUpdate();
             if (updatedRows == 0) {
                 throw new SQLException("Failed to update user");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement);
         }
     }
 }

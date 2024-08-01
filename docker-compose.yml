@@ -9,9 +9,15 @@ services:
       MYSQL_PASSWORD: test_password
     ports:
       - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 2
     volumes:
       - mysql-data:/var/lib/mysql
       - ./src/main/resources/db/init:/docker-entrypoint-initdb.d
+    networks:
+      - network
 
   tomcat:
     build:
@@ -19,13 +25,20 @@ services:
       dockerfile: Dockerfile
     container_name: tomcat
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       MYSQL_SERVERNAME: mysql
       MYSQL_USERNAME: test_user
       MYSQL_PASSWORD: test_password
+    restart: always
+    networks:
+      - network
 
 volumes:
   mysql-data:
+
+networks:
+  network:

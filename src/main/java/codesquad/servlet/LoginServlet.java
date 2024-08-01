@@ -18,12 +18,22 @@ import java.util.Optional;
 public class LoginServlet extends HttpServlet {
     private UserDao userDao;
 
+    public LoginServlet() {
+    }
+
+    public LoginServlet(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         userDao = (UserDao) servletContext.getAttribute("userDao");
     }
 
+    /**
+     * 로그인 폼 요청
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("userId");
@@ -33,6 +43,9 @@ public class LoginServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(req, resp);
     }
 
+    /**
+     * 로그인 요청
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("userId");
