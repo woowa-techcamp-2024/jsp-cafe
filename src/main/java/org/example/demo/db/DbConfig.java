@@ -89,6 +89,8 @@ public class DbConfig {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new InternalServerError("Failed to create database: " + e.getMessage());
+        } finally {
+            dataSource.close();
         }
     }
 
