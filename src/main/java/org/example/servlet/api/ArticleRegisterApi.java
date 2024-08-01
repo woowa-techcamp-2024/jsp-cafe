@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.example.constance.AliveStatus;
 import org.example.constance.DataHandler;
 import org.example.constance.SessionName;
@@ -38,7 +39,8 @@ public class ArticleRegisterApi extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (User) session.getAttribute(SessionName.USER.getName());
         String author = user.getNickname();
-        Article article = new Article(title, content, author, LocalDateTime.now(), AliveStatus.ALIVE, user.getUserId());
+        Article article = new Article(title, content, author, LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+                AliveStatus.ALIVE, user.getUserId());
         Article savedArticle = articleDataHandler.insert(article);
         log.debug("[ArticleRegisterApi]" + savedArticle.toString());
         response.sendRedirect("/");

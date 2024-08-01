@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.example.constance.DataHandler;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
@@ -40,7 +41,7 @@ public class UserRegisterApi extends HttpServlet {
         if (isDuplicateEmail(request, response, findUser)) {
             return;
         }
-        User user = new User(email, nickname, password, LocalDateTime.now());
+        User user = new User(email, nickname, password, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         User savedUser = userDataHandler.insert(user);
         log.debug("[UserRegisterApi]" + savedUser.toString());
         response.sendRedirect("/login");
