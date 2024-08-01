@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.example.cafe.common.error.CafeException;
+import org.example.cafe.common.exception.CafeException;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
-import org.example.cafe.common.error.BadRequestException;
+import org.example.cafe.common.exception.BadRequestException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.Reply;

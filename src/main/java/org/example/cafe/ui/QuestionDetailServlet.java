@@ -12,7 +12,7 @@ import java.util.List;
 import org.example.cafe.application.QuestionService;
 import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.dto.QuestionUpdateDto;
-import org.example.cafe.common.error.BadAuthenticationException;
+import org.example.cafe.common.exception.BadAuthenticationException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.utils.JsonDataBinder;

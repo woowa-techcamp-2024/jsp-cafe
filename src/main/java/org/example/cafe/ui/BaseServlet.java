@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.example.cafe.common.error.CafeException;
+import org.example.cafe.common.exception.CafeException;
 import org.slf4j.Logger;
 
 public abstract class BaseServlet extends HttpServlet {

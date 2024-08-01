@@ -11,7 +11,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import org.example.cafe.application.UserService;
 import org.example.cafe.application.dto.UserUpdateDto;
-import org.example.cafe.common.error.BadAuthenticationException;
+import org.example.cafe.common.exception.BadAuthenticationException;
 import org.example.cafe.domain.User;
 import org.slf4j.Logger;
 

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.example.cafe.common.error.CafeException;
+import org.example.cafe.common.exception.CafeException;
 import org.example.cafe.domain.User;
 import org.example.cafe.domain.UserRepository;
 import org.example.cafe.infrastructure.database.DbConnector;

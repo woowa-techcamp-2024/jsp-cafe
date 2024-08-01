@@ -2,8 +2,8 @@ package org.example.cafe.application;
 
 import java.util.List;
 import org.example.cafe.application.dto.ReplyCreateDto;
-import org.example.cafe.common.error.BadAuthenticationException;
-import org.example.cafe.common.error.DataNotFoundException;
+import org.example.cafe.common.exception.BadAuthenticationException;
+import org.example.cafe.common.exception.DataNotFoundException;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
