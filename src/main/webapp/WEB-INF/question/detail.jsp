@@ -211,7 +211,7 @@ function deleteQuestion() {
             window.location.href = "/"; // 질문 목록 페이지로 리디렉트
         } else {
             // 오류 처리
-            alert("질문 삭제 중 오류가 발생했습니다.");
+            alert("다른 사람이 쓴 댓글이 있어서 삭제할 수 없습니다.");
         }
     }).catch(error => {
         console.error("Error:", error);

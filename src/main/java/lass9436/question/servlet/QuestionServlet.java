@@ -1,7 +1,10 @@
 package lass9436.question.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
+import lass9436.comment.model.Comment;
+import lass9436.comment.model.CommentRepository;
 import org.json.JSONObject;
 
 import jakarta.servlet.ServletConfig;
@@ -21,12 +24,14 @@ public class QuestionServlet extends HttpServlet {
 
 	private UserRepository userRepository;
 	private QuestionRepository questionRepository;
+	private CommentRepository commentRepository;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		questionRepository = (QuestionRepository)config.getServletContext().getAttribute("questionRepository");
 		userRepository = (UserRepository)config.getServletContext().getAttribute("userRepository");
+		commentRepository = (CommentRepository)config.getServletContext().getAttribute("commentRepository");
 	}
 
 	@Override
@@ -76,6 +81,14 @@ public class QuestionServlet extends HttpServlet {
 		long userSeq = (long)req.getSession().getAttribute("userSeq");
 		if (question.getUserSeq() != userSeq) {
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
+		}
+		// 댓글 중에 자기가 쓴 댓글이 아닌 게 있다면 글을 삭제할 수 없음
+		List<Comment> comments = commentRepository.findByQuestionSeq(seq);
+		for (Comment comment : comments) {
+			if (comment.getUserSeq() != userSeq) {
+				resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
+				return;
+			}
 		}
 		questionRepository.deleteByQuestionSeq(seq);
 		resp.setStatus(HttpServletResponse.SC_OK);
