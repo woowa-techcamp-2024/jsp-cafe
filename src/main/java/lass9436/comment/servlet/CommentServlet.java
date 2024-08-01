@@ -2,6 +2,7 @@ package lass9436.comment.servlet;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,6 +31,15 @@ public class CommentServlet extends HttpServlet {
 		long userSeq = (long)req.getSession(false).getAttribute("userSeq");
 		Comment comment = new Comment(userSeq, questionSeq, writer, contents);
 		commentRepository.save(comment);
+
+		// JSON 응답 생성
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonResponse = objectMapper.writeValueAsString(comment);
+
+		// 응답 설정
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
+		resp.getWriter().write(jsonResponse);
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 }

@@ -86,14 +86,14 @@
                                 </div>
                             </article>
                             </c:forEach>
-                            <form class="submit-write" id="post-comment-form">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea id="post-comment-text" name="contents" class="form-control" placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="button" onclick="postComment()">답변하기</button>
-                                <div class="clearfix" />
-                            </form>
                         </div>
+                        <form class="submit-write" id="post-comment-form">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea id="post-comment-text" name="contents" class="form-control" placeholder="Update your status"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="button" onclick="postComment()">답변하기</button>
+                            <div class="clearfix" />
+                        </form>
                     </div>
                 </div>
             </div>
@@ -155,9 +155,38 @@ function postComment() {
             }
             throw new Error('Network response was not ok.');
         })
-        .then(data => {
-            console.log('Success:', data);
-            // Handle success (e.g., update the UI)
+        .then(comment => {
+            const article = document.createElement('article');
+            article.className = 'article';
+            article.id = 'answer-' + comment.commentSeq;
+            article.innerHTML =
+                '<div class="article-header">' +
+                '<div class="article-header-thumb">' +
+                '<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">' +
+                '</div>' +
+                '<div class="article-header-text">' +
+                '<a href="/userPage?action=detail&seq=' + comment.userSeq + '" class="article-author-name">' + comment.writer + '</a>' +
+                '</div>' +
+                '</div>' +
+                '<div class="article-doc comment-doc">' +
+                '<p>' + comment.contents + '</p>' +
+                '</div>' +
+                '<div class="article-util">' +
+                '<ul class="article-util-list">' +
+                '<li>' +
+                '<a class="link-modify-article" href="#">수정</a>' +
+                '</li>' +
+                '<li>' +
+                '<form class="delete-answer-form" action="#" method="POST">' +
+                '<input type="hidden" name="_method" value="DELETE">' +
+                '<button type="submit" class="delete-answer-button">삭제</button>' +
+                '</form>' +
+                '</li>' +
+                '</ul>' +
+                '</div>';
+
+            // Append the new article to the div with class 'qna-comment-slipp-articles'
+            document.querySelector('.qna-comment-slipp-articles').appendChild(article);
         })
         .catch(error => {
             console.error('Error:', error);
