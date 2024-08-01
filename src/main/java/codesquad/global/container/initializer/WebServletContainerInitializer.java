@@ -30,6 +30,6 @@ public class WebServletContainerInitializer implements ServletContainerInitializ
                 throw new RuntimeException(e);
             }
         }
-         logger.info("AppInitializer onStartup completed...");
+        logger.info("AppInitializer onStartup completed...");
     }
 }

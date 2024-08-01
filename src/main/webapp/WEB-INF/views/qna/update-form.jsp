@@ -1,4 +1,4 @@
-<%@ page import="codesquad.ui.dao.ArticleQuery.ArticleResponse" %>
+<%@ page import="codesquad.global.dao.ArticleQuery.ArticleResponse" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">

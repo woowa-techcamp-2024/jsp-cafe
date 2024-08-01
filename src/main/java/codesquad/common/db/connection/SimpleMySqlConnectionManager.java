@@ -1,6 +1,6 @@
 package codesquad.common.db.connection;
 
-import codesquad.exception.ExternalConnectionException;
+import codesquad.common.exception.ExternalConnectionException;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 import java.io.IOException;

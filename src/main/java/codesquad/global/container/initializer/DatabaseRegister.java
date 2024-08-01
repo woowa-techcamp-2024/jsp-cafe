@@ -1,14 +1,14 @@
 package codesquad.global.container.initializer;
 
+import codesquad.article.infra.MySqlArticleRepository;
+import codesquad.article.repository.ArticleRepository;
 import codesquad.common.db.connection.ConnectionManager;
-import codesquad.common.db.transaction.JdbcTransactionManager;
-import codesquad.domain.article.ArticleDao;
-import codesquad.domain.user.UserDao;
-import codesquad.infra.MySqlArticleDao;
-import codesquad.infra.MySqlArticleQuery;
-import codesquad.infra.MySqlUserDao;
 import codesquad.common.db.connection.ServerConnectionManager;
-import codesquad.ui.dao.ArticleQuery;
+import codesquad.common.db.transaction.JdbcTransactionManager;
+import codesquad.global.dao.ArticleQuery;
+import codesquad.global.dao.MySqlArticleQuery;
+import codesquad.user.infra.MySqlUserRepository;
+import codesquad.user.repository.UserRepository;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +28,13 @@ public class DatabaseRegister implements AppInit {
         DataSource ds = (DataSource) envContext.lookup("jdbc/cafe-db");
         ConnectionManager connectionManager = new ServerConnectionManager(ds);
         JdbcTransactionManager jdbcTransactionManager = new JdbcTransactionManager(connectionManager);
-        UserDao userDao = new MySqlUserDao(jdbcTransactionManager);
-        ArticleDao articleDao = new MySqlArticleDao(jdbcTransactionManager);
+        UserRepository userRepository = new MySqlUserRepository(jdbcTransactionManager);
+        ArticleRepository articleRepository = new MySqlArticleRepository(jdbcTransactionManager);
         ArticleQuery articleQuery = new MySqlArticleQuery(jdbcTransactionManager);
-        servletContext.setAttribute("userDao", userDao);
-        servletContext.setAttribute("articleDao", articleDao);
-        servletContext.setAttribute("articleQuery", articleQuery);
-        servletContext.setAttribute("jdbcTransactionManager", jdbcTransactionManager);
+        servletContext.setAttribute("UserRepository", userRepository);
+        servletContext.setAttribute("ArticleRepository", articleRepository);
+        servletContext.setAttribute("ArticleQuery", articleQuery);
+        servletContext.setAttribute("JdbcTransactionManager", jdbcTransactionManager);
         logger.info("Database registered on context");
     }
 }

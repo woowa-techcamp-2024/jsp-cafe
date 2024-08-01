@@ -1,6 +1,6 @@
 package codesquad.common.db.connection;
 
-import codesquad.exception.ExternalConnectionException;
+import codesquad.common.exception.ExternalConnectionException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
