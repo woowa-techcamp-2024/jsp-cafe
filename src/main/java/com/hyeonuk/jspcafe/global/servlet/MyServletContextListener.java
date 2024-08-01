@@ -10,6 +10,9 @@ import com.hyeonuk.jspcafe.global.utils.BcryptPasswordEncoder;
 import com.hyeonuk.jspcafe.global.utils.PasswordEncoder;
 import com.hyeonuk.jspcafe.member.dao.MemberDao;
 import com.hyeonuk.jspcafe.member.dao.MysqlMemberDao;
+import com.hyeonuk.jspcafe.reply.dao.MysqlReplyDao;
+import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
+import com.hyeonuk.jspcafe.utils.ObjectMapper;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
@@ -17,6 +20,8 @@ public class MyServletContextListener implements ServletContextListener{
     private MemberDao memberDao;
     private PasswordEncoder passwordEncoder;
     private ArticleDao articleDao;
+    private ReplyDao replyDao;
+    private ObjectMapper objectMapper;
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContextListener.super.contextInitialized(sce);
@@ -26,9 +31,13 @@ public class MyServletContextListener implements ServletContextListener{
             memberDao = new MysqlMemberDao(dbManager);
             passwordEncoder = new BcryptPasswordEncoder();
             articleDao = new MysqlArticleDao(dbManager);
+            replyDao = new MysqlReplyDao(dbManager);
+            objectMapper = new ObjectMapper();
             sce.getServletContext().setAttribute("memberDao", memberDao);
             sce.getServletContext().setAttribute("passwordEncoder", passwordEncoder);
             sce.getServletContext().setAttribute("articleDao", articleDao);
+            sce.getServletContext().setAttribute("replyDao", replyDao);
+            sce.getServletContext().setAttribute("objectMapper", objectMapper);
         } catch (Exception e) {
             throw new HttpInternalServerErrorException("서버에러입니다.");
         }
