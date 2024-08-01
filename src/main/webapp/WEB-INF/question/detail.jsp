@@ -188,6 +188,9 @@ function postComment() {
 
             // Append the new article to the div with class 'qna-comment-slipp-articles'
             document.querySelector('.qna-comment-slipp-articles').appendChild(article);
+            const commentCountElement = document.querySelector('.qna-comment-count strong');
+            const currentCount = parseInt(commentCountElement.textContent);
+            commentCountElement.textContent = currentCount + 1;
         })
         .catch(error => {
             console.error('Error:', error);
