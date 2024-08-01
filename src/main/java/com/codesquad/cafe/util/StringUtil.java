@@ -1,7 +1,7 @@
 package com.codesquad.cafe.util;
 
-public final class StringUtils {
-    private StringUtils(){}
+public final class StringUtil {
+    private StringUtil(){}
     public static boolean isBlank(String str) {
         return str == null || str.trim().isEmpty();
     }
