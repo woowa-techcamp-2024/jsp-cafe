@@ -10,6 +10,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 
+/*
+* hikariCP로 변경 ㅇ예정
+* */
 @Component
 public class DatabaseConnectionPool {
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/cafe";

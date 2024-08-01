@@ -26,7 +26,11 @@ public class InMemorySessionManager implements SessionManager {
 
     @Override
     public HttpSession addSessionToManager(HttpSession session) throws SQLException {
-        String userId = (String) session.getAttribute("userId");
+        Object userIdAttribute = session.getAttribute("userId");
+        if (userIdAttribute == null) {
+            throw new IllegalArgumentException();
+        }
+        String userId = (String) userIdAttribute;
         UserDto user = userService.getUserFromUserId(userId);
 
         // 내부용 세션 객체 생성
@@ -69,10 +73,6 @@ public class InMemorySessionManager implements SessionManager {
         }
     }
 
-    private void startCleanupTask() {
-        scheduler.scheduleAtFixedRate(this::cleanExpiredSessions, 1, 1, TimeUnit.MINUTES);
-    }
-
     public void cleanExpiredSessions() {
         long now = System.currentTimeMillis();
         sessions.entrySet().removeIf(entry -> isSessionExpired(entry.getValue(), now));
@@ -91,8 +91,12 @@ public class InMemorySessionManager implements SessionManager {
                 '}';
     }
 
+    private void startCleanupTask() {
+        scheduler.scheduleAtFixedRate(this::cleanExpiredSessions, 1, 1, TimeUnit.MINUTES);
+    }
     // 내부용 세션 클래스
     private static class InternalSession {
+
         private final HttpSession originalSession;
         private final Map<String, Object> internalAttributes = new HashMap<>();
         private long lastAccessTime;
