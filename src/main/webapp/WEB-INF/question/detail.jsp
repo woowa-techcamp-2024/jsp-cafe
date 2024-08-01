@@ -72,6 +72,7 @@
                                     <p>${comment.contents}</p>
                                 </div>
                                 <div class="article-util">
+                                    <c:if test="${sessionScope.userSeq == comment.userSeq}">
                                     <ul class="article-util-list">
                                         <li>
                                             <a class="link-modify-article" href="#">수정</a>
@@ -83,6 +84,7 @@
                                             </form>
                                         </li>
                                     </ul>
+                                    </c:if>
                                 </div>
                             </article>
                             </c:forEach>
@@ -135,7 +137,6 @@
 function postComment() {
     const form = document.querySelector('#post-comment-form');
     const contents = form.querySelector('#post-comment-text').value;
-    const actionUrl = form.getAttribute('action');
     const questionSeq = "${question.questionSeq}";
 
     const data = new URLSearchParams();
