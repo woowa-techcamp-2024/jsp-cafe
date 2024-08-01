@@ -23,6 +23,7 @@ import com.woowa.support.ReplyFixture;
 import com.woowa.support.StubHttpServletRequest;
 import com.woowa.support.StubHttpServletResponse;
 import com.woowa.support.StubHttpSession;
+import com.woowa.support.StubPrintWriter;
 import com.woowa.support.UserFixture;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
@@ -38,10 +39,11 @@ class QuestionDetailServletTest {
     private UserDatabase userDatabase;
     private QuestionDatabase questionDatabase;
     private ReplyDatabase replyDatabase;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
 
@@ -152,7 +154,7 @@ class QuestionDetailServletTest {
         }
 
         @Test
-        @DisplayName("질문 상세 조회로 리다이렉트한다.")
+        @DisplayName("json 응답을 출력한다.")
         void redirectToQuestionDetail() throws ServletException, IOException {
             //given
             StubHttpSession session = new StubHttpSession();
@@ -164,7 +166,9 @@ class QuestionDetailServletTest {
             questionDetailServlet.doPost(request, response);
 
             //then
-            assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
+            Reply reply = replyDatabase.findAll().stream().findFirst().get();
+            StubPrintWriter writer = (StubPrintWriter) response.getWriter();
+            assertThat(writer.getPrintedValue()).isEqualTo(objectMapper.writeValueAsString(reply));
         }
 
         @Test
@@ -279,7 +283,7 @@ class QuestionDetailServletTest {
             }
 
             @Test
-            @DisplayName("질문 상세 화면으로 리다이렉트한다.")
+            @DisplayName("204 응답을 반환한다.")
             void redirectToQuestionDetail() throws ServletException, IOException {
                 //given
                 StubHttpSession session = new StubHttpSession();
@@ -290,7 +294,7 @@ class QuestionDetailServletTest {
                 questionDetailServlet.doDelete(request, response);
 
                 //then
-                assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
+                assertThat(response.getStatus()).isEqualTo(204);
             }
 
             @Test
