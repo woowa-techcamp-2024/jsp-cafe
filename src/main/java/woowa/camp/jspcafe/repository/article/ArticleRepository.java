@@ -1,5 +1,6 @@
 package woowa.camp.jspcafe.repository.article;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import woowa.camp.jspcafe.domain.Article;
@@ -18,6 +19,6 @@ public interface ArticleRepository {
 
     void update(Article article);
 
-    void deleteById(Long id);
+    void softDeleteById(Long id, LocalDate deletedTime);
 
 }
