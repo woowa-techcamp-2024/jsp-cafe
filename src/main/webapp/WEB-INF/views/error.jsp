@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <% String status = String.valueOf((Integer) request.getAttribute("status"));
-        String message = (String) request.getAttribute("message");%>
+    <% String status = request.getParameter("status");
+        String message = (String) request.getParameter("message");%>
     <title><%= status %>
     </title>
     <style>

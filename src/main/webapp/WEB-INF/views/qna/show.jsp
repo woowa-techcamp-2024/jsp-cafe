@@ -83,8 +83,7 @@
                                         <li>
                                             <input type="hidden" name="replyArticleId" id="replyArticleId"
                                                    value="<%=article.articleId()%>">
-                                            <button onclick="deleteElementById('reply-<%=reply.replyId()%>')"
-                                                    type="submit" class="delete-answer-button"
+                                            <button type="submit" class="delete-answer-button"
                                                     data-reply-id="<%=reply.replyId()%>">삭제
                                             </button>
                                         </li>
@@ -125,15 +124,16 @@
                 } else if (response.ok) {
                     return response.text();
                 } else {
-                    throw new Error('Network response was not ok');
+                    return response.json().then(errorData => {
+                        const status = errorData.status;
+                        const message = errorData.detailMessage;
+                        console.log("Error deleting article: ", status, message);
+                        throw new Error(`Error: ` + status + `: ` + message);
+                    });
                 }
-            })
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            }).catch((error) => {
+            alert(error.message);
+        });
     }
 
 
@@ -175,7 +175,7 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <button onclick="deleteElementById('reply-` + data.replyId + `')" type="button" class="delete-answer-button" data-reply-id="` + data.replyId + `">삭제</button>
+                                <button type="button" class="delete-answer-button" data-reply-id="` + data.replyId + `">삭제</button>
                             </li>
                         </ul>
                     </div>
@@ -207,6 +207,7 @@
                     method: 'DELETE'
                 }).then(response => {
                     if (response.ok) {
+                        deleteElementById("reply-" + replyId);
                         var commentCount = document.querySelector(".qna-comment-count strong");
                         commentCount.textContent = parseInt(commentCount.textContent) - 1;
                     } else {
