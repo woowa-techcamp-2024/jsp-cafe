@@ -60,13 +60,6 @@ public class ReplyServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             log.debug("ReplyServlet doPost start");
-            String method = req.getParameter("_method");
-
-            if ("DELETE".equalsIgnoreCase(method)) {
-                doDelete(req, resp);
-                return;
-            }
-
             HttpSession session = req.getSession();
             User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
 
@@ -99,16 +92,20 @@ public class ReplyServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ReplyServlet doDelete start");
-        HttpSession session = req.getSession();
-        User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
+        try {
+            log.debug("ReplyServlet doDelete start");
+            HttpSession session = req.getSession();
+            User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
 
-        Long articleId = Long.parseLong(req.getParameter("articleId"));
-        Long replyId = Long.parseLong(req.getParameter("replyId"));
+            Long articleId = Long.parseLong(req.getParameter("articleId"));
+            Long replyId = Long.parseLong(req.getParameter("replyId"));
+            log.info("articleId - {}, replyId - {}", articleId, replyId);
 
-        replyService.deleteReply(sessionUser, articleId, replyId);
-        resp.sendRedirect(req.getContextPath() + "/articles/" + articleId);
-        log.debug("ReplyServlet doDelete end");
+            replyService.deleteReply(sessionUser, articleId, replyId);
+            log.debug("ReplyServlet doDelete end");
+        } catch (Exception e) {
+            log.warn("댓글 삭제 실패 exception", e);
+        }
     }
 
 }
