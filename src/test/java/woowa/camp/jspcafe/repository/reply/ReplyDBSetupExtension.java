@@ -26,7 +26,7 @@ public class ReplyDBSetupExtension implements BeforeEachCallback, AfterEachCallb
 
             String createTableSQL = """
                     CREATE TABLE IF NOT EXISTS replies (
-                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        reply_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                         user_id BIGINT,
                         article_id BIGINT,
                         content VARCHAR(255),

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Reply {
 
-    private Long id;
+    private Long replyId;
     private Long userId;
     private Long articleId;
 
@@ -25,8 +25,8 @@ public class Reply {
         this.deletedAt = deletedAt;
     }
 
-    public Long getId() {
-        return id;
+    public Long getReplyId() {
+        return replyId;
     }
 
     public Long getUserId() {
@@ -56,14 +56,14 @@ public class Reply {
     /**
      * only allowed at repository, test
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setReplyId(Long replyId) {
+        this.replyId = replyId;
     }
 
     @Override
     public String toString() {
         return "Reply{" +
-                "id=" + id +
+                "id=" + replyId +
                 ", userId=" + userId +
                 ", articleId=" + articleId +
                 ", content='" + content + '\'' +
