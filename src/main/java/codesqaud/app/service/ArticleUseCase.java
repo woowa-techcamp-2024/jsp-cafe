@@ -2,6 +2,7 @@ package codesqaud.app.service;
 
 import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.article.ArticleDao;
+import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,9 +12,11 @@ import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 public abstract class ArticleUseCase {
     protected final ArticleDao articleDao;
+    protected final ReplyDao replyDao;
 
-    public ArticleUseCase(ArticleDao articleDao) {
+    public ArticleUseCase(ArticleDao articleDao, ReplyDao replyDao) {
         this.articleDao = articleDao;
+        this.replyDao = replyDao;
     }
 
     protected Article findArticleByIdOrElseThrow(Long id) {

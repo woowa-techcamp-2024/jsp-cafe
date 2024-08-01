@@ -20,12 +20,10 @@ import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 public class ArticleDeleteUseCase extends ArticleUseCase {
-    private final ReplyDao replyDao;
     private final DataSource dataSource;
 
     public ArticleDeleteUseCase(ArticleDao articleDao, ReplyDao replyDao, DataSource dataSource) {
-        super(articleDao);
-        this.replyDao = replyDao;
+        super(articleDao, replyDao);
         this.dataSource = dataSource;
     }
 
