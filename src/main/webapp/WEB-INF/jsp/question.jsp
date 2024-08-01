@@ -64,11 +64,11 @@
                 <c:set var="replies" value="${requestScope.replies}"/>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>${requestScope.repliesLength}</strong>개의
-                            의견</p>
+                        <p class="qna-comment-count">의견</p>
                         <div class="qna-comment-slipp-articles">
+                            <div id="top_holder"></div>
                             <c:forEach var="reply" items="${replies}">
-                                <article class="article" id="answer-1405">
+                                <article class="article" id="answer-${reply.id}">
                                     <div class="article-header">
                                         <div class="article-header-thumb">
                                             <img src="<c:url value="/resources/images/80-text.png"/>"
@@ -102,8 +102,8 @@
                             </c:forEach>
 
 
-                            <form class="submit-write" method="POST"
-                                  action="<c:url value="/replies"/>">
+                            <form id="replyCreate" name="replyCreate" class="submit-write"
+                                  method="POST" action="<c:url value="/replies"/>">
                                 <input type="hidden" id="article" name="article"
                                        value=${articleCommonResponse.id}>
                                 <div class="form-group" style="padding:14px;">
@@ -147,30 +147,48 @@
           }
         }
       });
-    })
-  })
-</script>
-<script>
-  $(document).ready(function () {
-    $('#replyDelete').on('submit', function (e) {
+    });
+
+    $('#replyCreate').on('submit', function (e) {
       e.preventDefault();
 
       let form = $(this);
       let actionUrl = form.attr('action');
+      let data = form.serialize();
 
       $.ajax({
         url: actionUrl,
-        type: 'DELETE',
-        success: function () {
-          window.location.href = '/questions/' + ${articleCommonResponse.id};
-        },
-        error: function (xhr, status, error) {
-          let errorMessage = xhr.responseText;
-          if (confirm(status + ": " + errorMessage)) {
-            window.location.href = '/questions/' + ${articleCommonResponse.id};
-          }
+        type: 'POST',
+        data: data,
+        success: function (response) {
+          addReplyToDOM(response);
+          let textarea = document.querySelector('#replyCreate textarea');
+          textarea.value = '';
         }
       });
     });
   })
+</script>
+<script>
+  $(document).on('submit', '.delete-answer-form', function (e) {
+    e.preventDefault();
+
+    let form = $(this);
+    let actionUrl = form.attr('action');
+    let replyId = form.closest('.article').attr('id').split('-')[1];
+
+    $.ajax({
+      url: actionUrl,
+      type: 'DELETE',
+      success: function () {
+        $('#answer-' + replyId).remove();
+      },
+      error: function (xhr, status, error) {
+        let errorMessage = xhr.responseText;
+        if (confirm(status + ": " + errorMessage)) {
+          window.location.href = '/questions/' + ${articleCommonResponse.id};
+        }
+      }
+    });
+  });
 </script>

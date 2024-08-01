@@ -81,7 +81,6 @@ public class ArticleServlet extends HttpServlet {
             Long.parseLong(articleId));
         req.setAttribute("article", articleCommonResponse);
         req.setAttribute("replies", replyCommonResponses);
-        req.setAttribute("repliesLength", replyCommonResponses.size());
         req.getRequestDispatcher("/WEB-INF/jsp/question.jsp").forward(req, resp);
     }
 

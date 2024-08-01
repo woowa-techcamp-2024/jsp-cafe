@@ -83,8 +83,7 @@ public class UserInfoServlet extends HttpServlet {
         Map<String, String[]> parameterMap = req.getParameterMap();
         UserSessionResponse userSessionResponse = (UserSessionResponse) req.getSession()
             .getAttribute("user");
-        if (userSessionResponse == null || !(userSessionResponse.getUserId()
-            .equals(parameterMap.get("userId")[0]))) {
+        if (!(userSessionResponse.getUserId().equals(parameterMap.get("userId")[0]))) {
             throw new AccessDeniedException("본인의 요청만 수정할 수 있습니다.");
         }
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.from(parameterMap);
