@@ -50,7 +50,7 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 
 	@Override
 	public Question findByQuestionSeq(long questionSeq) {
-		String query = "SELECT * FROM questions WHERE questionSeq = ?";
+		String query = "SELECT * FROM questions WHERE questionSeq = ? AND useYn = 'Y'";
 		Question question = null;
 
 		try (Connection connection = Database.getConnection();
@@ -72,7 +72,7 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 
 	@Override
 	public List<Question> findAll() {
-		String query = "SELECT * FROM questions";
+		String query = "SELECT * FROM questions WHERE useYn = 'Y'";
 		List<Question> questions = new ArrayList<>();
 
 		try (Connection connection = Database.getConnection();
@@ -92,7 +92,7 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 
 	@Override
 	public void deleteByQuestionSeq(long questionSeq) {
-		String query = "DELETE FROM questions WHERE questionSeq = ?";
+		String query = "UPDATE questions SET useYn = 'N' WHERE questionSeq = ?";
 
 		try (Connection connection = Database.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(query)) {
@@ -107,7 +107,7 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 
 	@Override
 	public Question findByTitle(String title) {
-		String query = "SELECT * FROM questions WHERE title = ?";
+		String query = "SELECT * FROM questions WHERE title = ? and useYn = 'Y'";
 		Question question = null;
 
 		try (Connection connection = Database.getConnection();
@@ -134,6 +134,7 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 		question.setWriter(resultSet.getString("writer"));
 		question.setTitle(resultSet.getString("title"));
 		question.setContents(resultSet.getString("contents"));
+		question.setUseYn(resultSet.getString("useYn"));
 		return question;
 	}
 }

@@ -50,7 +50,7 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 
 	@Override
 	public Comment findByCommentSeq(long commentSeq) {
-		String sql = "SELECT * FROM comments WHERE commentSeq = ?";
+		String sql = "SELECT * FROM comments WHERE commentSeq = ? AND useYn = 'Y'";
 		Comment comment = null;
 
 		try (Connection conn = Database.getConnection();
@@ -71,7 +71,7 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 
 	@Override
 	public List<Comment> findAll() {
-		String sql = "SELECT * FROM comments";
+		String sql = "SELECT * FROM comments WHERE useYn = 'Y'";
 		List<Comment> comments = new ArrayList<>();
 
 		try (Connection conn = Database.getConnection();
@@ -90,7 +90,7 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 
 	@Override
 	public void deleteByCommentSeq(long commentSeq) {
-		String sql = "DELETE FROM comments WHERE commentSeq = ?";
+		String sql = "UPDATE comments SET useYn = 'N' WHERE commentSeq = ?";
 
 		try (Connection conn = Database.getConnection();
 			 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 
 	@Override
 	public List<Comment> findByQuestionSeq(long questionSeq) {
-		String sql = "SELECT * FROM comments WHERE questionSeq = ?";
+		String sql = "SELECT * FROM comments WHERE questionSeq = ? AND useYn ='Y'";
 		List<Comment> comments = new ArrayList<>();
 
 		try (Connection conn = Database.getConnection();
@@ -129,6 +129,7 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 		comment.setQuestionSeq(rs.getLong("questionSeq"));
 		comment.setWriter(rs.getString("writer"));
 		comment.setContents(rs.getString("contents"));
+		comment.setUseYn(rs.getString("useYn"));
 		return comment;
 	}
 }
