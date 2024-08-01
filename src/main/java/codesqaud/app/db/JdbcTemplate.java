@@ -18,9 +18,8 @@ public class JdbcTemplate {
     }
 
     public <T> T queryForObject(String sql, RowMapper<T> resultSetMapper, Object... values) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (int i = 1; i <= values.length; i++) {
                 preparedStatement.setObject(i, values[i - 1]);
             }
@@ -35,13 +34,14 @@ public class JdbcTemplate {
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection);
         }
     }
 
     public Object queryForObject(String sql, Object... values) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (int i = 1; i <= values.length; i++) {
                 preparedStatement.setObject(i, values[i - 1]);
             }
@@ -56,14 +56,16 @@ public class JdbcTemplate {
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection);
         }
     }
 
     public <T> List<T> query(String sql, RowMapper<T> resultSetMapper, Object... values) {
         List<T> results = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        Connection connection = DataSourceUtils.getConnection(dataSource);
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (int i = 1; i <= values.length; i++) {
                 preparedStatement.setObject(i, values[i - 1]);
             }
@@ -78,34 +80,38 @@ public class JdbcTemplate {
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection);
         }
     }
 
     public int update(String sql, Object... values) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (int i = 1; i <= values.length; i++) {
                 preparedStatement.setObject(i, values[i - 1]);
             }
-
             return preparedStatement.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DbConstraintException();
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection);
         }
     }
 
     public void execute(String sql) {
-        try (Connection connection = dataSource.getConnection()) {
-            Statement statement = connection.createStatement();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (Statement statement = connection.createStatement()) {
             logger.debug("executeQuery: {}", sql);
             statement.execute(sql);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection);
         }
     }
 }
