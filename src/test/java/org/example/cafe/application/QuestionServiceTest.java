@@ -1,6 +1,7 @@
 package org.example.cafe.application;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,6 +45,7 @@ class QuestionServiceTest {
             questionService.deleteQuestion(loginUserId, questionId);
 
             verify(questionRepository).update(question);
+            assertTrue(question.isDeleted());
         }
 
         // Deletes all replies associated with the question before deleting the question

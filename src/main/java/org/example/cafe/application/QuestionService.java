@@ -62,6 +62,7 @@ public class QuestionService {
         validNoOtherUserReplies(loginUserId, replies);
         deleteAllReplies(replies);
 
+        question.delete();
         questionRepository.update(question);
     }
 
