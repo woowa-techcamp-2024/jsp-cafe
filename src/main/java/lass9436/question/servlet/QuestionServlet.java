@@ -81,6 +81,7 @@ public class QuestionServlet extends HttpServlet {
 		long userSeq = (long)req.getSession().getAttribute("userSeq");
 		if (question.getUserSeq() != userSeq) {
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not authorized.");
+			return;
 		}
 		// 댓글 중에 자기가 쓴 댓글이 아닌 게 있다면 글을 삭제할 수 없음
 		List<Comment> comments = commentRepository.findByQuestionSeq(seq);
