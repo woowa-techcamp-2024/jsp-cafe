@@ -1,8 +1,7 @@
 package codesquad.global.servlet;
 
 import codesquad.common.authorization.annotation.Authorized;
-import codesquad.user.domain.User;
-import codesquad.user.repository.UserRepository;
+import codesquad.global.dao.UserQuery;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -20,12 +19,12 @@ import java.util.Optional;
 public class UserServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
-    private UserRepository userRepository;
+    private UserQuery userQuery;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        userRepository = (UserRepository) servletContext.getAttribute("UserRepository");
+        userQuery = (UserQuery) servletContext.getAttribute("UserQuery");
         logger.info("UserServlet initialized");
     }
 
@@ -47,44 +46,44 @@ public class UserServlet extends HttpServlet {
     }
 
     private void processUserInfo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long userId;
+        long id;
         try {
-            userId = getUserId(req.getPathInfo());
+            id = extractIdFromPath(req.getPathInfo());
         } catch (NumberFormatException e) {
             req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        Optional<User> findUser = userRepository.findById(userId);
-        if (findUser.isEmpty()) {
+        Optional<UserQuery.UserResponse> findUserResponse = userQuery.findById(id);
+        if (findUserResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 유저입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        req.setAttribute("user", findUser.get());
+        req.setAttribute("user", findUserResponse.get());
         req.getRequestDispatcher("/WEB-INF/views/user/profile.jsp").forward(req, resp);
     }
 
     private void processUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long userId;
+        long id;
         try {
-            userId = getUserId(req.getPathInfo());
+            id = extractIdFromPath(req.getPathInfo());
         } catch (NumberFormatException e) {
             req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        Optional<User> findUser = userRepository.findById(userId);
-        if (findUser.isEmpty()) {
+        Optional<UserQuery.UserResponse> findUserResponse = userQuery.findById(id);
+        if (findUserResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 유저입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        req.setAttribute("user", findUser.get());
+        req.setAttribute("user", findUserResponse.get());
         req.getRequestDispatcher("/WEB-INF/views/user/update-form.jsp").forward(req, resp);
     }
 
-    private long getUserId(String pathInfo) throws NumberFormatException {
+    private long extractIdFromPath(String pathInfo) throws NumberFormatException {
         if (pathInfo == null || !pathInfo.startsWith("/")) {
             throw new NumberFormatException("Invalid path info");
         }

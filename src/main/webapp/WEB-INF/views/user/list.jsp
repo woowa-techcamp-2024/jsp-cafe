@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="codesquad.user.domain.User" %>
+<%@ page import="codesquad.global.dao.UserQuery.UserResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -33,20 +33,20 @@
                 </thead>
                 <tbody>
                 <%
-                    List<User> users = (List<User>) request.getAttribute("users");
+                    List<UserResponse> users = (List<UserResponse>) request.getAttribute("users");
                     if (users != null) {
-                        for (User user : users) {
+                        for (UserResponse user : users) {
                 %>
                 <tr>
-                    <th scope="row"><%= user.getId() %>
+                    <th scope="row"><%= user.id() %>
                     </th>
-                    <td><%= user.getUserId() %>
+                    <td><%= user.userId() %>
                     </td>
-                    <td><%= user.getName() %>
+                    <td><%= user.name() %>
                     </td>
-                    <td><%= user.getEmail() %>
+                    <td><%= user.email() %>
                     </td>
-                    <td><a href="/users/<%= user.getId() %>/update-form" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/<%= user.id() %>/update-form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 <%
                         }
