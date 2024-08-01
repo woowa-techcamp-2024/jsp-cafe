@@ -6,7 +6,6 @@ import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Reply;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
