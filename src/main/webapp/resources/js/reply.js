@@ -29,7 +29,7 @@ const renderNewReply = (res) => {
 <!--                                            로그인한 사용자가 아니면 안 보이도록-->
                                                 <li>
                                                         <button id="delete-reply-btn" class="delete-answer-button"
-                                                                onclick="deleteReply(${res.replyId}, ${res.questionId})">
+                                                                onclick="deleteReply(${res.replyId})">
                                                             삭제
                                                         </button>
                                                     </li>
@@ -43,6 +43,7 @@ const renderNewReply = (res) => {
     replyList.appendChild(replyItem.firstChild);
 }
 
-function deleteReply(replyId, questionId) {
-    deleteAPI(`/replies/${replyId}`, (response) => window.location.href = `/questions/${questionId}`);
+function deleteReply(replyId) {
+    deleteAPI(`/replies/${replyId}`,
+        (res) => document.getElementById(`answer-${replyId}`).remove())
 }
