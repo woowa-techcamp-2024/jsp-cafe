@@ -1,4 +1,5 @@
 <%@ page import="domain.User" %>
+<%@ page import="utils.AuthUtils" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <nav class="navbar navbar-fixed-top header">
@@ -56,7 +57,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <% User loginUser = (User) session.getAttribute("loginMember");
+                <% User loginUser = (User) session.getAttribute(AuthUtils.LOGIN_MEMBER);
                     if (loginUser != null) { %>
                 <li><a href="/users?id=<%= loginUser.getId() %>"><c:out value="<%= loginUser.getName()%>"/> 님!</a></li>
                 <% } %>
