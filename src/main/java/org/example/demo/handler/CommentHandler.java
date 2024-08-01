@@ -9,7 +9,6 @@ import org.example.demo.domain.Comment;
 import org.example.demo.exception.UnauthorizedException;
 import org.example.demo.model.CommentCreateDao;
 import org.example.demo.repository.CommentRepository;
-import org.example.demo.validator.AuthValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,6 @@ public class CommentHandler {
 
     public void createComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
         Long postId = Long.valueOf(pathVariables.get(0));
-        Long lastCommentId = Long.valueOf(request.getParameter("lastCommentId"));
         String contents = request.getParameter("contents");
 
         Comment comment = commentRepository.saveComment(new CommentCreateDao(
@@ -46,7 +44,6 @@ public class CommentHandler {
         updatedComments.add(comment);
         updatedComments.addAll(getUpdatedComments(postId, comment.getId()));
 
-        logger.info("lastCommentId: {}", lastCommentId);
         logger.info("Comment created: {}", comment);
         logger.info("Updated comments: {}", updatedComments);
 

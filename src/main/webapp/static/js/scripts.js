@@ -14,18 +14,6 @@ function addAnswer(e) {
     var queryString = $(".submit-write").serialize(); // Serialize the form data
     var url = $(".submit-write").attr("action"); // Get the form action URL
 
-    // Find the largest comment ID in the existing comments
-    var largestId = 0;
-    $(".qna-comment-slipp-articles article.article").each(function () {
-        var id = parseInt($(this).attr("id"));
-        if (id > largestId) {
-            largestId = id;
-        }
-    });
-    queryString += "&lastCommentId=" + largestId;
-
-    console.log("lastCommentId: " + largestId);
-
     $.ajax({
         type: 'POST',
         url: url,
