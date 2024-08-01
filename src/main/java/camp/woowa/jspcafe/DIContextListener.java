@@ -6,19 +6,16 @@ import camp.woowa.jspcafe.repository.*;
 import camp.woowa.jspcafe.service.QuestionService;
 import camp.woowa.jspcafe.service.ReplyService;
 import camp.woowa.jspcafe.service.UserService;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
-import java.sql.Connection;;
+import java.sql.Connection;
 
 public class DIContextListener implements ServletContextListener {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DIContextListener.class);
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ServletContext sc = sce.getServletContext();
-
         // DB Connection
         Connection conn = DatabaseManager.getConnection();
 
@@ -26,6 +23,8 @@ public class DIContextListener implements ServletContextListener {
             logger.error("DB Connection Error");
             throw new RuntimeException("DB Connection Error");
         }
+
+        // TODO: 코드 리오더링에 따른 순서 보장 불가 고려
 
         // UserRepository 를 생성하고 UserService 에 주입
         UserRepository userRepository = RepositoryFactory.createUserRepository(conn);
@@ -36,7 +35,6 @@ public class DIContextListener implements ServletContextListener {
         ReplyRepository replyRepository = RepositoryFactory.createReplyRepository(conn);
         ReplyService replyService = new ReplyService(replyRepository);
         ServiceLocator.registerService(ReplyService.class, replyService);
-
 
         // QuestionRepository 를 생성하고 QuestionService 에 주입
         QuestionRepository questionRepository = RepositoryFactory.createQuestionRepository(conn);
