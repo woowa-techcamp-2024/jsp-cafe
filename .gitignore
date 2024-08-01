@@ -1,4 +1,4 @@
-src/*/resources/*.properties
+src/main/resources/config.properties
 
 .gradle
 build/
