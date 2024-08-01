@@ -18,7 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 
-import static utils.SessionUtils.getSessionUser;
+import static camp.woowa.jspcafe.utils.SessionUtils.getSessionUser;
 
 @WebServlet(value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
