@@ -82,27 +82,35 @@ public class DbArticleDao implements ArticleDao {
 
     @Override
     public Optional<Article> findById(Long id) {
-        String sql = "SELECT * FROM articles WHERE id = ?";
+        String sql = """
+        SELECT * FROM articles
+        WHERE id = ? AND activate = true
+        """;
+
         Article article = jdbcTemplate.queryForObject(sql, ARTICLE_ROW_MAPPER, id);
         return Optional.ofNullable(article);
     }
 
     @Override
     public Optional<Article> findByIdForUpdate(Long id) {
-        String sql = "SELECT * FROM articles WHERE id = ? FOR UPDATE";
+        String sql = """
+        SELECT * FROM articles
+        WHERE id = ? AND activate = true
+        FOR UPDATE
+        """;
         Article article = jdbcTemplate.queryForObject(sql, ARTICLE_ROW_MAPPER, id);
         return Optional.ofNullable(article);
     }
 
     @Override
     public List<Article> findAll() {
-        String sql = "SELECT * FROM articles";
+        String sql = "SELECT * FROM articles WHERE activate = true";
         return jdbcTemplate.query(sql, ARTICLE_ROW_MAPPER);
     }
 
     @Override
     public void delete(Article article) {
-        String sql = "DELETE FROM articles WHERE id = ?";
+        String sql = "UPDATE replies SET activate = false WHERE id = ? AND activate = true";
         int update = jdbcTemplate.update(sql, article.getId());
 
         if (update == 0) {
@@ -116,7 +124,7 @@ public class DbArticleDao implements ArticleDao {
                 SELECT articles.id, articles.title, articles.contents, articles.author_id, articles.created_at, articles.activate,
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM articles JOIN users ON articles.author_id = users.id
-                WHERE articles.id = ?
+                WHERE articles.id = ? AND activate = true
                 """;
 
         ArticleDto articleDto = jdbcTemplate.queryForObject(sql, ARTICLE_DTO_ROW_MAPPER, id);
@@ -129,6 +137,7 @@ public class DbArticleDao implements ArticleDao {
                 SELECT articles.id, articles.title, articles.contents, articles.author_id, articles.created_at, articles.activate,
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM articles JOIN users ON articles.author_id = users.id
+                WHERE activate = true
                 """;
         return jdbcTemplate.query(sql, ARTICLE_DTO_ROW_MAPPER);
     }
