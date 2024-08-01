@@ -18,4 +18,8 @@ public interface ReplyRepository {
 
     void softDeleteByUserId(Long userId, LocalDateTime deletedTime);
 
+    void softDeleteById(Long id, LocalDateTime deletedTime);
+
+    void update(Reply reply);
+
 }
