@@ -1,11 +1,11 @@
 package com.codesquad.cafe.servlet;
 
+import static com.codesquad.cafe.TestUtil.getSessionIdFromSetCookieHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
-import com.codesquad.cafe.TestUtil;
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.User;
 import java.io.IOException;
@@ -72,10 +72,9 @@ class LoginServletTest extends E2ETestBase {
     @DisplayName("세션에 redirectAfterLogin이 있다면 요청 페이지로 리다이렉트한다.")
     void tesRedirectAfterLogin() throws IOException {
         //given
-        String originalRequestUrl = "/posts/create";
+        String originalRequestUrl = "/posts";
         HttpResponse post = post(originalRequestUrl, "authorId=1L&title=제목&content=내용");
-        String sessionId = TestUtil.getSessionIdFromSetCookieHeader(
-                post.getFirstHeader("Set-Cookie").getValue());
+        String sessionId = getSessionIdFromSetCookieHeader(post.getFirstHeader("Set-Cookie").getValue());
         //when
         HttpResponse response = post(path, createFormData(user.getUsername(), user.getPassword()), sessionId);
 

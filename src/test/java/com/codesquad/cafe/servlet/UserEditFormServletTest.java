@@ -1,6 +1,6 @@
 package com.codesquad.cafe.servlet;
 
-import static com.codesquad.cafe.TestUtil.assertErrorPageResponse;
+import static com.codesquad.cafe.TestUtil.getSessionIdFromSetCookieHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,18 +9,21 @@ import com.codesquad.cafe.SavedHttpResponse;
 import com.codesquad.cafe.db.UserRepository;
 import com.codesquad.cafe.db.entity.User;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class UserServletTest extends E2ETestBase {
+class UserEditFormServletTest extends E2ETestBase {
+
+    private static String path = "/me/edit";
 
     private static UserRepository userRepository;
 
     private User user;
+
+    private String sessionId;
 
     @BeforeAll
     static void beforeAll() {
@@ -28,8 +31,10 @@ class UserServletTest extends E2ETestBase {
     }
 
     @BeforeEach
-    void setUp() {
-        user = userRepository.save(User.of("woowa", "1234", "박재성", "woowa@gmail.com"));
+    void setUp() throws IOException {
+        user = userRepository.save(User.of("javajigi", "1234", "박재성", "park@gmail.com"));
+        sessionId = getSessionIdFromSetCookieHeader(
+                post("/login", "username=javajigi&password=1234").getFirstHeader("Set-Cookie").getValue());
     }
 
     @AfterEach
@@ -38,32 +43,29 @@ class UserServletTest extends E2ETestBase {
     }
 
     @Test
-    @DisplayName("유저 프로필 페이지를 반환한다.")
-    void testDoGetUserProfile() throws IOException, URISyntaxException {
+    @DisplayName("유저 수정 페이지를 반환한다.")
+    void testDoGetUserProfile() throws IOException {
         //when
-        SavedHttpResponse response = get(getPath(user.getId()));
+        SavedHttpResponse response = get(path, sessionId);
         String html = response.getBody();
 
         //then
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals("text/html;charset=UTF-8", response.getContentType());
-        assertTrue(html.contains("Profile"));
+        assertTrue(html.contains("userModify"));
         assertTrue(html.contains(user.getUsername()));
         assertTrue(html.contains(user.getEmail()));
     }
 
     @Test
-    @DisplayName("없는 유저를 조회하면 404 페이지를 응답한다.")
-    void testDoGetUnknownUser() throws IOException, URISyntaxException {
+    @DisplayName("세션 쿠키 없이 수정 페이지를 요청하면 로그인 페이지로 리다이렉트한다.")
+    void testDoGetUnknownUser() throws IOException {
         //when
-        SavedHttpResponse response = get(getPath(100000L));
+        SavedHttpResponse response = get(path);
 
         //then
-        assertErrorPageResponse(response, 404);
-    }
-
-    private String getPath(Long id) {
-        return "/users/" + id;
+        assertEquals(302, response.getStatusLine().getStatusCode());
+        assertEquals("/login", response.getFirstHeader("Location"));
     }
 
 }

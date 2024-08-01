@@ -204,6 +204,24 @@ class PostDaoTest {
                 postDao.findPostWithAuthorByPageSortByCreatedAtDesc(4, 2));
     }
 
+    @DisplayName("게시글 페이지 조회- 삭제된 포스트 제외")
+    @Test
+    void findPostWithAuthorByPageSortByCreatedAtDescExcludeDeletedPost() {
+        //given
+        postDao.deleteAll();
+        postDao.save(Post.of(user.getId(), "first-title", "first-content", "first-filename"));
+        postDao.save(Post.of(user.getId(), "second-title", "second-content", "second-filename"));
+        postDao.save(Post.of(user.getId(), "third-title", "third-content", "third-filename"));
+        postDao.save(Post.of(user.getId(), "fourth-title", "fourth-content", "fourth-filename"));
+        Post post = postDao.save(Post.of(user.getId(), "fifth-title", "fifth-content", "fifth-filename"));
+        post.delete();
+        postDao.save(post);
+
+        //when & then
+        Page<PostDetailsDto> posts = postDao.findPostWithAuthorByPageSortByCreatedAtDesc(1, 1);
+        assertEquals("fourth-title", posts.getContent().get(0).getTitle());
+    }
+
     @DisplayName("게시글 삭제")
     @Test
     void deleteById() {
@@ -286,7 +304,7 @@ class PostDaoTest {
     void update() {
         //given
         createPost();
-        post.update("updated-content", "updated-title", "updated-filename");
+        post.update("updated-title", "updated-content", "updated-filename");
 
         //when
         Post updatedPost = postDao.save(post);
