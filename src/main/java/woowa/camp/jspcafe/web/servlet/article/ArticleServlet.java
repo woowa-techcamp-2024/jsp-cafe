@@ -17,21 +17,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.service.ArticleService;
+import woowa.camp.jspcafe.service.ReplyService;
 import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.ReplyResponse;
 
 @WebServlet(name = "articleServlet", value = {"/articles/*", ""})
 public class ArticleServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(ArticleServlet.class);
     private ArticleService articleService;
+    private ReplyService replyService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext context = config.getServletContext();
         this.articleService = (ArticleService) context.getAttribute("articleService");
+        this.replyService = (ReplyService) context.getAttribute("replyService");
+
         if (this.articleService == null) {
             String errorMessage = "[ServletException] ArticleServlet -> ArticleService not initialized";
+            log.error(errorMessage);
+        }
+        if (this.replyService == null) {
+            String errorMessage = "[ServletException] ArticleServlet -> ReplyService not initialized";
             log.error(errorMessage);
         }
     }
@@ -41,9 +50,9 @@ public class ArticleServlet extends HttpServlet {
         log.debug("ArticleServlet doGet start");
         try {
             String contextPath = req.getContextPath();
-            Map<String, String> pathVariables =
-                    extractPathVariables(contextPath + "/articles/{id}", req.getRequestURI());
+            Map<String, String> pathVariables;
 
+            pathVariables = extractPathVariables(contextPath + "/articles/{id}", req.getRequestURI());
             if (pathVariables.containsKey("id")) {
                 handleDetailArticle(req, resp, pathVariables);
                 return;
@@ -77,12 +86,16 @@ public class ArticleServlet extends HttpServlet {
     }
 
     private void handleDetailArticle(HttpServletRequest req, HttpServletResponse resp,
-                                     Map<String, String> pathVariables)
-            throws ServletException, IOException {
+                                     Map<String, String> pathVariables) throws ServletException, IOException {
 
-        Long id = Long.parseLong(pathVariables.get("id"));
-        ArticleDetailsResponse articleDetails = articleService.findArticleDetails(id);
+        Long articleId = Long.parseLong(pathVariables.get("id"));
+        ArticleDetailsResponse articleDetails = articleService.findArticleDetails(articleId);
+        List<ReplyResponse> replies = replyService.findReplyList(articleId);
+        log.info("게시글 - {}", articleDetails);
+        log.info("조회한 댓글들 - {}", replies);
+
         req.setAttribute("article", articleDetails);
+        req.setAttribute("comments", replies);
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/show.jsp");
         requestDispatcher.forward(req, resp);
