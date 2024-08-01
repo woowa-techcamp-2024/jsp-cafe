@@ -18,6 +18,19 @@ CREATE TABLE IF NOT EXISTS jsp_cafe.articles
     status     ENUM ('PUBLISHED', 'DELETED') NOT NULL DEFAULT 'PUBLISHED',
     created_at TIMESTAMP                              DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS jsp_cafe.comments
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    article_id BIGINT                        NOT NULL,
+    writer     VARCHAR(255)                  NOT NULL,
+    content    TEXT                          NOT NULL,
+    status     ENUM ('COMMENTED', 'DELETED') NOT NULL DEFAULT 'COMMENTED',
+    created_at TIMESTAMP                     DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES jsp_cafe.articles(id),
+    FOREIGN KEY (writer) REFERENCES jsp_cafe.users(user_id)
+);
+
 create table jsp_cafe.roles
 (
     user_id varchar(15) not null,
@@ -34,6 +47,10 @@ VALUES ('First Article', 'John Doe', 'This is the content of the first article.'
        ('Second Article', 'Jane Smith', 'This is the content of the second article.', 'DELETED', '2024-07-30 11:00:00'),
        ('Third Article', 'Alice Johnson', 'This is the content of the third article.', 'PUBLISHED',
         '2024-07-30 12:00:00');
+INSERT INTO jsp_cafe.comments (article_id, writer, content, status, created_at)
+VALUES (1, 'John Doe', 'This is a comment on the first article.', 'COMMENTED', '2024-07-30 13:00:00'),
+       (2, 'Jane Smith', 'This is a comment on the second article.', 'COMMENTED', '2024-07-30 14:00:00'),
+       (3, 'Alice Johnson', 'This is a comment on the third article.', 'COMMENTED', '2024-07-30 15:00:00');
 INSERT INTO jsp_cafe.roles (user_id, name)
 VALUES ('user1', 'manager-gui'),
        ('user1', 'ROLE_ADMIN'),
