@@ -17,6 +17,7 @@ public class FixedDateTimeProvider implements DateTimeProvider {
         return fixedTime;
     }
 
+    @Override
     public LocalDateTime getNowAsLocalDateTime() {
         return fixedTime.atStartOfDay();
     }
