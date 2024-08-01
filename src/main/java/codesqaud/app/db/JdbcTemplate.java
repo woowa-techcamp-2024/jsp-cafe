@@ -1,6 +1,6 @@
 package codesqaud.app.db;
 
-import codesqaud.app.exception.DbConstraintException;
+import codesqaud.app.db.exception.DbConstraintException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class JdbcTemplate {
                 return null;
             }
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new DbConstraintException();
+            throw new DbConstraintException(e.getMessage());
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -52,7 +52,7 @@ public class JdbcTemplate {
                 return null;
             }
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new DbConstraintException();
+            throw new DbConstraintException(e);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -76,7 +76,7 @@ public class JdbcTemplate {
             logger.debug("executeQuery: {}", sql);
             return results;
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new DbConstraintException();
+            throw new DbConstraintException(e);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -93,7 +93,7 @@ public class JdbcTemplate {
             }
             return preparedStatement.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new DbConstraintException();
+            throw new DbConstraintException(e);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
