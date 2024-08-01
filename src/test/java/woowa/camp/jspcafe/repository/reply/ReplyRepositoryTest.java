@@ -329,7 +329,6 @@ class ReplyRepositoryTest {
             repository.save(reply2);
             // when
             List<ReplyResponse> result = repository.findByArticleIdWithUser(1L);
-            System.out.println("result = " + result);
             // then
             assertThat(result)
                     .hasSize(2)
