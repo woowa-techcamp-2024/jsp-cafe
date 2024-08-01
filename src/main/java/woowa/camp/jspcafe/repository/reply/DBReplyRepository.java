@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import woowa.camp.jspcafe.domain.Reply;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.service.dto.ReplyResponse;
 
 public class DBReplyRepository implements ReplyRepository {
 
@@ -42,7 +43,7 @@ public class DBReplyRepository implements ReplyRepository {
 
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    reply.setId(generatedKeys.getLong(1));
+                    reply.setReplyId(generatedKeys.getLong(1));
                 } else {
                     throw new SQLException("게시글 저장을 실패했습니다. id를 획득하지 못했습니다.");
                 }
@@ -56,7 +57,7 @@ public class DBReplyRepository implements ReplyRepository {
 
     @Override
     public Optional<Reply> findById(Long id) {
-        String sql = "SELECT * FROM replies WHERE id = ? AND deleted_at IS NULL";
+        String sql = "SELECT * FROM replies WHERE reply_id = ? AND deleted_at IS NULL";
 
         try (Connection conn = connector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)
@@ -109,6 +110,37 @@ public class DBReplyRepository implements ReplyRepository {
         }
     }
 
+    @Override
+    public List<ReplyResponse> findByArticleIdWithUser(Long articleId) {
+        List<ReplyResponse> replies = new ArrayList<>();
+        String sql = "SELECT r.reply_id, r.content, r.user_id, u.nickname, r.created_at "
+                + "FROM replies r "
+                + "INNER JOIN users u ON r.user_id = u.id "
+                + "WHERE r.article_id = ?";
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setLong(1, articleId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    ReplyResponse replyResponse = new ReplyResponse(
+                            rs.getLong("reply_id"),
+                            rs.getString("content"),
+                            rs.getLong("user_id"),
+                            rs.getString("nickname"),
+                            rs.getTimestamp("created_at").toLocalDateTime()
+                    );
+                    replies.add(replyResponse);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return replies;
+    }
+
     public Reply mapRowToReply(ResultSet rs) throws SQLException {
         Reply reply = new Reply(
                 rs.getLong("user_id"),
@@ -118,7 +150,7 @@ public class DBReplyRepository implements ReplyRepository {
                 rs.getTimestamp("updated_at").toLocalDateTime(),
                 null
         );
-        reply.setId(rs.getLong("id"));
+        reply.setReplyId(rs.getLong("reply_id"));
         return reply;
     }
 }
