@@ -5,6 +5,7 @@ import codesquad.article.repository.ArticleRepository;
 import codesquad.comment.domain.Comment;
 import codesquad.comment.domain.vo.Status;
 import codesquad.comment.repository.CommentRepository;
+import codesquad.common.exception.CommentExistException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
 
@@ -21,7 +22,7 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
     }
 
     @Override
-    public void delete(Command cmd) throws NoSuchElementException, UnauthorizedRequestException {
+    public void delete(Command cmd) throws NoSuchElementException, UnauthorizedRequestException, CommentExistException {
         long articleId = cmd.articleId();
         String userId = cmd.userId();
         Optional<Article> findArticle = articleRepository.findByIdForUpdate(articleId);
@@ -32,7 +33,11 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
         article.delete(userId);
         List<Comment> comments = commentRepository.findAllByArticleId(articleId);
         for (Comment comment : comments) {
-            comment.delete(userId);
+            try {
+                comment.delete(userId);
+            } catch (UnauthorizedRequestException e) {
+                throw new CommentExistException();
+            }
         }
         articleRepository.update(article);
         commentRepository.updateStatus(comments, Status.DELETED);

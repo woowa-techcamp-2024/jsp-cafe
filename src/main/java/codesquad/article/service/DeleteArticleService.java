@@ -1,5 +1,6 @@
 package codesquad.article.service;
 
+import codesquad.common.exception.CommentExistException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
 
@@ -51,7 +52,7 @@ import codesquad.common.exception.UnauthorizedRequestException;
  * 따라서 두방쿼리로 처리하는 것이 장기적으로 보았을 때 바람직하다고 결론내렸습니다.
  */
 public interface DeleteArticleService {
-    void delete(Command cmd) throws NoSuchElementException, UnauthorizedRequestException;
+    void delete(Command cmd) throws NoSuchElementException, UnauthorizedRequestException, CommentExistException;
 
     record Command(
             long articleId,

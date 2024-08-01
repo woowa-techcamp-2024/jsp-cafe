@@ -4,6 +4,7 @@ import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.article.service.UpdateArticleService.Command;
 import codesquad.common.authorization.annotation.Authorized;
+import codesquad.common.exception.CommentExistException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
 import codesquad.global.dao.ArticleQuery;
@@ -116,6 +117,16 @@ public class QnaServlet extends HttpServlet {
                 }
             };
             request.setAttribute("errorMsg", "다른 사람의 글을 삭제할 수 없습니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(request, resp);
+            return;
+        } catch (CommentExistException e) {
+            HttpServletRequestWrapper request = new HttpServletRequestWrapper(req) {
+                @Override
+                public String getMethod() {
+                    return "GET";
+                }
+            };
+            request.setAttribute("errorMsg", "다른 사람이 작성한 댓글이 있습니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(request, resp);
             return;
         }
