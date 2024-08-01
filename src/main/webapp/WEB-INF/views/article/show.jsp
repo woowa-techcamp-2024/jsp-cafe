@@ -122,12 +122,10 @@
         // 댓글 삭제
         $(document).on('click', '.delete-comment', function() {
             const replyId = $(this).data('id');
+            console.log("삭제하려는 댓글 ID: " + replyId);
             $.ajax({
-                url: '/comments',
+                url: '/comments?articleId=' + articleId + '&replyId=' + replyId,
                 method: 'DELETE',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { articleId: articleId, replyId: replyId },
-                dataType: 'json',
                 success: function(response) {
                     loadComments(); // 댓글 목록 새로고침
                 },
@@ -137,6 +135,7 @@
                 }
             });
         });
+
     });
 </script>
 
