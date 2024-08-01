@@ -51,6 +51,7 @@ class PostCacheTest {
 
         Member member = new Member("user1", "password", "User One");
         MemberRepository.getInstance().save(member);
+        long memberId = member.getId();
         request.setAttribute("userId","user1");
         request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
@@ -61,6 +62,7 @@ class PostCacheTest {
             body.put("contents", new String[]{"contents1"});
             body.put("memberId", new String[]{"1"});
             PostRequestDto postDto = new PostRequestDto(body);
+            postDto.setMemberId(memberId);
             Post save = PostRepository.getInstance().save(postDto);
             list.add(save.getId());
         }

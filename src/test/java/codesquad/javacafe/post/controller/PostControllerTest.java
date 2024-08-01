@@ -34,6 +34,7 @@ public class PostControllerTest {
 
     private static PostController postController;
     private static Connection connection;
+    private static long memberId;
 
     @BeforeAll
     static void setUp() throws SQLException {
@@ -41,6 +42,7 @@ public class PostControllerTest {
         DBConnection.setConnectionInfo("jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE", "sa", "");
         connection = DBConnection.getConnection();
         createTable();
+        memberId = MemberRepository.getInstance().findByUserId("user1").getId();
     }
 
     @AfterEach
@@ -71,6 +73,11 @@ public class PostControllerTest {
                 ")";
         statement.execute(createMemberTableSql);
 
+        String memberInsertSql = "INSERT INTO member (member_id, member_password, member_name) \n" +
+                                    "SELECT 'user1', 'password', 'User One' FROM DUAL \n" +
+                                    "WHERE NOT EXISTS (SELECT * FROM member WHERE member_id = 'user1')";
+        statement.execute(memberInsertSql);
+
         statement.close();
         connection.close();
     }
@@ -80,20 +87,21 @@ public class PostControllerTest {
         try (var statement = connection.createStatement()) {
             statement.execute(sql);
         }
-        sql = "DELETE FROM member";
-        try(var statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
     }
 
     @Test
     public void testDoProcessGet() throws ServletException, IOException {
         // Insert a post into the database
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
+        long memberId = member.getId();
+
         Map<String, String[]> body = new HashMap<>();
         body.put("title", new String[]{"title1"});
         body.put("contents", new String[]{"contents1"});
         PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
+        postDto.setMemberId(memberId);
         Post savePost = PostRepository.getInstance().save(postDto);
 
         // Simulate GET request with query parameters
@@ -103,10 +111,9 @@ public class PostControllerTest {
         ((CustomHttpServletRequest) request).setMethod("GET");
         ((CustomHttpServletRequest) request).addParameter("postId",savePost.getId()+"");
 
-        Member member = new Member("user1", "password", "User One");
-        MemberRepository.getInstance().save(member);
+
         request.setAttribute("userId","user1");
-        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
 
         postController.doProcess(request, response);
 
@@ -151,13 +158,18 @@ public class PostControllerTest {
         ((CustomHttpServletRequest) request).addParameter("writer", "testWriter");
         ((CustomHttpServletRequest) request).addParameter("title", "testTitle");
         ((CustomHttpServletRequest) request).addParameter("contents", "testContents");
-        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
 
         postController.doProcess(request, response);
 
         assertEquals("/", ((CustomHttpServletResponse) response).getRedirectedUrl());
-
+        Post byId = PostRepository.getInstance().findById(3);
+        System.out.println(byId);
+        Member byMember = MemberRepository.getInstance().findByUserId("user1");
+        System.out.println(byMember);
         List<Post> all = PostRepository.getInstance().findAll();
+        System.out.println("all");
+        System.out.println(all);
 
         // Verify the post was created
         Post post = PostRepository.getInstance().findById(all.get(0).getId());

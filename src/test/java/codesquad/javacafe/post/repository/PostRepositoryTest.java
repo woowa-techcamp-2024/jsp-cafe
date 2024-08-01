@@ -1,6 +1,7 @@
 package codesquad.javacafe.post.repository;
 
 import codesquad.javacafe.common.db.DBConnection;
+import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.entity.Post;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +21,7 @@ public class PostRepositoryTest {
 
     private static PostRepository postRepository;
     private static Connection connection;
+    private static long memberId;
 
     @BeforeAll
     static void setUp() throws SQLException {
@@ -47,9 +49,25 @@ public class PostRepositoryTest {
                 "member_id BIGINT NOT NULL" +
                 ")";
 
-        try (var statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
+
+        var statement = connection.createStatement();
+        statement.execute(sql);
+
+        String createMemberTableSql = "CREATE TABLE if not exists member (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "member_id VARCHAR(255), " +
+                "member_password VARCHAR(255), " +
+                "member_name VARCHAR(255)" +
+                ")";
+        statement.execute(createMemberTableSql);
+
+        String memberInsertSql = "INSERT INTO member (member_id, member_password, member_name) \n" +
+                "SELECT 'user1', 'password', 'User One' FROM DUAL \n" +
+                "WHERE NOT EXISTS (SELECT * FROM member WHERE member_id = 'user1')";
+        statement.execute(memberInsertSql);
+        memberId = MemberRepository.getInstance().findByUserId("user1").getId();
+
+
     }
 
     private void clearTable() throws SQLException {
@@ -70,22 +88,24 @@ public class PostRepositoryTest {
 
     @Test
     public void testSave() throws SQLException {
-        PostRequestDto postDto = createPostDto("writer", "title", "contents");
-
+        PostRequestDto postDto = createPostDto("User One", "title", "contents");
+        postDto.setMemberId(memberId);
         postRepository.save(postDto);
 
         List<Post> posts = postRepository.findAll();
         assertNotNull(posts);
         assertEquals(1, posts.size());
-        assertEquals("writer", posts.get(0).getWriter());
+        assertEquals("User One", posts.get(0).getWriter());
         assertEquals("title", posts.get(0).getTitle());
         assertEquals("contents", posts.get(0).getContents());
     }
 
     @Test
     public void testFindAll() throws SQLException {
-        PostRequestDto postDto1 = createPostDto("writer1", "title1", "contents1");
-        PostRequestDto postDto2 = createPostDto("writer2", "title2", "contents2");
+        PostRequestDto postDto1 = createPostDto("User One", "title1", "contents1");
+        PostRequestDto postDto2 = createPostDto("User One", "title2", "contents2");
+        postDto1.setMemberId(memberId);
+        postDto2.setMemberId(memberId);
 
         postRepository.save(postDto1);
         postRepository.save(postDto2);
@@ -93,18 +113,18 @@ public class PostRepositoryTest {
         List<Post> posts = postRepository.findAll();
         assertNotNull(posts);
         assertEquals(2, posts.size());
-        assertEquals("writer1", posts.get(0).getWriter());
+        assertEquals("User One", posts.get(0).getWriter());
         assertEquals("title1", posts.get(0).getTitle());
         assertEquals("contents1", posts.get(0).getContents());
-        assertEquals("writer2", posts.get(1).getWriter());
+        assertEquals("User One", posts.get(1).getWriter());
         assertEquals("title2", posts.get(1).getTitle());
         assertEquals("contents2", posts.get(1).getContents());
     }
 
     @Test
     public void testFindById() throws SQLException {
-        PostRequestDto postDto = createPostDto("writer", "title", "contents");
-
+        PostRequestDto postDto = createPostDto("User One", "title", "contents");
+        postDto.setMemberId(memberId);
         postRepository.save(postDto);
 
         List<Post> posts = postRepository.findAll();
@@ -113,7 +133,7 @@ public class PostRepositoryTest {
 
         Post post = postRepository.findById(posts.get(0).getId());
         assertNotNull(post);
-        assertEquals("writer", post.getWriter());
+        assertEquals("User One", post.getWriter());
         assertEquals("title", post.getTitle());
         assertEquals("contents", post.getContents());
     }

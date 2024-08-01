@@ -67,7 +67,9 @@ public class PostRepository {
     }
 
     public List<Post> findAll() {
-        var sql = " select * from post";
+        var sql = " select p.id, p.post_title, p.post_contents,p.post_create, m.member_name" +
+                " from post p inner join member m " +
+                "on m.id = p.member_id ";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -77,13 +79,14 @@ public class PostRepository {
             con = getConnection();
             ps = con.prepareStatement(sql);
 
+
             rs = ps.executeQuery();
             if (rs.next()) {
                 var postList = new ArrayList<Post>();
                 do {
                     var post = new Post();
                     post.setId(rs.getLong("id"));
-                    post.setWriter(rs.getString("post_writer"));
+                    post.setWriter(rs.getString("member_name"));
                     post.setTitle(rs.getString("post_title"));
                     post.setContents(rs.getString("post_contents"));
                     post.setCreatedAt(rs.getTimestamp("post_create").toLocalDateTime());
@@ -106,7 +109,9 @@ public class PostRepository {
 
     public Post findById(long id) {
         log.debug("[Post Find] pk = {}", id);
-        var sql = " select * from post where id = ?";
+        var sql = " select p.id, p.post_title, p.post_contents,p.post_create, m.member_name, m.id as member_id" +
+                "  from post p inner join member m" +
+                " on p.id = ? and m.id = p.member_id";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -121,7 +126,7 @@ public class PostRepository {
             if (rs.next()) {
                 var post = new Post();
                 post.setId(rs.getLong("id"));
-                post.setWriter(rs.getString("post_writer"));
+                post.setWriter(rs.getString("member_name"));
                 post.setTitle(rs.getString("post_title"));
                 post.setContents(rs.getString("post_contents"));
                 post.setCreatedAt(rs.getTimestamp("post_create").toLocalDateTime());
@@ -134,6 +139,7 @@ public class PostRepository {
             }
 
         } catch (SQLException exception) {
+            exception.printStackTrace();
             log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
             throw new RuntimeException(exception);
         } finally {
