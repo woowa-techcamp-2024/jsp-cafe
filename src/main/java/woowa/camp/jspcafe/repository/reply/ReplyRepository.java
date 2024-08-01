@@ -20,6 +20,8 @@ public interface ReplyRepository {
 
     void softDeleteById(Long id, LocalDateTime deletedTime);
 
+    void softDeleteByArticleId(Long articleId, LocalDateTime deletedTime);
+
     void update(Reply reply);
 
 }
