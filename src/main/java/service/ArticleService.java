@@ -2,6 +2,7 @@ package service;
 
 import domain.Article;
 import dto.ArticleDao;
+import exception.TomcatException;
 import repository.article.ArticleRepository;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,19 @@ public class ArticleService {
 
     public Article findById(Long id) {
         return articleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Article not found"));
+                .orElseThrow(() -> new TomcatException("Article not found"));
     }
+
+    public void updateArticle(Article article, String title, String content) {
+        article.setTitle(title);
+        article.setContent(content);
+        articleRepository.updateArticle(article);
+    }
+
+
+    public void deleteArticle(Long id) {
+        articleRepository.deleteArticle(id);
+    }
+
 
 }
