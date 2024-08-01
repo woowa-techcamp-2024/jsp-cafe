@@ -30,6 +30,8 @@ public class RepositoryRegister implements AppInit {
         ConnectionManager connectionManager = new ServerConnectionManager(ds);
         // JdbcTransactionManager
         JdbcTransactionManager jdbcTransactionManager = new JdbcTransactionManager(connectionManager);
+        // TransactionManager 등록 - TransactionProxy를 만들 때 사용
+        servletContext.setAttribute("JdbcTransactionManager", jdbcTransactionManager);
         // Repository 등록
         servletContext.setAttribute("UserRepository", new MySqlUserRepository(jdbcTransactionManager));
         servletContext.setAttribute("UserQuery", new MySqlUserQuery(jdbcTransactionManager));

@@ -49,7 +49,7 @@ public class MySqlUserQuery implements UserQuery {
         ResultSet resultSet = null;
         try {
             connection = connectionManager.getConnection();
-            String sql = "select user_id, name, email from users";
+            String sql = "select id, user_id, name, email from users";
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             List<UserResponse> userResponses = new ArrayList<>();

@@ -35,7 +35,7 @@ public class UsersServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        userQuery = (UserQuery) servletContext.getAttribute("userQuery");
+        userQuery = (UserQuery) servletContext.getAttribute("UserQuery");
         signUpService = (SignUpService) servletContext.getAttribute("SignUpService");
         updateUserService = (UpdateUserService) servletContext.getAttribute("UpdateUserService");
         logger.info("UsersServlet initialized");
