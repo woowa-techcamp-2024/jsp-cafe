@@ -1,4 +1,4 @@
-package codesquad.container;
+package codesquad.container.initializer;
 
 import jakarta.servlet.ServletContext;
 
