@@ -148,7 +148,7 @@
                 loadComments(); // 댓글 목록 새로고침
             },
             error: function(xhr, status, error) {
-                alert("댓글 추가에 실패했습니다.");
+                showToast("댓글 추가에 실패했습니다.");
             }
         });
     }
@@ -187,7 +187,7 @@
             },
             error: function(xhr, status, error) {
                 console.log('Error:', error);
-                alert("게시글 삭제에 실패했습니다.");
+                showToast("게시글 삭제에 실패했습니다.");
             }
         })
         };

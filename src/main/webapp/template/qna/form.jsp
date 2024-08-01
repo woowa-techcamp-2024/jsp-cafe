@@ -40,9 +40,27 @@
 
 <script>
     function sendPost() {
+        var title = $("#title").val().trim();
+        var contents = $("#contents").val().trim();
+
+        // 유효성 검증
+        if (title === '' || contents === '') {
+            showToast("제목과 내용은 반드시 입력되야 합니다.");
+            return;
+        }
+        if (title.length > 30) {
+            showToast("제목은 30글자를 초과 할 수 없습니다.");
+            return;
+        }
+        if (contents.length > 200) {
+            showToast("내용은 200글자를 초과 할 수 없습니다.");
+            return;
+        }
+
+        // POST 전송
         var data = {
-            title: $("#title").val(),
-            contents: $("#contents").val()
+            title: title,
+            contents: contents
         };
         $.ajax({
             url: '${pageContext.request.contextPath}/questions',
@@ -54,18 +72,37 @@
                 window.location.href = '${pageContext.request.contextPath}';
             },
             error: function(xhr, status, error) {
-                console.log('POST Error:', error);
-                alert("게시글 수정에 실패했습니다.");
+                console.log('POST Error:', xhr);
+                alert("게시글 작성에 실패했습니다.");
             }
         });
     }
 
     function sendPut() {
+        var title = $("#title").val().trim();
+        var contents = $("#contents").val().trim();
+
+        // 유효성 검증
+        if (title === '' || contents === '') {
+            showToast("제목과 내용은 반드시 입력되야 합니다.");
+            return;
+        }
+        if (title.length > 30) {
+            showToast("제목은 30글자를 초과 할 수 없습니다.");
+            return;
+        }
+        if (contents.length > 200) {
+            showToast("내용은 200글자를 초과 할 수 없습니다.");
+            return;
+        }
+
+        // PUT 전송
         var data = {
             id: $("input[name='id']").val(),
-            title: $("#title").val(),
-            contents: $("#contents").val()
+            title: title,
+            contents: contents
         };
+
         $.ajax({
             url: '${pageContext.request.contextPath}/questions/${article.id}',
             type: 'PUT',
@@ -73,13 +110,6 @@
             data: JSON.stringify(data),
             success: function(response, textStatus, xhr) {
                 location.href = '${pageContext.request.contextPath}/questions/${article.id}';
-
-                // var redirectUrl = xhr.getResponseHeader('Location');
-                // if (redirectUrl) {
-                //     window.location.href = redirectUrl;
-                // } else {
-                //     console.log('No redirect URL found in the response headers.');
-                // }
             },
             error: function(xhr, status, error) {
                 console.log('PUT Error:', error);
@@ -88,6 +118,7 @@
         });
     }
 </script>
+
 </body>
 </html>
 

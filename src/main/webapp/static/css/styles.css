@@ -199,3 +199,10 @@ h3,h4,h5 {
     padding-right: 2.5em;
 }
 
+.toast {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.toast.show {
+    opacity: 1;
+}
