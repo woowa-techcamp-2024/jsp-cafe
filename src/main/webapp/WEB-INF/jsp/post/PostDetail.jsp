@@ -165,7 +165,7 @@
                 if (xhr.status === 200) {
                     document.querySelector('#reply-' + replyId + ' p').textContent = xhr.responseText;
                 } else {
-                    alert('댓글 수정에 실패했습니다: ' + xhr.responseText);
+                    alert('댓글 수정에 실패했습니다');
                 }
             };
             xhr.onerror = function() {

@@ -14,6 +14,7 @@ import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.reply.model.ReplyStatus;
 import org.example.reply.model.dao.Reply;
+import org.example.reply.model.dto.ReplyDto;
 import org.example.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +32,13 @@ public class ReplyRepository {
 
     public Reply save(Reply reply) throws SQLException {
         logger.info("Saving reply: {}", reply);
-        String sql = "insert into replies (post_id, writer, contents, status, created_at) values (?, ?, ?, ?, ?)";
+        String sql = "insert into replies (post_id, user_id, contents, status, created_at) values (?, ?, ?, ?, ?)";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             long id;
             ps.setLong(1, reply.getPostId());
-            ps.setString(2, reply.getWriter());
+            ps.setString(2, reply.getUserId());
             ps.setString(3, reply.getContents());
             ps.setString(4, reply.getReplyStatus().name());
             ps.setObject(5, reply.getCreatedAt());
@@ -56,16 +57,18 @@ public class ReplyRepository {
                 }
             }
 
-            return Reply.createWithAll(id, reply.getPostId(), reply.getWriter(), reply.getContents(), reply.getReplyStatus(), reply.getCreatedAt());
+            return Reply.createWithAll(id, reply.getPostId(), reply.getUserId(), reply.getContents(), reply.getReplyStatus(), reply.getCreatedAt());
         } catch (SQLException e) {
             logger.error("Error saving reply", e);
             throw new SQLException(e);
         }
     }
 
-    public Reply findById(Long id) throws SQLException {
-        String sql = "SELECT r.id, r.post_id, u.name as writer, r.contents, r.status, r.created_at FROM replies r, users u WHERE r.id = ? AND status = ?";
-
+    public ReplyDto findById(Long id) throws SQLException {
+        String sql = "SELECT r.id, r.post_id, r.user_id, u.name as writer, r.contents, r.status, r.created_at " +
+                "FROM replies r " +
+                "JOIN users u ON r.user_id = u.user_id " +
+                "WHERE r.id = ? AND r.status = ?";
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -75,23 +78,33 @@ public class ReplyRepository {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Long postId = rs.getLong("post_id");
+                    String userId = rs.getString("user_id");
                     String writer = rs.getString("writer");
                     String contents = rs.getString("contents");
                     String status = rs.getString("status");
                     LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
 
-                    Reply reply = Reply.createWithAll(id, postId, writer, contents, ReplyStatus.valueOf(status),
-                            createdAt);
-                    return reply;
+                    return new ReplyDto.Builder()
+                            .id(id)
+                            .postId(postId)
+                            .userId(userId)
+                            .writer(writer)
+                            .contents(contents)
+                            .replyStatus(ReplyStatus.valueOf(status))
+                            .createdAt(createdAt)
+                            .build();
                 }
             }
         }
-        throw new SQLException("User not found");
+        throw new SQLException("Reply not found");
     }
 
-    public List<Reply> findAll(Long postId) throws SQLException {
-        String sql = "SELECT r.id, u.name as writer, r.contents, r.status, r.created_at FROM replies r, users u WHERE post_id = ? AND status = ?";
-        List<Reply> replies = new ArrayList<>();
+    public List<ReplyDto> findAll(Long postId) throws SQLException {
+        String sql = "SELECT r.id, r.user_id, u.name as writer, r.contents, r.status, r.created_at " +
+                "FROM replies r " +
+                "JOIN users u ON r.user_id = u.user_id " +
+                "WHERE r.post_id = ? AND r.status = ?";
+        List<ReplyDto> replies = new ArrayList<>();
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
         ) {
@@ -100,13 +113,21 @@ public class ReplyRepository {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Long id = rs.getLong("id");
+                    String userId = rs.getString("user_id");
                     String writer = rs.getString("writer");
                     String contents = rs.getString("contents");
                     String status = rs.getString("status");
                     LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
 
-                    Reply reply = Reply.createWithAll(id, postId, writer, contents, ReplyStatus.valueOf(status),
-                            createdAt);
+                    ReplyDto reply = new ReplyDto.Builder()
+                            .id(id)
+                            .postId(postId)
+                            .userId(userId)
+                            .writer(writer)
+                            .contents(contents)
+                            .replyStatus(ReplyStatus.valueOf(status))
+                            .createdAt(createdAt)
+                            .build();
                     replies.add(reply);
                 }
             }
@@ -116,7 +137,7 @@ public class ReplyRepository {
         }
     }
 
-    public Reply update(Reply reply) throws SQLException {
+    public ReplyDto update(ReplyDto reply) throws SQLException {
         String sql = "UPDATE replies SET contents = ? WHERE id = ?";
 
         try (Connection conn = dataUtil.getConnection();

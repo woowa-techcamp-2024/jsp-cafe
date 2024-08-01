@@ -36,24 +36,30 @@ public class ReplyController {
     }
 
     @RequestMapping(path = "/{postId}", method = HttpMethod.GET)
-    public void getAllReplyList(@PathVariable("postId") Long postId, HttpServletResponse response) throws SQLException, IOException {
+    public void getAllReplyList(@PathVariable("postId") Long postId, HttpServletResponse response, HttpSession session)
+            throws SQLException, IOException {
         List<ReplyDto> allReplies = replyService.getAllReplies(postId);
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-
+        logger.info("all Replies : {}", allReplies.toString());
         StringBuilder htmlBuilder = new StringBuilder();
+        UserDto currentUser = sessionManager.getUserDetails(session.getId());
         for (ReplyDto reply : allReplies) {
             htmlBuilder.append(String.format(
                     "<li id='reply-%d'>" +
                             "<p>%s</p>" +
-                            "<span>작성자: %s</span>" +
-                            "<button onclick='editReply(%d)'>수정</button>" +
-                            "<button onclick='deleteReply(%d)'>삭제</button>" +
-                            "</li>",
-                    reply.getId(), reply.getContents(), reply.getWriter(), reply.getId(), reply.getId()
-            ));
-        }
+                            "<span>작성자: %s</span>",
+                    reply.getId(), reply.getContents(), reply.getWriter()));
 
+            if (currentUser != null && currentUser.getName().equals(reply.getWriter())) {
+                htmlBuilder.append(String.format(
+                        "<button onclick='editReply(%d)'>수정</button>" +
+                                "<button onclick='deleteReply(%d)'>삭제</button>",
+                        reply.getId(), reply.getId()));
+            }
+
+            htmlBuilder.append("</li>");
+        }
         response.getWriter().write(htmlBuilder.toString());
     }
 
@@ -70,19 +76,23 @@ public class ReplyController {
         }
 
         ReplyDto newReply = replyService.saveReply(userDetails, postId, contents);
-        if (newReply != null) {
+        ReplyDto replyById = replyService.getReplyById(newReply.getId());
+        if (replyById != null) {
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.setContentType("text/html");
             response.setCharacterEncoding("UTF-8");
-            logger.info("newReply: {}", newReply);
+            logger.info("newReply: {}", replyById);
             response.getWriter().write(String.format(
                     "<li id='reply-%d'>" +
                             "<p>%s</p>" +
                             "<span>작성자: %s</span>" +
+                            "<c:if test=\"${isAuthor}\">" +
                             "<button onclick='editReply(%d)'>수정</button>" +
                             "<button onclick='deleteReply(%d)'>삭제</button>" +
-                            "</li>",
-                    newReply.getId(), newReply.getContents(), newReply.getWriter(), newReply.getId(), newReply.getId()
+                            "</c:if>" +
+                            "</li>"
+                    ,
+                    replyById.getId(), replyById.getContents(), replyById.getWriter(), replyById.getId(), replyById.getId()
             ));
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -7,14 +7,14 @@ public class Reply {
 
     private Long id;
     private Long postId;
-    private String writer;
+    private String userId;
     private String contents;
     private ReplyStatus replyStatus;
     private LocalDateTime createdAt;
 
-    public static Reply create(String writer, Long postId, String contents) {
+    public static Reply create(String userId, Long postId, String contents) {
         Reply reply = new Reply();
-        reply.writer = writer;
+        reply.userId = userId;
         reply.postId = postId;
         reply.contents = contents;
         reply.replyStatus = ReplyStatus.AVAILABLE;
@@ -23,11 +23,11 @@ public class Reply {
         return reply;
     }
 
-    public static Reply createWithAll(Long id, Long postId, String writer, String contents, ReplyStatus replyStatus, LocalDateTime createdAt) {
+    public static Reply createWithAll(Long id, Long postId, String userId, String contents, ReplyStatus replyStatus, LocalDateTime createdAt) {
         Reply reply = new Reply();
         reply.id = id;
         reply.postId = postId;
-        reply.writer = writer;
+        reply.userId = userId;
         reply.contents = contents;
         reply.replyStatus = replyStatus;
         reply.createdAt = createdAt;
@@ -43,8 +43,8 @@ public class Reply {
         return postId;
     }
 
-    public String getWriter() {
-        return writer;
+    public String getUserId() {
+        return userId;
     }
 
     public String getContents() {
@@ -59,17 +59,12 @@ public class Reply {
         return createdAt;
     }
 
-    public void updateContents(String contents) {
-        this.contents = contents;
-        validate();
-    }
-
     @Override
     public String toString() {
         return "Reply{" +
                 "id=" + id +
                 ", postId=" + postId +
-                ", writer='" + writer + '\'' +
+                ", userId='" + userId + '\'' +
                 ", contents='" + contents + '\'' +
                 ", replyStatus=" + replyStatus +
                 '}';
@@ -82,7 +77,7 @@ public class Reply {
         if (contents == null || contents.trim().isEmpty()) {
             throw new IllegalArgumentException("contents cannot be null or empty");
         }
-        if (writer == null || writer.trim().isEmpty()) {
+        if (userId == null || userId.trim().isEmpty()) {
             throw new IllegalArgumentException("writer cannot be null or empty");
         }
     }
