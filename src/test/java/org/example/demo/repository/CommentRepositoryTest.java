@@ -1,8 +1,10 @@
 package org.example.demo.repository;
 
 import org.example.demo.domain.Comment;
+import org.example.demo.domain.Post;
 import org.example.demo.domain.User;
 import org.example.demo.model.CommentCreateDao;
+import org.example.demo.model.PostCreateDao;
 import org.example.demo.model.UserCreateDao;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,7 @@ class CommentRepositoryTest extends RepositoryTestSupport {
         postRepository = new PostRepository(dbConfig);
         commentRepository = new CommentRepository(dbConfig);
         userRepository.addUser(new UserCreateDao("testUser", "testPassword", "testName", "a@a.com"));
+        postRepository.addPost(new PostCreateDao(1L, "Test Contents", "testUser"));
     }
 
     @AfterEach
@@ -83,8 +86,10 @@ class CommentRepositoryTest extends RepositoryTestSupport {
         commentRepository.deleteComment(1L);
 
         // 댓글 조회
-        Optional<Comment> comment = commentRepository.getComment(1L);
-        assertFalse(comment.isPresent());
+        Post post = postRepository.getPost(1L).get();
+        List<Comment> comments = post.getComments();
+
+        assertEquals(0, comments.size());
     }
 
 }
