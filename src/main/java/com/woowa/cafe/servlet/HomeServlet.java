@@ -1,7 +1,6 @@
 package com.woowa.cafe.servlet;
 
-import com.woowa.cafe.domain.Article;
-import com.woowa.cafe.dto.article.ArticleDto;
+import com.woowa.cafe.dto.article.ArticleListDto;
 import com.woowa.cafe.service.ArticleService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,7 +29,7 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        List<ArticleDto> articleDtos = articleService.findAll();
+        List<ArticleListDto> articleDtos = articleService.findAll();
         req.setAttribute("articleDtos", articleDtos);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }

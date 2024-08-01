@@ -41,14 +41,30 @@ public class DataSourceConfig {
                     "writer_id VARCHAR(255), " +
                     "title VARCHAR(255), " +
                     "contents TEXT, " +
+                    "reply_count BIGINT, " +
+                    "is_deleted BOOLEAN, " +
                     "create_at TIMESTAMP, " +
-                    "modified_at TIMESTAMP)";
+                    "modified_at TIMESTAMP, " +
+                    "index idx_article_is_deleted (is_deleted))";
+
+            String dropReplyTable = "DROP TABLE IF EXISTS replies";
+            String createReplyTable = "CREATE TABLE replies (" +
+                    "reply_id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
+                    "article_id BIGINT, " +
+                    "writer_id VARCHAR(255), " +
+                    "contents TEXT, " +
+                    "is_deleted BOOLEAN, " +
+                    "create_at TIMESTAMP, " +
+                    "modified_at TIMESTAMP, " +
+                    "index idx_reply_is_deleted (is_deleted))";
 
             try (var connection = dataSource.getConnection()) {
                 connection.prepareStatement(dropMemberTable).execute();
                 connection.prepareStatement(createMemberTable).execute();
                 connection.prepareStatement(dropArticleTable).execute();
                 connection.prepareStatement(createArticleTable).execute();
+                connection.prepareStatement(dropReplyTable).execute();
+                connection.prepareStatement(createReplyTable).execute();
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }

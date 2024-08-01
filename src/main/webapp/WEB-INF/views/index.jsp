@@ -1,6 +1,7 @@
 <%@ page import="com.woowa.cafe.domain.Article" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
+<%@ page import="com.woowa.cafe.dto.article.ArticleListDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -13,9 +14,9 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    List<ArticleDto> articleDtos = (List<ArticleDto>) request.getAttribute("articleDtos");
+                    List<ArticleListDto> articleDtos = (List<ArticleListDto>) request.getAttribute("articleDtos");
                     if (articleDtos != null) {
-                        for (ArticleDto article : articleDtos) {
+                        for (ArticleListDto article : articleDtos) {
                 %>
                 <li>
                     <div class="wrap">
@@ -33,7 +34,7 @@
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
-                                <span class="point">8</span>
+                                <span class="point"><%=article.replyCount()%></span>
                             </div>
                         </div>
                     </div>

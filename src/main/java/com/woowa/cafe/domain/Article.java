@@ -10,6 +10,7 @@ public class Article {
     private String writerId;
     private String title;
     private String contents;
+    private Long replyCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -18,15 +19,17 @@ public class Article {
         this.title = title;
         this.contents = contents;
         this.writerId = writerId;
+        this.replyCount = 0L;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Article(final Long id, final String writerId, final String title, final String contents, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    public Article(final Long id, final String writerId, final String title, final String contents, final Long replyCount, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         this.id = id;
         this.writerId = writerId;
         this.title = title;
         this.contents = contents;
+        this.replyCount = replyCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -39,6 +42,14 @@ public class Article {
 
     public boolean isSameWriter(final String writerId) {
         return this.writerId.equals(writerId);
+    }
+
+    public void increaseReplyCount() {
+        this.replyCount++;
+    }
+
+    public void decreaseReplyCount() {
+        this.replyCount--;
     }
 
     public void setId(final Long id) {
@@ -59,6 +70,10 @@ public class Article {
 
     public String getWriterId() {
         return writerId;
+    }
+
+    public Long getReplyCount() {
+        return replyCount;
     }
 
     public String getFormattedCreatedAt() {

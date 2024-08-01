@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,9 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public String save(final Member member) {
-        try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO members VALUES (?, ?, ?, ?)");
+        try (var connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO members VALUES (?, ?, ?, ?)");
+        ) {
             pstmt.setString(1, member.getMemberId());
             pstmt.setString(2, member.getPassword());
             pstmt.setString(3, member.getName());
@@ -40,18 +42,17 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findById(final String memberId) {
-        try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM members WHERE member_id = ?");
+        try (var connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM members WHERE member_id = ?")) {
             pstmt.setString(1, memberId);
-            var rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return Optional.of(new Member(rs.getString("member_id"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email")));
+            try (var rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new Member(rs.getString("member_id"),
+                            rs.getString("password"),
+                            rs.getString("name"),
+                            rs.getString("email")));
+                }
             }
-
             return Optional.empty();
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -62,50 +63,54 @@ public class JdbcMemberRepository implements MemberRepository {
         if (memberIds.isEmpty()) {
             return List.of();
         }
-        try (var connection = dataSource.getConnection()) {
-            StringBuilder sb = new StringBuilder("SELECT * FROM members WHERE member_id IN (");
-            for (int i = 0; i < memberIds.size(); i++) {
-                sb.append("?");
-                if (i < memberIds.size() - 1) {
-                    sb.append(", ");
+        try (var connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(buildQuery(memberIds))) {
+            setParameters(pstmt, memberIds);
+            try (var rs = pstmt.executeQuery()) {
+                List<Member> members = new ArrayList<>();
+                while (rs.next()) {
+                    members.add(new Member(rs.getString("member_id"),
+                            rs.getString("password"),
+                            rs.getString("name"),
+                            rs.getString("email")));
                 }
+                return members;
             }
-            sb.append(")");
-            PreparedStatement pstmt = connection.prepareStatement(sb.toString());
-            for (int i = 0; i < memberIds.size(); i++) {
-                pstmt.setString(i + 1, memberIds.get(i));
-            }
-
-            var rs = pstmt.executeQuery();
-
-            List<Member> members = new ArrayList<>();
-            while (rs.next()) {
-                members.add(new Member(rs.getString("member_id"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email")));
-            }
-            return members;
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    private String buildQuery(List<String> memberIds) {
+        StringBuilder sb = new StringBuilder("SELECT * FROM members WHERE member_id IN (");
+        for (int i = 0; i < memberIds.size(); i++) {
+            sb.append("?");
+            if (i < memberIds.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
+    private void setParameters(PreparedStatement pstmt, List<String> memberIds) throws SQLException {
+        for (int i = 0; i < memberIds.size(); i++) {
+            pstmt.setString(i + 1, memberIds.get(i));
+        }
+    }
 
     @Override
     public List<Member> findAll() {
         List<Member> members = new ArrayList<>();
-
-        try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM members");
-            var rs = pstmt.executeQuery();
+        try (var connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM members");
+             var rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 members.add(new Member(rs.getString("member_id"),
                         rs.getString("password"),
                         rs.getString("name"),
                         rs.getString("email")));
             }
-
             return members;
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -114,14 +119,13 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> update(final Member member) {
-        try (var connection = dataSource.getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE members SET password = ?, name = ?, email = ? WHERE member_id = ?");
+        try (var connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("UPDATE members SET password = ?, name = ?, email = ? WHERE member_id = ?")) {
             pstmt.setString(1, member.getPassword());
             pstmt.setString(2, member.getName());
             pstmt.setString(3, member.getEmail());
             pstmt.setString(4, member.getMemberId());
             pstmt.executeUpdate();
-
             return Optional.of(member);
         } catch (final Exception e) {
             throw new RuntimeException(e);
