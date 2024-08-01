@@ -1,6 +1,7 @@
 package lass9436.question.servlet;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -10,6 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lass9436.comment.model.Comment;
+import lass9436.comment.model.CommentRepository;
 import lass9436.question.model.Question;
 import lass9436.question.model.QuestionRepository;
 
@@ -17,6 +20,7 @@ import lass9436.question.model.QuestionRepository;
 public class QuestionPageServlet extends HttpServlet {
 
 	private QuestionRepository questionRepository;
+	private CommentRepository commentRepository;
 	private Map<String, BiFunction<HttpServletRequest, HttpServletResponse, String>> actionMethodMap;
 	private final String path = "/WEB-INF/question";
 
@@ -24,6 +28,7 @@ public class QuestionPageServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		questionRepository = (QuestionRepository)config.getServletContext().getAttribute("questionRepository");
+		commentRepository = (CommentRepository)config.getServletContext().getAttribute("commentRepository");
 		actionMethodMap = Map.of(
 			"register", this::handleRegister,
 			"list", this::handleList,
@@ -64,7 +69,9 @@ public class QuestionPageServlet extends HttpServlet {
 	private String handleDetail(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
 		Question question = questionRepository.findByQuestionSeq(seq);
+		List<Comment> comments = commentRepository.findByQuestionSeq(seq);
 		req.setAttribute("question", question);
+		req.setAttribute("comments", comments);
 		return "/detail.jsp";
 	}
 
