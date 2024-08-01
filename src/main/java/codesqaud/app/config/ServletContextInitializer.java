@@ -7,8 +7,8 @@ import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dao.user.DbUserDao;
 import codesqaud.app.dao.user.UserDao;
 import codesqaud.app.db.JdbcTemplate;
-import codesqaud.app.service.ArticleDeleteUseCase;
-import codesqaud.app.service.ReplyDeletionUseCase;
+import codesqaud.app.service.ArticleService;
+import codesqaud.app.service.ReplyService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -120,10 +120,10 @@ public class ServletContextInitializer implements ServletContextListener {
         servletContext.setAttribute("replyDao", replyDao);
 
         DataSource dataSource = (DataSource) servletContext.getAttribute("dataSource");
-        ArticleDeleteUseCase articleDeleteUseCase = new ArticleDeleteUseCase(articleDao, replyDao, dataSource);
-        servletContext.setAttribute("articleDeleteUseCase", articleDeleteUseCase);
+        ArticleService articleService = new ArticleService(articleDao, replyDao, dataSource);
+        servletContext.setAttribute("articleService", articleService);
 
-        ReplyDeletionUseCase replyDeletionUseCase = new ReplyDeletionUseCase(articleDao, replyDao);
-        servletContext.setAttribute("replyDeletionUseCase", replyDeletionUseCase);
+        ReplyService replyService = new ReplyService(replyDao);
+        servletContext.setAttribute("replyService", replyService);
     }
 }
