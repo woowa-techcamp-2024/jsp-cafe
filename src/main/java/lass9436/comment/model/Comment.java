@@ -7,6 +7,7 @@ public class Comment {
 	private long questionSeq;
 	private String writer;
 	private String contents;
+	private String useYn;
 
 	public Comment() {}
 
@@ -15,6 +16,7 @@ public class Comment {
 		this.questionSeq = questionSeq;
 		this.writer = writer;
 		this.contents = contents;
+		this.useYn = "Y";
 	}
 
 	public long getCommentSeq() {
@@ -56,4 +58,8 @@ public class Comment {
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
+
+	public String getUseYn() { return useYn; }
+
+	public void setUseYn(String useYn) { this.useYn = useYn; }
 }

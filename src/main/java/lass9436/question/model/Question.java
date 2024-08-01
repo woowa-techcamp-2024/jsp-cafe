@@ -6,6 +6,7 @@ public class Question {
 	private String writer;
 	private String title;
 	private String contents;
+	private String useYn;
 
 	// 기본 생성자
 	public Question() {
@@ -17,6 +18,7 @@ public class Question {
 		this.writer = writer;
 		this.title = title;
 		this.contents = contents;
+		this.useYn = "Y";
 	}
 
 	public Question(long questionSeq, long userSeq, String writer, String title, String contents) {
@@ -25,6 +27,7 @@ public class Question {
 		this.writer = writer;
 		this.title = title;
 		this.contents = contents;
+		this.useYn = "Y";
 	}
 
 	// Getters and Setters
@@ -67,6 +70,10 @@ public class Question {
 	public void setUserSeq(long userSeq) {
 		this.userSeq = userSeq;
 	}
+
+	public String getUseYn() { return useYn; }
+
+	public void setUseYn(String useYn) { this.useYn = useYn; }
 
 	@Override
 	public String toString() {
