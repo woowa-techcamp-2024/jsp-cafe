@@ -22,6 +22,8 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.29'
     // json
     implementation 'org.json:json:20210307'
+    // jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
