@@ -1,6 +1,5 @@
 package com.woowa.servlet;
 
-import com.woowa.database.QuestionDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.handler.QuestionHandler;
 import jakarta.servlet.ServletException;
@@ -10,12 +9,27 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-public class QuestionServlet extends HttpServlet {
+public class QuestionsServlet extends HttpServlet {
 
     private final QuestionHandler questionHandler;
 
-    public QuestionServlet(QuestionHandler questionHandler) {
+    public QuestionsServlet(QuestionHandler questionHandler) {
         this.questionHandler = questionHandler;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String page = req.getParameter("page");
+        String size = req.getParameter("size");
+        if(page == null) {
+            page = "0";
+        }
+        if(size == null) {
+            size = "10";
+        }
+        ResponseEntity response = questionHandler.findQuestions(Integer.parseInt(page), Integer.parseInt(size));
+        req.setAttribute("questions", response.getModel().get("questions"));
+        req.getRequestDispatcher("/WEB-INF/classes/static/qna/list.jsp").forward(req, resp);
     }
 
     @Override

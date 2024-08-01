@@ -10,16 +10,16 @@
     <meta charset="utf-8">
     <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet">
 </head>
 
 <body>
-<%@ include file="header.jsp" %>
-<%@ include file="nav.jsp" %>
+<%@ include file="../header.jsp" %>
+<%@ include file="../nav.jsp" %>
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -31,24 +31,24 @@
                         String dateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm").format(question.getCreatedAt());
                         pageContext.setAttribute("createdAt", dateTime);
                     %>
-                <li>
-                    <div class="wrap">
-                        <div class="main">
-                            <strong class="subject">
-                                <a href="/questions/${question.questionId}">${question.title}</a>
-                            </strong>
-                            <div class="auth-info">
-                                <i class="icon-add-comment"></i>
-                                <span class="time">${createdAt}</span>
-                                <a href="user/profile.jsp" class="author">${question.author.nickname}</a>
-                            </div>
-                            <div class="reply" title="댓글">
-                                <i class="icon-reply"></i>
-                                <span class="point">8</span>
+                    <li>
+                        <div class="wrap">
+                            <div class="main">
+                                <strong class="subject">
+                                    <a href="/questions/${question.questionId}">${question.title}</a>
+                                </strong>
+                                <div class="auth-info">
+                                    <i class="icon-add-comment"></i>
+                                    <span class="time">${createdAt}</span>
+                                    <a href="../user/profile.jsp" class="author">${question.author.nickname}</a>
+                                </div>
+                                <div class="reply" title="댓글">
+                                    <i class="icon-reply"></i>
+                                    <span class="point">8</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
                 </c:forEach>
             </ul>
             <div class="row">
@@ -65,15 +65,15 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="../qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="js/jquery-2.2.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-2.2.0.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/scripts.js"></script>
 </body>
 </html>

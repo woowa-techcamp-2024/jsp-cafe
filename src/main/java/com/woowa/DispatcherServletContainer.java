@@ -11,10 +11,9 @@ import com.woowa.handler.QuestionHandler;
 import com.woowa.handler.ReplyHandler;
 import com.woowa.handler.UserHandler;
 import com.woowa.servlet.QuestionDetailServlet;
-import com.woowa.servlet.ListQuestionServlet;
 import com.woowa.servlet.LoginServlet;
 import com.woowa.servlet.LogoutServlet;
-import com.woowa.servlet.QuestionServlet;
+import com.woowa.servlet.QuestionsServlet;
 import com.woowa.servlet.SignupServlet;
 import com.woowa.servlet.UserProfileServlet;
 import jakarta.servlet.FilterRegistration;
@@ -58,7 +57,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         userProfileServlet.addMapping("/users/*");
 
         Dynamic questionServlet = ctx.addServlet("questionServlet",
-                new QuestionServlet(beanFactory.getBean(QuestionHandler.class)));
+                new QuestionsServlet(beanFactory.getBean(QuestionHandler.class)));
         questionServlet.addMapping("/questions");
 
         Dynamic loginServlet = ctx.addServlet("loginServlet",
@@ -68,10 +67,6 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         Dynamic logoutServlet = ctx.addServlet("logoutServlet",
                 new LogoutServlet(beanFactory.getBean(LoginHandler.class)));
         logoutServlet.addMapping("/logout");
-
-        Dynamic listQuestionServlet = ctx.addServlet("listQuestionServlet",
-                new ListQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
-        listQuestionServlet.addMapping("/");
 
         Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet", new QuestionDetailServlet(
                 beanFactory.getBean(QuestionHandler.class),

@@ -1,7 +1,6 @@
 package com.woowa.servlet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
@@ -15,15 +14,14 @@ import com.woowa.support.StubHttpSession;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class QuestionServletTest {
+class QuestionsServletTest {
 
-    private QuestionServlet questionServlet;
+    private QuestionsServlet questionsServlet;
     private QuestionHandler questionHandler;
     private UserDatabase userDatabase;
     private QuestionDatabase questionDatabase;
@@ -33,7 +31,7 @@ class QuestionServletTest {
         userDatabase = new UserMemoryDatabase();
         questionDatabase = new QuestionMemoryDatabase();
         questionHandler = new QuestionHandler(userDatabase, questionDatabase);
-        questionServlet = new QuestionServlet(questionHandler);
+        questionsServlet = new QuestionsServlet(questionHandler);
     }
 
     @Nested
@@ -65,7 +63,7 @@ class QuestionServletTest {
             userDatabase.save(User.create(userId, "test@test.com", "password", "nickname"));
 
             //when
-            questionServlet.doPost(request, response);
+            questionsServlet.doPost(request, response);
 
             //then
             String redirectLocation = response.getRedirectLocation();
@@ -78,7 +76,7 @@ class QuestionServletTest {
             //given
 
             //when
-            questionServlet.doPost(request, response);
+            questionsServlet.doPost(request, response);
 
             //then
             String redirectLocation = response.getRedirectLocation();
