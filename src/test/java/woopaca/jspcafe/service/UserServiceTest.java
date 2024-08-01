@@ -7,7 +7,7 @@ import woopaca.jspcafe.error.BadRequestException;
 import woopaca.jspcafe.error.ForbiddenException;
 import woopaca.jspcafe.error.NotFoundException;
 import woopaca.jspcafe.error.UnauthorizedException;
-import woopaca.jspcafe.fixture.TestUserRepository;
+import woopaca.jspcafe.mock.MockUserRepository;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
@@ -30,7 +30,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userRepository = new TestUserRepository();
+        userRepository = new MockUserRepository();
         userService = new UserService(userRepository);
     }
 

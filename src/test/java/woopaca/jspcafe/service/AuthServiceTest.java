@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import woopaca.jspcafe.error.UnauthorizedException;
-import woopaca.jspcafe.fixture.TestUserRepository;
+import woopaca.jspcafe.mock.MockUserRepository;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
@@ -20,7 +20,7 @@ class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        userRepository = new TestUserRepository();
+        userRepository = new MockUserRepository();
         authService = new AuthService(userRepository);
     }
 
