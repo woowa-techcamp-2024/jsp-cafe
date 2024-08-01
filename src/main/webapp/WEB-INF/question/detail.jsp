@@ -65,7 +65,7 @@
                                         <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/userPage?action=detail&seq=${comment.userSeq}" class="article-author-name">자바지기</a>
+                                        <a href="/userPage?action=detail&seq=${comment.userSeq}" class="article-author-name">${comment.writer}</a>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
@@ -86,11 +86,11 @@
                                 </div>
                             </article>
                             </c:forEach>
-                            <form class="submit-write">
+                            <form class="submit-write" id="post-comment-form">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea id="post-comment-text" name="contents" class="form-control" placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                                <button class="btn btn-success pull-right" type="button" onclick="postComment()">답변하기</button>
                                 <div class="clearfix" />
                             </form>
                         </div>
@@ -132,6 +132,39 @@
 </script>
 
 <script>
+function postComment() {
+    const form = document.querySelector('#post-comment-form');
+    const contents = form.querySelector('#post-comment-text').value;
+    const actionUrl = form.getAttribute('action');
+    const questionSeq = "${question.questionSeq}";
+
+    const data = new URLSearchParams();
+    data.append('contents', contents);
+    data.append('questionSeq', questionSeq);
+
+    fetch(`/comment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data.toString()
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // or response.text() or response.blob() depending on what the server returns
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            console.log('Success:', data);
+            // Handle success (e.g., update the UI)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle error
+        });
+}
+
 function deleteQuestion() {
     const jsonData = {
         "seq": "${question.questionSeq}"
