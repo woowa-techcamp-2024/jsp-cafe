@@ -17,6 +17,7 @@ import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -127,9 +128,6 @@ public abstract class E2ETestBase {
                 .setRedirectStrategy(neverRedirectStrategy)
                 .build();
              CloseableHttpResponse response = client.execute(httpGet)) {
-            response.getStatusLine();
-            response.getAllHeaders();
-            response.getEntity();
             return new SavedHttpResponse(response.getStatusLine(), response.getAllHeaders(),
                     EntityUtils.toString(response.getEntity()));
         }
@@ -169,6 +167,20 @@ public abstract class E2ETestBase {
             request.setEntity(new StringEntity(body));
             CloseableHttpResponse response = client.execute(request);
             return response;
+        }
+    }
+
+    protected SavedHttpResponse put(String path, String body, String sessionId) throws IOException {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPut request = new HttpPut("http://localhost:" + port + path);
+            if (sessionId != null) {
+                request.addHeader("Cookie", "JSESSIONID=" + sessionId);
+            }
+            request.setHeader("Content-Type", "application/json;charset=UTF-8");
+            request.setEntity(new StringEntity(body));
+            CloseableHttpResponse response = client.execute(request);
+            return new SavedHttpResponse(response.getStatusLine(), response.getAllHeaders(),
+                    EntityUtils.toString(response.getEntity()));
         }
     }
 
