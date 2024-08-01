@@ -67,7 +67,7 @@ public class UserRepository {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                String userId = rs.getString("userId");
+                String userId = rs.getString("user_id");
                 String password = rs.getString("password");
                 String name = rs.getString("name");
                 String email = rs.getString("email");
