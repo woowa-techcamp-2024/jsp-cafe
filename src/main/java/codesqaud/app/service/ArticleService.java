@@ -151,12 +151,6 @@ public class ArticleService {
         }
     }
 
-    private Article findArticleByIdOrElseThrow(Long id) {
-        return articleDao.findById(id).orElseThrow(
-                () -> new HttpException(SC_NOT_FOUND)
-        );
-    }
-
     private void authorizeArticle(HttpServletRequest req, Long authorId) {
         if (!AuthenticationManager.isMe(req, authorId)) {
             throw new HttpException(SC_FORBIDDEN, "본인이 작성한 게시글이 아닙니다.");
