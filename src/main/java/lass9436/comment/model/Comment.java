@@ -8,6 +8,15 @@ public class Comment {
 	private String writer;
 	private String contents;
 
+	public Comment() {}
+
+	public Comment(long userSeq, long questionSeq, String writer, String contents) {
+		this.userSeq = userSeq;
+		this.questionSeq = questionSeq;
+		this.writer = writer;
+		this.contents = contents;
+	}
+
 	public long getCommentSeq() {
 		return commentSeq;
 	}
