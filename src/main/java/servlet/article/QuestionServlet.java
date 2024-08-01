@@ -32,16 +32,12 @@ public class QuestionServlet extends HttpServlet {
     }
 
     @Override
-    // 1. 미로그인시 로그인 페이지로 이동
-    // 2. question?id=5 형태의 경우 id에 해당하는 게시글을 보여준다.
-    // 3. 없을 경우 새로운 게시글을 작성할 수 있는 form을 보여준다.
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 1. 미로그인시 로그인 페이지로 이동
+        // 2. question?id=5 형태의 경우 id에 해당하는 게시글 상세 내용 페이지를 보여준다.
+        // 3. 없을 경우 새로운 게시글을 작성할 수 있는 form을 보여준다.
         String id = req.getParameter("id");
-        HttpSession session = req.getSession(false);
-        if (!AuthUtils.isLoginUser(session)) {
-            resp.sendRedirect("/user/login.jsp");
-            return;
-        }
+        AuthUtils.checkLogin(req.getSession(false));
 
         if (id != null) {
             Article article = articleService.findById(Long.parseLong(id));
@@ -54,25 +50,18 @@ public class QuestionServlet extends HttpServlet {
     }
 
     @Override
-    // 1. 미로그인시 로그인 페이지로 이동
-    // 2. 게시글 작성 후 /로 이동
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        // 1. 미로그인시 로그인 페이지로 이동
+        // 2. 게시글 저장 후 /로 이동
         HttpSession session = req.getSession(false);
-        if (!AuthUtils.isLoginUser(session)) {
-            resp.sendRedirect("/user/login.jsp");
-            return;
-        }
+        AuthUtils.checkLogin(session);
+
         String title = req.getParameter("title");
         String content = req.getParameter("content");
         log.info("{} {}", title, content);
-        articleService.saveArticle(new ArticleDao((User) session.getAttribute("loginMember"), title, content));
+        articleService.saveArticle(new ArticleDao((User) session.getAttribute(AuthUtils.LOGIN_MEMBER), title, content));
         resp.sendRedirect("/");
-    }
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("Question Servlet doPut");
-        log.info("{}", req.getParameter("id"));
     }
 
 }
