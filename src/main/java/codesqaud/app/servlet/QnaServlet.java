@@ -10,6 +10,7 @@ import codesqaud.app.model.Article;
 import codesqaud.app.model.Reply;
 import codesqaud.app.model.User;
 import codesqaud.app.service.ArticleDeleteUseCase;
+import codesqaud.app.service.ReplyDeletionUseCase;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -33,6 +34,8 @@ public class QnaServlet extends HttpServlet {
     private static final Pattern SPECIFIC_URI_PATTERN = Pattern.compile("^/qna/([1-9][\\d]{0,9})$");
     private static final Pattern SPECIFIC_FORM_URI_PATTERN = Pattern.compile("^/qna/([1-9][\\d]{0,9})/form$");
     private static final Pattern REPLY_BASE_PATTERN = Pattern.compile("^/qna/([1-9][\\d]{0,9})/replies$");
+    private static final Pattern SPECIFIC_REPLY_PATTERN = Pattern.compile("^/qna/([1-9][\\d]{0,9})/replies/([1-9][\\d]{0,9})$");
+
 
     private static final String INDEX_JSP = "/WEB-INF/index.jsp";
     private static final String SHOW_JSP = "/WEB-INF/qna/show.jsp";
@@ -40,6 +43,8 @@ public class QnaServlet extends HttpServlet {
     private static final String UPDATE_FORM_JSP = "/WEB-INF/qna/update_form.jsp";
 
     private ArticleDeleteUseCase articleDeleteUseCase;
+    private ReplyDeletionUseCase replyDeletionUseCase;
+
     private ArticleDao articleDao;
     private ReplyDao replyDao;
 
@@ -47,7 +52,8 @@ public class QnaServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        this.articleDeleteUseCase = (ArticleDeleteUseCase) config.getServletContext().getAttribute("articleDeleteUsecase");
+        this.articleDeleteUseCase = (ArticleDeleteUseCase) config.getServletContext().getAttribute("articleDeleteUseCase");
+        this.replyDeletionUseCase = (ReplyDeletionUseCase) config.getServletContext().getAttribute("replyDeletionUseCase");
         this.articleDao = (ArticleDao) config.getServletContext().getAttribute("articleDao");
         this.replyDao = (ReplyDao) config.getServletContext().getAttribute("replyDao");
     }
@@ -201,6 +207,14 @@ public class QnaServlet extends HttpServlet {
         if (matcher.matches()) {
             Long id = Long.parseLong(matcher.group(1));
             articleDeleteUseCase.handle(req, resp, id);
+            return;
+        }
+
+        matcher = SPECIFIC_REPLY_PATTERN.matcher(req.getRequestURI());
+        if(matcher.matches()) {
+            Long articleId = Long.parseLong(matcher.group(1));
+            Long replyId = Long.parseLong(matcher.group(2));
+            replyDeletionUseCase.handle(req, resp, articleId, replyId);
             return;
         }
 
