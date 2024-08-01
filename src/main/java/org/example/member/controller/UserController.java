@@ -62,16 +62,14 @@ public class UserController {
                                         @RequestParam("password") String password,
                                         @RequestParam("name") String name,
                                         @RequestParam("email") String email) throws SQLException {
-        logger.info("회원가입 시도 : {}", userId);
-        ModelAndView mav = new ModelAndView("/user/UserSignup");
+        ModelAndView mv = new ModelAndView("/user/UserProfile");
         try {
-            User user = User.createUser(userId, password, name, email);
-            userService.register(user);
-            mav.addAttribute("signupError", "회원가입에 실패했습니다. 입력한 정보를 확인해주세요.");
+            User request = User.createUser(userId, password, name, email);
+            userService.editUser(profileUser, request);
+            mv.addAttribute("user", request);
         } catch (SQLException e) {
-            logger.error("회원가입 처리 중 오류 발생", e);
-            mav.addAttribute("signupError", "회원가입 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            logger.error("회원정보 수정 중 에러 발생", e);
         }
-        return mav;
+        return mv;
     }
 }

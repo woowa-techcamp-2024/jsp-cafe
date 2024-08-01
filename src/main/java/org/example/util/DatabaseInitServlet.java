@@ -37,7 +37,7 @@ public class DatabaseInitServlet extends HttpServlet {
     private String createUserTable() {
         return "CREATE TABLE IF NOT EXISTS users (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                "userId VARCHAR(50) NOT NULL UNIQUE," +
+                "user_id VARCHAR(50) NOT NULL UNIQUE," +
                 "name VARCHAR(50) NOT NULL UNIQUE," +
                 "email VARCHAR(100) NOT NULL UNIQUE," +
                 "password VARCHAR(255) NOT NULL," +
@@ -48,7 +48,7 @@ public class DatabaseInitServlet extends HttpServlet {
     private String createPostTable() {
         return "CREATE TABLE IF NOT EXISTS posts (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                "writer VARCHAR(50) NOT NULL," +
+                "user_id VARCHAR(50) NOT NULL," +
                 "title VARCHAR(50) NOT NULL," +
                 "contents TEXT NOT NULL," +
                 "status VARCHAR(50) NOT NULL," +

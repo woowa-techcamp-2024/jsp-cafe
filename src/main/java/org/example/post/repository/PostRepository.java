@@ -12,6 +12,7 @@ import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
+import org.example.post.model.dto.PostDto;
 import org.example.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,27 +28,28 @@ public class PostRepository {
         this.dataUtil = dataUtil;
     }
 
-    public Post save(Post post) throws SQLException {
+    public void save(Post post) throws SQLException {
         logger.info("Saving post: {}", post);
-        String sql = "insert into posts (writer, title, contents, status, created_at) values (?, ?, ?, ?, ?)";
+        String sql = "insert into posts (user_id, title, contents, status, created_at) values (?, ?, ?, ?, ?)";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, post.getWriter());
+            ps.setString(1, post.getUserId());
             ps.setString(2, post.getTitle());
             ps.setString(3, post.getContents());
             ps.setString(4, post.getPostStatus().name());
             ps.setObject(5, post.getCreatedAt());
             ps.executeUpdate();
-            return post;
         } catch (SQLException e) {
             logger.error("Error saving post", e);
             throw new SQLException(e);
         }
     }
 
-    public Post findById(Long id) throws SQLException {
-        String sql = "SELECT * FROM posts WHERE id = ? AND status = ?";
+    public PostDto findById(Long id) throws SQLException {
+        String sql = "SELECT p.id, p.user_id, u.name as username, p.title, p.contents, p.status, p.created_at " +
+                "FROM posts p, users u " +
+                "WHERE p.id = ? AND p.status = ?";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -57,42 +59,44 @@ public class PostRepository {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    String writer = rs.getString("writer");
-                    String title = rs.getString("title");
-                    String contents = rs.getString("contents");
-                    String status = rs.getString("status");
-                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-
-                    Post post = Post.createWithAll(id, writer, title, contents, PostStatus.valueOf(status), createdAt);
-                    return post;
+                    return new PostDto.Builder()
+                            .id(rs.getLong("id"))
+                            .userId(rs.getString("user_id"))
+                            .username(rs.getString("username"))
+                            .title(rs.getString("title"))
+                            .contents(rs.getString("contents"))
+                            .status(PostStatus.valueOf(rs.getString("status")))
+                            .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                            .build();
                 }
             }
         }
-        throw new SQLException("User not found");
+        throw new SQLException("게시물을 찾을 수 없습니다.");
     }
 
-    public List<Post> findAll() throws SQLException {
-        String sql = "SELECT * FROM posts WHERE status = ?";
-        List<Post> posts = new ArrayList<>();
+    public List<PostDto> findAll() throws SQLException {
+        String sql = "SELECT p.id, p.user_id, u.name as username, p.title, p.contents, p.status, p.created_at FROM posts p, users u WHERE status = ? AND p.user_id = u.user_id";
+        List<PostDto> posts = new ArrayList<>();
         try (Connection conn = dataUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-        ) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, PostStatus.AVAILABLE.name());
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Long id = rs.getLong("id");
-                    String writer = rs.getString("writer");
-                    String title = rs.getString("title");
-                    String contents = rs.getString("contents");
-                    String status = rs.getString("status");
-                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-                    Post post = Post.createWithAll(id, writer, title, contents, PostStatus.valueOf(status), createdAt);
+                    PostDto post = new PostDto.Builder()
+                            .id(rs.getLong("id"))
+                            .userId(rs.getString("user_id"))
+                            .username(rs.getString("username"))
+                            .title(rs.getString("title"))
+                            .contents(rs.getString("contents"))
+                            .status(PostStatus.valueOf(rs.getString("status")))
+                            .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                            .build();
                     posts.add(post);
                 }
             }
             return posts;
         } catch (SQLException e) {
-            throw new SerialException(e.getMessage());
+            throw new SQLException("데이터베이스에서 게시물을 조회하는 중 오류가 발생했습니다.", e);
         }
     }
 

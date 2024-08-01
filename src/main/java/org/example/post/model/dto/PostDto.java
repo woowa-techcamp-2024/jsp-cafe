@@ -2,81 +2,115 @@ package org.example.post.model.dto;
 
 import java.time.LocalDateTime;
 import org.example.post.model.PostStatus;
-import org.example.post.model.dao.Post;
 
 public class PostDto {
-
     private Long id;
-    private String writer;
+    private String userId;
+    private String username;
     private String title;
     private String contents;
     private PostStatus status;
     private LocalDateTime createdAt;
 
-    public static PostDto toResponse(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.id = post.getId();
-        postDto.writer = post.getWriter();
-        postDto.title = post.getTitle();
-        postDto.contents = post.getContents();
-        postDto.status = post.getPostStatus();
-        postDto.createdAt = post.getCreatedAt();
-        return postDto;
+    private PostDto(Builder builder) {
+        this.id = builder.id;
+        this.userId = builder.userId;
+        this.username = builder.username;
+        this.title = builder.title;
+        this.contents = builder.contents;
+        this.status = builder.status;
+        this.createdAt = builder.createdAt;
     }
+
+    public static class Builder {
+        private Long id;
+        private String userId;
+        private String username;
+        private String title;
+        private String contents;
+        private PostStatus status;
+        private LocalDateTime createdAt;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder userId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder contents(String contents) {
+            this.contents = contents;
+            return this;
+        }
+
+        public Builder status(PostStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public PostDto build() {
+            return new PostDto(this);
+        }
+    }
+
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public String getUsername() {
+        return username;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getContents() {
         return contents;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
     }
 
     public PostStatus getStatus() {
         return status;
     }
 
-    public void setStatus(PostStatus status) {
-        this.status = status;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public PostDto updatePost(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+        return this;
     }
 
     @Override
     public String toString() {
         return "PostDto{" +
                 "id=" + id +
-                ", writer='" + writer + '\'' +
+                ", username='" + username + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", status=" + status +

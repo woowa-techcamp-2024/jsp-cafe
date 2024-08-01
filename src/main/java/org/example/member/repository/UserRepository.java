@@ -27,7 +27,7 @@ public class UserRepository {
     }
 
     public User save(User user) throws SQLException {
-        String sql = "insert into users (userId, password, name, email) values (?, ?, ?, ?)";
+        String sql = "insert into users (user_id, password, name, email) values (?, ?, ?, ?)";
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUserId());
@@ -43,7 +43,7 @@ public class UserRepository {
     }
 
     public User update(User user) throws SQLException {
-        String sql = "update users set password=?, name=?, email=? where userId=?";
+        String sql = "update users set password=?, name=?, email=? where user_id=?";
         try (Connection conn = dataUtil.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
@@ -81,7 +81,7 @@ public class UserRepository {
     }
 
     public User findUserByUserId(String userId) throws SQLException {
-        String sql = "SELECT * FROM users WHERE userId = ?";
+        String sql = "SELECT * FROM users WHERE user_id = ?";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -102,7 +102,7 @@ public class UserRepository {
     }
 
     public boolean existsByUserId(String userId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM users WHERE userId = ?";
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
         boolean exists = false;
 
         try (Connection conn = dataUtil.getConnection();

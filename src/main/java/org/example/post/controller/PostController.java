@@ -46,13 +46,13 @@ public class PostController {
 
     @RequestMapping(path = "/questions", method = HttpMethod.GET)
     public ModelAndView getQuestionForm(HttpSession session) {
-        ModelAndView mav = new ModelAndView("/post/PostForm");
+        ModelAndView mv = new ModelAndView("/post/PostForm");
         UserDto userDetails = sessionManager.getUserDetails(session.getId());
         if (userDetails == null) {
             return new ModelAndView("redirect:/user/login");
         }
-        mav.addAttribute("userName", userDetails.getName());
-        return mav;
+        mv.addAttribute("userName", userDetails.getName());
+        return mv;
     }
 
     @RequestMapping(path = "/questions", method = HttpMethod.POST)
@@ -60,7 +60,7 @@ public class PostController {
                                     @RequestParam("contents") String contents,
                                     HttpSession session) throws SQLException {
         UserDto userDetails = sessionManager.getUserDetails(session.getId());
-        Post post = Post.create(userDetails.getName(), title, contents);
+        Post post = Post.create(userDetails.getUserId(), title, contents);
         postService.create(post);
         ModelAndView mv = new ModelAndView("redirect:/");
         return mv;
@@ -78,12 +78,13 @@ public class PostController {
     }
 
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.PUT)
-    public void editQuestion(@PathVariable("id") Long id, @RequestParam("title") String title, @RequestParam("contents") String contents,
-                                     HttpServletResponse response) throws SQLException, IOException {
+    public void editQuestion(@PathVariable("id") Long id, @RequestParam("title") String title,
+                             @RequestParam("contents") String contents,
+                             HttpSession session,
+                             HttpServletResponse response) throws SQLException, IOException {
         PostDto post = postService.getPostById(id);
-        post.setTitle(title);
-        post.setContents(contents);
-        postService.updatePost(post);
+        post.updatePost(title, contents);
+        postService.updatePost(sessionManager.getUserDetails(session.getId()).getUserId(), post);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader("X-Redirect-Location", "/questions/" + id);
         response.getWriter().write("게시글이 성공적으로 수정되었습니다.");
@@ -95,7 +96,7 @@ public class PostController {
         PostDto post = postService.getPostById(id);
         UserDto userDetails = sessionManager.getUserDetails(session.getId());
         if (userDetails != null) {
-            if (post.getWriter().equals(userDetails.getName())) {
+            if (post.getUsername().equals(userDetails.getName())) {
                 // 삭제처리
                 postService.deleteById(id);
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -123,7 +124,7 @@ public class PostController {
         boolean isAuthor = false;
 
         if (userDetails != null) {
-            isAuthor = userDetails.getName().equals(post.getWriter());
+            isAuthor = userDetails.getName().equals(post.getUsername());
             logger.info("isAuthor: " + isAuthor);
         }
         return isAuthor;

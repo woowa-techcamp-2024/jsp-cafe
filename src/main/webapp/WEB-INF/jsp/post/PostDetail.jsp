@@ -26,7 +26,7 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/${post.writer}" class="article-author-name">${post.writer}</a>
+                            <a href="/users/${post.userId}" class="article-author-name">${post.username}</a>
                             <a href="/questions/${post.id}" class="article-header-time" title="퍼머링크">
                                 <i class="icon-link"></i>
                             </a>

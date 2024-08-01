@@ -20,27 +20,25 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public PostDto create(Post post) throws SQLException {
-        return PostDto.toResponse(postRepository.save(post));
+    public void create(Post post) throws SQLException {
+        postRepository.save(post);
     }
 
     public List<PostDto> getAll() throws SQLException {
-        return postRepository.findAll().stream()
-                .map(PostDto::toResponse)
-                .collect(Collectors.toUnmodifiableList());
+        return postRepository.findAll();
     }
 
     public PostDto getPostById(long id) throws SQLException {
-        Post post = postRepository.findById(id);
-        if (post.getPostStatus() == PostStatus.DELETED) {
+        PostDto post = postRepository.findById(id);
+        if (post.getStatus() == PostStatus.DELETED) {
             throw new IllegalArgumentException("Post with id " + id + " is deleted");
         }
-        return PostDto.toResponse(post);
+        return post;
     }
 
-    public PostDto updatePost(PostDto postDto) throws SQLException {
-        Post post = Post.createWithAll(postDto.getId(), postDto.getWriter(), postDto.getTitle(), postDto.getContents(), postDto.getStatus(), postDto.getCreatedAt());
-        return PostDto.toResponse(postRepository.update(post));
+    public void updatePost(String userId, PostDto postDto) throws SQLException {
+        Post post = Post.createWithAll(postDto.getId(), userId, postDto.getTitle(), postDto.getContents(), postDto.getStatus(), postDto.getCreatedAt());
+        postRepository.update(post);
     }
 
     public void deleteById(Long id) throws SQLException {
