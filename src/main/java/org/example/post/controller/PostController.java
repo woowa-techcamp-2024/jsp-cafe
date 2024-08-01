@@ -124,7 +124,7 @@ public class PostController {
         boolean isAuthor = false;
 
         if (userDetails != null) {
-            isAuthor = userDetails.getName().equals(post.getUsername());
+            isAuthor = userDetails.getUserId().equals(post.getUserId());
             logger.info("isAuthor: " + isAuthor);
         }
         return isAuthor;
