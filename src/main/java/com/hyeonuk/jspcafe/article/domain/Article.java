@@ -2,11 +2,14 @@ package com.hyeonuk.jspcafe.article.domain;
 
 import com.hyeonuk.jspcafe.member.domain.Member;
 
+import java.util.Date;
+
 public class Article {
     private Long id;
     private Member writer;
     private String title;
     private String contents;
+    private Date deletedAt;
 
     public Article(Long id,Member writer,String title,String contents){
         this.id=id;
@@ -18,6 +21,13 @@ public class Article {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+    }
+    public Article(Long id, Member writer, String title, String contents, Date deletedAt) {
+        this.id = id;
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -50,6 +60,14 @@ public class Article {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public boolean validation(){

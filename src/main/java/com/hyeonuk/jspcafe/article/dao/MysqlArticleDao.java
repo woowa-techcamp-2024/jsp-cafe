@@ -8,6 +8,7 @@ import com.hyeonuk.jspcafe.member.domain.Member;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,7 +77,8 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public List<Article> findAll() {
         try(Connection conn = manager.getConnection()){
-            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" from article a left join member m on m.id = a.writer";
+            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", a.deletedAt as \"a.deletedAt\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" " +
+                    "from article a left join member m on m.id = a.writer where a.deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             List<Article> articles = new ArrayList<>();
@@ -93,7 +95,8 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public Optional<Article> findById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" from article a left join member m on m.id = a.writer where a.id = ?";
+            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", a.deletedAt as \"a.deletedAt\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" " +
+                    "from article a left join member m on m.id = a.writer where a.id = ? and a.deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
             ResultSet rs = pstmt.executeQuery();
@@ -110,7 +113,7 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public void deleteById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "delete from article where id = ?";
+            String sql = "update article set deletedAt = now() where id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
 
@@ -124,6 +127,7 @@ public class MysqlArticleDao implements ArticleDao{
         Long id = rs.getLong("a.id");
         String title = rs.getString("a.title");
         String contents = rs.getString("a.contents");
+        Date deletedAt = rs.getDate("a.deletedAt");
 
         Long writerId = rs.getLong("m.id");
         String nickname = rs.getString("m.nickname");
@@ -131,6 +135,6 @@ public class MysqlArticleDao implements ArticleDao{
         String memberId = rs.getString("m.memberId");
         String email = rs.getString("m.email");
 
-        return new Article(id,new Member(writerId,memberId,password,nickname,email),title,contents);
+        return new Article(id,new Member(writerId,memberId,password,nickname,email),title,contents,deletedAt);
     }
 }

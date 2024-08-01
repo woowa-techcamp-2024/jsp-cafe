@@ -3,12 +3,22 @@ package com.hyeonuk.jspcafe.reply.domain;
 import com.hyeonuk.jspcafe.article.domain.Article;
 import com.hyeonuk.jspcafe.member.domain.Member;
 
+import java.util.Date;
+
 public class Reply {
     private Long id;
     private Article article;
     private Member member;
     private String contents;
+    private Date deletedAt;
 
+    public Reply(Long id,Article article,Member member,String contents,Date deletedAt){
+        this.id = id;
+        this.article = article;
+        this.member = member;
+        this.contents = contents;
+        this.deletedAt = deletedAt;
+    }
     public Reply(Long id, Article article, Member member, String contents) {
         this.id = id;
         this.article = article;
@@ -56,5 +66,13 @@ public class Reply {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

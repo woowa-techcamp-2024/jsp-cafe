@@ -3,10 +3,7 @@ package com.hyeonuk.jspcafe.article.dao;
 import com.hyeonuk.jspcafe.article.domain.Article;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -31,19 +28,23 @@ public class InMemoryArticleDao implements ArticleDao{
 
     @Override
     public List<Article> findAll() {
-        return new ArrayList<>(store.values());
+        return store.values()
+                .stream()
+                .filter(article->article.getDeletedAt() == null)
+                .toList();
     }
 
     @Override
     public Optional<Article> findById(Long id) {
         return store.values()
                 .stream()
-                .filter(article->article.getId().equals(id))
+                .filter(article->article.getId().equals(id) && article.getDeletedAt() == null)
                 .findFirst();
     }
 
     @Override
     public void deleteById(Long id) {
-        store.remove(id);
+        store.get(id)
+                .setDeletedAt(new Date());
     }
 }

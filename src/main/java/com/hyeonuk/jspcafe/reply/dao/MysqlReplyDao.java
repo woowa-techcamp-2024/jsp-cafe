@@ -72,7 +72,7 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public void deleteById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "delete from reply where id = ?";
+            String sql = "update reply set deletedAt = now() where id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
@@ -84,7 +84,7 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public void deleteAllByArticleId(Long articleId) {
         try(Connection conn = manager.getConnection()){
-            String sql = "delete from reply where articleId = ?";
+            String sql = "update reply set deletedAt = now() where articleId = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, articleId);
             pstmt.executeUpdate();
@@ -96,9 +96,9 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public List<Reply> findAllByArticleId(Long articleId) {
         try(Connection conn = manager.getConnection()){
-            String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\", " +
+            String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\",  " +
                     "m.id as \"m.id\", m.nickname as \"m.nickname\", m.email as \"m.email\", m.memberId as \"m.memberId\" " +
-                    "from reply r left join member m on r.memberId = m.id where r.articleId = ?";
+                    "from reply r left join member m on r.memberId = m.id where r.articleId = ? and r.deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, articleId);
             ResultSet rs = pstmt.executeQuery();
@@ -117,7 +117,7 @@ public class MysqlReplyDao implements ReplyDao{
         try(Connection conn = manager.getConnection()){
             String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\"," +
                     "m.id as \"m.id\", m.nickname as \"m.nickname\", m.email as \"m.email\", m.memberId as \"m.memberId\" " +
-                    "from reply r left join member m on m.id = r.memberId where r.id = ?";
+                    "from reply r left join member m on m.id = r.memberId where r.id = ? and r.deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
             ResultSet rs = pstmt.executeQuery();
