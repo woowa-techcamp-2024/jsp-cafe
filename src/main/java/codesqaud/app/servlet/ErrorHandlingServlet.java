@@ -8,11 +8,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 @WebServlet("/error")
 public class ErrorHandlingServlet extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(ErrorHandlingServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         handleException(req, resp);
@@ -35,6 +39,10 @@ public class ErrorHandlingServlet extends HttpServlet {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
+        if(throwable != null) {
+            log.error(throwable.getMessage(), throwable);
+        }
+
         if (throwable instanceof HttpException httpException) {
             httpStatus = HttpStatus.valueOf(httpException.getStatusCode());
             statusCode = httpException.getStatusCode();
@@ -52,6 +60,10 @@ public class ErrorHandlingServlet extends HttpServlet {
             errorMessage = httpStatus.getDefaultMessage();
         }
 
+        if(statusCode == HttpServletResponse.SC_UNAUTHORIZED) {
+            resp.sendRedirect("/users/login");
+            return;
+        }
 
         req.setAttribute("errorMessage", errorMessage);
         req.setAttribute("statusCode", statusCode);
