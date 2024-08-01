@@ -111,12 +111,28 @@ public class DBReplyRepository implements ReplyRepository {
     }
 
     @Override
+    public void softDeleteById(Long id, LocalDateTime deletedTime) {
+        String sql = "UPDATE replies SET deleted_at = ? WHERE reply_id = ?";
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setTimestamp(1, Timestamp.valueOf(deletedTime));
+            pstmt.setLong(2, id);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<ReplyResponse> findByArticleIdWithUser(Long articleId) {
         List<ReplyResponse> replies = new ArrayList<>();
         String sql = "SELECT r.reply_id, r.content, r.user_id, u.nickname, r.created_at "
                 + "FROM replies r "
                 + "INNER JOIN users u ON r.user_id = u.id "
-                + "WHERE r.article_id = ?";
+                + "WHERE r.article_id = ? AND r.deleted_at IS NULL ";
 
         try (Connection conn = connector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)
@@ -139,6 +155,28 @@ public class DBReplyRepository implements ReplyRepository {
         }
 
         return replies;
+    }
+
+    @Override
+    public void update(Reply reply) {
+        String sql = "UPDATE replies SET content = ?, updated_at = ? WHERE reply_id = ?";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)
+        ) {
+
+            pstmt.setString(1, reply.getContent());
+            pstmt.setTimestamp(2, Timestamp.valueOf(reply.getUpdatedAt()));
+            pstmt.setLong(3, reply.getReplyId());
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new RuntimeException("Reply with id " + reply.getReplyId() + " not found");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update reply", e);
+        }
     }
 
     public Reply mapRowToReply(ResultSet rs) throws SQLException {
