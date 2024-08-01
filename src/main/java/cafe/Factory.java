@@ -13,13 +13,11 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 public class Factory {
     private final Map<Class<?>, Object> instances = new ConcurrentHashMap<>();
-    private final Map<Class<?>, Lock> locks = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Object> locks = new ConcurrentHashMap<>();
     private final PropertiesLoader dbProperties = new PropertiesLoader("db.properties");
 
     public UserRepository userRepository() {
@@ -49,9 +47,8 @@ public class Factory {
     }
 
     protected <T> T getOrCreate(Class<T> beanClass, Supplier<T> supplier) {
-        Lock lock = locks.computeIfAbsent(beanClass, k -> new ReentrantLock());
-        lock.lock();
-        try {
+        Object lock = locks.computeIfAbsent(beanClass, k -> new Object());
+        synchronized (lock) {
             if (!instances.containsKey(beanClass)) {
                 T instance = supplier.get();
                 instances.put(beanClass, instance);
@@ -59,8 +56,6 @@ public class Factory {
             } else {
                 return beanClass.cast(instances.get(beanClass));
             }
-        } finally {
-            lock.unlock();
         }
     }
 }
