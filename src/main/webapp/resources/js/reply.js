@@ -26,7 +26,6 @@ const renderNewReply = (res) => {
                                         </div>
                                         <div class="article-util">
                                             <ul class="article-util-list">
-<!--                                            로그인한 사용자가 아니면 안 보이도록-->
                                                 <li>
                                                         <button id="delete-reply-btn" class="delete-answer-button"
                                                                 onclick="deleteReply(${res.replyId})">
