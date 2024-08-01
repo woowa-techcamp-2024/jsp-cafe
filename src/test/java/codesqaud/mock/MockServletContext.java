@@ -1,11 +1,15 @@
 package codesqaud.mock;
 
 import codesqaud.TestDataSource;
+import codesqaud.app.dao.reply.DbReplyDao;
+import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.db.JdbcTemplate;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.article.DbArticleDao;
 import codesqaud.app.dao.user.DbUserDao;
 import codesqaud.app.dao.user.UserDao;
+import codesqaud.app.service.ArticleService;
+import codesqaud.app.service.ReplyService;
 import jakarta.servlet.*;
 import jakarta.servlet.descriptor.JspConfigDescriptor;
 
@@ -24,9 +28,17 @@ public class MockServletContext implements ServletContext {
         UserDao userDao = new DbUserDao(jdbcTemplate);
         attributes.put("userDao", userDao);
 
-
         ArticleDao articleDao = new DbArticleDao(jdbcTemplate);
         attributes.put("articleDao", articleDao);
+
+        ReplyDao replyDao = new DbReplyDao(jdbcTemplate);
+        attributes.put("replyDao", replyDao);
+
+        ArticleService articleService = new ArticleService(articleDao, replyDao, dataSource);
+        attributes.put("articleService", articleService);
+
+        ReplyService replyService = new ReplyService(replyDao);
+        attributes.put("replyService", replyService);
     }
 
     @Override
