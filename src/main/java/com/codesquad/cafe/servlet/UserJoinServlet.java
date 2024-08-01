@@ -50,7 +50,7 @@ public class UserJoinServlet extends HttpServlet {
             return;
         }
 
-        resp.sendRedirect("/users/list");
+        resp.sendRedirect("/users");
     }
 
 }
