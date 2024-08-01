@@ -54,5 +54,22 @@
 <script src="<c:url value='/js/jquery-2.2.0.min.js'/>"></script>
 <script src="<c:url value='/js/bootstrap.min.js'/>"></script>
 <script src="<c:url value='/js/scripts.js'/>"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('form[name="question"]');
+        var passwordInput = document.getElementById('password');
+
+        // 비밀번호 입력 필드를 필수로 설정
+        passwordInput.required = true;
+
+        form.addEventListener('submit', function(event) {
+            if (!passwordInput.value.trim()) {
+                event.preventDefault(); // 폼 제출 중지
+                alert('비밀번호를 입력해주세요.');
+                passwordInput.focus();
+            }
+        });
+    });
+</script>
 </body>
 </html>
