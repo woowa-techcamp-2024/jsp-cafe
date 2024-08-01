@@ -354,7 +354,7 @@ class ArticleServiceTest {
         }
 
         @Test
-        @DisplayName("[Success] 게시글 작성자의 댓글만 있는 경우 게시글 삭제가 가능하다")
+        @DisplayName("[Success] 게시글 작성자의 댓글만 있는 경우 게시글 삭제가 가능하고 댓글도 모두 삭제된다")
         void deleteArticleWithOnlyAuthorReplies() {
             // given
             Long articleId = article1.getId();
