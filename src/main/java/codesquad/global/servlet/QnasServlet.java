@@ -1,7 +1,7 @@
 package codesquad.global.servlet;
 
-import codesquad.article.domain.Article;
-import codesquad.article.repository.ArticleRepository;
+import codesquad.article.service.RegisterArticleService;
+import codesquad.article.service.RegisterArticleService.Command;
 import codesquad.common.authorization.annotation.Authorized;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletConfig;
@@ -20,12 +20,12 @@ import java.io.IOException;
 public class QnasServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(QnasServlet.class);
 
-    private ArticleRepository articleRepository;
+    private RegisterArticleService registerArticleService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        articleRepository = (ArticleRepository) servletContext.getAttribute("ArticleRepository");
+        registerArticleService = (RegisterArticleService) servletContext.getAttribute("RegisterArticleService");
         logger.info("QnasServlet initialized");
     }
 
@@ -40,7 +40,8 @@ public class QnasServlet extends HttpServlet {
         String writer = ((User) req.getSession().getAttribute("loginUser")).getUserId();
         String content = req.getParameter("contents");
 
-        articleRepository.save(new Article(title, writer, content));
+        Command command = new Command(title, writer, content);
+        registerArticleService.register(command);
 
         resp.sendRedirect(req.getContextPath() + "/");
     }

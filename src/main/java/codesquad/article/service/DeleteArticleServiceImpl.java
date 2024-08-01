@@ -21,7 +21,7 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
     }
 
     @Override
-    public void deleteArticle(Command cmd) throws NoSuchElementException, UnauthorizedRequestException {
+    public void delete(Command cmd) throws NoSuchElementException, UnauthorizedRequestException {
         long articleId = cmd.articleId();
         String userId = cmd.userId();
         Optional<Article> findArticle = articleRepository.findByIdForUpdate(articleId);
