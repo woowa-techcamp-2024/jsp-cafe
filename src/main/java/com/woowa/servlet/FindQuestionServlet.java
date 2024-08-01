@@ -1,15 +1,18 @@
 package com.woowa.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowa.exception.AuthenticationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.handler.QuestionHandler;
 import com.woowa.handler.ReplyHandler;
+import com.woowa.model.Reply;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class FindQuestionServlet extends HttpServlet {
 
@@ -19,10 +22,12 @@ public class FindQuestionServlet extends HttpServlet {
 
     private final QuestionHandler questionHandler;
     private final ReplyHandler replyHandler;
+    private final ObjectMapper objectMapper;
 
-    public FindQuestionServlet(QuestionHandler questionHandler, ReplyHandler replyHandler) {
+    public FindQuestionServlet(QuestionHandler questionHandler, ReplyHandler replyHandler, ObjectMapper objectMapper) {
         this.questionHandler = questionHandler;
         this.replyHandler = replyHandler;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -47,8 +52,17 @@ public class FindQuestionServlet extends HttpServlet {
         if (questionId.endsWith(REPLY_SUFFIX)) {
             questionId = questionId.replace(REPLY_SUFFIX, "");
             String content = req.getParameter("content");
+
             ResponseEntity response = replyHandler.createReply(userId, questionId, content);
-            resp.sendRedirect(response.getLocation());
+            Reply reply = (Reply) response.getModel().get("reply");
+            String result = objectMapper.writeValueAsString(reply);
+            PrintWriter writer = resp.getWriter();
+            writer.print(result);
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setContentType("application/json; charset=utf-8");
+            resp.setContentLength(result.getBytes().length);
+            writer.flush();
+            writer.close();
         }
     }
 
@@ -72,8 +86,9 @@ public class FindQuestionServlet extends HttpServlet {
                     .split("/");  // {questionId}/{replyId}
             questionId = split[0];
             String replyId = split[1];
+            resp.setContentType("application/json; charset=utf-8");
             ResponseEntity response = replyHandler.deleteReply(userId, questionId, replyId);
-            resp.sendRedirect(response.getLocation());
+            resp.setStatus(204);
         } else {
             ResponseEntity response = questionHandler.deleteQuestion(userId, questionId);
             resp.sendRedirect(response.getLocation());

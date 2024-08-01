@@ -1,5 +1,6 @@
 package com.woowa;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowa.database.UserDatabase;
 import com.woowa.filter.ErrorHandlingFilter;
 import com.woowa.filter.HttpMethodFilter;
@@ -42,7 +43,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         dispatcherServlet.init(beanFactory);
 
         addServlet(ctx, dispatcherServlet, beanFactory);
-        addFilter(ctx);
+        addFilter(ctx, beanFactory);
     }
 
     private void addServlet(ServletContext ctx, DispatcherServlet dispatcherServlet, BeanFactory beanFactory) {
@@ -74,17 +75,19 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
                 new ListQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
         listQuestionServlet.addMapping("/");
 
-        Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet",
-                new FindQuestionServlet(beanFactory.getBean(QuestionHandler.class), beanFactory.getBean(ReplyHandler.class)));
+        Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet", new FindQuestionServlet(
+                beanFactory.getBean(QuestionHandler.class),
+                beanFactory.getBean(ReplyHandler.class),
+                beanFactory.getBean(ObjectMapper.class)));
         findQuestionServlet.addMapping("/questions/*");
     }
 
-    private void addFilter(ServletContext ctx) {
+    private void addFilter(ServletContext ctx, BeanFactory beanFactory) {
         FilterRegistration.Dynamic httpMethodFilter = ctx.addFilter("httpMethodFilter", new HttpMethodFilter());
         httpMethodFilter.addMappingForUrlPatterns(null, true, "/*");
 
         FilterRegistration.Dynamic errorHandlingFilter = ctx.addFilter("errorHandlingFilter",
-                new ErrorHandlingFilter());
+                new ErrorHandlingFilter(beanFactory.getBean(ObjectMapper.class)));
         errorHandlingFilter.addMappingForUrlPatterns(null, true, "/*");
     }
 }
