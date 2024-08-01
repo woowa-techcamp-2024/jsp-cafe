@@ -14,30 +14,32 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 
 	@Override
 	public Comment save(Comment comment) {
-		String sqlInsert = "INSERT INTO comments (userSeq, questionSeq, contents) VALUES (?, ?, ?)";
-		String sqlUpdate = "UPDATE comments SET userSeq = ?, questionSeq = ?, contents = ? WHERE commentSeq = ?";
+		String sqlInsert = "INSERT INTO comments (userSeq, questionSeq, writer, contents) VALUES (?, ?, ?, ?)";
+		String sqlUpdate = "UPDATE comments SET userSeq = ?, questionSeq = ?, writer = ?, contents = ? WHERE commentSeq = ?";
+		boolean isInsert = comment.getCommentSeq() == 0;
 
 		try (Connection conn = Database.getConnection();
-			 PreparedStatement ps = comment.getCommentSeq() == 0 ?
-				 conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS) : conn.prepareStatement(sqlUpdate)) {
+			 PreparedStatement ps = isInsert ?
+				 conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS) :
+				 conn.prepareStatement(sqlUpdate)) {
 
-			if (comment.getCommentSeq() == 0) {
-				ps.setLong(1, comment.getUserSeq());
-				ps.setLong(2, comment.getQuestionSeq());
-				ps.setString(3, comment.getContents());
-				ps.executeUpdate();
+			ps.setLong(1, comment.getUserSeq());
+			ps.setLong(2, comment.getQuestionSeq());
+			ps.setString(3, comment.getWriter());
+			ps.setString(4, comment.getContents());
 
+			if (!isInsert) {
+				ps.setLong(5, comment.getCommentSeq());
+			}
+
+			ps.executeUpdate();
+
+			if (isInsert) {
 				try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
 						comment.setCommentSeq(generatedKeys.getLong(1));
 					}
 				}
-			} else {
-				ps.setLong(1, comment.getUserSeq());
-				ps.setLong(2, comment.getQuestionSeq());
-				ps.setString(3, comment.getContents());
-				ps.setLong(4, comment.getCommentSeq());
-				ps.executeUpdate();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -125,6 +127,7 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 		comment.setCommentSeq(rs.getLong("commentSeq"));
 		comment.setUserSeq(rs.getLong("userSeq"));
 		comment.setQuestionSeq(rs.getLong("questionSeq"));
+		comment.setWriter(rs.getString("writer"));
 		comment.setContents(rs.getString("contents"));
 		return comment;
 	}
