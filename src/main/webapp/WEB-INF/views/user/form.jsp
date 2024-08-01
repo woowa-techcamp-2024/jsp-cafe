@@ -5,7 +5,7 @@
 
 
 <div class="login-container">
-    <h2>로그인</h2>
+    <h2>회원가입</h2>
     <form name="login" action="${pageContext.request.contextPath}/users/registration" method="post" class="login-form">
         <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요" required>
         <input type="nickname" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요" required>
