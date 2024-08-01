@@ -2,7 +2,6 @@ package org.example.post.service;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
@@ -37,7 +36,8 @@ public class PostService {
     }
 
     public void updatePost(String userId, PostDto postDto) throws SQLException {
-        Post post = Post.createWithAll(postDto.getId(), userId, postDto.getTitle(), postDto.getContents(), postDto.getStatus(), postDto.getCreatedAt());
+        Post post = Post.createWithAll(postDto.getId(), userId, postDto.getTitle(), postDto.getContents(),
+                postDto.getStatus(), postDto.getCreatedAt());
         postRepository.update(post);
     }
 
