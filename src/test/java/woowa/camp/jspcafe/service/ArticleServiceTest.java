@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,16 +12,20 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.Article;
+import woowa.camp.jspcafe.domain.Reply;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.fixture.ArticleFixture;
 import woowa.camp.jspcafe.fixture.UserFixture;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
 import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
+import woowa.camp.jspcafe.repository.reply.DBReplyRepository;
+import woowa.camp.jspcafe.repository.reply.ReplyDBSetupExtension;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
@@ -29,7 +34,6 @@ import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
 import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
-import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 class ArticleServiceTest {
 
@@ -45,6 +49,7 @@ class ArticleServiceTest {
         databaseConnector = new DatabaseConnector();
         articleRepository = new DBArticleRepository(databaseConnector);
         userRepository = new InMemoryUserRepository();
+        replyRepository = new DBReplyRepository(databaseConnector);
         fixedDateTime = new FixedDateTimeProvider(2024, 7, 25);
         articleService = new ArticleService(articleRepository, userRepository, replyRepository, fixedDateTime);
     }
@@ -309,6 +314,87 @@ class ArticleServiceTest {
             // when then
             assertThatThrownBy(() -> articleService.updateArticle(updateRequestUser, article.getId(), updateRequest))
                     .isInstanceOf(UnAuthorizationException.class);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Describe_게시글을 삭제하는 기능은")
+    @ExtendWith(ArticleDBSetupExtension.class)
+    @ExtendWith(ReplyDBSetupExtension.class)
+    class DeleteArticleTest {
+
+        User user1;
+        User user2;
+
+        Article article1;
+
+        @BeforeEach
+        void setUp() {
+            user1 = UserFixture.createUser(1, fixedDateTime.getNow());
+            user2 = UserFixture.createUser(2, fixedDateTime.getNow());
+            user1.setId(userRepository.save(user1));
+            user2.setId(userRepository.save(user2));
+
+            article1 = ArticleFixture.createArticleWithAuthorId(user1.getId(), fixedDateTime.getNow());
+            article1.setId(articleRepository.save(article1));
+        }
+
+        @Test
+        @DisplayName("[Success] 댓글이 없는 경우 게시글 삭제가 가능하다")
+        void deleteArticleWithNoReplies() {
+            // given
+            Long articleId = article1.getId();
+
+            // when
+            articleService.deleteArticle(user1, articleId);
+
+            // then
+            assertThat(articleRepository.findById(articleId)).isNotPresent();
+        }
+
+        @Test
+        @DisplayName("[Success] 게시글 작성자의 댓글만 있는 경우 게시글 삭제가 가능하다")
+        void deleteArticleWithOnlyAuthorReplies() {
+            // given
+            Long articleId = article1.getId();
+            LocalDateTime fixedTime = fixedDateTime.getNowAsLocalDateTime();
+            Reply authorReply = new Reply(user1.getId(), articleId, "content", fixedTime, fixedTime, null);
+            replyRepository.save(authorReply);
+
+            // when
+            articleService.deleteArticle(user1, articleId);
+
+            // then
+            assertThat(articleRepository.findById(articleId)).isNotPresent();
+            assertThat(replyRepository.findByArticleId(articleId)).isEmpty();
+        }
+
+        @Test
+        @DisplayName("[Exception] 게시글 작성자가 아니면 UnAuthorizationException 예외가 발생한다")
+        void deleteArticleByNonAuthorThrowsException() {
+            // given
+            Long articleId = article1.getId();
+
+            // when & then
+            assertThatThrownBy(() -> articleService.deleteArticle(user2, articleId))
+                    .isInstanceOf(UnAuthorizationException.class)
+                    .hasMessageContaining("게시글 수정은 작성자의 이메일과 동일해야 합니다");
+        }
+
+        @Test
+        @DisplayName("[Exception] 게시글 작성자가 아닌 회원이 작성한 댓글이 있으면 ArticleException 예외가 발생한다")
+        void deleteArticleWithOtherUserReplyThrowsException() {
+            // given
+            Long articleId = article1.getId();
+            LocalDateTime fixedTime = fixedDateTime.getNowAsLocalDateTime();
+            Reply otherUserReply = new Reply(user2.getId(), articleId, "content", fixedTime, fixedTime, null);
+            replyRepository.save(otherUserReply);
+
+            // when & then
+            assertThatThrownBy(() -> articleService.deleteArticle(user1, articleId))
+                    .isInstanceOf(ArticleException.class)
+                    .hasMessageContaining("다른 사람의 댓글이 있는 게시글은 삭제할 수 없습니다");
         }
 
     }
