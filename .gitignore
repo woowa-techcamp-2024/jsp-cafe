@@ -4,6 +4,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+#### custom ###
+code_review_gpt.sh
+
 ### IntelliJ IDEA ###
 .idea
 .idea/modules.xml
