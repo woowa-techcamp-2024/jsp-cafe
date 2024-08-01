@@ -9,7 +9,7 @@ public class ArticleDto {
     private final String createdAt;
     private final UserDto author;
     private final Boolean activate;
-    private List<ReplyDto> replies;
+    private boolean isMine;
 
     public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author, Boolean activate) {
         this.id = id;
@@ -44,8 +44,12 @@ public class ArticleDto {
         return author;
     }
 
-    public void setReplies(List<ReplyDto> replies) {
-        this.replies = replies;
+    public boolean getIsMine() {
+        return isMine;
+    }
+
+    public void setMine(Long loginUserId) {
+        this.isMine = loginUserId.equals(author.getId());
     }
 
     public static Builder builder() {

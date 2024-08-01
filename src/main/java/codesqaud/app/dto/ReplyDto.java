@@ -6,6 +6,7 @@ public class ReplyDto {
     private final Boolean activate;
     private final String createdAt;
     private final UserDto author;
+    private boolean isMine;
 
     public ReplyDto(Long id, String contents, Boolean activate, String createdAt, UserDto author) {
         this.id = id;
@@ -33,6 +34,14 @@ public class ReplyDto {
 
     public UserDto getAuthor() {
         return author;
+    }
+
+    public boolean getIsMine() {
+        return isMine;
+    }
+
+    public void setMine(Long loginUserId) {
+        this.isMine = loginUserId.equals(author.getId());
     }
 
     public static Builder builder() {
