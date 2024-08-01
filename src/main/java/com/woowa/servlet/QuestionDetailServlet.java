@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class FindQuestionServlet extends HttpServlet {
+public class QuestionDetailServlet extends HttpServlet {
 
     private static final String PREFIX = "/questions/";
     private static final String UPDATE_SUFFIX = "/update";
@@ -24,7 +24,7 @@ public class FindQuestionServlet extends HttpServlet {
     private final ReplyHandler replyHandler;
     private final ObjectMapper objectMapper;
 
-    public FindQuestionServlet(QuestionHandler questionHandler, ReplyHandler replyHandler, ObjectMapper objectMapper) {
+    public QuestionDetailServlet(QuestionHandler questionHandler, ReplyHandler replyHandler, ObjectMapper objectMapper) {
         this.questionHandler = questionHandler;
         this.replyHandler = replyHandler;
         this.objectMapper = objectMapper;
@@ -35,10 +35,10 @@ public class FindQuestionServlet extends HttpServlet {
         String questionId = req.getRequestURI().replace(PREFIX, "");
         String userId = getUserIdFromSession(req);
         ResponseEntity response;
-        if (questionId.endsWith(UPDATE_SUFFIX)) {
+        if (questionId.endsWith(UPDATE_SUFFIX)) {  // 게시글 업데이트 폼 조회
             questionId = questionId.replace(UPDATE_SUFFIX, "");
             response = questionHandler.updateQuestionForm(userId, questionId);
-        } else {
+        } else {  // 게시글 상세 조회
             response = questionHandler.findQuestion(questionId);
         }
         req.setAttribute("question", response.getModel().get("question"));
@@ -49,7 +49,7 @@ public class FindQuestionServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String questionId = req.getRequestURI().replace(PREFIX, "");
         String userId = getUserIdFromSession(req);
-        if (questionId.endsWith(REPLY_SUFFIX)) {
+        if (questionId.endsWith(REPLY_SUFFIX)) {  // 게시글에 댓글 작성
             questionId = questionId.replace(REPLY_SUFFIX, "");
             String content = req.getParameter("content");
 
@@ -67,7 +67,7 @@ public class FindQuestionServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {  // 게시글 수정
         String questionId = req.getRequestURI().replace(PREFIX, "");
         String userId = getUserIdFromSession(req);
         String title = req.getParameter("title");
@@ -80,7 +80,7 @@ public class FindQuestionServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String questionId = req.getRequestURI().replace(PREFIX, "");
         String userId = getUserIdFromSession(req);
-        if (questionId.contains(REPLY_SUFFIX)) {
+        if (questionId.contains(REPLY_SUFFIX)) {  // 게시글의 댓글 삭제
             String[] split = questionId
                     .replace(REPLY_SUFFIX, "")  // {questionId}/replies/{replyId}
                     .split("/");  // {questionId}/{replyId}
@@ -89,7 +89,7 @@ public class FindQuestionServlet extends HttpServlet {
             resp.setContentType("application/json; charset=utf-8");
             ResponseEntity response = replyHandler.deleteReply(userId, questionId, replyId);
             resp.setStatus(204);
-        } else {
+        } else {  // 게시글 삭제
             ResponseEntity response = questionHandler.deleteQuestion(userId, questionId);
             resp.sendRedirect(response.getLocation());
         }

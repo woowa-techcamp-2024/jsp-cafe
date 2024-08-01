@@ -26,14 +26,13 @@ import com.woowa.support.StubHttpSession;
 import com.woowa.support.UserFixture;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class FindQuestionServletTest {
-    private FindQuestionServlet findQuestionServlet;
+class QuestionDetailServletTest {
+    private QuestionDetailServlet questionDetailServlet;
     private QuestionHandler questionHandler;
     private ReplyHandler replyHandler;
     private UserDatabase userDatabase;
@@ -51,7 +50,7 @@ class FindQuestionServletTest {
         questionHandler = new QuestionHandler(userDatabase, questionDatabase);
         replyDatabase = new ReplyMemoryDatabase();
         replyHandler = new ReplyHandler(userDatabase, questionDatabase, replyDatabase);
-        findQuestionServlet = new FindQuestionServlet(questionHandler, replyHandler, objectMapper);
+        questionDetailServlet = new QuestionDetailServlet(questionHandler, replyHandler, objectMapper);
     }
 
     @Nested
@@ -81,7 +80,7 @@ class FindQuestionServletTest {
             request.setRequestUri("/questions/" + question.getQuestionId());
 
             //when
-            findQuestionServlet.doGet(request, response);
+            questionDetailServlet.doGet(request, response);
 
             //then
             assertThat(request.getAttribute("question")).isNotNull().isInstanceOf(Question.class);
@@ -99,7 +98,7 @@ class FindQuestionServletTest {
             request.setRequestUri("/questions/" + question.getQuestionId());
 
             //when
-            Exception exception = catchException(() -> findQuestionServlet.doGet(request, response));
+            Exception exception = catchException(() -> questionDetailServlet.doGet(request, response));
 
             //then
             assertThat(exception).isInstanceOf(AuthenticationException.class);
@@ -124,7 +123,7 @@ class FindQuestionServletTest {
                 request.setSession(session);
 
                 //when
-                findQuestionServlet.doGet(request, response);
+                questionDetailServlet.doGet(request, response);
 
                 //then
                 assertThat(request.getRequestDispatcher().getPath()).isEqualTo("/WEB-INF/classes/static/qna/update.jsp");
@@ -162,7 +161,7 @@ class FindQuestionServletTest {
             request.addParameter("content", "content");
 
             //when
-            findQuestionServlet.doPost(request, response);
+            questionDetailServlet.doPost(request, response);
 
             //then
             assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
@@ -175,7 +174,7 @@ class FindQuestionServletTest {
             request.addParameter("content", "content");
 
             //when
-            Exception exception = catchException(() -> findQuestionServlet.doPost(request, response));
+            Exception exception = catchException(() -> questionDetailServlet.doPost(request, response));
 
             //then
             assertThat(exception).isInstanceOf(AuthenticationException.class);
@@ -214,7 +213,7 @@ class FindQuestionServletTest {
             request.addParameter("content", "updateContent");
 
             //when
-            findQuestionServlet.doPut(request, response);
+            questionDetailServlet.doPut(request, response);
 
             //then
             assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
@@ -252,7 +251,7 @@ class FindQuestionServletTest {
                 request.setRequestUri("/questions/" + question.getQuestionId());
 
                 //when
-                findQuestionServlet.doDelete(request, response);
+                questionDetailServlet.doDelete(request, response);
 
                 //then
                 assertThat(response.getRedirectLocation()).isEqualTo("/");
@@ -288,7 +287,7 @@ class FindQuestionServletTest {
                 request.setSession(session);
 
                 //when
-                findQuestionServlet.doDelete(request, response);
+                questionDetailServlet.doDelete(request, response);
 
                 //then
                 assertThat(response.getRedirectLocation()).isEqualTo("/questions/" + question.getQuestionId());
@@ -300,7 +299,7 @@ class FindQuestionServletTest {
                 //given
 
                 //when
-                Exception exception = catchException(() -> findQuestionServlet.doDelete(request, response));
+                Exception exception = catchException(() -> questionDetailServlet.doDelete(request, response));
 
                 //then
                 assertThat(exception).isInstanceOf(AuthenticationException.class);
