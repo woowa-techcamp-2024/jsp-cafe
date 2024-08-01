@@ -72,6 +72,31 @@ public class MySqlArticleDao implements ArticleDao {
     }
 
     @Override
+    public Optional<Article> findByIdForUpdate(Long id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
+            String sql = "select * from articles where id = ? for update";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String title = resultSet.getString("title");
+                String writer = resultSet.getString("writer");
+                String content = resultSet.getString("content");
+                return Optional.of(new Article(id, title, writer, content));
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
+        }
+    }
+
+    @Override
     public List<Article> findAll() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

@@ -8,6 +8,8 @@ public interface ArticleDao {
 
     Optional<Article> findById(Long id);
 
+    Optional<Article> findByIdForUpdate(Long id);
+
     List<Article> findAll();
 
     void update(Article article);
