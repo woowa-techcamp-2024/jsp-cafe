@@ -1,9 +1,13 @@
 package codesquad.container.initializer;
 
 import codesquad.common.db.connection.ConnectionManager;
+import codesquad.common.db.transaction.JdbcTransactionManager;
 import codesquad.domain.article.ArticleDao;
 import codesquad.domain.user.UserDao;
-import codesquad.infra.*;
+import codesquad.infra.MySqlArticleDao;
+import codesquad.infra.MySqlArticleQuery;
+import codesquad.infra.MySqlUserDao;
+import codesquad.common.db.connection.ServerConnectionManager;
 import codesquad.servlet.dao.ArticleQuery;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
@@ -23,12 +27,14 @@ public class DatabaseRegister implements AppInit {
         Context envContext = (Context) initContext.lookup("java:/comp/env");
         DataSource ds = (DataSource) envContext.lookup("jdbc/cafe-db");
         ConnectionManager connectionManager = new ServerConnectionManager(ds);
-        UserDao userDao = new MySqlUserDao(connectionManager);
-        ArticleDao articleDao = new MySqlArticleDao(connectionManager);
-        ArticleQuery articleQuery = new MySqlArticleQuery(connectionManager);
+        JdbcTransactionManager jdbcTransactionManager = new JdbcTransactionManager(connectionManager);
+        UserDao userDao = new MySqlUserDao(jdbcTransactionManager);
+        ArticleDao articleDao = new MySqlArticleDao(jdbcTransactionManager);
+        ArticleQuery articleQuery = new MySqlArticleQuery(jdbcTransactionManager);
         servletContext.setAttribute("userDao", userDao);
         servletContext.setAttribute("articleDao", articleDao);
         servletContext.setAttribute("articleQuery", articleQuery);
+        servletContext.setAttribute("jdbcTransactionManager", jdbcTransactionManager);
         logger.info("Database registered on context");
     }
 }

@@ -1,6 +1,5 @@
-package codesquad.infra;
+package codesquad.common.db.connection;
 
-import codesquad.common.db.connection.ConnectionManager;
 import codesquad.exception.ExternalConnectionException;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -10,12 +9,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class MySqlContextConnectionManager implements ConnectionManager {
+public class SimpleMySqlConnectionManager implements ConnectionManager {
     private MysqlDataSource dataSource;
 
-    public MySqlContextConnectionManager() {
+    public SimpleMySqlConnectionManager() {
         Properties properties = new Properties();
-        try (InputStream input = MySqlContextConnectionManager.class.getResourceAsStream("/application.properties")) {
+        try (InputStream input = SimpleMySqlConnectionManager.class.getResourceAsStream("/application.properties")) {
             if (input != null) {
                 properties.load(input);
             }
@@ -55,6 +54,7 @@ public class MySqlContextConnectionManager implements ConnectionManager {
         dataSource.setDatabaseName(databaseName);
     }
 
+    @Override
     public Connection getConnection() {
         try {
             return dataSource.getConnection();
