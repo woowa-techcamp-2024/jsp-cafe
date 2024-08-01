@@ -137,4 +137,43 @@ public class PostRepositoryTest {
         assertEquals("title", post.getTitle());
         assertEquals("contents", post.getContents());
     }
+
+    @Test
+    public void testUpdate() throws SQLException {
+        PostRequestDto postDto = createPostDto("User One", "title", "contents");
+        postDto.setMemberId(memberId);
+        Post savedPost = postRepository.save(postDto);
+
+        // Update the post
+        PostRequestDto updatePost = new PostRequestDto(savedPost.getId(), "updatedTitle", "updatedContents", memberId);
+
+        int rowsAffected = postRepository.update(updatePost);
+
+        assertEquals(1, rowsAffected);
+
+        Post updatedPost = postRepository.findById(savedPost.getId());
+        assertNotNull(updatedPost);
+        assertEquals("updatedTitle", updatedPost.getTitle());
+        assertEquals("updatedContents", updatedPost.getContents());
+    }
+
+    @Test
+    public void testDelete() throws SQLException {
+        PostRequestDto postDto = createPostDto("User One", "title", "contents");
+        postDto.setMemberId(memberId);
+        Post savedPost = postRepository.save(postDto);
+
+        // Delete the post
+        int rowsAffected = postRepository.delete(savedPost.getId());
+        assertEquals(1, rowsAffected);
+
+        Post deletedPost = postRepository.findById(savedPost.getId());
+        assertNull(deletedPost);
+    }
+
+    @Test
+    public void testDeleteWithNonExistentPostId() throws SQLException {
+        int rowsAffected = postRepository.delete(9999L); // Non-existent post ID
+        assertEquals(0, rowsAffected);
+    }
 }

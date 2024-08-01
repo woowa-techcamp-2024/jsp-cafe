@@ -71,11 +71,10 @@ public class PostController implements SubController {
                     }
                     res.sendRedirect("/");
                 } else {
-                    log.debug("hiddenMethod: {}", hiddenMethod);
                     createPost(req);
                     res.sendRedirect("/");
-                    break;
                 }
+                break;
             }
             default:
                 throw ClientErrorCode.PAGE_NOT_FOUND.customException("request uri = " + req.getRequestURI() + ", request method = " + method);
@@ -112,6 +111,7 @@ public class PostController implements SubController {
     private void updatePost(HttpServletRequest req) {
         log.debug("[Update Post Start]");
         var postRequestDto = getPostRequestDto(req);
+        log.debug("[PostRequestDto] : {}", postRequestDto);
         var writer = SessionManager.getInstance().getMemberName(req, "loginInfo");
         postRequestDto.setWriter(writer);
         var memberId = SessionManager.getInstance().getMemberId(req, "loginInfo");

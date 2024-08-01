@@ -178,4 +178,171 @@ public class PostControllerTest {
         assertEquals("testTitle", post.getTitle());
         assertEquals("testContents", post.getContents());
     }
+
+    @Test
+    public void testDoProcessPut() throws ServletException, IOException {
+        // Insert a post into the database
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
+        long memberId = member.getId();
+        Map<String, String[]> body = new HashMap<>();
+        body.put("title", new String[]{"title1"});
+        body.put("contents", new String[]{"contents1"});
+        PostRequestDto postDto = new PostRequestDto(body);
+        postDto.setWriter("User One");
+        postDto.setMemberId(memberId);
+        Post savePost = PostRepository.getInstance().save(postDto);
+
+        // Simulate PUT request with query parameters
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+        ((CustomHttpServletRequest) request).setMethod("POST");
+        ((CustomHttpServletRequest) request).addParameter("postId", savePost.getId() + "");
+        ((CustomHttpServletRequest) request).addParameter("title", "updatedTitle");
+        ((CustomHttpServletRequest) request).addParameter("contents", "updatedContents");
+        ((CustomHttpServletRequest) request).addParameter("method", "PUT");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId+"");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
+
+        postController.doProcess(request, response);
+
+        // Verify the post was updated
+        Post updatedPost = PostRepository.getInstance().findById(savePost.getId());
+        assertNotNull(updatedPost);
+        assertEquals("updatedTitle", updatedPost.getTitle());
+        assertEquals("updatedContents", updatedPost.getContents());
+    }
+
+    @Test
+    public void testDoProcessDelete() throws ServletException, IOException {
+        // Insert a post into the database
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
+        long memberId = member.getId();
+        Map<String, String[]> body = new HashMap<>();
+        body.put("title", new String[]{"title1"});
+        body.put("contents", new String[]{"contents1"});
+        PostRequestDto postDto = new PostRequestDto(body);
+        postDto.setWriter("User One");
+        postDto.setMemberId(memberId);
+        Post savePost = PostRepository.getInstance().save(postDto);
+
+        // Simulate DELETE request with query parameters
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+        ((CustomHttpServletRequest) request).setMethod("POST");
+        ((CustomHttpServletRequest) request).addParameter("postId", savePost.getId() + "");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId + "");
+        ((CustomHttpServletRequest) request).addParameter("method", "DELETE");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId+"");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
+
+        postController.doProcess(request, response);
+
+        // Verify the post was deleted
+        Post deletedPost = PostRepository.getInstance().findById(savePost.getId());
+        assertNull(deletedPost);
+    }
+
+    @Test
+    public void testDoProcessPutWithNonExistentPostId() throws ServletException, IOException {
+        // Simulate PUT request with non-existent post ID
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+        ((CustomHttpServletRequest) request).setMethod("POST");
+        ((CustomHttpServletRequest) request).addParameter("postId", "9999"); // Non-existent post ID
+        ((CustomHttpServletRequest) request).addParameter("title", "updatedTitle");
+        ((CustomHttpServletRequest) request).addParameter("contents", "updatedContents");
+        ((CustomHttpServletRequest) request).addParameter("method", "PUT");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId+"");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            postController.doProcess(request, response);
+        });
+
+        assertEquals(ClientErrorCode.POST_IS_NULL.getHttpStatus(), exception.getHttpStatus());
+    }
+
+    @Test
+    public void testDoProcessPutWithUnauthorizedUser() throws ServletException, IOException {
+        // Insert a post into the database
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
+        long memberId = member.getId();
+        Map<String, String[]> body = new HashMap<>();
+        body.put("title", new String[]{"title1"});
+        body.put("contents", new String[]{"contents1"});
+        PostRequestDto postDto = new PostRequestDto(body);
+        postDto.setWriter("User One");
+        postDto.setMemberId(memberId);
+        Post savePost = PostRepository.getInstance().save(postDto);
+
+        // Simulate PUT request with unauthorized user
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+        ((CustomHttpServletRequest) request).setMethod("POST");
+        ((CustomHttpServletRequest) request).addParameter("postId", savePost.getId() + "");
+        ((CustomHttpServletRequest) request).addParameter("title", "updatedTitle");
+        ((CustomHttpServletRequest) request).addParameter("contents", "updatedContents");
+        ((CustomHttpServletRequest) request).addParameter("method", "PUT");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId+"");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId + 1, "user2", "User Two")); // Different user
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            postController.doProcess(request, response);
+        });
+
+        assertEquals(ClientErrorCode.POST_ACCESS_DENIED.getHttpStatus(), exception.getHttpStatus());
+    }
+
+    @Test
+    public void testDoProcessDeleteWithNonExistentPostId() throws ServletException, IOException {
+        // Simulate DELETE request with non-existent post ID
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+        ((CustomHttpServletRequest) request).setMethod("POST");
+        ((CustomHttpServletRequest) request).addParameter("postId", "9999"); // Non-existent post ID
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId + "");
+        ((CustomHttpServletRequest) request).addParameter("method", "DELETE");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId+"");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            postController.doProcess(request, response);
+        });
+
+        assertEquals(ClientErrorCode.POST_IS_NULL.getHttpStatus(), exception.getHttpStatus());
+    }
+
+    @Test
+    public void testDoProcessDeleteWithUnauthorizedUser() throws ServletException, IOException {
+        // Insert a post into the database
+        Member member = new Member("user1", "password", "User One");
+        MemberRepository.getInstance().save(member);
+        long memberId = member.getId();
+        Map<String, String[]> body = new HashMap<>();
+        body.put("title", new String[]{"title1"});
+        body.put("contents", new String[]{"contents1"});
+        PostRequestDto postDto = new PostRequestDto(body);
+        postDto.setWriter("User One");
+        postDto.setMemberId(memberId);
+        Post savePost = PostRepository.getInstance().save(postDto);
+
+        // Simulate DELETE request with unauthorized user
+        HttpServletRequest request = new CustomHttpServletRequest();
+        HttpServletResponse response = new CustomHttpServletResponse();
+        ((CustomHttpServletRequest) request).setMethod("POST");
+        ((CustomHttpServletRequest) request).addParameter("postId", savePost.getId() + "");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId + "");
+        ((CustomHttpServletRequest) request).addParameter("method", "DELETE");
+        ((CustomHttpServletRequest) request).addParameter("memberId", memberId+"");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(memberId + 1, "user2", "User Two")); // Different user
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            postController.doProcess(request, response);
+        });
+
+        assertEquals(ClientErrorCode.POST_ACCESS_DENIED.getHttpStatus(), exception.getHttpStatus());
+    }
 }

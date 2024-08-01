@@ -66,4 +66,5 @@ public class PostRequestDto {
     public long getMemberId() {
         return this.memberId;
     }
+
 }

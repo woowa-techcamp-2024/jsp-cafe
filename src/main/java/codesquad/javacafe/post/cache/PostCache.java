@@ -41,8 +41,10 @@ public class PostCache {
 
     public void updateCache(PostRequestDto postRequestDto) {
         var postDto = cache.get(postRequestDto.getId());
-        postDto.update(postRequestDto);
-        cache.put(postDto.getId(), postDto);
+        if(postDto != null) {
+            postDto.update(postRequestDto);
+            cache.put(postDto.getId(), postDto);
+        }
     }
 
     public void updateCache(long id, String name) {
