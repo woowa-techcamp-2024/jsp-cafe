@@ -66,7 +66,7 @@ public class DBArticleRepository implements ArticleRepository {
             return Optional.empty();
         }
 
-        String sql = "SELECT * FROM articles WHERE id = ?";
+        String sql = "SELECT * FROM articles WHERE id = ? AND deleted_at IS NULL";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -133,7 +133,9 @@ public class DBArticleRepository implements ArticleRepository {
 
     @Override
     public List<Article> findByOffsetPagination(int offset, int limit) {
-        String sql = "SELECT * FROM articles ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM articles a "
+                + "WHERE deleted_at IS NULL "
+                + "ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
