@@ -11,12 +11,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(urlPatterns = "/")
 public class IndexServlet extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(IndexServlet.class);
+
     private ArticleQuery articleQuery;
 
     public IndexServlet() {
@@ -30,6 +34,7 @@ public class IndexServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         articleQuery = (ArticleQuery) servletContext.getAttribute("articleQuery");
+        logger.info("IndexServlet initialized");
     }
 
     @Override

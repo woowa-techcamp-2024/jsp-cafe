@@ -29,6 +29,7 @@ public class UsersServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         userDao = (UserDao) servletContext.getAttribute("userDao");
+        logger.info("UsersServlet initialized");
     }
 
     /**

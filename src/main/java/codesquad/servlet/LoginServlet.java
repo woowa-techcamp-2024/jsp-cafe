@@ -10,12 +10,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
+
     private UserDao userDao;
 
     public LoginServlet() {
@@ -29,6 +33,7 @@ public class LoginServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         userDao = (UserDao) servletContext.getAttribute("userDao");
+        logger.info("LoginServlet initialized");
     }
 
     /**

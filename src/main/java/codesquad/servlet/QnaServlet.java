@@ -42,6 +42,7 @@ public class QnaServlet extends HttpServlet {
         ServletContext servletContext = config.getServletContext();
         articleQuery = (ArticleQuery) servletContext.getAttribute("articleQuery");
         articleDao = (ArticleDao) servletContext.getAttribute("articleDao");
+        logger.info("QnaServlet initialized");
     }
 
     /**

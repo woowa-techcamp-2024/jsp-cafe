@@ -26,6 +26,7 @@ public class QnasServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         articleDao = (ArticleDao) servletContext.getAttribute("articleDao");
+        logger.info("QnasServlet initialized");
     }
 
     /**
