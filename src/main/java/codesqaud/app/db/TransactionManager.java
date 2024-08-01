@@ -29,6 +29,7 @@ public class TransactionManager {
         } catch (Exception e) {
             try {
                 rollback();
+                throw e;
             } catch (SQLException rollbackException) {
                 log.error(rollbackException.getMessage(), rollbackException);
             }
