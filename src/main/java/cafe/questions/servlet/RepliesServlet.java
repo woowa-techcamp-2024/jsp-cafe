@@ -7,8 +7,11 @@ import cafe.users.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class RepliesServlet extends MappingHttpServlet {
@@ -30,10 +33,25 @@ public class RepliesServlet extends MappingHttpServlet {
             resp.sendRedirect("/login");
             return;
         }
-        Long articleId = Long.parseLong(req.getParameter("articleId"));
-        String content = req.getParameter("content");
+
+        Long articleId;
+        String content;
+
+        try {
+            LinkedHashMap<String, Object> parsedReq = new JSONParser(req.getReader()).parseObject();
+            articleId = Long.parseLong(parsedReq.get("articleId").toString());
+            content = parsedReq.get("content").toString();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (content.isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("content is empty");
+            return;
+        }
+
         Reply reply = new Reply(articleId, user.getId(), content);
-        Reply save = replyRepository.save(reply);
-        resp.sendRedirect("/questions/" + articleId);
+        replyRepository.save(reply);
     }
 }
