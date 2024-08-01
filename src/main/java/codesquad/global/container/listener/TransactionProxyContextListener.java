@@ -1,4 +1,4 @@
-package codesquad.container.listener;
+package codesquad.global.container.listener;
 
 import codesquad.common.db.transaction.JdbcTransactionManager;
 import codesquad.common.db.transaction.TxProxy;

@@ -1,6 +1,7 @@
 package codesquad.filter;
 
 import codesquad.fixture.http.MethodFieldRequestFixture;
+import codesquad.global.filter.MethodOverrideFilter;
 import codesquad.http.MockRequest;
 import codesquad.http.MockRequestDispatcher;
 import codesquad.http.MockResponse;

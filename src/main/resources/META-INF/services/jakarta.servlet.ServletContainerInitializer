@@ -1,1 +1,1 @@
-codesquad.container.initializer.WebServletContainerInitializer
+codesquad.global.container.initializer.WebServletContainerInitializer

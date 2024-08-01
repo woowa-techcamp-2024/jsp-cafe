@@ -1,4 +1,4 @@
-package codesquad.container.initializer;
+package codesquad.global.container.initializer;
 
 import codesquad.common.db.connection.ConnectionManager;
 import codesquad.common.db.transaction.JdbcTransactionManager;

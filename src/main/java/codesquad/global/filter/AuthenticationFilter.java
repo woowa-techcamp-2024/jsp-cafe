@@ -1,4 +1,4 @@
-package codesquad.filter;
+package codesquad.global.filter;
 
 import codesquad.domain.user.User;
 import codesquad.servlet.annotation.authentication.Authorized;

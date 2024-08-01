@@ -1,4 +1,4 @@
-package codesquad.filter;
+package codesquad.global.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
