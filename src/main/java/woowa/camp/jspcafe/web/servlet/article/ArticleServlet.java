@@ -61,6 +61,8 @@ public class ArticleServlet extends HttpServlet {
         } catch (ArticleException e) {
             log.warn("[ArticleException]", e);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (Exception e) {
+            log.warn("[Exception]", e);
         }
     }
 
