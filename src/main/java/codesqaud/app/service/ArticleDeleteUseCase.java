@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 public class ArticleDeleteUseCase extends ArticleUseCase {
     private final ReplyDao replyDao;
@@ -34,8 +35,11 @@ public class ArticleDeleteUseCase extends ArticleUseCase {
     }
 
     private void deleteArticle(HttpServletRequest req, Long id) {
-        Article article = findArticleByIdOrElseThrow(id);
+        Article article = articleDao.findByIdForUpdate(id)
+                .orElseThrow(() -> new HttpException(SC_NOT_FOUND));
+
         List<Reply> replies = replyDao.findByArticleId(article.getId());
+
         authorizeArticle(req, article.getAuthorId());
         validateDelete(req, replies);
         articleDao.delete(article);

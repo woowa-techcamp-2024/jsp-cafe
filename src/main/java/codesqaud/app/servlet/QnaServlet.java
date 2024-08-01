@@ -4,6 +4,7 @@ import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dto.ArticleDto;
+import codesqaud.app.dto.ReplyDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import codesqaud.app.model.Reply;
@@ -46,6 +47,7 @@ public class QnaServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        this.articleDeleteUseCase = (ArticleDeleteUseCase) config.getServletContext().getAttribute("articleDeleteUsecase");
         this.articleDao = (ArticleDao) config.getServletContext().getAttribute("articleDao");
         this.replyDao = (ReplyDao) config.getServletContext().getAttribute("replyDao");
     }
@@ -98,18 +100,23 @@ public class QnaServlet extends HttpServlet {
 
         req.setAttribute("articles", articles);
         req.setAttribute("articleSize", articles.size());
-
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(INDEX_JSP);
         requestDispatcher.forward(req, resp);
     }
 
     private void handleArticleDetails(HttpServletRequest req, HttpServletResponse resp, Long id) throws ServletException, IOException {
+        User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
+
         ArticleDto article = articleDao.findByIdAsDto(id).orElseThrow(
                 () -> new HttpException(SC_NOT_FOUND)
         );
-
+        article.setMine(loginUser.getId());
         req.setAttribute("article", article);
-        req.setAttribute("isMine", AuthenticationManager.isMe(req, article.getAuthor().getId()));
+
+        List<ReplyDto> replies = replyDao.findByArticleIdAsDto(article.getId());
+        replies.forEach(replyDto -> replyDto.setMine(loginUser.getId()));
+        req.setAttribute("replies", replies);
+
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(SHOW_JSP);
         requestDispatcher.forward(req, resp);
     }
@@ -198,12 +205,6 @@ public class QnaServlet extends HttpServlet {
         }
 
         super.doDelete(req, resp);
-    }
-
-    private Article findArticleByIdOrElseThrow(Long id) {
-        return articleDao.findById(id).orElseThrow(
-                () -> new HttpException(SC_NOT_FOUND)
-        );
     }
 
     private void authorizeArticle(HttpServletRequest req, Long authorId) {
