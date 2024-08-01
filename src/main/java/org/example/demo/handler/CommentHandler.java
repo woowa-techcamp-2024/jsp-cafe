@@ -29,6 +29,10 @@ public class CommentHandler {
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
+    private static Long getUserId(HttpServletRequest request) {
+        return (Long) request.getSession(false).getAttribute("user");
+    }
+
     public void createComment(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
         Long postId = Long.valueOf(pathVariables.get(0));
         String contents = request.getParameter("contents");
@@ -82,10 +86,6 @@ public class CommentHandler {
         }
 
         commentRepository.updateComment(commentId, contents);
-    }
-
-    private static Long getUserId(HttpServletRequest request) {
-        return (Long) request.getSession(false).getAttribute("user");
     }
 
     private List<Comment> getUpdatedComments(Long postId, Long lastCommentId) {

@@ -9,7 +9,6 @@ import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.exception.UnauthorizedException;
 import org.example.demo.model.PostCreateDao;
 import org.example.demo.repository.PostRepository;
-import org.example.demo.validator.AuthValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +24,10 @@ public class PostHandler {
 
     public PostHandler(PostRepository postRepository) {
         this.postRepository = postRepository;
+    }
+
+    private static boolean isIdentical(Comment comment, Long userId) {
+        return comment.getWriter().getId().equals(userId);
     }
 
     public void handleGetPost(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
@@ -128,10 +131,6 @@ public class PostHandler {
         postRepository.deletePost(postId);
 
         response.sendRedirect("/");
-    }
-
-    private static boolean isIdentical(Comment comment, Long userId) {
-        return comment.getWriter().getId().equals(userId);
     }
 
     public void handlePostForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {

@@ -12,7 +12,8 @@ public class Post {
     private LocalDateTime createdAt;
     private List<Comment> comments;
 
-    public Post() {}
+    public Post() {
+    }
 
     public Post(Long id, User writer, String title, String contents, LocalDateTime createdAt, List<Comment> comments) {
         this.id = id;

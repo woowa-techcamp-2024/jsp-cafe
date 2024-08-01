@@ -1,15 +1,10 @@
 package org.example.demo.validator;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.domain.Comment;
 import org.example.demo.domain.Post;
-import org.example.demo.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class AuthValidator {
     private static final Logger logger = LoggerFactory.getLogger(AuthValidator.class);

@@ -42,7 +42,7 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/posts/<%=post.getId()%>/comments">수정</a>
+                                <a class="link-modify-article" href="/posts/<%=post.getId()%>/edit">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="/posts/<%=post.getId()%>" method="POST">

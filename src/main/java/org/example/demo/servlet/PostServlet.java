@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
-import org.example.demo.router.Router;
 import org.example.demo.exception.InternalServerError;
 import org.example.demo.handler.CommentHandler;
 import org.example.demo.handler.PostHandler;
+import org.example.demo.router.Router;
 
 import java.io.IOException;
 

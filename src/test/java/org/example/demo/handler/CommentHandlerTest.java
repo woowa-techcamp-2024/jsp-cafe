@@ -11,7 +11,6 @@ import org.example.demo.domain.User;
 import org.example.demo.exception.UnauthorizedException;
 import org.example.demo.model.CommentCreateDao;
 import org.example.demo.repository.CommentRepository;
-import org.example.demo.validator.AuthValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

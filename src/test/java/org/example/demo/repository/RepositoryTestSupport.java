@@ -2,8 +2,6 @@ package org.example.demo.repository;
 
 import org.example.demo.db.DbConfig;
 
-import static org.example.demo.db.DbConfig.createDatabaseIfNotExists;
-
 public class RepositoryTestSupport {
     DbConfig dbConfig;
 

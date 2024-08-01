@@ -10,7 +10,8 @@ public class Comment {
     private String contents;
     private LocalDateTime createdAt;
 
-    public Comment() {}
+    public Comment() {
+    }
 
     public Comment(Long id, Long postId, User writer, String contents, LocalDateTime createdAt) {
         this.id = id;

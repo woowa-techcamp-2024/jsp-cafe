@@ -43,6 +43,26 @@ public class DbConfig {
         return jdbcUrl;
     }
 
+    public static void createDatabaseIfNotExists(String jdbcUrl, String user, String password) {
+        // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
+        HikariConfig initialConfig = new HikariConfig();
+        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
+        initialConfig.setUsername(user);
+        initialConfig.setPassword(password);
+
+        var dataSource = new HikariDataSource(initialConfig);
+
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE DATABASE IF NOT EXISTS cafe");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerError("Failed to create database: " + e.getMessage());
+        } finally {
+            dataSource.close();
+        }
+    }
+
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
@@ -71,26 +91,6 @@ public class DbConfig {
         } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServerError("Failed to initialize database: " + e.getMessage());
-        }
-    }
-
-    public static void createDatabaseIfNotExists(String jdbcUrl, String user, String password) {
-        // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
-        HikariConfig initialConfig = new HikariConfig();
-        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
-        initialConfig.setUsername(user);
-        initialConfig.setPassword(password);
-
-        var dataSource = new HikariDataSource(initialConfig);
-
-        try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.execute("CREATE DATABASE IF NOT EXISTS cafe");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new InternalServerError("Failed to create database: " + e.getMessage());
-        } finally {
-            dataSource.close();
         }
     }
 
