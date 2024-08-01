@@ -5,12 +5,12 @@
 <%@ include file="../header.jsp" %>
 <body>
 <%@ include file="../navigationbar.jsp" %>
-<% Article articles = (Article) request.getAttribute("article"); %>
+<% Article article = (Article) request.getAttribute("article"); %>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
           <header class="qna-header">
-              <h2 class="qna-title"><%= articles.getTitle() %></h2>
+              <h2 class="qna-title"><%= article.getTitle() %></h2>
           </header>
           <div class="content-main">
               <article class="article">
@@ -19,26 +19,23 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users?id=<%= articles.getWriter().getId() %>" class="article-author-name"><%= articles.getWriter().getName() %></a>
-                          <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              <%= articles.getCreated() %>
+                          <a href="/users?id=<%= article.getWriter().getId() %>" class="article-author-name"><%= article.getWriter().getName() %></a>
+                              <%= article.getCreated() %>
                               <i class="icon-link"></i>
                           </a>
                       </div>
                   </div>
                   <div class="article-doc">
-                      <%= articles.getContent() %>
+                      <c:out value="<%= article.getContent() %>" />
                   </div>
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/questions/423/form">수정</a>
+                              <a class="link-modify-article" href="/questions/<%= article.getId() %>">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/423" method="POST">
-                                  <input type="hidden" name="_method" value="DELETE">
-                                  <button class="link-delete-article" type="submit">삭제</button>
-                              </form>
+<%--                              <button type="button" class="btn btn-success clearfix pull-right" id="updateButton">수정하기</button>--%>
+                              <button class="link-delete-article" type="button" id="deleteButton" >삭제</button>
                           </li>
                           <li>
                               <a class="link-modify-article" href="/">목록</a>
@@ -153,6 +150,34 @@
 		</ul>
 		</div>
 	</article>
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#deleteButton').click(function() {
+
+            $.ajax({
+                url: '/questions/<%= article.getId() %>',
+                type: 'DELETE',
+                success: function(data, textStatus, xhr) {
+                    alert('질문이 삭제되었습니다.');
+                    window.location.href = '/';
+                },
+                error: function(xhr, status, error) {
+                    if(xhr.status === 302) {
+                        window.location.href = xhr.getResponseHeader('Location');
+                    }
+                    if(xhr.status === 405) {
+                        alert('질문 삭제 실패!');
+                    }
+                    if(xhr.status === 401) {
+                        console.log("error: " + error);
+                        alert('다른 사용자의 게시글을 삭제할 수 없습니다.');
+                    }
+                }
+            });
+        });
+    });
 </script>
 
 <%@ include file="../footer.jsp" %>
