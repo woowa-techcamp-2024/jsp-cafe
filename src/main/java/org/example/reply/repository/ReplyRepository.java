@@ -64,7 +64,7 @@ public class ReplyRepository {
     }
 
     public Reply findById(Long id) throws SQLException {
-        String sql = "SELECT * FROM replies WHERE id = ? AND status = ?";
+        String sql = "SELECT r.id, r.post_id, u.name as writer, r.contents, r.status, r.created_at FROM replies r, users u WHERE r.id = ? AND status = ?";
 
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -90,7 +90,7 @@ public class ReplyRepository {
     }
 
     public List<Reply> findAll(Long postId) throws SQLException {
-        String sql = "SELECT * FROM replies WHERE post_id = ? AND status = ?";
+        String sql = "SELECT r.id, u.name as writer, r.contents, r.status, r.created_at FROM replies r, users u WHERE post_id = ? AND status = ?";
         List<Reply> replies = new ArrayList<>();
         try (Connection conn = dataUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
