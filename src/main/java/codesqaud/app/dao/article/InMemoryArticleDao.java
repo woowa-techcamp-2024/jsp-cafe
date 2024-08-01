@@ -68,6 +68,11 @@ public class InMemoryArticleDao implements ArticleDao {
     }
 
     @Override
+    public Optional<Article> findByIdForUpdate(Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Optional<ArticleDto> findByIdAsDto(Long id) {
         throw new UnsupportedOperationException();
     }

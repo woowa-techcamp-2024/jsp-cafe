@@ -88,6 +88,13 @@ public class DbArticleDao implements ArticleDao {
     }
 
     @Override
+    public Optional<Article> findByIdForUpdate(Long id) {
+        String sql = "SELECT * FROM articles WHERE id = ? FOR UPDATE";
+        Article article = jdbcTemplate.queryForObject(sql, ARTICLE_ROW_MAPPER, id);
+        return Optional.ofNullable(article);
+    }
+
+    @Override
     public List<Article> findAll() {
         String sql = "SELECT * FROM articles";
         return jdbcTemplate.query(sql, ARTICLE_ROW_MAPPER);
