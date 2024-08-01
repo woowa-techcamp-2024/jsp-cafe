@@ -110,7 +110,7 @@ public class DbArticleDao implements ArticleDao {
 
     @Override
     public void delete(Article article) {
-        String sql = "UPDATE replies SET activate = false WHERE id = ? AND activate = false";
+        String sql = "UPDATE articles SET activate = false WHERE id = ? AND activate = true";
         int update = jdbcTemplate.update(sql, article.getId());
 
         if (update == 0) {
