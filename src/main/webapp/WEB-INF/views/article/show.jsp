@@ -42,9 +42,9 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         const articleId = ${article.articleId};
 
         // 댓글 목록 불러오기
@@ -52,14 +52,14 @@
             $.ajax({
                 url: '/comments',
                 method: 'GET',
-                data: { articleId: articleId },
+                data: {articleId: articleId},
                 dataType: 'json', // 명시적으로 JSON 응답을 기대함
-                success: function(response) {
+                success: function (response) {
                     const commentList = $('#comment-list');
                     commentList.empty();
 
                     if (Array.isArray(response) && response.length > 0) {
-                        response.forEach(function(comment) {
+                        response.forEach(function (comment) {
                             // JSP의 EL과 충돌을 피하기 위해 작은따옴표를 사용하고 + 연산자로 연결
                             const commentHtml = '<div class="comment" data-id="' + comment.replyId + '">' +
                                 '<p class="comment-author">' + comment.userNickname + '</p>' +
@@ -76,7 +76,7 @@
                         $('#comment-count').text('0');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("댓글 불러오기 실패:", error);
                     alert("댓글을 불러오는 데 실패했습니다.");
                 }
@@ -89,15 +89,15 @@
         console.log("페이지 로드 시 댓글 불러오기 종료");
 
         // 댓글 작성
-        $('#comment-form').submit(function(e) {
+        $('#comment-form').submit(function (e) {
             e.preventDefault();
             const content = $('textarea[name="content"]').val();
             $.ajax({
                 url: '/comments',
                 method: 'POST',
-                data: { articleId: articleId, content: content },
+                data: {articleId: articleId, content: content},
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     console.log("댓글 작성 성공:", response);
                     $('textarea[name="content"]').val('');
                     // 새로운 댓글을 화면에 즉시 추가
@@ -112,7 +112,7 @@
                     const currentCount = parseInt($('#comment-count').text());
                     $('#comment-count').text(currentCount + 1);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("댓글 작성 실패:", error);
                     alert("댓글 작성에 실패했습니다.");
                 }
@@ -120,16 +120,16 @@
         });
 
         // 댓글 삭제
-        $(document).on('click', '.delete-comment', function() {
+        $(document).on('click', '.delete-comment', function () {
             const replyId = $(this).data('id');
             console.log("삭제하려는 댓글 ID: " + replyId);
             $.ajax({
                 url: '/comments?articleId=' + articleId + '&replyId=' + replyId,
                 method: 'DELETE',
-                success: function(response) {
+                success: function (response) {
                     loadComments(); // 댓글 목록 새로고침
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("댓글 삭제 실패:", error);
                     alert("댓글 삭제에 실패했습니다.");
                 }
@@ -138,7 +138,6 @@
 
     });
 </script>
-
 
 
 <%@ include file="../common/footer.jsp" %>
