@@ -8,6 +8,7 @@ import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import codesqaud.app.model.Reply;
 import codesqaud.app.model.User;
+import codesqaud.app.service.ArticleDeleteUseCase;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -18,7 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +38,7 @@ public class QnaServlet extends HttpServlet {
     private static final String FORM_JSP = "/WEB-INF/qna/form.jsp";
     private static final String UPDATE_FORM_JSP = "/WEB-INF/qna/update_form.jsp";
 
-
+    private ArticleDeleteUseCase articleDeleteUseCase;
     private ArticleDao articleDao;
     private ReplyDao replyDao;
 
@@ -193,37 +193,11 @@ public class QnaServlet extends HttpServlet {
         matcher = SPECIFIC_URI_PATTERN.matcher(req.getRequestURI());
         if (matcher.matches()) {
             Long id = Long.parseLong(matcher.group(1));
-            handleArticleDelete(req, resp, id);
+            articleDeleteUseCase.handle(req, resp, id);
             return;
         }
 
         super.doDelete(req, resp);
-    }
-
-    private void handleArticleDelete(HttpServletRequest req, HttpServletResponse resp, Long id) throws IOException {
-        Article article = findArticleByIdOrElseThrow(id);
-        List<Reply> replies = replyDao.findByArticleId(article.getId());
-        authorizeArticle(req, article.getAuthorId());
-        validateDelete(req, replies);
-        articleDao.delete(article);
-        replies.forEach(replyDao::delete);
-
-        resp.sendRedirect("/");
-    }
-
-    private void validateDelete(HttpServletRequest req, List<Reply> replies) {
-        User user = AuthenticationManager.getLoginUserOrElseThrow(req);
-        boolean hasOthersReplies = false;
-        for (Reply reply : replies) {
-            if (!Objects.equals(reply.getAuthorId(), user.getId())) {
-                hasOthersReplies = true;
-                break;
-            }
-        }
-
-        if(hasOthersReplies) {
-           throw new HttpException(SC_FORBIDDEN, "다른 사람이 작성한 댓글이 있습니다.");
-        }
     }
 
     private Article findArticleByIdOrElseThrow(Long id) {
