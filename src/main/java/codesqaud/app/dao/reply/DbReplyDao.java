@@ -71,7 +71,7 @@ public class DbReplyDao implements ReplyDao {
             throw new HttpException(SC_INTERNAL_SERVER_ERROR);
         }
 
-        String sql = "UPDATE replies SET contents = ? WHERE id = ?";
+        String sql = "UPDATE replies SET contents = ? WHERE id = ? AND activate = true";
         int updateRow = jdbcTemplate.update(sql, reply.getContents(), reply.getId());
         if (updateRow == 0) {
             throw new HttpException(SC_NOT_FOUND, "업데이트 할 댓글을 찾지 못했습니다.");
@@ -80,14 +80,14 @@ public class DbReplyDao implements ReplyDao {
 
     @Override
     public Optional<Reply> findById(Long id) {
-        String sql = "SELECT * FROM replies WHERE id = ?";
+        String sql = "SELECT * FROM replies WHERE id = ? AND activate = true";
         Reply reply = jdbcTemplate.queryForObject(sql, REPLY_ROW_MAPPER, id);
         return Optional.ofNullable(reply);
     }
 
     @Override
     public List<Reply> findAll() {
-        String sql = "SELECT * FROM replies";
+        String sql = "SELECT * FROM replies WHERE activate = true";
         return jdbcTemplate.query(sql, REPLY_ROW_MAPPER);
     }
 
@@ -102,34 +102,24 @@ public class DbReplyDao implements ReplyDao {
     }
 
     @Override
-    public Optional<ReplyDto> findByIdAsDto(Long id) {
-        String sql = """
-                SELECT replies.id, replies.contents, replies.author_id, replies.created_at,
-                users.user_id as user_id, users.name as user_name, users.email as user_email
-                FROM replies JOIN users ON replies.author_id = users.id
-                WHERE replies.id = ?
-                """;
-
-        ReplyDto replyDto = jdbcTemplate.queryForObject(sql, REPLY_DTO_ROW_MAPPER, id);
-        return Optional.ofNullable(replyDto);
-    }
-
-    @Override
-    public List<ReplyDto> findAllAsDto() {
-        String sql = """
-                SELECT replies.id, replies.contents, replies.author_id, replies.created_at,
-                users.user_id as user_id, users.name as user_name, users.email as user_email
-                FROM replies JOIN users ON replies.author_id = users.id
-                """;
-        return jdbcTemplate.query(sql, REPLY_DTO_ROW_MAPPER);
-    }
-
-    @Override
     public List<Reply> findByArticleId(Long articleId) {
         String sql = """
-                SELECT * FROM replies WHERE article_id = ?
+                SELECT * FROM replies
+                WHERE article_id = ? AND activate = true
                 """;
 
         return jdbcTemplate.query(sql, REPLY_ROW_MAPPER, articleId);
+    }
+
+    @Override
+    public List<ReplyDto> findByArticleIdAsDto(Long articleId) {
+        String sql = """
+                SELECT replies.id, replies.contents, replies.author_id, replies.created_at, replies.activate,
+                users.user_id as user_id, users.name as user_name, users.email as user_email
+                FROM replies JOIN users ON replies.author_id = users.id
+                WHERE replies.article_id = ? AND replies.activate = true
+                """;
+
+        return jdbcTemplate.query(sql, REPLY_DTO_ROW_MAPPER, articleId);
     }
 }
