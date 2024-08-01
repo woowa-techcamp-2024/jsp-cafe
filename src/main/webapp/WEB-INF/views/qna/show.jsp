@@ -58,7 +58,7 @@
                         </strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
                             <%for (ReplyDto reply : article.replies()) { %>
-                            <article class="article" id="answer-1405">
+                            <article class="article" id="reply-<%=reply.replyId()%>">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
                                         <img src="https://graph.facebook.com/v2.3/1324855987/picture"
@@ -83,24 +83,27 @@
                                         <li>
                                             <input type="hidden" name="replyArticleId" id="replyArticleId"
                                                    value="<%=article.articleId()%>">
-                                            <button type="submit" class="delete-answer-button"
-                                                    onclick="deleteReply(<%=reply.replyId()%>)">삭제
+                                            <button onclick="deleteElementById('reply-<%=reply.replyId()%>')"
+                                                    type="submit" class="delete-answer-button"
+                                                    data-reply-id="<%=reply.replyId()%>">삭제
                                             </button>
                                         </li>
                                     </ul>
                                 </div>
                             </article>
                             <% }%>
-                            <form class="submit-write" method="post" action=<%="/reply"%>>
-                                <input type="hidden" id="articleId" name="articleId" value="<%=article.articleId()%>">
-                                <div class="form-group" style="padding:14px;">
+
+                        </div>
+                        <form class="submit-write">
+                            <input type="hidden" id="articleId" name="articleId" value="<%=article.articleId()%>">
+                            <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" id="contents" name="contents" rows="3"
                                               placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                                <div class="clearfix"/>
-                            </form>
-                        </div>
+                            </div>
+                            <button class="btn btn-success pull-right" type="button" id="submit-reply">답변하기
+                            </button>
+                            <div class="clearfix"/>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -108,47 +111,7 @@
     </div>
 </div>
 
-<%--<script type="text/template" id="answerTemplate">--%>
-<%--    <article class="article">--%>
-<%--        <div class="article-header">--%>
-<%--            <div class="article-header-thumb">--%>
-<%--                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">--%>
-<%--            </div>--%>
-<%--            <div class="article-header-text">--%>
-<%--                <a href="#" class="article-author-name">{0}</a>--%>
-<%--                <div class="article-header-time">{1}</div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--        <div class="article-doc comment-doc">--%>
-<%--            {2}--%>
-<%--        </div>--%>
-<%--        <div class="article-util">--%>
-<%--            <ul class="article-util-list">--%>
-<%--                <li>--%>
-<%--                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>--%>
-<%--                </li>--%>
-<%--                <li>--%>
-<%--                    <form class="delete-answer-form">--%>
-<%--                        <input type="hidden" name="_method" value="DELETE">--%>
-<%--                        <button type="submit" class="delete-answer-button">삭제</button>--%>
-<%--                    </form>--%>
-<%--                </li>--%>
-<%--            </ul>--%>
-<%--        </div>--%>
-<%--    </article>--%>
-<%--</script>--%>
-
 <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const articleDoc = document.querySelector('.article-doc');
-        articleDoc.innerHTML = articleDoc.innerHTML.trim();
-    });
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const commentDoc = document.querySelector('.article-doc comment-doc');
-        commentDoc.innerHTML = commentDoc.innerHTML.trim();
-    });
-
     var articleId = <%=article.articleId()%>;
 
     function deleteArticle() {
@@ -173,35 +136,96 @@
             });
     }
 
-    function deleteReply(replyId) {
-        const replyArticleId = document.getElementById('replyArticleId');
-        const formData = new FormData();
-        formData.append('replyArticleId', replyArticleId.value);
-        const urlParams = new URLSearchParams(formData);
 
-        fetch(`/reply/` + replyId, {
-            method: 'DELETE',
-            body: urlParams.toString(),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Document is ready");
+
+        // 답변하기 버튼 클릭 이벤트
+        document.getElementById('submit-reply').addEventListener('click', function (e) {
+            console.log("Reply button clicked");
+            e.preventDefault();
+
+            var form = document.querySelector('.submit-write');
+            var formData = new URLSearchParams(new FormData(form)).toString();
+
+            fetch('/reply', {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.contents = data.contents.replace(/\n/g, "<br>");
+                    var replyTemplate = `
+                <article class="article" id="reply-` + data.replyId + `">
+                    <div class="article-header">
+                        <div class="article-header-thumb">
+                            <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                        </div>
+                        <div class="article-header-text">
+                            <a href="/user/` + data.writerId + `" class="article-author-name">` + data.writerName + `</a>
+                            <a href="#answer-` + data.replyId + `" class="article-header-time" title="퍼머링크">` + data.updatedAt + `</a>
+                        </div>
+                    </div>
+                    <div class="article-doc comment-doc">
+                        <p>` + data.contents + `</p>
+                    </div>
+                    <div class="article-util">
+                        <ul class="article-util-list">
+                            <li>
+                                <button onclick="deleteElementById('reply-` + data.replyId + `')" type="button" class="delete-answer-button" data-reply-id="` + data.replyId + `">삭제</button>
+                            </li>
+                        </ul>
+                    </div>
+                </article>`;
+                    document.querySelector(".qna-comment-slipp-articles").insertAdjacentHTML('beforeend', replyTemplate);
+                    document.getElementById("contents").value = "";
+
+                    // 댓글 수 업데이트
+                    var commentCount = document.querySelector(".qna-comment-count strong");
+                    commentCount.textContent = parseInt(commentCount.textContent) + 1;
+                })
+                .catch(error => {
+                    console.error("Error adding reply:", error);
+                    alert("Error adding reply: " + error);
+                });
+        });
+
+        // 댓글 삭제 버튼 클릭 이벤트
+        document.querySelector(".qna-comment-slipp-articles").addEventListener('click', function (e) {
+            if (e.target.classList.contains('delete-answer-button')) {
+                e.preventDefault();
+
+                var deleteBtn = e.target;
+                var replyId = deleteBtn.getAttribute('data-reply-id');
+                var url = `/reply/` + replyId;
+                console.log("url: ", url);
+
+                fetch(url, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        var commentCount = document.querySelector(".qna-comment-count strong");
+                        commentCount.textContent = parseInt(commentCount.textContent) - 1;
+                    } else {
+                        console.error("Error deleting reply");
+                        alert("Error deleting reply");
+                    }
+                })
+                    .catch(error => {
+                        console.error("Error deleting reply:", error);
+                        alert("Error deleting reply");
+                    });
             }
-        })
-            .then(response => {
-                if (response.status === 303) {
-                    window.location.reload();
-                } else if (response.ok) {
-                    window.location.reload();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            })
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
+        });
+
+        // 내용 trim 처리
+        document.querySelectorAll('.article-doc, .comment-doc').forEach(function (el) {
+            el.innerHTML = el.innerHTML.trim();
+        });
+    });
 </script>
 
 <!-- script references -->

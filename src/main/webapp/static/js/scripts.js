@@ -7,3 +7,12 @@ String.prototype.format = function() {
         ;
   });
 };
+
+function deleteElementById(elementId) {
+  var element = document.getElementById(elementId);
+  if (element) {
+    element.remove();
+  } else {
+    console.error(`Element with ID ${elementId} not found.`);
+  }
+}
