@@ -1,5 +1,6 @@
 package codesquad.infra;
 
+import codesquad.common.db.connection.ConnectionManager;
 import codesquad.servlet.dao.ArticleQuery;
 
 import java.sql.Connection;

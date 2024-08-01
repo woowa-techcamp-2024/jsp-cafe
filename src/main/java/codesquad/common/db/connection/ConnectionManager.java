@@ -1,4 +1,4 @@
-package codesquad.infra;
+package codesquad.common.db.connection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

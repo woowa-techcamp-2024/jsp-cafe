@@ -1,5 +1,6 @@
 package codesquad.infra;
 
+import codesquad.common.db.connection.ConnectionManager;
 import codesquad.domain.article.Article;
 import codesquad.domain.article.ArticleDao;
 

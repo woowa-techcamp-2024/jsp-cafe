@@ -1,5 +1,6 @@
 package codesquad.infra;
 
+import codesquad.common.db.connection.ConnectionManager;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserDao;
 import codesquad.exception.DuplicateIdException;
