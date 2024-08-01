@@ -15,3 +15,13 @@ CREATE TABLE IF NOT EXISTS questions (
     FOREIGN KEY (userSeq) REFERENCES users(userSeq)
 );
 
+CREATE TABLE IF NOT EXISTS comments (
+    commentSeq BIGINT AUTO_INCREMENT PRIMARY KEY,
+    userSeq BIGINT NOT NULL,
+    writer VARCHAR(100) NOT NULL,
+    questionSeq BIGINT NOT NULL,
+    contents TEXT NOT NULL,
+    FOREIGN KEY (userSeq) REFERENCES users(userSeq),
+    FOREIGN KEY (questionSeq) REFERENCES questions(questionSeq)
+);
+
