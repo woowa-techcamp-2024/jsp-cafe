@@ -2,6 +2,7 @@ package org.example.demo.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class Post {
     private Long id;
@@ -10,6 +11,8 @@ public class Post {
     private String contents;
     private LocalDateTime createdAt;
     private List<Comment> comments;
+
+    public Post() {}
 
     public Post(Long id, User writer, String title, String contents, LocalDateTime createdAt, List<Comment> comments) {
         this.id = id;
@@ -58,5 +61,18 @@ public class Post {
                 ", createdAt=" + createdAt +
                 ", comments=" + comments +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id) && Objects.equals(writer, post.writer) && Objects.equals(title, post.title) && Objects.equals(contents, post.contents) && Objects.equals(createdAt, post.createdAt) && Objects.equals(comments, post.comments);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, writer, title, contents, createdAt, comments);
     }
 }

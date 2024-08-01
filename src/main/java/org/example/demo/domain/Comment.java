@@ -1,6 +1,7 @@
 package org.example.demo.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Comment {
     private Long id;
@@ -8,6 +9,8 @@ public class Comment {
     private User writer;
     private String contents;
     private LocalDateTime createdAt;
+
+    public Comment() {}
 
     public Comment(Long id, Long postId, User writer, String contents, LocalDateTime createdAt) {
         this.id = id;
@@ -46,5 +49,18 @@ public class Comment {
                 ", contents='" + contents + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id) && Objects.equals(postId, comment.postId) && Objects.equals(writer, comment.writer) && Objects.equals(contents, comment.contents) && Objects.equals(createdAt, comment.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, postId, writer, contents, createdAt);
     }
 }
