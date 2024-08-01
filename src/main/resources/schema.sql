@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS questions (
     writer VARCHAR(100) NOT NULL,
     title VARCHAR(200) NOT NULL,
     contents TEXT NOT NULL,
+    useYn ENUM('Y', 'N') NOT NULL DEFAULT 'Y',
     FOREIGN KEY (userSeq) REFERENCES users(userSeq)
 );
 
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS comments (
     writer VARCHAR(100) NOT NULL,
     questionSeq BIGINT NOT NULL,
     contents TEXT NOT NULL,
+    useYn ENUM('Y', 'N') NOT NULL DEFAULT 'Y',
     FOREIGN KEY (userSeq) REFERENCES users(userSeq),
     FOREIGN KEY (questionSeq) REFERENCES questions(questionSeq)
 );
