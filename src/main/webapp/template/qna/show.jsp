@@ -13,7 +13,7 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title">🏕️ ${article.title}</h2>
+                <h2 class="qna-title">🏕️ <c:out value="${article.title}"/></h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -22,7 +22,7 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="${pageContext.request.contextPath}/users/${article.writer}" class="article-author-name">${article.writer}</a>
+                            <a href="${pageContext.request.contextPath}/users/${article.writer}" class="article-author-name"><c:out value="${article.writer}"/></a>
                             <a class="article-header-time">
                                 ${article.createdAt}
                                 <i class="icon-link"></i>
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="article-doc" style="padding: 50px">
-                        ${article.contents}
+                        <c:out value="${article.contents}"/>
                     </div>
                 </article>
 
@@ -89,10 +89,17 @@
         });
     }
 
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
     function updateCommentList(comments) {
         var commentHtml = '';
         comments.forEach(function(comment) {
             console.log(comment);
+            var escapedContents = escapeHtml(comment.contents);
             commentHtml +=
                 '<article class="article" id="answer-' + comment.id + '">' +
                 '<div class="article-header">' +
@@ -107,7 +114,7 @@
                 '</div>' +
                 '</div>' +
                 '<div class="article-doc comment-doc">' +
-                '<p style="padding-top: 1em">' + comment.contents + '</p>' +
+                '<p style="padding-top: 1em">' + escapedContents + '</p>' +
                 '</div>' +
                 '<div class="article-util">' +
                 '<ul class="article-util-list">' +

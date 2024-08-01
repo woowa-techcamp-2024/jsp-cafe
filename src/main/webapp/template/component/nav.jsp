@@ -14,7 +14,7 @@
                     <c:when test="${not empty sessionScope.user}">
                         <li>
                             <a href="#">
-                                <span>${sessionScope.user.userId}님, 환영합니다.</span>
+                                <span><c:out value="${sessionScope.user.userId}"/>님, 환영합니다.</span>
                             </a>
                         </li>
                     </c:when>

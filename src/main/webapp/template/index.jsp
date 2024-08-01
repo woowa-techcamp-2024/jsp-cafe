@@ -17,12 +17,12 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="${pageContext.request.contextPath}/questions/${article.id}">${article.title} </a>
+                                <a href="${pageContext.request.contextPath}/questions/${article.id}"><c:out value="${article.title}"/></a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">${article.createdAt}</span>
-                                <a href="${pageContext.request.contextPath}/user/profile.jsp" class="author">${article.writer}</a>
+                                <a href="${pageContext.request.contextPath}/user/profile.jsp" class="author"><c:out value="${article.writer}"/></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -37,15 +37,15 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
-                    <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
-                    </ul>
+<%--                    <ul class="pagination center-block" style="display:inline-block;">--%>
+<%--                        <li><a href="#">«</a></li>--%>
+<%--                        <li><a href="#">1</a></li>--%>
+<%--                        <li><a href="#">2</a></li>--%>
+<%--                        <li><a href="#">3</a></li>--%>
+<%--                        <li><a href="#">4</a></li>--%>
+<%--                        <li><a href="#">5</a></li>--%>
+<%--                        <li><a href="#">»</a></li>--%>
+<%--                    </ul>--%>
                 </div>
                 <div class="col-md-3 qna-write">
                     <a href="${pageContext.request.contextPath}/questions/form" class="btn btn-primary pull-right" role="button">질문하기</a>

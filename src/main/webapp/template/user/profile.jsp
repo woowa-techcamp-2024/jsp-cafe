@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <jsp:include page="/template/component/head.jsp"></jsp:include>
 <body>
@@ -18,11 +19,11 @@
                         </a>
                         <div class="media-body">
                             <h4 class="media-heading">
-                                ${user.name}
+                                <c:out value="${user.name}"/>
                             </h4>
                             <p>
                                 <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;
-                                    ${user.email}
+                                    <c:out value="${user.email}"/>
                                 </a>
                             </p>
                         </div>
