@@ -91,6 +91,9 @@ public class QuestionServlet extends HttpServlet {
 			}
 		}
 		questionRepository.deleteByQuestionSeq(seq);
+		for (Comment comment : comments) {
+			commentRepository.deleteByCommentSeq(comment.getCommentSeq());
+		}
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 }
