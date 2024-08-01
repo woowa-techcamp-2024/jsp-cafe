@@ -41,11 +41,10 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         if (isUnAuthenticateAPI(httpRequest)) {
-            log.info("비인증 API입니다 - {}", httpRequest.getRequestURI());
             chain.doFilter(request, response);
             return;
         }
-        log.info("인증 API입니다 - {}", httpRequest.getRequestURI());
+
         try {
             Cookie[] cookies = ((HttpServletRequest) request).getCookies();
             validateCookieExist(cookies);
