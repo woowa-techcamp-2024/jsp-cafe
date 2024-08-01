@@ -22,15 +22,6 @@ public class ReplyResponse {
         this.createdAt = createdAt;
     }
 
-    public static ReplyResponse of(Reply reply, User replier) {
-        return new ReplyResponse(
-                reply.getReplyId(),
-                reply.getContent(),
-                reply.getUserId(),
-                replier.getNickname(),
-                reply.getCreatedAt());
-    }
-
     public Long getReplyId() {
         return replyId;
     }
