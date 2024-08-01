@@ -34,6 +34,7 @@ public class ReplyService {
     public ReplyDto saveReply(UserDto user, Long postId, String contents) throws SQLException {
         Reply reply = Reply.create(user.getName(),postId, contents);
         Reply save = replyRepository.save(reply);
+
         return ReplyDto.toDto(save);
     }
 

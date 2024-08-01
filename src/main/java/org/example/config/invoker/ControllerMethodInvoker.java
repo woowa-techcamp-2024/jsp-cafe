@@ -30,7 +30,6 @@ public class ControllerMethodInvoker {
     private Object[] resolveHandlerArguments(Method method, HttpServletRequest request, HttpServletResponse response,
                                              HttpSession session) {
         Parameter[] parameters = method.getParameters();
-        Arrays.stream(parameters).iterator().forEachRemaining(name -> logger.info("param : {}", name.getName()));
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];

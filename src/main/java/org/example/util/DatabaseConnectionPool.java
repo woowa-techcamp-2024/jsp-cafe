@@ -15,7 +15,7 @@ public class DatabaseConnectionPool {
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/cafe";
     private static final String DB_USER = "cafeuser";
     private static final String DB_PASSWORD = "cafeuser_password";
-    private static final int MAX_POOL_SIZE = 10;
+    private static final int MAX_POOL_SIZE = 100;
 
     private final List<Connection> connectionPool;
     private final List<Connection> usedConnections = new ArrayList<>();

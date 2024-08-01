@@ -74,6 +74,7 @@ public class ReplyController {
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.setContentType("text/html");
             response.setCharacterEncoding("UTF-8");
+            logger.info("newReply: {}", newReply);
             response.getWriter().write(String.format(
                     "<li id='reply-%d'>" +
                             "<p>%s</p>" +

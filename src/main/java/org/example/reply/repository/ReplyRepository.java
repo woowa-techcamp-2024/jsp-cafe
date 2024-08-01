@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +34,31 @@ public class ReplyRepository {
         String sql = "insert into replies (post_id, writer, contents, status, created_at) values (?, ?, ?, ?, ?)";
 
         try (Connection conn = dataUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            long id;
             ps.setLong(1, reply.getPostId());
             ps.setString(2, reply.getWriter());
             ps.setString(3, reply.getContents());
             ps.setString(4, reply.getReplyStatus().name());
             ps.setObject(5, reply.getCreatedAt());
-            ps.executeUpdate();
-            return reply;
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating reply failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    id = generatedKeys.getLong(1);
+                } else {
+                    throw new SQLException("Creating reply failed, no ID obtained.");
+                }
+            }
+
+            return Reply.createWithAll(id, reply.getPostId(), reply.getWriter(), reply.getContents(), reply.getReplyStatus(), reply.getCreatedAt());
         } catch (SQLException e) {
-            logger.error("Error saving post", e);
+            logger.error("Error saving reply", e);
             throw new SQLException(e);
         }
     }
@@ -101,7 +117,6 @@ public class ReplyRepository {
     }
 
     public Reply update(Reply reply) throws SQLException {
-        logger.info("Updating reply: {}", reply);
         String sql = "UPDATE replies SET contents = ? WHERE id = ?";
 
         try (Connection conn = dataUtil.getConnection();

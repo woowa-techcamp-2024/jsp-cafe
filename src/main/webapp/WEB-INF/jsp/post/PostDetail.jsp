@@ -66,7 +66,7 @@
                             <div class="form-group" style="padding:14px;">
                                 <textarea class="form-control" id="replyContents" placeholder="댓글을 입력하세요" rows="4"></textarea>
                             </div>
-                            <button class="btn btn-success pull-right" type="button" onclick="addReply()">댓글 쓰기</button>
+                            <button class="btn btn-success pull-right" type="button" onclick="addReply(${post.id})">댓글 쓰기</button>
                             <div class="clearfix" />
                         </form>
                     </div>
@@ -122,23 +122,37 @@
         xhr.send();
     }
 
-    function addReply() {
-        var contents = document.getElementById('replyContents').value;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/reply/${post.id}', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status === 201) {
-                document.getElementById('replyList').innerHTML += xhr.responseText;
+    function addReply(postId) {
+        const contents = document.getElementById('replyContents').value;
+        if (!contents.trim()) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+        }
+
+        const formData = new URLSearchParams();
+        formData.append('contents', contents);
+
+        fetch('/reply/' + postId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData.toString()
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with ' + response.status);
+                }
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('replyList').insertAdjacentHTML('beforeend', html);
                 document.getElementById('replyContents').value = '';
-            } else {
-                alert('댓글 추가에 실패했습니다: ' + xhr.responseText);
-            }
-        };
-        xhr.onerror = function() {
-            alert('네트워크 오류가 발생했습니다.');
-        };
-        xhr.send('contents=' + encodeURIComponent(contents));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('댓글 추가에 실패했습니다: ' + error.message);
+            });
     }
 
     function editReply(replyId) {
@@ -165,6 +179,7 @@
         if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
             var xhr = new XMLHttpRequest();
             xhr.open('DELETE', '/reply/' + replyId, true);
+            console.log()
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     var replyElement = document.getElementById('reply-' + replyId);

@@ -57,7 +57,7 @@ public class AuthController {
                 // 로그인 실패 시 기존 세션 무효화
                 session.invalidate();
             }
-            mv.addAttribute("loginError", "로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            mv.addAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
         return mv;
