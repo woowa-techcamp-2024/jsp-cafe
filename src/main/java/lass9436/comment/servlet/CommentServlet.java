@@ -24,7 +24,7 @@ public class CommentServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String contents = req.getParameter("contents");
 		long questionSeq = Long.parseLong(req.getParameter("questionSeq"));
 		String writer = (String) req.getSession(false).getAttribute("userName");
@@ -40,6 +40,13 @@ public class CommentServlet extends HttpServlet {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		resp.getWriter().write(jsonResponse);
+		resp.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+		long seq = Long.parseLong(req.getParameter("seq"));
+		commentRepository.deleteByCommentSeq(seq);
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 }

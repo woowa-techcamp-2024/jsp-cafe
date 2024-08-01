@@ -59,7 +59,7 @@
                         <p class="qna-comment-count"><strong>${comments.size()}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
                             <c:forEach var="comment" items="${comments}" varStatus="status">
-                            <article class="article" id="answer-1405">
+                            <article class="article" id="comment-${comment.commentSeq}">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
                                         <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
@@ -78,9 +78,10 @@
                                             <a class="link-modify-article" href="#">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="#" method="POST">
+                                            <form id="delete-comment-form" class="delete-answer-form" action="#" method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
+                                                <input type="hidden" name="seq" value="${comment.commentSeq}">
+                                                <button type="button" class="delete-answer-button" onclick="deleteComment(${comment.commentSeq})">삭제</button>
                                             </form>
                                         </li>
                                     </ul>
@@ -134,6 +135,30 @@
 </script>
 
 <script>
+function deleteComment(commentSeq) {
+    fetch(`/comment?seq=` + commentSeq, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (response.ok) {
+                // Remove the article element
+                const article = document.getElementById('comment-' + commentSeq);
+                if (article) {
+                    article.remove();
+                }
+
+                // Update the comment count
+                const commentCountElement = document.querySelector('.qna-comment-count strong');
+                const currentCount = parseInt(commentCountElement.textContent);
+                commentCountElement.textContent = currentCount - 1;
+            } else {
+                throw new Error('Failed to delete comment.');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
 function postComment() {
     const form = document.querySelector('#post-comment-form');
     const contents = form.querySelector('#post-comment-text').value;
@@ -159,7 +184,7 @@ function postComment() {
         .then(comment => {
             const article = document.createElement('article');
             article.className = 'article';
-            article.id = 'answer-' + comment.commentSeq;
+            article.id = 'comment-' + comment.commentSeq;
             article.innerHTML =
                 '<div class="article-header">' +
                 '<div class="article-header-thumb">' +
@@ -180,7 +205,7 @@ function postComment() {
                 '<li>' +
                 '<form class="delete-answer-form" action="#" method="POST">' +
                 '<input type="hidden" name="_method" value="DELETE">' +
-                '<button type="submit" class="delete-answer-button">삭제</button>' +
+                `<button type="button" class="delete-answer-button" onclick="deleteComment(`+comment.commentSeq+`)">삭제</button>` +
                 '</form>' +
                 '</li>' +
                 '</ul>' +
