@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.db.DatabaseManager;
 import camp.woowa.jspcafe.repository.*;
 import camp.woowa.jspcafe.service.QuestionService;
@@ -29,17 +30,17 @@ public class DIContextListener implements ServletContextListener {
         // UserRepository 를 생성하고 UserService 에 주입
         UserRepository userRepository = RepositoryFactory.createUserRepository(conn);
         UserService userService = new UserService(userRepository);
-        sc.setAttribute("userService", userService);
+        ServiceLocator.registerService(UserService.class, userService);
 
         // ReplyRepository 를 생성하고 ReplyService 에 주입
         ReplyRepository replyRepository = RepositoryFactory.createReplyRepository(conn);
         ReplyService replyService = new ReplyService(replyRepository);
-        sc.setAttribute("replyService", replyService);
+        ServiceLocator.registerService(ReplyService.class, replyService);
+
 
         // QuestionRepository 를 생성하고 QuestionService 에 주입
         QuestionRepository questionRepository = RepositoryFactory.createQuestionRepository(conn);
         QuestionService questionService = new QuestionService(questionRepository, replyService);
-        sc.setAttribute("questionService", questionService);
-
+        ServiceLocator.registerService(QuestionService.class, questionService);
     }
 }

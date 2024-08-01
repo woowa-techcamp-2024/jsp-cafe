@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlet;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.User;
@@ -18,14 +19,11 @@ import java.util.List;
 
 @WebServlet(name = "usersServlet", urlPatterns = {"/users/*"})
 public class UsersServlet extends HttpServlet {
-    private UserService userService;
+    private final UserService userService;
 
-    @Override
-    public void init() throws ServletException {
-        ServletContext sc = getServletContext();
-        userService = (UserService) sc.getAttribute("userService");
+    public UsersServlet() {
+        userService = ServiceLocator.getService(UserService.class);
     }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();

@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlet.view;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Question;
@@ -16,11 +17,10 @@ import java.io.IOException;
 
 @WebServlet(value = "/qna/*")
 public class QnAViewServlet extends HttpServlet {
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
-    @Override
-    public void init() throws ServletException {
-        questionService = (QuestionService) getServletContext().getAttribute("questionService");
+    public QnAViewServlet() {
+        questionService = ServiceLocator.getService(QuestionService.class);
     }
 
     @Override
