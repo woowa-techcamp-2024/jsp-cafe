@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
+import utils.AuthUtils;
 
 import java.io.IOException;
 
@@ -50,6 +51,7 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        AuthUtils.checkLogin(req.getSession(false));
         req.setAttribute("users", userService.findAll());
         req.getRequestDispatcher("/user/list.jsp").forward(req, resp);
     }
