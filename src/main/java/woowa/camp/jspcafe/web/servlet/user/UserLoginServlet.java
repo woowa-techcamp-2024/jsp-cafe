@@ -55,7 +55,7 @@ public class UserLoginServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         try {
-            User user = userService.authenticateUser(email, password);
+            User user = userService.login(email, password);
             HttpSession session = req.getSession();
             session.setAttribute("WOOWA_SESSIONID", user);
 

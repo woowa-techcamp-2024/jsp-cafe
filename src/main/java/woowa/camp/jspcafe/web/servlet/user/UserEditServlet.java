@@ -82,7 +82,7 @@ public class UserEditServlet extends HttpServlet {
         String newPassword = req.getParameter("newPassword");
         UserUpdateRequest updateRequest = new UserUpdateRequest(newPassword, newNickname);
 
-        userService.updateUserInfo(userId, password, updateRequest);
+        userService.updateUserProfile(userId, password, updateRequest);
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/users");
 
