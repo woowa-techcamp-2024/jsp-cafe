@@ -29,7 +29,7 @@ public class QuestionsServlet extends HttpServlet {
         }
         ResponseEntity response = questionHandler.findQuestions(Integer.parseInt(page), Integer.parseInt(size));
         req.setAttribute("questions", response.getModel().get("questions"));
-        req.getRequestDispatcher("/WEB-INF/classes/static/qna/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/qna/list.jsp").forward(req, resp);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class QuestionsServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         String userId = getUserIdFrom(session);
         if(userId == null) {
-            resp.sendRedirect("/WEB-INF/classes/static/user/login.jsp");
+            resp.sendRedirect("/user/login.jsp");
             return;
         }
         String title = req.getParameter("title");

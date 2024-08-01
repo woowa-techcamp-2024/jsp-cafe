@@ -126,7 +126,7 @@ class QuestionDetailServletTest {
                 questionDetailServlet.doGet(request, response);
 
                 //then
-                assertThat(request.getRequestDispatcher().getPath()).isEqualTo("/WEB-INF/classes/static/qna/update.jsp");
+                assertThat(request.getRequestDispatcher().getPath()).isEqualTo("/qna/update.jsp");
             }
         }
     }

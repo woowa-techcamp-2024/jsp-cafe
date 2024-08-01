@@ -65,7 +65,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="../qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="${pageContext.request.contextPath}/qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>

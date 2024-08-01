@@ -80,7 +80,7 @@ class QuestionsServletTest {
 
             //then
             String redirectLocation = response.getRedirectLocation();
-            assertThat(redirectLocation).isEqualTo("/WEB-INF/classes/static/user/login.jsp");
+            assertThat(redirectLocation).isEqualTo("/user/login.jsp");
         }
     }
 }

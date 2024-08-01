@@ -40,7 +40,7 @@ public class UserHandler {
     @RequestMapping(path = "/users", method = HttpMethod.GET)
     public ResponseEntity listUsers(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("users", userDatabase.findAll());
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/classes/static/user/list.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/list.jsp");
         try {
             requestDispatcher.forward(request, response);
         } catch (ServletException | IOException e) {

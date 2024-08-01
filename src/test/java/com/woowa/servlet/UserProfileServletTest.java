@@ -74,7 +74,7 @@ class UserProfileServletTest {
 
             //then
             assertThat(request.getRequestDispatcher().getPath())
-                    .isEqualTo("/WEB-INF/classes/static/user/update.jsp");
+                    .isEqualTo("/user/update.jsp");
         }
     }
 }

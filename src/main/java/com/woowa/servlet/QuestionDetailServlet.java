@@ -42,7 +42,7 @@ public class QuestionDetailServlet extends HttpServlet {
             response = questionHandler.findQuestion(questionId);
         }
         req.setAttribute("question", response.getModel().get("question"));
-        req.getRequestDispatcher("/WEB-INF/classes/static" + response.getViewName() + ".jsp").forward(req, resp);
+        req.getRequestDispatcher(response.getViewName() + ".jsp").forward(req, resp);
     }
 
     @Override
