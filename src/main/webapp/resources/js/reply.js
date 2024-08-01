@@ -1,9 +1,9 @@
 function createReply(questionId) {
     const content = $('#reply-content').val();
-    postJsonAPI(`/replies`, {content, questionId}, renderNewReply);
+    postJsonAPI(`/replies`, {content, questionId}, afterCreateReply);
 }
 
-const renderNewReply = (res) => {
+const afterCreateReply = (res) => {
     console.log(res);
 
     const replyList = document.getElementById('reply-list');
@@ -40,6 +40,8 @@ const renderNewReply = (res) => {
     replyItem.innerHTML = replyTemplate;
 
     replyList.appendChild(replyItem.firstChild);
+
+    $('#reply-content').val('');
 }
 
 function deleteReply(replyId) {
