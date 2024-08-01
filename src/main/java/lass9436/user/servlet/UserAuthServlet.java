@@ -31,6 +31,10 @@ public class UserAuthServlet extends HttpServlet {
 
 			// 레포지토리에서 user 가져오기
 			User user = userRepository.findByUserId(userId);
+			if (user == null) {
+				throw new IllegalArgumentException("User not found");
+			}
+
 			// 비밀번호 확인
 			if (!password.equals(user.getPassword()))
 				throw new IllegalArgumentException("Wrong password");
