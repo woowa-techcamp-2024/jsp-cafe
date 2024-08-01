@@ -26,18 +26,18 @@ public class DIContextListener implements ServletContextListener {
             throw new RuntimeException("DB Connection Error");
         }
 
-        // UserRepository를 생성하고 UserService에 주입
-        UserRepository userRepository = new MySQLUserRepository(conn);
+        // UserRepository 를 생성하고 UserService 에 주입
+        UserRepository userRepository = RepositoryFactory.createUserRepository(conn);
         UserService userService = new UserService(userRepository);
         sc.setAttribute("userService", userService);
 
-        // ReplyRepository를 생성하고 ReplyService에 주입
-        ReplyRepository replyRepository = new MySQLReplyRepository(conn);
+        // ReplyRepository 를 생성하고 ReplyService 에 주입
+        ReplyRepository replyRepository = RepositoryFactory.createReplyRepository(conn);
         ReplyService replyService = new ReplyService(replyRepository);
         sc.setAttribute("replyService", replyService);
 
-        // QuestionRepository를 생성하고 QuestionService에 주입
-        QuestionRepository questionRepository = new MySQLQuestionRepository(conn);
+        // QuestionRepository 를 생성하고 QuestionService 에 주입
+        QuestionRepository questionRepository = RepositoryFactory.createQuestionRepository(conn);
         QuestionService questionService = new QuestionService(questionRepository, replyService);
         sc.setAttribute("questionService", questionService);
 
