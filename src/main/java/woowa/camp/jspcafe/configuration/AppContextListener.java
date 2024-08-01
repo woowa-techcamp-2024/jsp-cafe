@@ -32,9 +32,9 @@ public class AppContextListener implements ServletContextListener {
 
         DatabaseConnector connector = new DatabaseConnector(context);
 
-        InMemoryDBInitializer.createUserTable(connector);
-        InMemoryDBInitializer.createArticleTable(connector);
-        InMemoryDBInitializer.createReplyTable(connector);
+//        InMemoryDBInitializer.createUserTable(connector);
+//        InMemoryDBInitializer.createArticleTable(connector);
+//        InMemoryDBInitializer.createReplyTable(connector);
 
         UserRepository userRepository = new DBUserRepository(connector);
         UserService userService = new UserService(userRepository, dateTimeProvider);
