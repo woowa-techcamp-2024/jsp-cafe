@@ -3,6 +3,7 @@ package woowa.camp.jspcafe.repository.reply;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,10 +13,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import woowa.camp.jspcafe.domain.Reply;
+import woowa.camp.jspcafe.domain.User;
+import woowa.camp.jspcafe.fixture.UserFixture;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.repository.UserDBSetupExtension;
+import woowa.camp.jspcafe.repository.user.DBUserRepository;
+import woowa.camp.jspcafe.repository.user.UserRepository;
+import woowa.camp.jspcafe.service.dto.ReplyResponse;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith(ReplyDBSetupExtension.class)
+@ExtendWith(UserDBSetupExtension.class)
 class ReplyRepositoryTest {
 
     DatabaseConnector connector = new DatabaseConnector();
@@ -37,7 +45,7 @@ class ReplyRepositoryTest {
             // when
             Reply savedReply = repository.save(reply);
             // then
-            assertThat(savedReply.getId()).isNotNull();
+            assertThat(savedReply.getReplyId()).isNotNull();
             assertThat(savedReply)
                     .usingRecursiveComparison()
                     .isEqualTo(reply);
@@ -102,7 +110,7 @@ class ReplyRepositoryTest {
             Reply savedReply = repository.save(reply);
 
             // when
-            Optional<Reply> foundReply = repository.findById(savedReply.getId());
+            Optional<Reply> foundReply = repository.findById(savedReply.getReplyId());
 
             // then
             assertThat(foundReply)
@@ -294,5 +302,52 @@ class ReplyRepositoryTest {
 
     }
 
+    @Nested
+    @DisplayName("Describe_회원테이블과 Join하여 조회하는 기능은")
+    class FindByArticleIdWithUserTest {
+
+        UserRepository userRepository = new DBUserRepository(connector);
+
+        @Test
+        @DisplayName("[Success] 특정 게시글의 댓글을 사용자 정보와 함께 조회한다")
+        void test() {
+            // given
+            User user1 = UserFixture.createUser(1, fixedDateTime.getNow());
+            User user2 = UserFixture.createUser(2, fixedDateTime.getNow());
+            Long userId1 = userRepository.save(user1);
+            Long userId2 = userRepository.save(user2);
+
+            Reply reply1 = new Reply(userId1, 1L, "Test Comment 1",
+                    fixedDateTime.getNowAsLocalDateTime(),
+                    fixedDateTime.getNowAsLocalDateTime(),
+                    null);
+            Reply reply2 = new Reply(userId2, 1L, "Test Comment 2",
+                    fixedDateTime.getNowAsLocalDateTime(),
+                    fixedDateTime.getNowAsLocalDateTime(),
+                    null);
+            repository.save(reply1);
+            repository.save(reply2);
+            // when
+            List<ReplyResponse> result = repository.findByArticleIdWithUser(1L);
+            System.out.println("result = " + result);
+            // then
+            assertThat(result)
+                    .hasSize(2)
+                    .satisfies(replies -> {
+                        assertThat(replies).extracting(
+                                ReplyResponse::getReplyId,
+                                ReplyResponse::getUserId,
+                                ReplyResponse::getContent,
+                                ReplyResponse::getUserNickname,
+                                ReplyResponse::getCreatedAt
+                        ).containsExactly(
+                                tuple(reply1.getReplyId(), userId1, "Test Comment 1", user1.getNickname(),
+                                        fixedDateTime.getNowAsLocalDateTime()),
+                                tuple(reply2.getReplyId(), userId2, "Test Comment 2", user2.getNickname(),
+                                        fixedDateTime.getNowAsLocalDateTime())
+                        );
+                    });
+        }
+    }
 
 }
