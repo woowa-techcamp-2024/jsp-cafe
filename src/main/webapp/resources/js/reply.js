@@ -44,5 +44,5 @@ const renderNewReply = (res) => {
 }
 
 function deleteReply(replyId, questionId) {
-    deleteAPI(`/replies/${replyId}`, `/questions/${questionId}`);
+    deleteAPI(`/replies/${replyId}`, (response) => window.location.href = `/questions/${questionId}`);
 }

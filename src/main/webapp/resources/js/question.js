@@ -1,5 +1,5 @@
 function deleteQuestion(questionId) {
-    deleteAPI(`/questions/${questionId}`, '/');
+    deleteAPI(`/questions/${questionId}`, (response) => window.location.href = '/');
 }
 
 function writeQuestion() {

@@ -46,12 +46,12 @@ function putAPI(url, data, successPath) {
     });
 }
 
-function deleteAPI(url, successPath) {
+function deleteAPI(url, successCallback) {
     $.ajax({
         url: url,
         type: 'DELETE',
         success: function (response) {
-            window.location.href = successPath;
+            successCallback(response)
         },
         error: function (xhr, status, error) {
             console.error('Error:', xhr.responseJSON.error);
