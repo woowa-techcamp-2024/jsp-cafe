@@ -1,5 +1,7 @@
 package com.example.context;
 
+import static com.example.utils.Constant.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -38,7 +40,6 @@ public class ApplicationInitializer implements ServletContextListener {
 			.setAttribute("userService", new UserService(userDatabase, articleDatabase, replyDatabase));
 		sce.getServletContext().setAttribute("articleService", new ArticleService(articleDatabase, replyDatabase));
 		sce.getServletContext().setAttribute("replyService", new ReplyService(replyDatabase));
-		String url = "jdbc:mysql://localhost:3306/codesquad";
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -47,7 +48,7 @@ public class ApplicationInitializer implements ServletContextListener {
 		}
 
 		try (
-			Connection connection = DriverManager.getConnection(url, "root", "root");
+			Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
 			Statement statement = connection.createStatement();
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("schema.sql")) {
 			if (inputStream == null) {
