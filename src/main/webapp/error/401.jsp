@@ -12,8 +12,8 @@
 </head>
 <body>
 <div id="container">
-  <div class="error-message">헉, 아무것도 없어요!</div>
-  <div class="error-message">404 Not Found<br>(개발자들은 이해하겠죠?)</div>
+  <div class="error-message">인증에 실패했어요!</div>
+  <div class="error-message">401 Unauthorized<br>(까먹으신 건 아니겠죠??)</div>
   <div style="margin-top: 20px"><c:out value="${requestScope.errorMessage}" /></div>
   <a id="home-button" href="${pageContext.request.contextPath}/">홈으로 가기</a>
 </div>

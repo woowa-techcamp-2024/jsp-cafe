@@ -31,7 +31,7 @@
     <button id="login-submit">로그인!</button>
     <div id="register-box">
       <div id="register-message">아직도 회원가입을 안 하셨다구요?! &nbsp</div>
-      <a id="register-link" href="${pageContext.request.contextPath}/users/signup">회원가입하기</a>
+      <a id="register-link" href="${pageContext.request.contextPath}/signup">회원가입하기</a>
     </div>
   </form>
 </div>

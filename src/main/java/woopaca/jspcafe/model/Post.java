@@ -10,19 +10,21 @@ public class Post {
     private String content;
     private int viewCount;
     private LocalDateTime writtenAt;
-    private String writer;
+    private Long writerId;
+    private ContentStatus status;
 
-    public Post(Long id, String title, String content, Integer viewCount, LocalDateTime writtenAt, String writer) {
+    public Post(Long id, String title, String content, Integer viewCount, LocalDateTime writtenAt, Long writerId, ContentStatus status) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.writtenAt = writtenAt;
-        this.writer = writer;
+        this.writerId = writerId;
+        this.status = status;
     }
 
-    public Post(String title, String content, String writer) {
-        this(null, title, content, 0, LocalDateTime.now(), writer);
+    public Post(String title, String content, Long writerId) {
+        this(null, title, content, 0, LocalDateTime.now(), writerId, ContentStatus.PUBLISHED);
     }
 
     public Long getId() {
@@ -45,8 +47,12 @@ public class Post {
         return writtenAt;
     }
 
-    public String getWriter() {
-        return writer;
+    public Long getWriterId() {
+        return writerId;
+    }
+
+    public ContentStatus getStatus() {
+        return status;
     }
 
     public void setId(long id) {
@@ -55,6 +61,23 @@ public class Post {
 
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void softDelete() {
+        this.status = ContentStatus.DELETED;
+    }
+
+    public boolean isDeleted() {
+        return status == ContentStatus.DELETED;
+    }
+
+    public boolean isPublished() {
+        return status == ContentStatus.PUBLISHED;
     }
 
     @Override

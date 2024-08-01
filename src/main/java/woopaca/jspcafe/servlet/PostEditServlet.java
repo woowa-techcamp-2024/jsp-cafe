@@ -7,13 +7,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.service.PostService;
-import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
+import woopaca.jspcafe.servlet.dto.response.PostEditResponse;
 
 import java.io.IOException;
 
-@WebServlet("/posts/*")
-public class PostDetailsServlet extends HttpServlet {
+@WebServlet("/posts/edit/*")
+public class PostEditServlet extends HttpServlet {
 
     private PostService postService;
 
@@ -28,10 +30,12 @@ public class PostDetailsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
         Long postId = Long.parseLong(pathInfo.substring(1));
-        PostDetailsResponse post = postService.getPostDetails(postId);
-        request.setAttribute("post", post);
-        request.setAttribute("separator", '\n');
-        request.getRequestDispatcher("/post/details.jsp")
+        HttpSession session = request.getSession();
+        Authentication authentication = (Authentication) session.getAttribute("authentication");
+        postService.validateWriter(postId, authentication);
+        PostEditResponse postEditResponse = postService.getPostTitleContent(postId);
+        request.setAttribute("post", postEditResponse);
+        request.getRequestDispatcher("/post/edit.jsp")
                 .forward(request, response);
     }
 }

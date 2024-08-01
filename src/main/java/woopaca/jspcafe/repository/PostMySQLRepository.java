@@ -21,13 +21,13 @@ public class PostMySQLRepository implements PostRepository {
             return;
         }
 
-        String sql = "INSERT INTO post (title, content, written_at, writer) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getWrittenAt(), post.getWriter());
+        String sql = "INSERT INTO post (title, content, written_at, writer_id, status) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getWrittenAt(), post.getWriterId(), post.getStatus().name());
     }
 
     private void update(Post post) {
-        String sql = "UPDATE post SET title = ?, content = ?, view_count = ?, writer = ? WHERE id = ?";
-        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getViewCount(), post.getWriter(), post.getId());
+        String sql = "UPDATE post SET title = ?, content = ?, view_count = ?, status = ? WHERE id = ?";
+        jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getViewCount(), post.getStatus().name(), post.getId());
     }
 
     @Override
@@ -37,8 +37,8 @@ public class PostMySQLRepository implements PostRepository {
     }
 
     @Override
-    public Optional<Post> findById(Long postId) {
+    public Optional<Post> findById(Long id) {
         String sql = "SELECT * FROM post WHERE id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Post.class, postId));
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Post.class, id));
     }
 }

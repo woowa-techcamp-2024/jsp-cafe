@@ -12,8 +12,8 @@
 </head>
 <body>
 <div id="container">
-  <div class="error-message">헉, 아무것도 없어요!</div>
-  <div class="error-message">404 Not Found<br>(개발자들은 이해하겠죠?)</div>
+  <div class="error-message">남의 거 건들지 마세요!</div>
+  <div class="error-message">403 Forbidden<br>(나쁜 사람)</div>
   <div style="margin-top: 20px"><c:out value="${requestScope.errorMessage}" /></div>
   <a id="home-button" href="${pageContext.request.contextPath}/">홈으로 가기</a>
 </div>

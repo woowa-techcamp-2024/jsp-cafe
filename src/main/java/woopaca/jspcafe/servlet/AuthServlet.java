@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import woopaca.jspcafe.error.UnauthorizedException;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.AuthService;
@@ -44,7 +45,7 @@ public class AuthServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("authentication", authentication);
             response.sendRedirect("/");
-        } catch (IllegalArgumentException e) {
+        } catch (UnauthorizedException e) {
             request.setAttribute("error", true);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             request.getRequestDispatcher("/user/login.jsp")

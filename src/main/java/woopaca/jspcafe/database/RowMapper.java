@@ -1,12 +1,12 @@
 package woopaca.jspcafe.database;
 
+import woopaca.jspcafe.model.ContentStatus;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,24 +61,22 @@ public final class RowMapper {
     }
 
     private static Object getValueFromResultSet(ResultSet resultSet, String fieldName, Class<?> fieldType) throws SQLException {
-        if (fieldType == int.class || fieldType == Integer.class) {
-            return resultSet.getInt(fieldName);
-        } else if (fieldType == long.class || fieldType == Long.class) {
-            return resultSet.getLong(fieldName);
-        } else if (fieldType == double.class || fieldType == Double.class) {
-            return resultSet.getDouble(fieldName);
-        } else if (fieldType == boolean.class || fieldType == Boolean.class) {
-            return resultSet.getBoolean(fieldName);
-        } else if (fieldType == String.class) {
-            return resultSet.getString(fieldName);
-        } else if (fieldType == LocalDate.class) {
-            Timestamp fieldValue = resultSet.getTimestamp(fieldName);
-            return fieldValue.toLocalDateTime()
-                    .toLocalDate();
-        } else if (fieldType == LocalDateTime.class) {
-            Timestamp fieldValue = resultSet.getTimestamp(fieldName);
-            return fieldValue.toLocalDateTime();
-        }
-        return resultSet.getObject(fieldName);
+        return switch (fieldType.getName()) {
+            case "int", "java.lang.Integer" -> resultSet.getInt(fieldName);
+            case "long", "java.lang.Long" -> resultSet.getLong(fieldName);
+            case "double", "java.lang.Double" -> resultSet.getDouble(fieldName);
+            case "boolean", "java.lang.Boolean" -> resultSet.getBoolean(fieldName);
+            case "java.lang.String" -> resultSet.getString(fieldName);
+            case "java.time.LocalDate" -> {
+                Timestamp fieldValue = resultSet.getTimestamp(fieldName);
+                yield fieldValue.toLocalDateTime().toLocalDate();
+            }
+            case "java.time.LocalDateTime" -> {
+                Timestamp fieldValue = resultSet.getTimestamp(fieldName);
+                yield fieldValue.toLocalDateTime();
+            }
+            case "woopaca.jspcafe.model.ContentStatus" -> ContentStatus.valueOf(resultSet.getString(fieldName));
+            default -> resultSet.getObject(fieldName);
+        };
     }
 }

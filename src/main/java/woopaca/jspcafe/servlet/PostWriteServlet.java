@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.PostService;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
@@ -48,9 +50,9 @@ public class PostWriteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, String[]> parameters = request.getParameterMap();
         WritePostRequest writePostRequest = RequestParametersResolver.resolve(parameters, WritePostRequest.class);
-        String userId = (String) request.getSession()
-                .getAttribute("userId");
-        postService.writePost(writePostRequest, userId);
+        HttpSession session = request.getSession();
+        Authentication authentication = (Authentication) session.getAttribute("authentication");
+        postService.writePost(writePostRequest, authentication);
         response.sendRedirect("/");
     }
 }

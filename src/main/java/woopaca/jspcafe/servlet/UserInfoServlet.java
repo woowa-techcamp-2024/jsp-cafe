@@ -30,15 +30,11 @@ public class UserInfoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            String pathInfo = request.getPathInfo();
-            Long userId = Long.parseLong(pathInfo.substring(1));
-            UserProfile profile = userService.getUserProfile(userId);
-            request.setAttribute("profile", profile);
-            request.getRequestDispatcher("/user/info.jsp")
-                    .forward(request, response);
-        } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        }
+        String pathInfo = request.getPathInfo();
+        Long userId = Long.parseLong(pathInfo.substring(1));
+        UserProfile profile = userService.getUserProfile(userId);
+        request.setAttribute("profile", profile);
+        request.getRequestDispatcher("/user/info.jsp")
+                .forward(request, response);
     }
 }
