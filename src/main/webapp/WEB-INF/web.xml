@@ -72,6 +72,15 @@
         <servlet-name>articleListServlet</servlet-name>
         <url-pattern></url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>replyControlServlet</servlet-name>
+        <servlet-class>com.hyeonuk.jspcafe.reply.servlet.ReplyControlServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>replyControlServlet</servlet-name>
+        <url-pattern>/replies/*</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>sessionFilter</filter-name>
@@ -81,6 +90,7 @@
         <filter-name>sessionFilter</filter-name>
         <url-pattern>/members/*/form</url-pattern>
         <url-pattern>/questions/*</url-pattern>
+        <url-pattern>/replies/*</url-pattern>
     </filter-mapping>
 
     <filter>
