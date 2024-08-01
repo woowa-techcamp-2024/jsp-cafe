@@ -127,6 +127,22 @@ public class DBReplyRepository implements ReplyRepository {
     }
 
     @Override
+    public void softDeleteByArticleId(Long articleId, LocalDateTime deletedTime) {
+        String sql = "UPDATE replies SET deleted_at = ? WHERE article_id = ?";
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setTimestamp(1, Timestamp.valueOf(deletedTime));
+            pstmt.setLong(2, articleId);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<ReplyResponse> findByArticleIdWithUser(Long articleId) {
         List<ReplyResponse> replies = new ArrayList<>();
         String sql = "SELECT r.reply_id, r.content, r.user_id, u.nickname, r.created_at "
