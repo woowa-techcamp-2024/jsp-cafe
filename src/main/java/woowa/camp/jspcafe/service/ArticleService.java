@@ -118,7 +118,13 @@ public class ArticleService {
         User author = findAuthor(article.getAuthorId());
         validateEditable(user, author);
 
-        articleRepository.deleteById(articleId);
+        if (isExistNotAuthorReply(article)) {
+            throw new ArticleException("다른 사람의 댓글이 있는 게시글은 삭제할 수 없습니다.");
+        }
+
+        LocalDate deletedTime = dateTimeProvider.getNow();
+        articleRepository.softDeleteById(articleId, deletedTime);
+        replyRepository.softDeleteByArticleId(articleId, deletedTime.atStartOfDay());
     }
 
     // FIXME: 대규모 데이터 고려 필요
