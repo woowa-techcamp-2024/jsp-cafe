@@ -35,6 +35,26 @@ public class ReplyServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            log.info("ReplyServlet doGet start");
+            Long articleId = Long.parseLong(req.getParameter("articleId"));
+            List<ReplyResponse> replies = replyService.findReplyList(articleId);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String result = mapper.writeValueAsString(replies);
+            log.info("result - {}", result);
+
+            resp.setContentType("application/json");
+            resp.getWriter().write(result);
+
+            log.info("ReplyServlet doGet end");
+        } catch (Exception e) {
+            log.warn("exception", e);
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             log.debug("ReplyServlet doPost start");
