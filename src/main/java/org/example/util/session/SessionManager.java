@@ -10,4 +10,5 @@ public interface SessionManager {
     HttpSession addSessionToManager(HttpSession session) throws SQLException;
     void invalidateSession(String sessionId);
     UserDto getUserDetails(String sessionId);
+    void updateSessionUserInfo(HttpSession session, UserDto userDto);
 }

@@ -36,14 +36,14 @@ public class UserService {
         return userRepository.existsByUserId(userId);
     }
 
-    public void editUser(String userId, User request) throws SQLException, IllegalArgumentException {
+    public UserDto editUser(String userId, User request) throws SQLException, IllegalArgumentException {
         User user = userRepository.findUserByUserId(userId);
         logger.info("request password: {} / current password: {}", request.getPassword(), user.getPassword());
         if (!user.getPassword().equals(request.getPassword())) {
             throw new IllegalArgumentException("password does not match");
         }
         user.changeUserInfo(request.getPassword(), request.getName(), request.getEmail());
-        userRepository.update(user);
+        return UserDto.toResponse(userRepository.update(user));
     }
 
     public boolean validateUser(String userId, String password) throws SQLException {

@@ -1,5 +1,6 @@
 package org.example.member.controller;
 
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.config.HttpMethod;
@@ -13,6 +14,7 @@ import org.example.member.model.dao.User;
 import org.example.member.model.dto.UserDto;
 import org.example.member.service.UserQueryService;
 import org.example.member.service.UserService;
+import org.example.util.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +25,13 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     private final UserQueryService userQueryService;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public UserController(UserService userService, UserQueryService userQueryService) {
+    public UserController(UserService userService, UserQueryService userQueryService, SessionManager sessionManager) {
         this.userService = userService;
         this.userQueryService = userQueryService;
+        this.sessionManager = sessionManager;
     }
 
     @RequestMapping(method = HttpMethod.GET)
@@ -61,12 +65,15 @@ public class UserController {
                                         @RequestParam("userId") String userId,
                                         @RequestParam("password") String password,
                                         @RequestParam("name") String name,
-                                        @RequestParam("email") String email) throws SQLException {
+                                        @RequestParam("email") String email,
+                                        HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("/user/UserProfile");
         try {
             User request = User.createUser(userId, password, name, email);
-            userService.editUser(profileUser, request);
+            UserDto userDto = userService.editUser(profileUser, request);
             mv.addAttribute("user", request);
+            // 세션 내 사용자 정보 업데이트 필요
+            sessionManager.updateSessionUserInfo(session, userDto);
         } catch (SQLException e) {
             logger.error("회원정보 수정 중 에러 발생", e);
         }

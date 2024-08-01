@@ -61,6 +61,14 @@ public class InMemorySessionManager implements SessionManager {
         return null;
     }
 
+    @Override
+    public void updateSessionUserInfo(HttpSession session, UserDto userDto) {
+        InternalSession internalSession = sessions.get(session.getId());
+        if (internalSession != null) {
+            internalSession.setAttribute("userDetails", userDto);
+        }
+    }
+
     private void startCleanupTask() {
         scheduler.scheduleAtFixedRate(this::cleanExpiredSessions, 1, 1, TimeUnit.MINUTES);
     }
