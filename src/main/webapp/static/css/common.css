@@ -178,8 +178,8 @@ form input[type="text"] {
 }
 
 form button {
-    background-color: #5ac6b2;
-    color: white;
+    /*background-color: #5ac6b2;*/
+    /*color: white;*/
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -187,7 +187,7 @@ form button {
 }
 
 button:hover {
-    background-color: #4ca899;
+    /*background-color: #4ca899;*/
 }
 
 form div {
@@ -209,8 +209,8 @@ label {
 /*}*/
 
 button {
-    background-color: #5ac6b2;
-    color: white;
+    /*background-color: #5ac6b2;*/
+    /*color: white;*/
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -302,6 +302,7 @@ textarea.form-control {
     height: 300px; /* 높이를 이미지와 유사하게 조정 */
 }
 
+/* <button type="submit> 태그에 적용되는 css */
 button[type="submit"] {
     background-color: #5ac6b2;
     color: white;
@@ -431,10 +432,11 @@ button[type="submit"]:hover {
     min-height: 100px; /* 최소 높이 설정 */
 }
 
-.comment-form button {
+.comment-edit button{
     align-self: flex-end; /* 버튼을 오른쪽으로 정렬 */
-    background-color: #5ac6b2;
-    color: white;
+    background-color: transparent !important; /* 투명 배경 */
+    /*background-color: #f0f0f0;*/
+    color: #888;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
