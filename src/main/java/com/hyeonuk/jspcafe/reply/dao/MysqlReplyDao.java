@@ -72,7 +72,7 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public void deleteById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "update reply set deletedAt = now() where id = ?";
+            String sql = "update reply set deletedAt = now() where id = ? and deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
@@ -84,7 +84,7 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public void deleteAllByArticleId(Long articleId) {
         try(Connection conn = manager.getConnection()){
-            String sql = "update reply set deletedAt = now() where articleId = ?";
+            String sql = "update reply set deletedAt = now() where articleId = ? and deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, articleId);
             pstmt.executeUpdate();

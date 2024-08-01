@@ -113,7 +113,7 @@ public class MysqlArticleDao implements ArticleDao{
     @Override
     public void deleteById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "update article set deletedAt = now() where id = ?";
+            String sql = "update article set deletedAt = now() where id = ? and deletedAt is null";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
 
