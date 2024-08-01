@@ -8,6 +8,9 @@ import jakarta.servlet.annotation.HandlesTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 @HandlesTypes(AppInit.class)
@@ -22,9 +25,18 @@ public class WebServletContainerInitializer implements ServletContainerInitializ
         jspServlet.setLoadOnStartup(1);
         jspServlet.addMapping("*.jsp");
 
+        List<AppInit> appInitList = new ArrayList<>();
         for (Class<?> appInitClass : set) {
             try {
                 AppInit appInit = (AppInit) appInitClass.getConstructor().newInstance();
+                appInitList.add(appInit);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        appInitList.sort(Comparator.comparing(AppInit::order));
+        for (AppInit appInit : appInitList) {
+            try {
                 appInit.onStartUp(servletContext);
             } catch (Exception e) {
                 throw new RuntimeException(e);
