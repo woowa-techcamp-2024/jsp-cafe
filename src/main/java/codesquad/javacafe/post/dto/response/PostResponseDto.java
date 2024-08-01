@@ -85,4 +85,8 @@ public class PostResponseDto {
     public int hashCode() {
         return Objects.hash(id, writer, title, contents, createdAt);
     }
+
+    public void updateMemberName(String name) {
+        this.writer = name;
+    }
 }

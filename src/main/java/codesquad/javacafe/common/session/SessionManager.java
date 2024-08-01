@@ -12,12 +12,13 @@ public class SessionManager {
 		return instance;
 	}
 
-	public void loginCheck(HttpServletRequest req, String key) {
+	public MemberInfo loginCheck(HttpServletRequest req, String key) {
 		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
 
 		if (memberInfo == null) {
 			throw ClientErrorCode.UNAUTHORIZED_USER.customException("Unauthorized user info = "+memberInfo);
 		}
+		return memberInfo;
 	}
 
 	public String getMemberName(HttpServletRequest req, String key) {
