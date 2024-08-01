@@ -1,5 +1,6 @@
 package codesquad.javacafe.post.cache;
 
+import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 
 import java.util.*;
@@ -34,5 +35,11 @@ public class PostCache {
 
     public List<PostResponseDto> getCacheList() {
         return cache.values().stream().toList();
+    }
+
+    public void updateCache(PostRequestDto postRequestDto) {
+        var postDto = cache.get(postRequestDto.getId());
+        postDto.update(postRequestDto);
+        cache.put(postDto.getId(), postDto);
     }
 }

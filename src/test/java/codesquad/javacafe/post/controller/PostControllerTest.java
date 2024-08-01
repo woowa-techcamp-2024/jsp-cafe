@@ -6,7 +6,7 @@ import codesquad.javacafe.common.exception.CustomException;
 import codesquad.javacafe.common.session.MemberInfo;
 import codesquad.javacafe.member.entity.Member;
 import codesquad.javacafe.member.repository.MemberRepository;
-import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
+import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 import codesquad.javacafe.post.entity.Post;
 import codesquad.javacafe.post.repository.PostRepository;
@@ -58,7 +58,8 @@ public class PostControllerTest {
                 "post_writer VARCHAR(255), " +
                 "post_title VARCHAR(255), " +
                 "post_contents TEXT, " +
-                "post_create TIMESTAMP" +
+                "post_create TIMESTAMP," +
+                "member_id BIGINT NOT NULL" +
                 ")";
         statement.execute(createTableSql);
 
@@ -91,7 +92,7 @@ public class PostControllerTest {
         Map<String, String[]> body = new HashMap<>();
         body.put("title", new String[]{"title1"});
         body.put("contents", new String[]{"contents1"});
-        PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+        PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
         Post savePost = PostRepository.getInstance().save(postDto);
 
@@ -112,7 +113,7 @@ public class PostControllerTest {
         PostResponseDto post = (PostResponseDto) request.getAttribute("post");
         assertNotNull(post);
         assertEquals("User One", post.getWriter());
-        assertEquals("/qna/show.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
+        assertEquals("/WEB-INF/qna/show.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
     }
 
     @Test
@@ -122,7 +123,7 @@ public class PostControllerTest {
         body.put("writer", new String[]{"writer1"});
         body.put("title", new String[]{"title1"});
         body.put("contents", new String[]{"contents1"});
-        PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+        PostRequestDto postDto = new PostRequestDto(body);
         PostRepository.getInstance().save(postDto);
 
         // Simulate GET request with query parameters

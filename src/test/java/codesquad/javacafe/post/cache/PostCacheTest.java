@@ -5,7 +5,7 @@ import codesquad.javacafe.common.session.MemberInfo;
 import codesquad.javacafe.member.entity.Member;
 import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.post.controller.PostController;
-import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
+import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
 import codesquad.javacafe.post.entity.Post;
 import codesquad.javacafe.post.repository.PostRepository;
@@ -15,7 +15,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -29,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,7 +59,8 @@ class PostCacheTest {
             body.put("writer", new String[]{"writer1"});
             body.put("title", new String[]{"title1"});
             body.put("contents", new String[]{"contents1"});
-            PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+            body.put("memberId", new String[]{"1"});
+            PostRequestDto postDto = new PostRequestDto(body);
             Post save = PostRepository.getInstance().save(postDto);
             list.add(save.getId());
         }
@@ -148,7 +147,8 @@ class PostCacheTest {
                 "post_writer VARCHAR(255), " +
                 "post_title VARCHAR(255), " +
                 "post_contents TEXT, " +
-                "post_create TIMESTAMP" +
+                "post_create TIMESTAMP," +
+                "member_id BIGINT NOT NULL" +
                 ")";
         statement.execute(createTableSql);
 

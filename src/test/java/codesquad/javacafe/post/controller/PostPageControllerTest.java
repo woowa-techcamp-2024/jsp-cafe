@@ -7,8 +7,6 @@ import codesquad.javacafe.member.entity.Member;
 import codesquad.javacafe.member.repository.MemberRepository;
 import codesquad.javacafe.util.CustomHttpServletRequest;
 import codesquad.javacafe.util.CustomHttpServletResponse;
-import codesquad.javacafe.util.MockRequestDispatcher;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +17,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PostPageControllerTest {
-    PostPageController postPageController = new PostPageController();
+    PostCreatePageController postPageController = new PostCreatePageController();
 
     @Test
     public void test_replicate_process_get_request_forwarding_with_assertions() throws ServletException, IOException {

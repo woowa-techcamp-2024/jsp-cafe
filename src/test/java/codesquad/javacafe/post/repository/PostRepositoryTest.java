@@ -1,17 +1,15 @@
 package codesquad.javacafe.post.repository;
 
 import codesquad.javacafe.common.db.DBConnection;
-import codesquad.javacafe.post.dto.request.PostCreateRequestDto;
+import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.entity.Post;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,8 @@ public class PostRepositoryTest {
                 "post_writer VARCHAR(255), " +
                 "post_title VARCHAR(255), " +
                 "post_contents TEXT, " +
-                "post_create TIMESTAMP" +
+                "post_create TIMESTAMP," +
+                "member_id BIGINT NOT NULL" +
                 ")";
 
         try (var statement = connection.createStatement()) {
@@ -60,18 +59,18 @@ public class PostRepositoryTest {
         }
     }
 
-    private PostCreateRequestDto createPostDto(String writer, String title, String contents) {
+    private PostRequestDto createPostDto(String writer, String title, String contents) {
         Map<String, String[]> body = new HashMap<>();
         body.put("title", new String[]{title});
         body.put("contents", new String[]{contents});
-        PostCreateRequestDto postDto = new PostCreateRequestDto(body);
+        PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter(writer);
         return postDto;
     }
 
     @Test
     public void testSave() throws SQLException {
-        PostCreateRequestDto postDto = createPostDto("writer", "title", "contents");
+        PostRequestDto postDto = createPostDto("writer", "title", "contents");
 
         postRepository.save(postDto);
 
@@ -85,8 +84,8 @@ public class PostRepositoryTest {
 
     @Test
     public void testFindAll() throws SQLException {
-        PostCreateRequestDto postDto1 = createPostDto("writer1", "title1", "contents1");
-        PostCreateRequestDto postDto2 = createPostDto("writer2", "title2", "contents2");
+        PostRequestDto postDto1 = createPostDto("writer1", "title1", "contents1");
+        PostRequestDto postDto2 = createPostDto("writer2", "title2", "contents2");
 
         postRepository.save(postDto1);
         postRepository.save(postDto2);
@@ -104,7 +103,7 @@ public class PostRepositoryTest {
 
     @Test
     public void testFindById() throws SQLException {
-        PostCreateRequestDto postDto = createPostDto("writer", "title", "contents");
+        PostRequestDto postDto = createPostDto("writer", "title", "contents");
 
         postRepository.save(postDto);
 

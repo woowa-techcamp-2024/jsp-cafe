@@ -1,12 +1,15 @@
 package codesquad.javacafe;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import codesquad.javacafe.common.exception.HttpStatus;
-import codesquad.javacafe.post.controller.PostPageController;
+import codesquad.javacafe.post.controller.PostCreatePageController;
+import codesquad.javacafe.post.controller.PostUpdatePageController;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +41,12 @@ public class FrontController extends HttpServlet {
 		subControllers.put("/users/info", new MemberInfoController());
 		subControllers.put("/post", new PostController());
 		subControllers.put("/auth", new AuthController());
-		subControllers.put("/post/page", new PostPageController());
+		subControllers.put("/post/page", new PostCreatePageController());
+		subControllers.put("/post/update", new PostUpdatePageController());
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse res) {
+	protected void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		log.info("[FrontController] service, Request URI = {}, Http Method = {}", req.getRequestURI(), req.getMethod());
 		var uri = req.getRequestURI().replace("/api", "");
 		log.debug("[FrontController] uri = {}", uri);
@@ -57,6 +61,7 @@ public class FrontController extends HttpServlet {
 		} catch (CustomException exception) {
 			log.error("[CustomException] error name = {}, debug message = {}", exception.getErrorName(),
 					exception.getDebugMessage());
+
 			res.setStatus(exception.getHttpStatus().getStatusCode());
 			req.setAttribute("exception", exception);
 			var dispatcher = req.getRequestDispatcher("/WEB-INF/error/customError.jsp");
