@@ -96,10 +96,11 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public List<Reply> findAllByArticleId(Long articleId) {
         try(Connection conn = manager.getConnection()){
-            String sql = "select r.id as 'r.id',r.articleId as 'r.article',r.contents as 'r.contents'," +
-                    "m.id as 'm.id', m.nickname as 'm.nickname', m.email as 'm.email', m.memberId as 'm.memberId' " +
-                    "from reply r left join member m on m.id = r.memberId";
+            String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\", " +
+                    "m.id as \"m.id\", m.nickname as \"m.nickname\", m.email as \"m.email\", m.memberId as \"m.memberId\" " +
+                    "from reply r left join member m on r.memberId = m.id where r.articleId = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, articleId);
             ResultSet rs = pstmt.executeQuery();
             List<Reply> replies = new ArrayList<>();
             while(rs.next()){
@@ -114,8 +115,8 @@ public class MysqlReplyDao implements ReplyDao{
     @Override
     public Optional<Reply> findById(Long id) {
         try(Connection conn = manager.getConnection()){
-            String sql = "select r.id as 'r.id',r.articleId as 'r.article',r.contents as 'r.contents'," +
-                    "m.id as 'm.id', m.nickname as 'm.nickname', m.email as 'm.email', m.memberId as 'm.memberId' " +
+            String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\"," +
+                    "m.id as \"m.id\", m.nickname as \"m.nickname\", m.email as \"m.email\", m.memberId as \"m.memberId\" " +
                     "from reply r left join member m on m.id = r.memberId where r.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
