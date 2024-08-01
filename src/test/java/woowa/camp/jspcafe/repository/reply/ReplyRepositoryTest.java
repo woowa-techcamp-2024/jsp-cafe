@@ -341,9 +341,9 @@ class ReplyRepositoryTest {
                                 ReplyResponse::getCreatedAt
                         ).containsExactly(
                                 tuple(reply1.getReplyId(), userId1, "Test Comment 1", user1.getNickname(),
-                                        fixedDateTime.getNowAsLocalDateTime()),
+                                        fixedDateTime.getNowAsLocalDateTime().toString()),
                                 tuple(reply2.getReplyId(), userId2, "Test Comment 2", user2.getNickname(),
-                                        fixedDateTime.getNowAsLocalDateTime())
+                                        fixedDateTime.getNowAsLocalDateTime().toString())
                         );
                     });
         }
