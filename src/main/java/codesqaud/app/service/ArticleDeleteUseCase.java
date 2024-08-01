@@ -40,15 +40,15 @@ public class ArticleDeleteUseCase extends ArticleUseCase {
 
         authorizeArticle(req, article.getAuthorId());
         validateDelete(req, replies);
+
         articleDao.delete(article);
         replies.forEach(replyDao::delete);
     }
 
     private void validateDelete(HttpServletRequest req, List<Reply> replies) {
-        User user = AuthenticationManager.getLoginUserOrElseThrow(req);
         boolean hasOthersReplies = false;
         for (Reply reply : replies) {
-            if (!Objects.equals(reply.getAuthorId(), user.getId())) {
+            if(!AuthenticationManager.isMe(req, reply.getAuthorId())) {
                 hasOthersReplies = true;
                 break;
             }
