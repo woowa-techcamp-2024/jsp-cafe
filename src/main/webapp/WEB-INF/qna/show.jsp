@@ -85,7 +85,7 @@
                                                 </li>
                                                 <li>
                                                     <form class="delete-answer-form"
-                                                          action="/qna/${article.id}/reply/${reply.id}"
+                                                          action="/qna/${article.id}/replies/${reply.id}"
                                                           method="POST">
                                                         <input type="hidden" name="_method" value="DELETE">
                                                         <button type="submit" class="delete-answer-button">삭제</button>
