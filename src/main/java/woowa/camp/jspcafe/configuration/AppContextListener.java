@@ -43,7 +43,7 @@ public class AppContextListener implements ServletContextListener {
         ArticleService articleService = new ArticleService(articleRepository, userRepository, dateTimeProvider);
 
         DBReplyRepository replyRepository = new DBReplyRepository(connector);
-        ReplyService replyService = new ReplyService(replyRepository, dateTimeProvider);
+        ReplyService replyService = new ReplyService(replyRepository, userRepository, dateTimeProvider);
 
         context.setAttribute("userRepository", userRepository);
         context.setAttribute("userService", userService);

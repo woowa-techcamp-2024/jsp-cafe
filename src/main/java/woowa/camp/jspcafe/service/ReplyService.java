@@ -5,16 +5,19 @@ import java.util.List;
 import woowa.camp.jspcafe.domain.Reply;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
-import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
+import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.ReplyResponse;
 
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
+    private final UserRepository userRepository;
     private final DateTimeProvider dateTimeProvider;
 
-    public ReplyService(ReplyRepository replyRepository, DateTimeProvider dateTimeProvider) {
+    public ReplyService(ReplyRepository replyRepository, UserRepository userRepository,
+                        DateTimeProvider dateTimeProvider) {
         this.replyRepository = replyRepository;
+        this.userRepository = userRepository;
         this.dateTimeProvider = dateTimeProvider;
     }
 
