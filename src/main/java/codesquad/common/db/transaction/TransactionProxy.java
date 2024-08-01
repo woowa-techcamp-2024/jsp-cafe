@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class TransactionProxy implements InvocationHandler {
@@ -26,9 +27,11 @@ public class TransactionProxy implements InvocationHandler {
             txManager.commit();
             logger.info("transaction committed");
             return result;
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             txManager.rollback();
-            logger.info("transaction rollback", e);
+            throw e.getCause();
+        } catch (RuntimeException e) {
+            txManager.commit();
             throw e;
         }
     }
