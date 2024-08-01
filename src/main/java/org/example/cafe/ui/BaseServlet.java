@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.example.cafe.common.error.CafeException;
 import org.slf4j.Logger;
 
-public class BaseServlet extends HttpServlet {
+public abstract class BaseServlet extends HttpServlet {
 
     private static final Logger log = getLogger(BaseServlet.class);
 
