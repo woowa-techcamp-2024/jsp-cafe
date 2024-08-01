@@ -27,15 +27,20 @@
         <h3>댓글 ${comments.size()}개</h3>
         <c:forEach var="comment" items="${comments}">
             <div class="comment">
-                <p class="comment-author">${comment.author}</p>
+                <p class="comment-author">${comment.userNickname}</p>
                 <p class="comment-content">${comment.content}</p>
-                <span class="time">${article.createdAt}</span>
+<%--                <span class="time">${comment.createdAt}</span>--%>
+                <fmt:parseDate value="${comment.createdAt}"
+                               pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
+                <fmt:formatDate pattern="yyyy.MM.dd HH:mm" value="${ parsedDateTime }" />
 <%--                <p class="comment-date"><fmt:formatDate value="${comment.createdAt}" pattern="YYYY. MM. DD. HH:mm"/></p>--%>
             </div>
         </c:forEach>
     </div>
 
-    <form class="comment-form" action="${pageContext.request.contextPath}/comments/add" method="post">
+    <form class="comment-form" action="${pageContext.request.contextPath}/comments" method="post">
+        <input type="hidden" name="articleId" value="${article.articleId}">
+<%--        <input type="hidden" name="userId" value="${sessionScope.userId}">--%>
         <input type="hidden" name="articleId" value="${article.articleId}">
         <textarea name="content" placeholder="댓글을 입력하세요"></textarea>
         <button type="submit">등록</button>
