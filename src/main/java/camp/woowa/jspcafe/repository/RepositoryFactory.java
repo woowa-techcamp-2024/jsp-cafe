@@ -1,19 +1,21 @@
 package camp.woowa.jspcafe.repository;
 
-import java.sql.Connection;
+import camp.woowa.jspcafe.db.DatabaseManager;
+
+import javax.sql.DataSource;
 
 public class RepositoryFactory {
     private RepositoryFactory() {}
 
-    public static UserRepository createUserRepository(Connection conn) {
-        return new MySQLUserRepository(conn);
+    public static UserRepository createUserRepository(DatabaseManager dm) {
+        return new MySQLUserRepository(dm);
     }
 
-    public static ReplyRepository createReplyRepository(Connection conn) {
-        return new MySQLReplyRepository(conn);
+    public static ReplyRepository createReplyRepository(DatabaseManager dm) {
+        return new MySQLReplyRepository(dm);
     }
 
-    public static QuestionRepository createQuestionRepository(Connection conn) {
-        return new MySQLQuestionRepository(conn);
+    public static QuestionRepository createQuestionRepository(DatabaseManager dm) {
+        return new MySQLQuestionRepository(dm);
     }
 }

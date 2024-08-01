@@ -1,9 +1,11 @@
 package camp.woowa.jspcafe.repository;
 
+import camp.woowa.jspcafe.db.DatabaseManager;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Reply;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,15 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLReplyRepository implements ReplyRepository {
-    private final Connection conn;
+    private final DataSource ds;
 
-    public MySQLReplyRepository(Connection conn) {
-        this.conn = conn;
+    public MySQLReplyRepository(DatabaseManager dm) {
+        this.ds = dm.getDataSource();
     }
 
     @Override
     public Long save(Reply reply) {
-        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO reply (content, question_id, writer, writer_id) VALUES (?, ?, ?, ?) ", PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (var conn = ds.getConnection(); PreparedStatement pstmt = conn.prepareStatement("INSERT INTO reply (content, question_id, writer, writer_id) VALUES (?, ?, ?, ?) ", PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, reply.getContent());
             pstmt.setLong(2, reply.getQuestionId());
             pstmt.setString(3, reply.getWriter());
@@ -41,7 +43,7 @@ public class MySQLReplyRepository implements ReplyRepository {
 
     @Override
     public Reply findById(Long id) {
-        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE id = ? AND is_deleted = FALSE")) {
+        try (var conn = ds.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE id = ? AND is_deleted = FALSE")) {
             pstmt.setLong(1, id);
             ResultSet rs = pstmt.executeQuery();
 
@@ -63,7 +65,7 @@ public class MySQLReplyRepository implements ReplyRepository {
     @Override
     public List<Reply> findByQuestionId(Long questionId) {
         List<Reply> replies = new ArrayList<>();
-        try (PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE question_id = ? AND is_deleted = FALSE")) {
+        try (var conn = ds.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reply WHERE question_id = ? AND is_deleted = FALSE")) {
             pstmt.setLong(1, questionId);
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()) {
@@ -77,7 +79,7 @@ public class MySQLReplyRepository implements ReplyRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (PreparedStatement pstmt = conn.prepareStatement("UPDATE reply SET is_deleted = TRUE WHERE id = ?")) {
+        try (var conn = ds.getConnection(); PreparedStatement pstmt = conn.prepareStatement("UPDATE reply SET is_deleted = TRUE WHERE id = ?")) {
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
