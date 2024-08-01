@@ -18,3 +18,10 @@ CREATE TABLE article (
                          writer BIGINT NOT NULL,
                          contents TEXT NOT NULL
 );
+
+CREATE TABLE reply (
+                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                       articleId BIGINT NOT NULL,
+                       memberId BIGINT NOT NULL,
+                       contents TEXT NOT NULL
+);

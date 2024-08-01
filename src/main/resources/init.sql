@@ -6,6 +6,7 @@ USE cafe;
 -- 기존 테이블이 존재한다면 삭제
 DROP TABLE IF EXISTS article;
 DROP TABLE IF EXISTS member;
+DROP TABLE IF EXISTS reply;
 
 -- member 테이블 생성
 CREATE TABLE member (
@@ -22,4 +23,11 @@ CREATE TABLE article (
                          title VARCHAR(255) NOT NULL,
                          writer BIGINT NOT NULL,
                          contents TEXT NOT NULL
+);
+
+CREATE TABLE reply (
+                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                    articleId BIGINT NOT NULL,
+                    memberId BIGINT NOT NULL,
+                    contents TEXT NOT NULL
 );
