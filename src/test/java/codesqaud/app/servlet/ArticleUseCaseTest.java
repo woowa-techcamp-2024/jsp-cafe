@@ -1,10 +1,13 @@
 package codesqaud.app.servlet;
 
 import codesqaud.TestDataSource;
+import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.article.ArticleDao;
+import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dto.ArticleDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
+import codesqaud.app.model.Reply;
 import codesqaud.app.model.User;
 import codesqaud.mock.MockHttpServletRequest;
 import codesqaud.mock.MockHttpServletResponse;
@@ -22,12 +25,13 @@ import static codesqaud.util.LoginUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-public class QnaServletTest {
+public class ArticleUseCaseTest {
     private QnaServlet qnaServlet;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private MockServletConfig config;
     private ArticleDao articleDao;
+    private ReplyDao replyDao;
 
     @BeforeEach
     void setUp() throws ServletException, SQLException {
@@ -38,6 +42,7 @@ public class QnaServletTest {
         response = new MockHttpServletResponse();
         config = new MockServletConfig();
         articleDao = (ArticleDao) config.getServletContext().getAttribute("articleDao");
+        replyDao = (ReplyDao) config.getServletContext().getAttribute("replyDao");
         qnaServlet.init(config);
     }
 
@@ -86,8 +91,7 @@ public class QnaServletTest {
         @DisplayName("저장된 질문 글의 id를 통해 게시글을 조회할 수 있다")
         void given_savedArticleId_when_getQnaDetails_then_foundQnaDetails() throws ServletException, IOException {
             // Given
-            signupAndLogin(config, request);
-            articleDao.save(createArticle());
+            signUpAndLoginAndSaveArticle();
             Article savedArticle = articleDao.findAll().get(0);
             request.setRequestURI("/qna/" + savedArticle.getId());
 
@@ -134,6 +138,43 @@ public class QnaServletTest {
     }
 
     /**
+     * GET "/qna/{id}/form"
+     */
+    @Nested
+    @DisplayName("수정 폼을 조회할 때")
+    class UpdateArticleFormTest {
+        @Test
+        @DisplayName("수정할 게시글이 본인의 게시글이면 수정 폼을 조회할 수 있다.")
+        void given_myArticle_when_updateForm_then_canAccess() throws ServletException, IOException {
+            //given
+            signUpAndLoginAndSaveArticle();
+            Article savedArticle = articleDao.findAll().get(0);
+            request.setRequestURI("/qna/"+ savedArticle.getId() +"/form");
+
+            //when
+            qnaServlet.doGet(request, response);
+
+            //then
+            Article article = (Article) request.getAttribute("article");
+            assertThat(article.getTitle()).isEqualTo("Title");
+        }
+
+        @Test
+        @DisplayName("수정할 게시글이 본인의 게시글이 아니면 조회할 때 예외가 발생한다.")
+        void given_othersArticle_when_requestUpdateForm_then_throwException() throws ServletException, IOException {
+            //given
+            signUpAndLoginAndSaveArticle();
+            signupAndLogin(config,request);
+            Article savedArticle = articleDao.findAll().get(0);
+            request.setRequestURI("/qna/"+ savedArticle.getId() +"/form");
+
+            //when, then
+            assertThatThrownBy(() -> qnaServlet.doGet(request, response))
+                    .isInstanceOf(HttpException.class);
+        }
+    }
+
+    /**
      * POST "/qna"
      */
     @Nested
@@ -168,43 +209,6 @@ public class QnaServletTest {
             request.setParameter("contents", "New Content");
 
             assertThatThrownBy(() -> qnaServlet.doPost(request, response))
-                    .isInstanceOf(HttpException.class);
-        }
-    }
-
-    /**
-     * GET "/qna/{id}/form"
-     */
-    @Nested
-    @DisplayName("수정 폼을 조회할 때")
-    class UpdateArticleFormTest {
-        @Test
-        @DisplayName("수정할 게시글이 본인의 게시글이면 수정 폼을 조회할 수 있다.")
-        void given_myArticle_when_updateForm_then_canAccess() throws ServletException, IOException {
-            //given
-            signUpAndLoginAndSaveArticle();
-            Article savedArticle = articleDao.findAll().get(0);
-            request.setRequestURI("/qna/"+ savedArticle.getId() +"/form");
-
-            //when
-            qnaServlet.doGet(request, response);
-
-            //then
-            Article article = (Article) request.getAttribute("article");
-            assertThat(article.getTitle()).isEqualTo("Title");
-        }
-
-        @Test
-        @DisplayName("수정할 게시글이 본인의 게시글이 아니면 조회할 때 예외가 발생한다.")
-        void given_othersArticle_when_requestUpdateForm_then_throwException() throws ServletException, IOException {
-            //given
-            signUpAndLoginAndSaveArticle();
-            signupAndLogin(config,request);
-            Article savedArticle = articleDao.findAll().get(0);
-            request.setRequestURI("/qna/"+ savedArticle.getId() +"/form");
-
-            //when, then
-            assertThatThrownBy(() -> qnaServlet.doGet(request, response))
                     .isInstanceOf(HttpException.class);
         }
     }
@@ -273,7 +277,46 @@ public class QnaServletTest {
         }
 
         @Test
-        @DisplayName("수정할 게시글이 본인의 게시글이 아니면 예외가 발생한다.")
+        @DisplayName("삭제할 게시글에 본인의 댓글만 작성되어 있으면 삭제할 수 있다.")
+        void given_myArticleAndMyReplies_when_deleteArticle_then_canDelete() throws ServletException, IOException {
+            //given
+            signUpAndLoginAndSaveArticle();
+            Article savedArticle = articleDao.findAll().get(0);
+            saveReply(savedArticle, AuthenticationManager.getLoginUserOrElseThrow(request));
+            request.setMethod("DELETE");
+            request.setRequestURI("/qna/"+ savedArticle.getId());
+
+            //when
+            qnaServlet.doDelete(request, response);
+
+            //then
+            Optional<Article> deletedArticle = articleDao.findById(savedArticle.getId());
+            assertThat(deletedArticle).isEmpty();
+        }
+
+        @Test
+        @DisplayName("삭제할 게시글에 다른 사람의 댓글이 작성되어 있으면 삭제할 수 없다.")
+        void given_myArticleAndOthersReplies_when_deleteArticle_then_throwException() throws ServletException, IOException {
+            //given
+            signUpAndLoginAndSaveArticle();
+            Article savedArticle = articleDao.findAll().get(0);
+            User loginUser = AuthenticationManager.getLoginUserOrElseThrow(request);
+
+            signupAndLogin(config,request);
+            saveReply(savedArticle, AuthenticationManager.getLoginUserOrElseThrow(request));
+
+            request.getSession().setAttribute("loginUser", loginUser);
+
+            request.setMethod("DELETE");
+            request.setRequestURI("/qna/"+ savedArticle.getId());
+
+            //when
+            assertThatThrownBy(() -> qnaServlet.doDelete(request, response))
+                    .isInstanceOf(HttpException.class);
+        }
+
+        @Test
+        @DisplayName("삭제할 게시글이 본인의 게시글이 아니면 예외가 발생한다.")
         void given_othersArticle_when_updateArticle_then_throwException() throws ServletException, IOException {
             //given
             signUpAndLoginAndSaveArticle();
@@ -290,12 +333,13 @@ public class QnaServletTest {
 
     private void signUpAndLoginAndSaveArticle() {
         signupAndLogin(config, request);
-        Article article = createArticle();
+        User loginUser = getLoginUser();
+        Article article = new Article("Title", "Content 1", loginUser.getId());
         articleDao.save(article);
     }
 
-    private Article createArticle() {
-        User loginUser = getLoginUser();
-        return new Article("Title", "Content 1", loginUser.getId());
+    private void saveReply(Article article, User user) {
+        Reply reply = new Reply("title", article.getId(), user.getId());
+        replyDao.save(reply);
     }
 }
