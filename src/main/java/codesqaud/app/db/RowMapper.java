@@ -1,4 +1,4 @@
-package codesqaud.app.dao;
+package codesqaud.app.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

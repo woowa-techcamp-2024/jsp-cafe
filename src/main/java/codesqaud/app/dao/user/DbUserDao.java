@@ -1,7 +1,7 @@
 package codesqaud.app.dao.user;
 
-import codesqaud.app.dao.JdbcTemplate;
-import codesqaud.app.dao.RowMapper;
+import codesqaud.app.db.JdbcTemplate;
+import codesqaud.app.db.RowMapper;
 import codesqaud.app.exception.DbConstraintException;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.User;

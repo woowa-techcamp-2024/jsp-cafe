@@ -1,7 +1,7 @@
 package codesqaud.app.dao.article;
 
-import codesqaud.app.dao.JdbcTemplate;
-import codesqaud.app.dao.RowMapper;
+import codesqaud.app.db.JdbcTemplate;
+import codesqaud.app.db.RowMapper;
 import codesqaud.app.dto.ArticleDto;
 import codesqaud.app.dto.UserDto;
 import codesqaud.app.exception.HttpException;

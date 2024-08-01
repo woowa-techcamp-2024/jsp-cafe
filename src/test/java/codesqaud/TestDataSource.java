@@ -1,6 +1,6 @@
 package codesqaud;
 
-import codesqaud.app.dao.JdbcTemplate;
+import codesqaud.app.db.JdbcTemplate;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.jdbcx.JdbcDataSource;
 import org.h2.tools.Server;

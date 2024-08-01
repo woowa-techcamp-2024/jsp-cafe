@@ -1,4 +1,4 @@
-package codesqaud.app.dao;
+package codesqaud.app.db;
 
 import codesqaud.app.exception.DbConstraintException;
 import org.slf4j.Logger;

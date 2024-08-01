@@ -1,7 +1,7 @@
 package codesqaud.mock;
 
 import codesqaud.TestDataSource;
-import codesqaud.app.dao.JdbcTemplate;
+import codesqaud.app.db.JdbcTemplate;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.article.DbArticleDao;
 import codesqaud.app.dao.user.DbUserDao;

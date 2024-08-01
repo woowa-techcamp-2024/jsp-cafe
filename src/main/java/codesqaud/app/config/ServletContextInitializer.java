@@ -1,12 +1,12 @@
 package codesqaud.app.config;
 
-import codesqaud.app.dao.*;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.article.DbArticleDao;
 import codesqaud.app.dao.reply.DbReplyDao;
 import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dao.user.DbUserDao;
 import codesqaud.app.dao.user.UserDao;
+import codesqaud.app.db.JdbcTemplate;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
