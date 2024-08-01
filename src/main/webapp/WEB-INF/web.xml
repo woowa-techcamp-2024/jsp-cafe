@@ -6,8 +6,18 @@
          version="3.1">
 
     <error-page>
-        <exception-type>java.lang.RuntimeException</exception-type>
+        <exception-type>exception.TomcatException</exception-type>
         <location>/error.jsp</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>exception.UnAuthorizedException</exception-type>
+        <location>/error.jsp</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>exception.LoginRequiredException</exception-type>
+        <location>/user/login.jsp</location>
     </error-page>
 
 </web-app>
