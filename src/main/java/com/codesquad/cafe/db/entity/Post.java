@@ -92,7 +92,7 @@ public class Post {
         return deleted;
     }
 
-    public void update(String content, String title, String fileName) {
+    public void update(String title, String content, String fileName) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("title is required");
         }
