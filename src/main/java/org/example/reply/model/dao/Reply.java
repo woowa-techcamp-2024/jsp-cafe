@@ -23,7 +23,8 @@ public class Reply {
         return reply;
     }
 
-    public static Reply createWithAll(Long id, Long postId, String userId, String contents, ReplyStatus replyStatus, LocalDateTime createdAt) {
+    public static Reply createWithAll(Long id, Long postId, String userId, String contents, ReplyStatus replyStatus,
+                                      LocalDateTime createdAt) {
         Reply reply = new Reply();
         reply.id = id;
         reply.postId = postId;
@@ -78,6 +79,12 @@ public class Reply {
             throw new IllegalArgumentException("contents cannot be null or empty");
         }
         if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("writer cannot be null or empty");
+        }
+        if (replyStatus == null) {
+            throw new IllegalArgumentException("writer cannot be null or empty");
+        }
+        if (createdAt == null) {
             throw new IllegalArgumentException("writer cannot be null or empty");
         }
     }
