@@ -41,7 +41,7 @@ public class ReplyService {
 
     public ReplyDto updateReply(Long replyId, UserDto user, String contents) throws SQLException {
         ReplyDto reply = replyRepository.findById(replyId); // 존재하는지 확인
-        if (!user.getName().equals(reply.getUserId())) {
+        if (!user.getUserId().equals(reply.getUserId())) {
             throw new IllegalArgumentException("자신이 작성한 댓글이 아닙니다.");
         }
         reply.updateContents(contents);
