@@ -5,8 +5,10 @@ import woopaca.jspcafe.error.ForbiddenException;
 import woopaca.jspcafe.error.NotFoundException;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.Post;
+import woopaca.jspcafe.model.Reply;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.PostRepository;
+import woopaca.jspcafe.repository.ReplyRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.PostEditRequest;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
@@ -23,10 +25,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ReplyRepository replyRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, ReplyRepository replyRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.replyRepository = replyRepository;
     }
 
     public void writePost(WritePostRequest writePostRequest, Authentication authentication) {
@@ -119,7 +123,22 @@ public class PostService {
 
     public void deletePost(Long postId, Authentication authentication) {
         Post post = validateWriter(postId, authentication);
+        List<Reply> writerReplies = validateOtherUserReplies(post);
         post.softDelete();
+        writerReplies.forEach(Reply::softDelete);
+        writerReplies.forEach(replyRepository::save);
         postRepository.save(post);
+    }
+
+    private List<Reply> validateOtherUserReplies(Post post) {
+        List<Reply> replies = replyRepository.findByPostId(post.getId());
+        replies.stream()
+                .filter(Reply::isPublished)
+                .filter(reply -> !reply.getWriterId().equals(post.getWriterId()))
+                .findAny()
+                .ifPresent(reply -> {
+                    throw new BadRequestException("[ERROR] 다른 사용자의 댓글이 존재하여 삭제할 수 없습니다.");
+                });
+        return replies;
     }
 }

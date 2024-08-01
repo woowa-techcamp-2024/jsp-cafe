@@ -56,7 +56,7 @@ public final class InstanceFactory {
 
     public static PostService postService() {
         if (postService == null) {
-            postService = new PostService(postRepository(), userRepository());
+            postService = new PostService(postRepository(), userRepository(), replyRepository());
         }
         return postService;
     }
