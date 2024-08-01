@@ -158,6 +158,7 @@ public class PostDao implements PostRepository {
                 + "p.updated_at as p_updated_at, "
                 + "p.deleted as p_deleted "
                 + "FROM `post` p LEFT JOIN `user` u ON p.author_id = u.id "
+                + "WHERE p.deleted = false "
                 + "ORDER BY p.created_at DESC "
                 + "LIMIT ? OFFSET ?";
         List<PostDetailsDto> posts = jdbcTemplate.queryForList(
