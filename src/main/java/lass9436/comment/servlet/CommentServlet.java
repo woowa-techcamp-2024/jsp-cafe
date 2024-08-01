@@ -46,6 +46,21 @@ public class CommentServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
+		Comment comment = commentRepository.findByCommentSeq(seq);
+
+		if (comment == null) {
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+		if (req.getSession(false) == null){
+			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+		if (comment.getUserSeq() != (long)req.getSession(false).getAttribute("userSeq")){
+			resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return;
+		}
+
 		commentRepository.deleteByCommentSeq(seq);
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
