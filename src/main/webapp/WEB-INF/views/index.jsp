@@ -35,13 +35,13 @@
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
                         <c:if test="${!page.isFirstPage}">
-                            <li><a href="/index?pageNum=${page.pageNumber - 1}&pageSize=${page.pageSize}"><<</a></li>
+                            <li><a href="/?pageNum=${page.pageNumber - 1}&pageSize=${page.pageSize}"><<</a></li>
                         </c:if>
                         <li>
                             <span>${page.pageNumber}</span>
                         </li>
                         <c:if test="${!page.isLastPage}">
-                            <li><a href="/index?pageNum=${page.pageNumber + 1}&pageSize=${page.pageSize}">>></a></li>
+                            <li><a href="/?pageNum=${page.pageNumber + 1}&pageSize=${page.pageSize}">>></a></li>
                         </c:if>
                     </ul>
                 </div>
