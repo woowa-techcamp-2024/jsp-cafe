@@ -126,7 +126,6 @@ public class ReplyControlServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.getWriter().write(objectMapper.toJson(new HashMap<>()));
         }catch(HttpBadRequestException e){
-            e.printStackTrace();
             String message = e.getMessage();
             Map<String,String> ret = Map.of("message",message);
             resp.setCharacterEncoding("UTF-8");
@@ -135,7 +134,6 @@ public class ReplyControlServlet extends HttpServlet {
             resp.getWriter().write(objectMapper.toJson(ret));
             resp.getWriter().flush();
         }catch (Exception e){
-            e.printStackTrace();
             Map<String,String> ret = Map.of("message","서버 내부 에러입니다.");
             resp.setCharacterEncoding("UTF-8");
             resp.setContentType("application/json");
