@@ -8,6 +8,7 @@ import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.service.ReplyService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -127,6 +128,7 @@ public class RepliesServlet extends HttpServlet {
             List<Reply> replies = replyService.findByQuestionId(questionId);
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
             resp.setContentType("application/json");
             mapper.writeValue(resp.getWriter(), replies);
         } catch (IOException | NumberFormatException e) {

@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class Reply {
@@ -8,6 +10,7 @@ public class Reply {
     private Long questionId;
     private String writer;
     private final Long writerId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
 
     public Reply(Long id, String content, Long questionId, String writer, Long writerId, LocalDateTime createdAt) {
