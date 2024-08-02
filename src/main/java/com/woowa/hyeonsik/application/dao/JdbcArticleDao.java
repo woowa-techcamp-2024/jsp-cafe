@@ -38,7 +38,8 @@ public class JdbcArticleDao implements ArticleDao {
             FROM
                 article
             WHERE
-                article_id = ? 
+                article_id = ? AND 
+                is_deleted = 0
             """;
 
         return databaseConnector.executeQuery(sql, List.of(String.valueOf(articleId)),
@@ -72,6 +73,10 @@ public class JdbcArticleDao implements ArticleDao {
                 modified_at
             FROM
                 article
+            WHERE
+                is_deleted = 0
+            ORDER BY 
+                article_id DESC
             """;
 
         return databaseConnector.executeQuery(sql,
@@ -108,9 +113,10 @@ public class JdbcArticleDao implements ArticleDao {
     @Override
     public void removeByArticleId(long articleId) {
         String sql = """
-                DELETE FROM article 
-                WHERE article_id = ?
-                """;
+            UPDATE article
+            SET is_deleted = 1
+            WHERE article_id = ?
+            """;
 
         databaseConnector.execute(sql, List.of(String.valueOf(articleId)));
     }

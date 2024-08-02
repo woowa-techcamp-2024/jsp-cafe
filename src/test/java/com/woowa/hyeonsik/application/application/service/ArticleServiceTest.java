@@ -2,7 +2,9 @@ package com.woowa.hyeonsik.application.application.service;
 
 import com.woowa.hyeonsik.application.application.MemoryDbTest;
 import com.woowa.hyeonsik.application.dao.JdbcArticleDao;
+import com.woowa.hyeonsik.application.dao.JdbcCommentDao;
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
 import com.woowa.hyeonsik.application.service.ArticleService;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
@@ -15,15 +17,18 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArticleServiceTest extends MemoryDbTest {
     private ArticleService articleService;
     private JdbcArticleDao articleDao;
+    private JdbcCommentDao commentDao;
 
     @BeforeEach
     void setUp() {
         articleDao = new JdbcArticleDao(new DatabaseConnector(new H2Property()));
-        articleService = new ArticleService(articleDao);
+        commentDao = new JdbcCommentDao(new DatabaseConnector(new H2Property()));
+        articleService = new ArticleService(articleDao, commentDao);
     }
 
     @Test
@@ -119,4 +124,39 @@ class ArticleServiceTest extends MemoryDbTest {
         assertThrows(AuthorizationException.class, () -> articleService.remove(1L, "ANOTHER_USER"));
     }
 
+    @Test
+    @DisplayName("게시글 삭제시, 내가 쓴 댓글만 존재하면 정상 삭제한다.")
+    void remove_article_with_my_comment() {
+        Article article = new Article(null, "TEST_USER", "테스트 글입니다", "안녕하세요? 반갑습니다 ^^");
+        Reply reply = new Reply(null, 1L, "TEST_USER", "HIHIHI");
+        articleDao.save(article);
+        commentDao.save(reply);
+
+        articleService.remove(1L, "TEST_USER");
+        assertThat(articleDao.findAll()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("게시글 삭제시, 다른 사람이 쓴 댓글이 존재하면 예외가 발생한다.")
+    void remove_article_with_another_comment_exception() {
+        Article article = new Article(null, "TEST_USER", "테스트 글입니다", "안녕하세요? 반갑습니다 ^^");
+        Reply reply = new Reply(null, 1L, "ANOTHER_USER", "HIHIHI");
+        articleDao.save(article);
+        commentDao.save(reply);
+
+        assertThrows(IllegalStateException.class, () -> articleService.remove(1L, "TEST_USER"));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제시, 다른 사람이 댓글을 작성하고 삭제했어도 정상 처리된다.")
+    void remove_article_with_another_comment_history() {
+        Article article = new Article(null, "TEST_USER", "테스트 글입니다", "안녕하세요? 반갑습니다 ^^");
+        Reply reply = new Reply(null, 1L, "ANOTHER_USER", "HIHIHI");
+        articleDao.save(article);
+        commentDao.save(reply);
+        commentDao.removeByReplyId(1L);
+
+        articleService.remove(1L, "TEST_USER");
+        assertThat(articleDao.findAll()).isEmpty();
+    }
 }
