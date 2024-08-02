@@ -55,14 +55,17 @@ public class DbReplyDao implements ReplyDao {
         }
 
         String sql = "INSERT INTO replies (contents, article_id, author_id, activate, created_at) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
+        Long id = jdbcTemplate.updateAndReturnKey(sql,
                 reply.getContents(),
                 reply.getArticleId(),
                 reply.getAuthorId(),
                 reply.getActivate(),
                 toStringForQuery(reply.getCreatedAt())
         );
+
+        reply.setId(id);
     }
+
 
     @Override
     public void update(Reply reply) {
@@ -109,6 +112,18 @@ public class DbReplyDao implements ReplyDao {
                 """;
 
         return jdbcTemplate.query(sql, REPLY_ROW_MAPPER, articleId);
+    }
+
+    @Override
+    public Optional<ReplyDto> findByIdAsDto(Long id) {
+        String sql = """
+                SELECT replies.id, replies.contents, replies.author_id, replies.created_at, replies.activate,
+                users.user_id as user_id, users.name as user_name, users.email as user_email
+                FROM replies JOIN users ON replies.author_id = users.id
+                WHERE replies.id = ? AND replies.activate = true
+                """;
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, REPLY_DTO_ROW_MAPPER, id));
     }
 
     @Override
