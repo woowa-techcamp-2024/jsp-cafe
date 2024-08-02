@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db.entity;
+package com.codesquad.cafe.db.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -39,6 +39,12 @@ public class Post {
         }
         if (view < 0) {
             throw new IllegalArgumentException("view 는 0이상이어야 합니다.");
+        }
+        if (createdAt == null || LocalDateTime.now().isBefore(createdAt)) {
+            throw new IllegalArgumentException("createdAt 는 현재시간 이전이야 합니다.");
+        }
+        if (updatedAt == null || updatedAt.isBefore(createdAt)) {
+            throw new IllegalArgumentException("updatedAt 은 createdAt 이후여야 합니다.");
         }
         this.id = id;
         this.authorId = authorId;
@@ -109,10 +115,6 @@ public class Post {
         this.id = id;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public void addView() {
         this.view++;
     }
@@ -120,6 +122,23 @@ public class Post {
     public void delete() {
         this.deleted = true;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
     @Override
@@ -138,24 +157,4 @@ public class Post {
         return sb.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Post post = (Post) o;
-        return Objects.equals(id, post.id) && Objects.equals(authorId, post.authorId)
-                && Objects.equals(title, post.title) && Objects.equals(content, post.content)
-                && Objects.equals(fileName, post.fileName) && Objects.equals(view, post.view)
-                && Objects.equals(createdAt, post.createdAt) && Objects.equals(updatedAt,
-                post.updatedAt) && Objects.equals(deleted, post.deleted);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, authorId, title, content, fileName, view, createdAt, updatedAt, deleted);
-    }
 }
