@@ -33,4 +33,11 @@ public class MySQLDatabaseManager implements DatabaseManager {
     public DataSource getDataSource() {
         return dataSource;
     }
+
+    @Override
+    public void close() {
+        if (dataSource instanceof HikariDataSource) {
+            ((HikariDataSource) dataSource).close();
+        }
+    }
 }

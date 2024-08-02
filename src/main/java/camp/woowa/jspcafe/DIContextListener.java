@@ -13,12 +13,13 @@ import jakarta.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 public class DIContextListener implements ServletContextListener {
+    DatabaseManager dm;
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DIContextListener.class);
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         // DB Connection
-        DatabaseManager dm = new MySQLDatabaseManager();
+       dm = new MySQLDatabaseManager();
 
         // TODO: 코드 리오더링에 따른 순서 보장 불가 고려
 
@@ -36,5 +37,13 @@ public class DIContextListener implements ServletContextListener {
         QuestionRepository questionRepository = RepositoryFactory.createQuestionRepository(dm);
         QuestionService questionService = new QuestionService(questionRepository, replyService);
         ServiceLocator.registerService(QuestionService.class, questionService);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        ServletContextListener.super.contextDestroyed(sce);
+
+        // DB Connection 종료
+        dm.close();
     }
 }
