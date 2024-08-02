@@ -1,11 +1,16 @@
 package org.example.demo.domain;
 
+import java.util.Objects;
+
 public class User {
-    private final String userId;
+    private String userId;
     private Long id;
     private String password;
     private String name;
     private String email;
+
+    public User() {
+    }
 
     public User(Long id, String userId, String password, String name, String email) {
         this.id = id;
@@ -49,5 +54,29 @@ public class User {
 
     public String getUserId() {
         return userId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) && Objects.equals(id, user.id) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, id, password, name, email);
     }
 }

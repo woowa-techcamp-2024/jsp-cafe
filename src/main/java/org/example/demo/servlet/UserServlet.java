@@ -1,14 +1,13 @@
 package org.example.demo.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.demo.HttpMethod;
-import org.example.demo.Router;
 import org.example.demo.exception.InternalServerError;
 import org.example.demo.handler.UserHandler;
+import org.example.demo.router.Router;
 
 import java.io.IOException;
 
@@ -18,9 +17,9 @@ public class UserServlet extends HttpServlet {
     private UserHandler userHandler;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         router = new Router();
-        userHandler = UserHandler.getInstance();
+        userHandler = (UserHandler) getServletContext().getAttribute("userHandler");
         router.addRoute(HttpMethod.GET, "^/users/?$", userHandler::handleUserList);
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/?$", userHandler::handleUserProfile);
         router.addRoute(HttpMethod.GET, "^/users/(\\d+)/form/?$", userHandler::handleUpdateForm);
@@ -28,6 +27,8 @@ public class UserServlet extends HttpServlet {
         router.addRoute(HttpMethod.POST, "^/users/(\\d+)/?$", userHandler::handleUserUpdate);
         router.addRoute(HttpMethod.POST, "^/users/login/?$", userHandler::handleUserLogin);
         router.addRoute(HttpMethod.POST, "^/users/logout/?$", userHandler::handleUserLogout);
+        router.addRoute(HttpMethod.GET, "^/users/login/?$", userHandler::handleUserLoginPage);
+        router.addRoute(HttpMethod.GET, "^/users/form/?$", userHandler::handleUserFormPage);
     }
 
     @Override

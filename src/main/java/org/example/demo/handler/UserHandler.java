@@ -15,22 +15,15 @@ import java.util.Optional;
 
 public class UserHandler {
     private static UserHandler instance;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private UserHandler() {
-        userRepository = UserRepository.getInstance();
-    }
-
-    public static UserHandler getInstance() {
-        if (instance == null) {
-            instance = new UserHandler();
-        }
-        return instance;
+    public UserHandler(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void handleUserList(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
         request.setAttribute("users", userRepository.getUsers());
-        request.getRequestDispatcher("/user/list.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/list.jsp").forward(request, response);
     }
 
     public void handleUpdateForm(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
@@ -55,7 +48,7 @@ public class UserHandler {
         }
 
         request.setAttribute("user", user.get());
-        request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/profile.jsp").forward(request, response);
     }
 
     public void handleUserCreate(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
@@ -100,16 +93,24 @@ public class UserHandler {
         Optional<User> user = userRepository.getUserByUserId(userId);
         if (user.isEmpty() || !user.get().getPassword().equals(password)) {
             request.setAttribute("error", "아이디 또는 패스워드가 틀렸습니다.");
-            request.getRequestDispatcher("/user/login_failed.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/user/login_failed.jsp").forward(request, response);
             return;
         }
 
-        request.getSession().setAttribute("user", user.get().getUserId());
+        request.getSession(false).setAttribute("user", user.get().getId());
         response.sendRedirect("/users/" + user.get().getId());
     }
 
     public void handleUserLogout(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws IOException {
-        request.getSession().removeAttribute("user");
+        request.getSession(false).invalidate();
         response.sendRedirect("/");
+    }
+
+    public void handleUserLoginPage(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/user/login.jsp").forward(request, response);
+    }
+
+    public void handleUserFormPage(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/user/form.jsp").forward(request, response);
     }
 }

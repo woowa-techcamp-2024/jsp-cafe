@@ -15,6 +15,10 @@
         <location>/exception/400.jsp</location>
     </error-page>
     <error-page>
+        <exception-type>org.example.demo.exception.UnauthorizedException</exception-type>
+        <location>/exception/401.jsp</location>
+    </error-page>
+    <error-page>
         <exception-type>org.example.demo.exception.NotFoundExceptoin</exception-type>
         <location>/exception/404.jsp</location>
     </error-page>

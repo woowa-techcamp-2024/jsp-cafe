@@ -6,13 +6,10 @@ import org.example.demo.exception.InternalServerError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,41 +20,18 @@ public class DbConfig {
     private DataSource dataSource;
 
     public DbConfig(String jdbcUrl, String user, String password) {
-        try {
-            // JDBC 드라이버 로드
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new InternalServerError("Failed to load JDBC driver " + e.getMessage());
-        }
-
-        // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
-        HikariConfig initialConfig = new HikariConfig();
-        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
-        initialConfig.setUsername(user);
-        initialConfig.setPassword(password);
-
-        this.dataSource = new HikariDataSource(initialConfig);
-
-        createDatabaseIfNotExists();
-        initializeSchema();
-
         // 데이터 소스 설정 (cafe 데이터베이스 사용)
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(user);
         config.setPassword(password);
 
-        // Tomcat 의 maxThread 개수 만큼 Pool Size 설정
-        config.setMaximumPoolSize(200);
+        config.setMaximumPoolSize(20);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
         this.dataSource = new HikariDataSource(config);
-    }
-
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
     }
 
     private static String removeDatabaseName(String jdbcUrl) {
@@ -68,7 +42,31 @@ public class DbConfig {
         return jdbcUrl;
     }
 
-    private void initializeSchema() {
+    public static void createDatabaseIfNotExists(String jdbcUrl, String user, String password) {
+        // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
+        HikariConfig initialConfig = new HikariConfig();
+        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
+        initialConfig.setUsername(user);
+        initialConfig.setPassword(password);
+
+        var dataSource = new HikariDataSource(initialConfig);
+
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE DATABASE IF NOT EXISTS cafe");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerError("Failed to create database: " + e.getMessage());
+        } finally {
+            dataSource.close();
+        }
+    }
+
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
+    public void initializeSchema() {
         logger.info("initializing database...");
         try {
             // 데이터베이스 연결 (기본 연결)
@@ -79,7 +77,7 @@ public class DbConfig {
                 String schema = readSchemaFile();
 
                 // 데이터베이스 사용 및 테이블 생성
-                stmt.execute("USE cafe;");
+//                stmt.execute("USE cafe;");
                 for (String sql : schema.split(";")) {
                     if (!sql.trim().isEmpty()) {
                         stmt.execute(sql);
@@ -92,16 +90,6 @@ public class DbConfig {
         } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServerError("Failed to initialize database: " + e.getMessage());
-        }
-    }
-
-    private void createDatabaseIfNotExists() {
-        try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.execute("CREATE DATABASE IF NOT EXISTS cafe");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new InternalServerError("Failed to create database: " + e.getMessage());
         }
     }
 

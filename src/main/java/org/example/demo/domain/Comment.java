@@ -1,43 +1,36 @@
 package org.example.demo.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
-public class Post {
+public class Comment {
     private Long id;
+    private Long postId;
     private User writer;
-    private String title;
     private String contents;
     private LocalDateTime createdAt;
-    private List<Comment> comments;
 
-    public Post() {
+    public Comment() {
     }
 
-    public Post(Long id, User writer, String title, String contents, LocalDateTime createdAt, List<Comment> comments) {
+    public Comment(Long id, Long postId, User writer, String contents, LocalDateTime createdAt) {
         this.id = id;
+        this.postId = postId;
         this.writer = writer;
-        this.title = title;
         this.contents = contents;
         this.createdAt = createdAt;
-        this.comments = comments;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getPostId() {
+        return postId;
     }
 
     public User getWriter() {
         return writer;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getContents() {
@@ -48,19 +41,14 @@ public class Post {
         return createdAt;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
     @Override
     public String toString() {
-        return "Post{" +
+        return "Comment{" +
                 "id=" + id +
+                ", postId=" + postId +
                 ", writer=" + writer +
-                ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", createdAt=" + createdAt +
-                ", comments=" + comments +
                 '}';
     }
 
@@ -68,12 +56,12 @@ public class Post {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Post post = (Post) o;
-        return Objects.equals(id, post.id) && Objects.equals(writer, post.writer) && Objects.equals(title, post.title) && Objects.equals(contents, post.contents) && Objects.equals(createdAt, post.createdAt) && Objects.equals(comments, post.comments);
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id) && Objects.equals(postId, comment.postId) && Objects.equals(writer, comment.writer) && Objects.equals(contents, comment.contents) && Objects.equals(createdAt, comment.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, writer, title, contents, createdAt, comments);
+        return Objects.hash(id, postId, writer, contents, createdAt);
     }
 }
