@@ -319,7 +319,6 @@ class ReplyControlServletTest {
 
         @Override
         public void setStatus(int i) {
-            System.out.println("setCall = " + i);
             this.status = i;
         }
 
