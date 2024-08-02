@@ -1,4 +1,4 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.model.dto;
 
 import com.codesquad.cafe.exception.ValidationException;
 import com.codesquad.cafe.util.StringUtil;

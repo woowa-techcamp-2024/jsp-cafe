@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.codesquad.cafe.exception.ValidationException;
+import com.codesquad.cafe.model.dto.PostUpdateRequest;
 import org.junit.jupiter.api.Test;
 
 class PostUpdateRequestTest {

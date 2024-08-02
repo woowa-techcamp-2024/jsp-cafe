@@ -3,12 +3,12 @@ package com.codesquad.cafe.servlet;
 import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.exception.AuthorizationException;
 import com.codesquad.cafe.exception.ValidationException;
-import com.codesquad.cafe.model.ErrorResponse;
-import com.codesquad.cafe.model.RedirectResponse;
-import com.codesquad.cafe.model.UserEditRequest;
+import com.codesquad.cafe.model.dto.ErrorResponse;
+import com.codesquad.cafe.model.dto.RedirectResponse;
+import com.codesquad.cafe.model.dto.UserEditRequest;
 import com.codesquad.cafe.model.UserPrincipal;
 import com.codesquad.cafe.util.JsonModelMapper;
 import jakarta.servlet.ServletException;
@@ -39,7 +39,7 @@ public class UserMeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserPrincipal userPrincipal = getUserPrincipal(req);
         User user = userRepository.findById(userPrincipal.getId())
-                .orElseThrow(() -> new ValidationException());
+                .orElseThrow(ValidationException::new);
 
         req.setAttribute("user", user);
 

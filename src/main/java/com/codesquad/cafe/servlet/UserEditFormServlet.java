@@ -3,7 +3,7 @@ package com.codesquad.cafe.servlet;
 import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.exception.ResourceNotFoundException;
 import com.codesquad.cafe.model.UserPrincipal;
 import com.codesquad.cafe.util.StringUtil;

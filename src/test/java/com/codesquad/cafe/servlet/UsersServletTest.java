@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.http.HttpResponse;
@@ -102,7 +102,7 @@ class UsersServletTest extends E2ETestBase {
     @DisplayName("POST 요청시 405 응답을 반환한다.")
     void testDoPostReturn405() throws IOException, URISyntaxException {
         //when
-        HttpResponse response = post("/", "");
+        HttpResponse response = post(path, "");
 
         //then
         assertErrorPageResponse(response, 405);

@@ -3,7 +3,7 @@ package com.codesquad.cafe.servlet;
 import static com.codesquad.cafe.util.PathVariableUtil.parsePathVariable;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.exception.ResourceNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -34,7 +34,7 @@ public class UsersServlet extends HttpServlet {
         }
         Long id = parsePathVariable(req.getPathInfo());
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
+                .orElseThrow(ResourceNotFoundException::new);
 
         req.setAttribute("user", user);
 

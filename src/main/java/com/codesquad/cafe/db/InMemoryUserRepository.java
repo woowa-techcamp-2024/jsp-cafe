@@ -1,6 +1,6 @@
 package com.codesquad.cafe.db;
 
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

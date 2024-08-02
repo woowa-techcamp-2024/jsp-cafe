@@ -1,4 +1,4 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.model.dto;
 
 public class RedirectResponse {
 

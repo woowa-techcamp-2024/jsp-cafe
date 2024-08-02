@@ -10,8 +10,8 @@ import com.codesquad.cafe.SavedHttpResponse;
 import com.codesquad.cafe.TestUtil;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ class IndexServletTest extends E2ETestBase {
 
     private static PostRepository postRepository;
 
-    private static final String path = "/";
+    private static final String path = "/home";
 
     private User user;
 

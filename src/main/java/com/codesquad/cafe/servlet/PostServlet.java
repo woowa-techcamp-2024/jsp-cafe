@@ -3,15 +3,17 @@ package com.codesquad.cafe.servlet;
 import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
 
 import com.codesquad.cafe.db.PostRepository;
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.PostDetailsDto;
+import com.codesquad.cafe.db.domain.CommentWithUser;
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.PostDetail;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
 import com.codesquad.cafe.exception.AuthorizationException;
 import com.codesquad.cafe.exception.ResourceNotFoundException;
-import com.codesquad.cafe.model.ErrorResponse;
-import com.codesquad.cafe.model.PostCreateRequest;
-import com.codesquad.cafe.model.PostUpdateRequest;
-import com.codesquad.cafe.model.RedirectResponse;
 import com.codesquad.cafe.model.UserPrincipal;
+import com.codesquad.cafe.model.dto.ErrorResponse;
+import com.codesquad.cafe.model.dto.PostCreateRequest;
+import com.codesquad.cafe.model.dto.PostUpdateRequest;
+import com.codesquad.cafe.model.dto.RedirectResponse;
 import com.codesquad.cafe.util.JsonModelMapper;
 import com.codesquad.cafe.util.RequestParamModelMapper;
 import com.codesquad.cafe.util.SessionUtil;
@@ -55,20 +57,20 @@ public class PostServlet extends HttpServlet {
     private void viewPost(HttpServletRequest req, HttpServletResponse resp, Long id)
             throws ServletException, IOException {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
+                .orElseThrow(ResourceNotFoundException::new);
         postRepository.addView(post);
 
-        PostDetailsDto postWithDetail = postRepository.findPostWithAuthorById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
+        PostDetail postDetail = postRepository.findPostDetailById(id)
+                .orElseThrow(ResourceNotFoundException::new);
 
-        req.setAttribute("post", postWithDetail);
+        req.setAttribute("post", postDetail);
         req.getRequestDispatcher("/WEB-INF/views/post_detail.jsp").forward(req, resp);
     }
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse resp, Long id)
             throws ServletException, IOException {
-        PostDetailsDto postWithDetail = postRepository.findPostWithAuthorById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
+        PostWithAuthor postWithDetail = postRepository.findPostWithAuthorById(id)
+                .orElseThrow(ResourceNotFoundException::new);
 
         UserPrincipal userPrincipal = SessionUtil.getUserPrincipal(req);
         if (!userPrincipal.getId().equals(postWithDetail.getAuthorId())) {
@@ -107,7 +109,7 @@ public class PostServlet extends HttpServlet {
 
         // find original post
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException());
+                .orElseThrow(ResourceNotFoundException::new);
 
         // validate request
         if (!post.getAuthorId().equals(requestDto.getAuthorId())) {
@@ -123,10 +125,10 @@ public class PostServlet extends HttpServlet {
         // update post
         post.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getFileName());
         postRepository.save(post);
-        PostDetailsDto postDetailsDto = postRepository.findPostWithAuthorById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException());
+        PostWithAuthor postWithAuthor = postRepository.findPostWithAuthorById(postId)
+                .orElseThrow(ResourceNotFoundException::new);
 
-        req.setAttribute("post", postDetailsDto);
+        req.setAttribute("post", postWithAuthor);
         JsonModelMapper.json(resp, new RedirectResponse("/"));
     }
 
@@ -136,17 +138,33 @@ public class PostServlet extends HttpServlet {
 
         Long id = parsePathVariable(req.getPathInfo());
 
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
+        PostDetail postDetail = postRepository.findPostDetailById(id)
+                .orElseThrow(ResourceNotFoundException::new);
 
-        // authorization
-        if (userPrincipal == null || !userPrincipal.getId().equals(post.getAuthorId())) {
+        if (userPrincipal == null || !userPrincipal.getId().equals(postDetail.getAuthorId())) {
             throw new AuthorizationException();
         }
 
-        post.delete();
-        postRepository.save(post);
+        if (!canDelete(postDetail)) {
+            resp.setStatus(400);
+            JsonModelMapper.json(resp, new ErrorResponse("게시글을 삭제할 수 없습니다."));
+            return;
+        }
+
+        postRepository.updateDeleted(id);
         JsonModelMapper.json(resp, new RedirectResponse("/"));
+    }
+
+    private boolean canDelete(PostDetail post) {
+        if (post.getComments().size() == 0) {
+            return true;
+        }
+        for (CommentWithUser commentWithUser : post.getComments()) {
+            if (!commentWithUser.getUserId().equals(post.getAuthorId())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Long parsePathVariable(String pathInfo) {

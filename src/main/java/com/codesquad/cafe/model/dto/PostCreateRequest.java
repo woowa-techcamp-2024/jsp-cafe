@@ -1,6 +1,6 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.model.dto;
 
-import com.codesquad.cafe.db.entity.Post;
+import com.codesquad.cafe.db.domain.Post;
 import com.codesquad.cafe.exception.ValidationException;
 import com.codesquad.cafe.util.StringUtil;
 

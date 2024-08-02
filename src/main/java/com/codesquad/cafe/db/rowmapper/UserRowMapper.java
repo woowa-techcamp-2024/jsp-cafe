@@ -1,6 +1,6 @@
 package com.codesquad.cafe.db.rowmapper;
 
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

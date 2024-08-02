@@ -66,7 +66,7 @@ class UserJoinServletTest extends E2ETestBase {
     }
 
     @Test
-    @DisplayName("유저 생성 실패 - 중복된 이메일")
+    @DisplayName("유저 생성 실패 - 중복된 아이디입니다.")
     void testDoPostFailCreateUserWhenUsernameDuplicate() throws IOException, URISyntaxException {
         //when
         post("/users/join", "username=woowa&password=1234&name=woowa&email=woowa24%40gmail.com");
@@ -76,6 +76,6 @@ class UserJoinServletTest extends E2ETestBase {
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals("text/html;charset=UTF-8", response.getEntity().getContentType().getValue());
         String html = EntityUtils.toString(response.getEntity());
-        assertTrue(html.contains("중복된 이메일입니다."));
+        assertTrue(html.contains("중복된 아이디"));
     }
 }
