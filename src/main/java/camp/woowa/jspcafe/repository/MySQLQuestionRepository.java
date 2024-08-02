@@ -8,7 +8,11 @@ import camp.woowa.jspcafe.model.Question;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MySQLQuestionRepository implements QuestionRepository {
@@ -20,10 +24,11 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public Long save(Question question) {
-        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer_id) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer_id, created_at) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
             pstmt.setString(1, question.getTitle());
             pstmt.setString(2, question.getContent());
             pstmt.setLong(3, question.getWriterId());
+            pstmt.setDate(4, new java.sql.Date(new Date().getTime()));
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {
@@ -41,10 +46,10 @@ public class MySQLQuestionRepository implements QuestionRepository {
     @Override
     public List<Question> findAll() {
         List<Question> questions = new ArrayList<>();
-        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id FROM question q, user u WHERE q.is_deleted = FALSE AND q.writer_id = u.id");){
+        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id, q.created_at AS created_at FROM question q, user u WHERE q.is_deleted = FALSE AND q.writer_id = u.id");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
-                questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id")));
+                questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id"), rs.getTimestamp("created_at").toLocalDateTime()));
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -55,11 +60,11 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public Question findById(Long id) {
-        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id FROM question q, user u WHERE q.id = ? AND q.is_deleted = FALSE AND q.writer_id = u.id");){
+        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id, q.created_at AS create_at FROM question q, user u WHERE q.id = ? AND q.is_deleted = FALSE AND q.writer_id = u.id");){
             pstmt.setLong(1, id);
             var rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id"));
+                return new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id"), rs.getTimestamp("create_at").toLocalDateTime());
             }
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
