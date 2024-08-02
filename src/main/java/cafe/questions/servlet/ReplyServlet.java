@@ -4,6 +4,7 @@ import cafe.MappingHttpServlet;
 import cafe.questions.Reply;
 import cafe.questions.repository.ReplyRepository;
 import cafe.users.User;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class ReplyServlet extends MappingHttpServlet {
     private final ReplyRepository replyRepository;
+    private final Gson gson = new Gson();
 
     @Override
     public List<String> mappings() {
@@ -21,6 +23,14 @@ public class ReplyServlet extends MappingHttpServlet {
 
     public ReplyServlet(ReplyRepository replyRepository) {
         this.replyRepository = replyRepository;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Long articleId = Long.valueOf(req.getPathInfo().substring(1));
+        List<Reply> replies = replyRepository.findByArticleId(articleId);
+        resp.setContentType("application/json");
+        resp.getWriter().write(gson.toJson(replies));
     }
 
     @Override

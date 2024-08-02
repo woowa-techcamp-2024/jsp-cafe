@@ -9,7 +9,8 @@
             <c:out value="${article.userName}"/>
             on <c:out value="${article.createdDate}"/></p>
         <hr>
-        <p><c:out value="${article.content}"/></p>
+        <p class="markdown-content" id="article-content">
+        </p>
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
         </c:if>
@@ -20,82 +21,39 @@
             <button class="btn btn-danger" onclick="deleteArticle('<c:out value="${article.id}"/>')">Delete</button>
         </c:if>
 
-
         <hr>
 
         <h4>Comments</h4>
-        <c:forEach var="reply" items="${replyList}">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <p class="card-text"><c:out value="${reply.content}"/></p>
-                    <footer class="blockquote-footer text-end">
-                        <c:out value="${reply.userName}"/>
-                        <c:if test="${sessionScope.user != null and sessionScope.user.id == reply.userId}">
-                            <button class="btn btn-danger btn-sm" onclick="deleteReply('<c:out value="${reply.id}"/>')">
-                                Delete
-                            </button>
-                        </c:if>
-                    </footer>
-                </div>
-            </div>
-        </c:forEach>
-
+        <div id="commentList">
+            <!-- Comments will be dynamically loaded here -->
+        </div>
 
         <hr>
 
         <h5>Leave a Comment</h5>
-        <form id="commentForm" action="${pageContext.request.contextPath}/replies" method="post">
+        <form id="commentForm">
             <input type="hidden" id="articleId" name="articleId" value="<c:out value='${article.id}'/>">
             <div class="mb-3">
                 <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-
-
     </div>
 </div>
 
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 
-<script src="${pageContext.request.contextPath}/static/js/axios.min.js"></script>
 <script>
-    async function deleteArticle(articleId) {
-        if (confirm("Are you sure you want to delete this article?")) {
-            try {
-                const response = await axios.delete(`${pageContext.request.contextPath}/questions/${article.id}`);
-                if (response.status === 200) {
-                    window.location.href = `${pageContext.request.contextPath}/questions`;
-                } else {
-                    alert('Failed to delete the article.');
-                }
-            } catch (error) {
-                if (error.response.status === 403) {
-                    alert(error.response.data);
-                } else {
-                    alert('Failed to delete the article.');
-                }
-            }
-        }
-    }
+    // 서버 측 변수를 전역 객체로 설정
+    window.serverData = {
+        content: `<c:out value="${article.content}"/>`,
+        contextPath: '<c:out value="${pageContext.request.contextPath}"/>',
+        articleId: <c:out value="${article.id}"/>,
+        currentUserId: <c:out value="${sessionScope.user.id}"/>
+    };
+
+    $(document).ready(function () {
+        $('#article-content').html(marked.parse(DOMPurify.sanitize(serverData.content)));
+    });
 </script>
-<script>
-    async function deleteReply(replyId) {
-        if (confirm("Are you sure you want to delete this comment?")) {
-            try {
-                const response = await axios.delete(`${pageContext.request.contextPath}/replies/` + replyId);
-                if (response.status === 200) {
-                    window.location.reload();
-                } else {
-                    alert('Failed to delete the comment.');
-                }
-            } catch (error) {
-                if (error.response.status >= 400 && error.response.status < 500) {
-                    alert(error.response.data);
-                } else {
-                    alert('Failed to delete the article.');
-                }
-            }
-        }
-    }
-</script>
+<script src="${pageContext.request.contextPath}/static/js/comments.js"></script>

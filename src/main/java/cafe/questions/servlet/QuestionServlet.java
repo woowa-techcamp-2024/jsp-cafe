@@ -6,11 +6,10 @@ import cafe.questions.Reply;
 import cafe.questions.repository.ArticleRepository;
 import cafe.questions.repository.ReplyRepository;
 import cafe.users.User;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -48,17 +47,15 @@ public class QuestionServlet extends MappingHttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
         Article article = articleRepository.findById(id);
-        if (validAutorized(req, resp, article)) return;
+        if (validAuthorized(req, resp, article)) return;
 
         String title, content;
 
-        try {
-            LinkedHashMap<String, Object> parsedObject = new JSONParser(req.getReader()).parseObject();
-            title = (String) parsedObject.get("title");
-            content = (String) parsedObject.get("content");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        String requestBody = getRequestBody(req);
+
+        LinkedHashMap<String, Object> parsedObject = new Gson().fromJson(requestBody, LinkedHashMap.class);
+        title = (String) parsedObject.get("title");
+        content = (String) parsedObject.get("content");
 
         if (title == null || content == null ||
                 title.isBlank() || content.isBlank()) {
@@ -73,7 +70,7 @@ public class QuestionServlet extends MappingHttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
-        if (validAutorized(req, resp, articleRepository.findById(id))) return;
+        if (validAuthorized(req, resp, articleRepository.findById(id))) return;
 
         List<Reply> replyList = replyRepository.findByArticleId(id);
         User user = (User) req.getSession().getAttribute("user");
@@ -88,7 +85,7 @@ public class QuestionServlet extends MappingHttpServlet {
     }
 
 
-    private boolean validAutorized(HttpServletRequest req, HttpServletResponse resp, Article article) {
+    private boolean validAuthorized(HttpServletRequest req, HttpServletResponse resp, Article article) {
         if (article == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return true;
@@ -100,5 +97,14 @@ public class QuestionServlet extends MappingHttpServlet {
             return true;
         }
         return false;
+    }
+
+    private String getRequestBody(HttpServletRequest req) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = req.getReader().readLine()) != null) {
+            sb.append(line);
+        }
+        return sb.toString();
     }
 }

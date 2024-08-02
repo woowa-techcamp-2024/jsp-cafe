@@ -8,12 +8,15 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/styles.css">
-    <script src="${pageContext.request.contextPath}/static/js/axios.min.js" defer></script>
+    <script src="${pageContext.request.contextPath}/static/js/axios.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/jquery-3.7.1.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/marked.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/purify.min.js"></script>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Java Cafe</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/questions">Java Cafe</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
