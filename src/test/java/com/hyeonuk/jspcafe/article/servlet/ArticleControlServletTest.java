@@ -9,6 +9,7 @@ import com.hyeonuk.jspcafe.member.domain.Member;
 import com.hyeonuk.jspcafe.member.servlets.mock.*;
 import com.hyeonuk.jspcafe.reply.dao.InMemoryReplyDao;
 import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
+import com.hyeonuk.jspcafe.reply.domain.Reply;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -637,8 +638,6 @@ class ArticleControlServletTest {
                 articleDao.save(article);
                 MockSession session = new MockSession();
                 session.setAttribute("member",member2);
-                MockRequest req = new MockRequest();
-                MockResponse res = new MockResponse();
                 req.setSession(session);
                 req.setPathInfo("/"+article.getId());
 
@@ -657,6 +656,31 @@ class ArticleControlServletTest {
                 assertEquals(article.getWriter(),notDeleted.getWriter());
                 assertEquals(article.getTitle(),notDeleted.getTitle());
                 assertEquals(article.getContents(),notDeleted.getContents());
+            }
+
+            @Test
+            @DisplayName("작성자의 글에 다른사람의 댓글이 등록되어있다면 BadRequest 오류를 던진다.")
+            void deleteWithOtherReplies() throws Exception{
+                //given
+                Member member = new Member(1l,"id1","pw1","nick1","email1");
+                Member member2 = new Member(2l,"id2","pw2","nick2","email2");
+                Article article = new Article(1l,member,"title","contents");
+                Reply reply1 = new Reply(article,member,"reply1");
+                Reply reply2 = new Reply(article,member2,"reply2");
+                articleDao.save(article);
+                replyDao.save(reply1);
+                replyDao.save(reply2);
+                MockSession session = new MockSession();
+                session.setAttribute("member",member2);
+                req.setSession(session);
+                req.setPathInfo("/"+article.getId());
+
+                req.setParameter("_method","DELETE");
+
+                //when & then
+                assertThrows(HttpBadRequestException.class,()->{
+                    servlet.doPost(req,res);
+                });
             }
         }
     }
