@@ -44,6 +44,11 @@ public class Reply extends BaseTimeModel {
         return activate;
     }
 
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
