@@ -132,7 +132,11 @@ public class ArticleController extends HttpServlet {
       resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
-    articleService.delete(id, user.id());
-    resp.setStatus(HttpServletResponse.SC_OK);
+    boolean success = articleService.delete(id, user.id());
+    if (success) {
+      resp.setStatus(HttpServletResponse.SC_OK);
+      return;
+    }
+    resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 }

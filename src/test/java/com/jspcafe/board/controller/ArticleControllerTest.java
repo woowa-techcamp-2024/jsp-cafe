@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jspcafe.board.model.Article;
 import com.jspcafe.board.model.ArticleDao;
+import com.jspcafe.board.model.Reply;
+import com.jspcafe.board.model.ReplyDao;
 import com.jspcafe.board.service.ArticleService;
 import com.jspcafe.test_util.H2Connector;
 import com.jspcafe.test_util.H2Initializer;
@@ -196,6 +198,26 @@ class ArticleControllerTest {
     HttpSession session = request.getSession();
     User otherUser = User.create("test2@test", "테스트 작성자2", "testPassword2");
     session.setAttribute("userInfo", otherUser);
+
+    // When
+    articleController.doDelete(request, response);
+
+    // Then
+    assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+  }
+
+  @Test
+  void 자신의_게시물에_다른사람의_댓글이_있는경우_삭제할_수_없다() throws ServletException, IOException {
+    // Given
+    ReplyDao replyDao = new ReplyDao(H2Connector.INSTANCE);
+    User user = User.create("test@test", "테스트 작성자", "testPassword");
+    Article article = Article.create(user.id(), "테스트 제목", "테스트 작성자", "테스트 내용");
+    articleDao.save(article);
+    Reply reply = Reply.create(article.id(), "otherUserId", "test2", "test test .");
+    replyDao.save(reply);
+    request.setPathInfo("/" + article.id());
+    HttpSession session = request.getSession();
+    session.setAttribute("userInfo", user);
 
     // When
     articleController.doDelete(request, response);

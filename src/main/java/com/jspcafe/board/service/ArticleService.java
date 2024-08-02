@@ -35,7 +35,7 @@ public class ArticleService {
     articleDao.update(updateArticle);
   }
 
-  public void delete(final String id, final String userId) {
-    articleDao.delete(id, userId);
+  public boolean delete(final String id, final String userId) {
+    return articleDao.delete(id, userId);
   }
 }
