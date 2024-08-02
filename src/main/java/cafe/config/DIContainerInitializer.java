@@ -18,8 +18,11 @@ public class DIContainerInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
-
         DatabaseConnector databaseConnector = new MySQLConnector();
+        contextInit(databaseConnector, servletContext);
+    }
+
+    public void contextInit(DatabaseConnector databaseConnector, ServletContext servletContext) {
         UserDatabase userDatabase = new UserDatabase(databaseConnector);
         ArticleDatabase articleDatabase = new ArticleDatabase(databaseConnector);
         CommentDatabase commentDatabase = new CommentDatabase(databaseConnector);

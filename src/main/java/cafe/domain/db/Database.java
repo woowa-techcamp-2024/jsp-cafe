@@ -121,6 +121,16 @@ public interface Database<K, V> {
         }
     }
 
+    default void deleteHardAll() {
+        String className = findClassName();
+        try (Connection connection = getConnector().connect()) {
+            String deleteAllSQL = sqlGenerator.generateDeleteHardAllSQL(className);
+            connection.prepareStatement(deleteAllSQL).executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private Field[] findFields() {
         Class<?> clazz = (Class<?>) ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1];
         return clazz.getDeclaredFields();
@@ -140,5 +150,4 @@ public interface Database<K, V> {
             return null;
         }
     }
-
 }

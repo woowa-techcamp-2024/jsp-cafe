@@ -77,4 +77,11 @@ public class SQLGenerator {
         }
         return "UPDATE `" + className + "s` SET `deleted`=true WHERE `" + className + "Id` = ?;";
     }
+
+    public String generateDeleteHardAllSQL(String className) {
+        if (className == null) {
+            throw new IllegalArgumentException("Invalid arguments");
+        }
+        return "DELETE FROM `" + className + "s`;";
+    }
 }

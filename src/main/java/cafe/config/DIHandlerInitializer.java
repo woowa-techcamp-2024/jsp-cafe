@@ -25,7 +25,7 @@ public class DIHandlerInitializer implements ServletContextListener {
         commentHandlerInit(servletContext);
     }
 
-    private void userHandlerInit(ServletContext servletContext) {
+    public void userHandlerInit(ServletContext servletContext) {
         servletContext.setAttribute("userInfoHandler", new UserInfoHandler(servletContext));
         servletContext.setAttribute("userInfoListHandler", new UserInfoListHandler(servletContext));
         servletContext.setAttribute("userSignUpHandler", new UserSignUpHandler(servletContext));
@@ -34,7 +34,7 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("userSignOutHandler", new UserSignOutHandler(servletContext));
     }
 
-    private void articleHandlerInit(ServletContext servletContext) {
+    public void articleHandlerInit(ServletContext servletContext) {
         servletContext.setAttribute("articleHandler", new ArticleHandler(servletContext));
         servletContext.setAttribute("articleListHandler", new ArticleListHandler(servletContext));
         servletContext.setAttribute("articleCreateHandler", new ArticleCreateHandler(servletContext));
@@ -42,7 +42,7 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("articleDeleteHandler", new ArticleDeleteHandler(servletContext));
     }
 
-    private void commentHandlerInit(ServletContext servletContext) {
+    public void commentHandlerInit(ServletContext servletContext) {
         servletContext.setAttribute("commentListHandler", new CommentListHandler(servletContext));
         servletContext.setAttribute("commentCreateHandler", new CommentCreateHandler(servletContext));
         servletContext.setAttribute("commentDeleteHandler", new CommentDeleteHandler(servletContext));
