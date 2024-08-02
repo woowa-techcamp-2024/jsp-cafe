@@ -18,7 +18,7 @@
                       <div class="article-header-text">
                           <a href="/users/${question.writerId}" class="article-author-name"> ${question.writer}</a>
                           <a href="${pageContext.request.contextPath}/questions/413" class="article-header-time" title="퍼머링크">
-                              ${question.createdAt.toString()}
+                              ${question.createdAt.toString().replace('T', ' ')}
                               <i class="icon-link"></i>
                           </a>
                       </div>
