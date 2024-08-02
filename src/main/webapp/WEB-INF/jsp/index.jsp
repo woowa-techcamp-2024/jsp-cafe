@@ -15,7 +15,7 @@
                               </strong>
                               <div class="auth-info">
                                   <i class="icon-add-comment"></i>
-                                  <span class="time">2016-01-15 18:47</span>
+                                  <span class="time">${question.createdAt.toString()}</span>
                                   <a href="/users/${question.writerId}" class="author">${question.writer}</a>
                               </div>
                               <div class="reply" title="댓글">

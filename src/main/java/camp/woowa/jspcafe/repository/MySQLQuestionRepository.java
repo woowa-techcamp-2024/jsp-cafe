@@ -9,8 +9,6 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +26,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
             pstmt.setString(1, question.getTitle());
             pstmt.setString(2, question.getContent());
             pstmt.setLong(3, question.getWriterId());
-            pstmt.setDate(4, new java.sql.Date(new Date().getTime()));
+            pstmt.setObject(4, LocalDateTime.now());
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {

@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class MySQLReplyRepository implements ReplyRepository {
             pstmt.setString(1, reply.getContent());
             pstmt.setLong(2, reply.getQuestionId());
             pstmt.setLong(3, reply.getWriterId());
-            pstmt.setObject(4, new java.sql.Date(new Date().getTime()));
+            pstmt.setObject(4, LocalDateTime.now());
             pstmt.executeUpdate();
 
             ResultSet gk = pstmt.getGeneratedKeys();
