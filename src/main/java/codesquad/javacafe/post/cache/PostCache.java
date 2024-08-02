@@ -9,7 +9,7 @@ import java.util.*;
 
 public class PostCache {
     private static final PostCache instance = new PostCache();
-    private static final int MAX_ENTRIES = 100;
+    private static final int MAX_ENTRIES = 1000;
     // LRU 캐시로 사용
     private static final Map<Long, PostResponseDto> cache = new LinkedHashMap<>(MAX_ENTRIES, 0.75f,true) {
         @Override
