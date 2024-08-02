@@ -55,6 +55,10 @@ public class DbConnector {
         }
     }
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
     public Connection getConnection() throws SQLException {
         return this.dataSource.getConnection();
     }
