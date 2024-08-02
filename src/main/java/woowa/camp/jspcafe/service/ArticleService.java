@@ -16,9 +16,9 @@ import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
-import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
-import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 
 public class ArticleService {

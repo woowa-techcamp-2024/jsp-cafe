@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import woowa.camp.jspcafe.domain.Article;
-import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 
 public class ArticleFixture {

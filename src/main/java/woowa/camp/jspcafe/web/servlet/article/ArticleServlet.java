@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.ReplyService;
-import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
-import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 
 @WebServlet(name = "articleServlet", value = {"/articles/*", ""})
 public class ArticleServlet extends HttpServlet {

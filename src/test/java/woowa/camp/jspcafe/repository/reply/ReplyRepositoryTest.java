@@ -19,7 +19,7 @@ import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.UserDBSetupExtension;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith(ReplyDBSetupExtension.class)

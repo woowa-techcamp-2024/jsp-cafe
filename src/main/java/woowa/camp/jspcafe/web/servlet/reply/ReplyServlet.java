@@ -17,7 +17,7 @@ import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ReplyException;
 import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.service.ReplyService;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
 
 @WebServlet(name = "replyServlet", value = "/comments/*")

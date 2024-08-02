@@ -29,9 +29,9 @@ import woowa.camp.jspcafe.repository.reply.ReplyDBSetupExtension;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
-import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
-import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticleUpdateResponse;
 import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 

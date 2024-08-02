@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.service.dto;
+package woowa.camp.jspcafe.repository.dto.response;
 
 import java.time.LocalDate;
 import woowa.camp.jspcafe.domain.User;

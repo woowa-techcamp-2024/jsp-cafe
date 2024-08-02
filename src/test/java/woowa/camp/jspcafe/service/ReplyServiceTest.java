@@ -29,7 +29,7 @@ import woowa.camp.jspcafe.repository.reply.ReplyDBSetupExtension;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 

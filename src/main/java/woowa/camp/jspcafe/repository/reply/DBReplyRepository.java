@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import woowa.camp.jspcafe.domain.Reply;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 
 public class DBReplyRepository implements ReplyRepository {
 

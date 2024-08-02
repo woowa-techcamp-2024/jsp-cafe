@@ -24,7 +24,7 @@ import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.RegistrationRequest;
-import woowa.camp.jspcafe.service.dto.UserResponse;
+import woowa.camp.jspcafe.repository.dto.response.UserResponse;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith(UserDBSetupExtension.class)
