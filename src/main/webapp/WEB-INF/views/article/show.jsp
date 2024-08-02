@@ -8,7 +8,7 @@
 
     <div class="article-meta">
         <span>작성자: ${article.authorNickname}</span>
-<%--        <span>작성일자: <fmt:formatDate value="${article.createdAt}" pattern="YYYY. MM. DD. HH:mm"/></span>--%>
+        <%--        <span>작성일자: <fmt:formatDate value="${article.createdAt}" pattern="YYYY. MM. DD. HH:mm"/></span>--%>
         <span class="time">${article.createdAt}</span>
         <span>조회: ${article.hits}</span>
     </div>
@@ -17,7 +17,8 @@
 
     <div class="article-actions">
         <a href="${pageContext.request.contextPath}/articles/edit/${article.articleId}" class="edit-button">수정</a>
-        <form action="${pageContext.request.contextPath}/articles/edit/${article.articleId}" method="post" style="display:inline;">
+        <form action="${pageContext.request.contextPath}/articles/edit/${article.articleId}" method="post"
+              style="display:inline;">
             <input type="hidden" name="_method" value="DELETE"/>
             <button class="delete-button">삭제</button>
         </form>
@@ -27,25 +28,45 @@
         <h3>댓글 ${comments.size()}개</h3>
         <c:forEach var="comment" items="${comments}">
             <div class="comment">
-                <p class="comment-author">${comment.author}</p>
+                <p class="comment-author">${comment.userNickname}</p>
                 <p class="comment-content">${comment.content}</p>
-                <span class="time">${article.createdAt}</span>
-<%--                <p class="comment-date"><fmt:formatDate value="${comment.createdAt}" pattern="YYYY. MM. DD. HH:mm"/></p>--%>
+                <p class="comment-date">
+                    <fmt:parseDate value="${comment.createdAt}"
+                                   pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
+                    <fmt:formatDate pattern="yyyy.MM.dd HH:mm" value="${ parsedDateTime }"/>
+                </p>
+                <!-- 수정 폼 -->
+<%--                <form class="comment-edit" method="post" action="/comments/${comment.replyId}">--%>
+<%--                    <input type="hidden" name="_method" value="PUT">--%>
+<%--                    <input type="hidden" name="articleId" value="${article.articleId}">--%>
+<%--                    <input type="hidden" name="replyId" value="${comment.replyId}">--%>
+<%--                    <input type="hidden" name="content" value="${comment.content}">--%>
+<%--                    <button>수정</button>--%>
+<%--                </form>--%>
+                <!-- 삭제 폼 -->
+                <form class="comment-edit" method="post" action="/comments/${comment.replyId}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="articleId" value="${article.articleId}">
+                    <input type="hidden" name="replyId" value="${comment.replyId}">
+                    <button>삭제</button>
+                </form>
             </div>
         </c:forEach>
     </div>
 
-    <form class="comment-form" action="${pageContext.request.contextPath}/comments/add" method="post">
+    <form class="comment-form" action="${pageContext.request.contextPath}/comments" method="post">
+        <input type="hidden" name="articleId" value="${article.articleId}">
+        <%--        <input type="hidden" name="userId" value="${sessionScope.userId}">--%>
         <input type="hidden" name="articleId" value="${article.articleId}">
         <textarea name="content" placeholder="댓글을 입력하세요"></textarea>
         <button type="submit">등록</button>
     </form>
 
     <div class="navigation-buttons">
-<%--        <div class="prev-next">--%>
-<%--            <a href="${pageContext.request.contextPath}/articles/${prevArticle.id}" class="prev-button">이전글: ${prevArticle.title}</a>--%>
-<%--            <a href="${pageContext.request.contextPath}/articles/${nextArticle.id}" class="next-button">다음글: ${nextArticle.title}</a>--%>
-<%--        </div>--%>
+        <%--        <div class="prev-next">--%>
+        <%--            <a href="${pageContext.request.contextPath}/articles/${prevArticle.id}" class="prev-button">이전글: ${prevArticle.title}</a>--%>
+        <%--            <a href="${pageContext.request.contextPath}/articles/${nextArticle.id}" class="next-button">다음글: ${nextArticle.title}</a>--%>
+        <%--        </div>--%>
         <a href="${pageContext.request.contextPath}/articles" class="list-button">목록으로</a>
     </div>
 </div>

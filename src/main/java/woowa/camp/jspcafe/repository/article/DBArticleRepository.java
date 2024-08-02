@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +67,7 @@ public class DBArticleRepository implements ArticleRepository {
             return Optional.empty();
         }
 
-        String sql = "SELECT * FROM articles WHERE id = ?";
+        String sql = "SELECT * FROM articles WHERE id = ? AND deleted_at IS NULL";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -133,7 +134,9 @@ public class DBArticleRepository implements ArticleRepository {
 
     @Override
     public List<Article> findByOffsetPagination(int offset, int limit) {
-        String sql = "SELECT * FROM articles ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM articles a "
+                + "WHERE deleted_at IS NULL "
+                + "ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -177,13 +180,14 @@ public class DBArticleRepository implements ArticleRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM articles WHERE id = ?";
+    public void softDeleteById(Long id, LocalDate deletedTime) {
+        String sql = "UPDATE articles SET deleted_at = ? WHERE id = ?";
 
         try (Connection connection = connector.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
-            pstmt.setLong(1, id);
+             PreparedStatement pstmt = connection.prepareStatement(sql)
+        ) {
+            pstmt.setDate(1, Date.valueOf(deletedTime));
+            pstmt.setLong(2, id);
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {

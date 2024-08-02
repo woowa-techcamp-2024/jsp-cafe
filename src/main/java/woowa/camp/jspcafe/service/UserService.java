@@ -51,7 +51,7 @@ public class UserService {
                 .orElseThrow(() -> new UserException("User with id " + id + " not found"));
     }
 
-    public void updateUserInfo(Long userId, String password, UserUpdateRequest userUpdateRequest) {
+    public void updateUserProfile(Long userId, String password, UserUpdateRequest userUpdateRequest) {
         User user = findById(userId);
 
         if (!user.getPassword().equals(password)) {
@@ -61,7 +61,7 @@ public class UserService {
         userRepository.update(user, userUpdateRequest);
     }
 
-    public User authenticateUser(String email, String password) {
+    public User login(String email, String password) {
         User user = findByEmail(email);
         if (user.isCorrectUser(email, password)) {
             return user;

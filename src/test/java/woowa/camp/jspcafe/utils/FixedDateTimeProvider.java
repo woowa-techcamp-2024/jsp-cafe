@@ -1,6 +1,7 @@
 package woowa.camp.jspcafe.utils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
 public class FixedDateTimeProvider implements DateTimeProvider {
@@ -14,6 +15,11 @@ public class FixedDateTimeProvider implements DateTimeProvider {
     @Override
     public LocalDate getNow() {
         return fixedTime;
+    }
+
+    @Override
+    public LocalDateTime getNowAsLocalDateTime() {
+        return fixedTime.atStartOfDay();
     }
 
 }

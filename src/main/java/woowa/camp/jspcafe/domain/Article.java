@@ -14,6 +14,7 @@ public class Article {
 
     private LocalDate createdAt;
     private LocalDate updatedAt;
+    private LocalDate deletedAt;
 
     private Article(Long id, Long authorId, String title, String content, Integer hits, LocalDate createdAt,
                     LocalDate updatedAt

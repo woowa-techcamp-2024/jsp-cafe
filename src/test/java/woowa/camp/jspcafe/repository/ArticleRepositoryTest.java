@@ -18,17 +18,16 @@ import woowa.camp.jspcafe.repository.article.DBArticleRepository;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 
+@ExtendWith(ArticleDBSetupExtension.class)
 class ArticleRepositoryTest {
 
+    DatabaseConnector connector = new DatabaseConnector();
+    ArticleRepository repository = new DBArticleRepository(connector);
     DateTimeProvider fixedDateTime = new FixedDateTimeProvider(2024, 7, 23);
 
     @Nested
     @DisplayName("Describe_게시글을 저장하는 기능은")
-    @ExtendWith(ArticleDBSetupExtension.class)
     class SaveTest {
-
-        DatabaseConnector connector = new DatabaseConnector();
-        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 게시글을 저장하면, 게시글 ID로 조회할 수 있다")
@@ -87,11 +86,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_게시글을 id 기준으로 조회하는 기능은")
-    @ExtendWith(ArticleDBSetupExtension.class)
     class FindByIdTest {
-
-        DatabaseConnector connector = new DatabaseConnector();
-        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 특정 게시글을 조회할 수 있다")
@@ -142,11 +137,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_이전 게시글을 조회하는 기능은")
-    @ExtendWith(ArticleDBSetupExtension.class)
     class FindPreviousTest {
-
-        DatabaseConnector connector = new DatabaseConnector();
-        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 이전 게시글을 조회할 수 있다")
@@ -182,11 +173,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_다음 게시글을 조회하는 기능은")
-    @ExtendWith(ArticleDBSetupExtension.class)
     class FindNextTest {
-
-        DatabaseConnector connector = new DatabaseConnector();
-        ArticleRepository repository = new DBArticleRepository(connector);
 
         @Test
         @DisplayName("[Success] 다음 게시글을 조회할 수 있다")
@@ -222,11 +209,8 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("Describe_오프셋 기반으로 게시글을 조회하는 기능은")
-    @ExtendWith(ArticleDBSetupExtension.class)
     class FindByOffsetPaginationTest {
 
-        DatabaseConnector connector = new DatabaseConnector();
-        ArticleRepository repository = new DBArticleRepository(connector);
         private static final int PAGE_SIZE = 10;
 
         @Test
@@ -322,11 +306,7 @@ class ArticleRepositoryTest {
 
     @Nested
     @DisplayName("게시글을 업데이트하는 기능은")
-    @ExtendWith(ArticleDBSetupExtension.class)
     class UpdateTest {
-
-        DatabaseConnector connector = new DatabaseConnector();
-        ArticleRepository repository = new DBArticleRepository(connector);
 
         Article originalArticle;
         Long originalArticleId;
