@@ -48,6 +48,61 @@ public class MySqlArticleQuery implements ArticleQuery {
     }
 
     @Override
+    public Optional<ArticleDetailResponse> findDetailById(Long id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
+            String sql = """
+                    SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer,
+                           c.id AS commentId, c.content AS commentContent, c.writer AS commenter,
+                           u2.id AS commenterId
+                    FROM articles a
+                    LEFT JOIN users u ON a.writer = u.user_id
+                    LEFT JOIN comments c ON a.id = c.article_id
+                    LEFT JOIN users u2 ON c.writer = u2.user_id
+                    WHERE a.id = ?
+                    """;
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            ArticleResponse article = null;
+            List<CommentResponse> comments = new ArrayList<>();
+
+            while (resultSet.next()) {
+                // Article
+                if (article == null) {
+                    Long articleId = resultSet.getLong("articleId");
+                    String title = resultSet.getString("title");
+                    String content = resultSet.getString("content");
+                    Long writerId = resultSet.getLong("writerId");
+                    String writer = resultSet.getString("writer");
+                    article = new ArticleResponse(articleId, title, content, writerId, writer);
+                }
+                // Comment
+                Long commentId = resultSet.getLong("commentId");
+                // Check if there are any comments
+                if (commentId != 0) {
+                    Long commenterId = resultSet.getLong("commenterId");
+                    String commenter = resultSet.getString("commenter");
+                    String commentContent = resultSet.getString("commentContent");
+                    comments.add(new CommentResponse(commentId, commenterId, commenter, commentContent));
+                }
+            }
+            if (article != null) {
+                return Optional.of(new ArticleDetailResponse(article, comments));
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
+        }
+    }
+
+    @Override
     public List<ArticleResponse> findAll(QueryRequest queryRequest) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

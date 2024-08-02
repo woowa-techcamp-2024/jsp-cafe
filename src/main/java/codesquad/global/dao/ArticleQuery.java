@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ArticleQuery {
     Optional<ArticleResponse> findById(Long id);
 
+    Optional<ArticleDetailResponse> findDetailById(Long id);
+
     List<ArticleResponse> findAll(QueryRequest queryRequest);
 
     class QueryRequest extends PageRequest {
@@ -34,6 +36,20 @@ public interface ArticleQuery {
             String content,
             Long writerId,
             String writer
+    ) {
+    }
+
+    record ArticleDetailResponse(
+            ArticleResponse article,
+            List<CommentResponse> comments
+    ) {
+    }
+
+    record CommentResponse(
+            Long id,
+            Long commenterId,
+            String commenter,
+            String content
     ) {
     }
 }

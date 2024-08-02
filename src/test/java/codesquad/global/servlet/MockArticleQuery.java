@@ -18,6 +18,11 @@ public class MockArticleQuery implements ArticleQuery {
     }
 
     @Override
+    public Optional<ArticleDetailResponse> findDetailById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
     public List<ArticleResponse> findAll(QueryRequest queryRequest) {
         if (articleResponse == null) {
             return Collections.emptyList();

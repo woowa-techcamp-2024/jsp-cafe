@@ -8,6 +8,7 @@ import codesquad.common.exception.CommentExistException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
 import codesquad.global.dao.ArticleQuery;
+import codesquad.global.dao.ArticleQuery.ArticleDetailResponse;
 import codesquad.global.dao.ArticleQuery.ArticleResponse;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletConfig;
@@ -167,13 +168,13 @@ public class QnaServlet extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        Optional<ArticleResponse> articleResponse = articleQuery.findById(articleId);
+        Optional<ArticleDetailResponse> articleResponse = articleQuery.findDetailById(articleId);
         if (articleResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        req.setAttribute("articleResponse", articleResponse.get());
+        req.setAttribute("articleDetailResponse", articleResponse.get());
         req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp").forward(req, resp);
     }
 
