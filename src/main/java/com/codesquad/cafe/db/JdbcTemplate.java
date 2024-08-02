@@ -1,5 +1,6 @@
 package com.codesquad.cafe.db;
 
+import com.codesquad.cafe.db.rowmapper.ResultSetExtractor;
 import com.codesquad.cafe.db.rowmapper.RowMapper;
 import com.codesquad.cafe.exception.DBException;
 import java.sql.Connection;
@@ -9,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -61,6 +64,20 @@ public class JdbcTemplate {
         }
     }
 
+    public <T> T queryForObject(String sql, Consumer<PreparedStatement> statementConsumer,
+                                ResultSetExtractor<T> resultSetExtractor) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            statementConsumer.accept(pstmt);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                return resultSetExtractor.extractData(resultSet);
+            }
+        } catch (SQLException e) {
+            log.warn("fail to query for object : {} {}", sql, e.getMessage());
+            throw new DBException("Failed to query object : " + sql + e.getMessage());
+        }
+    }
+
     public <T> List<T> queryForList(String sql, Consumer<PreparedStatement> statementConsumer, RowMapper<T> rowMapper) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -75,7 +92,7 @@ public class JdbcTemplate {
             }
         } catch (SQLException e) {
             log.warn("fail to query for list : {}", sql);
-            throw new DBException("Failed to query list : "+ e.getMessage());
+            throw new DBException("Failed to query list : " + e.getMessage());
         }
     }
 
@@ -99,4 +116,35 @@ public class JdbcTemplate {
         }
     }
 
+    public void executeUpdateInTransaction(Map<String, Consumer<PreparedStatement>> statements) {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+            for (Entry<String, Consumer<PreparedStatement>> entry : statements.entrySet()) {
+                try (PreparedStatement statement = connection.prepareStatement(entry.getKey())) {
+                    entry.getValue().accept(statement);
+                    statement.executeUpdate();
+                }
+            }
+            log.debug("transaction committed");
+            connection.commit();
+        } catch (SQLException e) {
+            log.warn("rollbacked while transction");
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    log.warn("fail to rollback");
+                }
+            }
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+                connection.close();
+            } catch (SQLException e) {
+                log.warn("fail to close connection");
+            }
+        }
+    }
 }

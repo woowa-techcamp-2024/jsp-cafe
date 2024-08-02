@@ -1,9 +1,9 @@
 package com.codesquad.cafe.db;
 
 import com.codesquad.cafe.exception.DataIntegrationException;
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.PostDetailsDto;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.db.domain.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class InMemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public Page<PostDetailsDto> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize) {
+    public Page<PostWithAuthor> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize) {
         if (pageNum < 1 || pageSize < 1) {
             throw new IllegalArgumentException("page num and page size should be greater than 0");
         }
@@ -65,12 +65,12 @@ public class InMemoryPostRepository implements PostRepository {
                 .limit(pageSize)
                 .toList();
 
-        List<PostDetailsDto> detailsDto = result.stream().map(post -> {
+        List<PostWithAuthor> detailsDto = result.stream().map(post -> {
             Optional<User> user = userRepository.findById(post.getAuthorId());
             if (user.isEmpty()) {
                 throw new DataIntegrationException("author of post does not exists");
             }
-            return new PostDetailsDto(post, user.get());
+            return new PostWithAuthor(post, user.get());
         }).toList();
 
         return Page.of(
@@ -87,7 +87,7 @@ public class InMemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public Optional<PostDetailsDto> findPostWithAuthorById(Long id) {
+    public Optional<PostWithAuthor> findPostWithAuthorById(Long id) {
         Optional<Post> post = findById(id);
         if (post.isEmpty()) {
             return Optional.empty();
@@ -98,6 +98,6 @@ public class InMemoryPostRepository implements PostRepository {
             throw new DataIntegrationException("author of post does not exists");
         }
 
-        return Optional.of(new PostDetailsDto(post.get(), author.get()));
+        return Optional.of(new PostWithAuthor(post.get(), author.get()));
     }
 }
