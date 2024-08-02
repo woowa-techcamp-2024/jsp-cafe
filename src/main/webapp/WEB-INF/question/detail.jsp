@@ -54,79 +54,51 @@
                     </div>
                 </article>
 
-<%--                <div class="qna-comment">--%>
-<%--                    <div class="qna-comment-slipp">--%>
-<%--                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>--%>
-<%--                        <div class="qna-comment-slipp-articles">--%>
-
-<%--                            <article class="article" id="answer-1405">--%>
-<%--                                <div class="article-header">--%>
-<%--                                    <div class="article-header-thumb">--%>
-<%--                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">--%>
-<%--                                    </div>--%>
-<%--                                    <div class="article-header-text">--%>
-<%--                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>--%>
-<%--                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">--%>
-<%--                                            2016-01-12 14:06--%>
-<%--                                        </a>--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
-<%--                                <div class="article-doc comment-doc">--%>
-<%--                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>--%>
-<%--                                </div>--%>
-<%--                                <div class="article-util">--%>
-<%--                                    <ul class="article-util-list">--%>
-<%--                                        <li>--%>
-<%--                                            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>--%>
-<%--                                        </li>--%>
-<%--                                        <li>--%>
-<%--                                            <form class="delete-answer-form" action="/questions/413/answers/1405" method="POST">--%>
-<%--                                                <input type="hidden" name="_method" value="DELETE">--%>
-<%--                                                <button type="submit" class="delete-answer-button">삭제</button>--%>
-<%--                                            </form>--%>
-<%--                                        </li>--%>
-<%--                                    </ul>--%>
-<%--                                </div>--%>
-<%--                            </article>--%>
-<%--                            <article class="article" id="answer-1406">--%>
-<%--                                <div class="article-header">--%>
-<%--                                    <div class="article-header-thumb">--%>
-<%--                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">--%>
-<%--                                    </div>--%>
-<%--                                    <div class="article-header-text">--%>
-<%--                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>--%>
-<%--                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">--%>
-<%--                                            2016-01-12 14:06--%>
-<%--                                        </a>--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
-<%--                                <div class="article-doc comment-doc">--%>
-<%--                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>--%>
-<%--                                </div>--%>
-<%--                                <div class="article-util">--%>
-<%--                                    <ul class="article-util-list">--%>
-<%--                                        <li>--%>
-<%--                                            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>--%>
-<%--                                        </li>--%>
-<%--                                        <li>--%>
-<%--                                            <form class="form-delete" action="/questions/413/answers/1405" method="POST">--%>
-<%--                                                <input type="hidden" name="_method" value="DELETE">--%>
-<%--                                                <button type="submit" class="delete-answer-button">삭제</button>--%>
-<%--                                            </form>--%>
-<%--                                        </li>--%>
-<%--                                    </ul>--%>
-<%--                                </div>--%>
-<%--                            </article>--%>
-<%--                            <form class="submit-write">--%>
-<%--                                <div class="form-group" style="padding:14px;">--%>
-<%--                                    <textarea class="form-control" placeholder="Update your status"></textarea>--%>
-<%--                                </div>--%>
-<%--                                <button class="btn btn-success pull-right" type="button">답변하기</button>--%>
-<%--                                <div class="clearfix" />--%>
-<%--                            </form>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
+                <div class="qna-comment">
+                    <div class="qna-comment-slipp">
+                        <p class="qna-comment-count"><strong>${comments.size()}</strong>개의 의견</p>
+                        <div class="qna-comment-slipp-articles">
+                            <c:forEach var="comment" items="${comments}" varStatus="status">
+                            <article class="article" id="comment-${comment.commentSeq}">
+                                <div class="article-header">
+                                    <div class="article-header-thumb">
+                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                    </div>
+                                    <div class="article-header-text">
+                                        <a href="/userPage?action=detail&seq=${comment.userSeq}" class="article-author-name">${comment.writer}</a>
+                                    </div>
+                                </div>
+                                <div class="article-doc comment-doc">
+                                    <p>${comment.contents}</p>
+                                </div>
+                                <div class="article-util">
+                                    <c:if test="${sessionScope.userSeq == comment.userSeq}">
+                                    <ul class="article-util-list">
+                                        <li>
+                                            <a class="link-modify-article" href="#">수정</a>
+                                        </li>
+                                        <li>
+                                            <form id="delete-comment-form" class="delete-answer-form" action="#" method="POST">
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <input type="hidden" name="seq" value="${comment.commentSeq}">
+                                                <button type="button" class="delete-answer-button" onclick="deleteComment(${comment.commentSeq})">삭제</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                    </c:if>
+                                </div>
+                            </article>
+                            </c:forEach>
+                        </div>
+                        <form class="submit-write" id="post-comment-form">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea id="post-comment-text" name="contents" class="form-control" placeholder="Update your status"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="button" onclick="postComment()">답변하기</button>
+                            <div class="clearfix" />
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -163,6 +135,94 @@
 </script>
 
 <script>
+function deleteComment(commentSeq) {
+    fetch(`/comment?seq=` + commentSeq, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (response.ok) {
+                // Remove the article element
+                const article = document.getElementById('comment-' + commentSeq);
+                if (article) {
+                    article.remove();
+                }
+
+                // Update the comment count
+                const commentCountElement = document.querySelector('.qna-comment-count strong');
+                const currentCount = parseInt(commentCountElement.textContent);
+                commentCountElement.textContent = currentCount - 1;
+            } else {
+                throw new Error('Failed to delete comment.');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+function postComment() {
+    const form = document.querySelector('#post-comment-form');
+    const contents = form.querySelector('#post-comment-text').value;
+    const questionSeq = "${question.questionSeq}";
+
+    const data = new URLSearchParams();
+    data.append('contents', contents);
+    data.append('questionSeq', questionSeq);
+
+    fetch(`/comment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data.toString()
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // or response.text() or response.blob() depending on what the server returns
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(comment => {
+            const article = document.createElement('article');
+            article.className = 'article';
+            article.id = 'comment-' + comment.commentSeq;
+            article.innerHTML =
+                '<div class="article-header">' +
+                '<div class="article-header-thumb">' +
+                '<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">' +
+                '</div>' +
+                '<div class="article-header-text">' +
+                '<a href="/userPage?action=detail&seq=' + comment.userSeq + '" class="article-author-name">' + comment.writer + '</a>' +
+                '</div>' +
+                '</div>' +
+                '<div class="article-doc comment-doc">' +
+                '<p>' + comment.contents + '</p>' +
+                '</div>' +
+                '<div class="article-util">' +
+                '<ul class="article-util-list">' +
+                '<li>' +
+                '<a class="link-modify-article" href="#">수정</a>' +
+                '</li>' +
+                '<li>' +
+                '<form class="delete-answer-form" action="#" method="POST">' +
+                '<input type="hidden" name="_method" value="DELETE">' +
+                `<button type="button" class="delete-answer-button" onclick="deleteComment(`+comment.commentSeq+`)">삭제</button>` +
+                '</form>' +
+                '</li>' +
+                '</ul>' +
+                '</div>';
+
+            // Append the new article to the div with class 'qna-comment-slipp-articles'
+            document.querySelector('.qna-comment-slipp-articles').appendChild(article);
+            const commentCountElement = document.querySelector('.qna-comment-count strong');
+            const currentCount = parseInt(commentCountElement.textContent);
+            commentCountElement.textContent = currentCount + 1;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle error
+        });
+}
+
 function deleteQuestion() {
     const jsonData = {
         "seq": "${question.questionSeq}"
@@ -179,7 +239,7 @@ function deleteQuestion() {
             window.location.href = "/"; // 질문 목록 페이지로 리디렉트
         } else {
             // 오류 처리
-            alert("질문 삭제 중 오류가 발생했습니다.");
+            alert("다른 사람이 쓴 댓글이 있어서 삭제할 수 없습니다.");
         }
     }).catch(error => {
         console.error("Error:", error);

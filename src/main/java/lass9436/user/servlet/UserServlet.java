@@ -2,6 +2,8 @@ package lass9436.user.servlet;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lass9436.user.model.User;
 import lass9436.user.model.UserRepository;
 import lass9436.utils.JsonUtil;
-import org.json.JSONObject;
 
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
@@ -57,7 +58,7 @@ public class UserServlet extends HttpServlet {
 			User user = userRepository.findByUserId(userId);
 
 			// 현재 로그인한 유저 가져오기
-			String sessionUserId = (String) req.getSession().getAttribute("userId");
+			String sessionUserId = (String)req.getSession().getAttribute("userId");
 
 			// 레포지토리에 유저가 없으면 예외
 			if (user == null) {
