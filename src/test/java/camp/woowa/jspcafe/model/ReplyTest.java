@@ -2,6 +2,8 @@ package camp.woowa.jspcafe.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReplyTest {
@@ -15,7 +17,7 @@ class ReplyTest {
         String writer = "writer";
 
         // when
-        Reply reply = new Reply(id, content, questionId, writer, writerId);
+        Reply reply = new Reply(id, content, questionId, writer, writerId, LocalDateTime.now());
 
         // then
         assertEquals(reply.getId(), id);
