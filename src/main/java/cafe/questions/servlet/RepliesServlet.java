@@ -4,11 +4,10 @@ import cafe.MappingHttpServlet;
 import cafe.questions.Reply;
 import cafe.questions.repository.ReplyRepository;
 import cafe.users.User;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -37,13 +36,10 @@ public class RepliesServlet extends MappingHttpServlet {
         Long articleId;
         String content;
 
-        try {
-            LinkedHashMap<String, Object> parsedReq = new JSONParser(req.getReader()).parseObject();
-            articleId = Long.parseLong(parsedReq.get("articleId").toString());
-            content = parsedReq.get("content").toString();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        String requestBody = getRequestBody(req);
+        LinkedHashMap<String, Object> parsedReq = new Gson().fromJson(requestBody, LinkedHashMap.class);
+        articleId = Long.parseLong(parsedReq.get("articleId").toString());
+        content = parsedReq.get("content").toString();
 
         if (content.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -53,5 +49,14 @@ public class RepliesServlet extends MappingHttpServlet {
 
         Reply reply = new Reply(articleId, user.getId(), content);
         replyRepository.save(reply);
+    }
+
+    private String getRequestBody(HttpServletRequest req) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = req.getReader().readLine()) != null) {
+            sb.append(line);
+        }
+        return sb.toString();
     }
 }
