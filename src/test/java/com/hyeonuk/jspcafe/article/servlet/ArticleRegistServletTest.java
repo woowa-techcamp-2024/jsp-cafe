@@ -76,7 +76,7 @@ class ArticleRegistServletTest {
             //then
             assertEquals(1,articleDao.findAll().size());
             Article saved = articleDao.findAll().get(0);
-            assertEquals(saved.getWriter(),member.getMemberId());
+            assertEquals(saved.getWriter().getId(),member.getId());
             assertEquals(saved.getTitle(),title);
             assertEquals(saved.getContents(),contents);
             assertEquals("/",res.getRedirection());

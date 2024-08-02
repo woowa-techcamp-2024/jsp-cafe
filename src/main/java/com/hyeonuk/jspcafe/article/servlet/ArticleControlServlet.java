@@ -5,6 +5,7 @@ import com.hyeonuk.jspcafe.article.domain.Article;
 import com.hyeonuk.jspcafe.global.exception.HttpBadRequestException;
 import com.hyeonuk.jspcafe.global.exception.HttpNotFoundException;
 import com.hyeonuk.jspcafe.member.domain.Member;
+import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,10 +17,12 @@ import java.io.IOException;
 
 public class ArticleControlServlet extends HttpServlet {
     private ArticleDao articleDao;
+    private ReplyDao replyDao;
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         articleDao = (ArticleDao) config.getServletContext().getAttribute("articleDao");
+        replyDao = (ReplyDao) config.getServletContext().getAttribute("replyDao");
     }
 
     @Override
@@ -45,7 +48,7 @@ public class ArticleControlServlet extends HttpServlet {
             else if(pathParts.length == 3 && "form".equals(pathParts[2])){
                 HttpSession session = req.getSession();
                 Member member = (Member)session.getAttribute("member");
-                if(!article.getWriter().equals(member.getMemberId())) {
+                if(!article.getWriter().getId().equals(member.getId())) {
                     throw new HttpBadRequestException("작성자가 아닙니다.");
                 }
                 req.getRequestDispatcher("/templates/qna/modify.jsp").forward(req, resp);
@@ -71,7 +74,7 @@ public class ArticleControlServlet extends HttpServlet {
                     .orElseThrow(() -> new HttpNotFoundException(articleId + "번의 게시글을 찾을 수 없습니다."));
 
             Member member = (Member)req.getSession().getAttribute("member");
-            if(!article.getWriter().equals(member.getMemberId())) throw new HttpBadRequestException("작성자가 아니라 권한이 없습니다.");
+            if(!article.getWriter().getId().equals(member.getId())) throw new HttpBadRequestException("작성자가 아니라 권한이 없습니다.");
 
             String method = req.getParameter("_method");
             if("PUT".equalsIgnoreCase(method)){
@@ -89,7 +92,20 @@ public class ArticleControlServlet extends HttpServlet {
             }
             else if("DELETE".equalsIgnoreCase(method)){
                 //삭제 메서드
-                articleDao.deleteById(articleId);
+//                articleDao.deleteById(articleId);
+                //내 게시물이면서 , 댓글의 다른사람 댓글이 없는 경우 삭제.
+                //아니면 불가능
+
+                replyDao.findAllByArticleId(article.getId())
+                                .stream()
+                                        .filter(reply->!reply.getMember().getId().equals(member.getId()))
+                                                .findAny()
+                                                        .ifPresentOrElse((reply)->{
+                                                            throw new HttpBadRequestException("다른사람의 댓글이 존재합니다.");
+                                                        },()->{
+                                                            replyDao.deleteAllByArticleId(article.getId());
+                                                            articleDao.deleteById(article.getId());
+                                                        });
 
                 resp.sendRedirect("/");
             }

@@ -82,7 +82,7 @@ public class MemberControlServlet extends HttpServlet {
         if(!newMember.validation()) throw new InvalidMemberRegistRequest("값을 확인해주세요");
 
         memberDao.save(newMember);
-
+        req.getSession().setAttribute("member", newMember);//새로운 값으로 session update
         resp.sendRedirect("/members/"+newMember.getMemberId());
     }
 

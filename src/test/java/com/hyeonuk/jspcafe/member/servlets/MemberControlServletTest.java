@@ -183,6 +183,12 @@ public class MemberControlServletTest {
             assertEquals("newemail1@gmail.com", updatedMember.getEmail());
             assertEquals("newnick1", updatedMember.getNickname());
             assertEquals("/members/id1", resp.getRedirection());
+
+            Member updatedSession = (Member)req.getSession().getAttribute("member");
+
+            assertTrue(passwordEncoder.match("newpw1", updatedSession.getPassword()));
+            assertEquals("newemail1@gmail.com", updatedSession.getEmail());
+            assertEquals("newnick1", updatedSession.getNickname());
         }
 
         @DisplayName("path가 유효하지 않을때, 즉 pathInfo가 null로 들어올 경우 400오류를 던짐")

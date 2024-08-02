@@ -1,9 +1,10 @@
 -- 기존 테이블이 존재한다면 삭제
 DROP TABLE IF EXISTS ARTICLE;
 DROP TABLE IF EXISTS MEMBER;
+DROP TABLE IF EXISTS REPLY;
 
 -- member 테이블 생성
-CREATE TABLE MEMBER (
+CREATE TABLE member (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
                         memberId VARCHAR(255) UNIQUE NOT NULL,
                         password VARCHAR(255) NOT NULL,
@@ -12,9 +13,18 @@ CREATE TABLE MEMBER (
 );
 
 -- article 테이블 생성
-CREATE TABLE ARTICLE (
+CREATE TABLE article (
                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
                          title VARCHAR(255) NOT NULL,
-                         writer VARCHAR(255) NOT NULL,
-                         contents TEXT NOT NULL
+                         writer BIGINT NOT NULL,
+                         contents TEXT NOT NULL,
+                         deletedAt DATETIME DEFAULT NULL
+);
+
+CREATE TABLE reply (
+                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                       articleId BIGINT NOT NULL,
+                       memberId BIGINT NOT NULL,
+                       contents TEXT NOT NULL,
+                       deletedAt DATETIME DEFAULT NULL
 );

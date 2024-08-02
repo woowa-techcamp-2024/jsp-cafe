@@ -76,6 +76,9 @@
                         Member member = (Member)session.getAttribute("member");
                 %>
                 <li>
+                    <h1><%=member.getNickname()%></h1>
+                </li>
+                <li>
                     <form method="post" action="${pageContext.request.contextPath}/logout">
                         <button type="submit">로그아웃</button>
                     </form>
@@ -91,5 +94,50 @@
 <script src="${pageContext.request.contextPath}/templates/js/jquery-2.2.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/templates/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/templates/js/scripts.js"></script>
+<script>
+    // 공통된 설정을 포함한 fetch 함수
+    async function fetchWrapper(url, options) {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                // 서버 응답이 성공적이지 않다면 에러를 던짐
+                const errorResponse = await response.json();
+                throw new Error(errorResponse);
+            }
+            // 응답이 비어있지 않다면 JSON을 반환
+            return response.json();
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    }
+
+    async function get(endpoint) {
+        return fetchWrapper(endpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+    async function post(endpoint, data) {
+        return fetchWrapper(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    }
+    async function del(endpoint) {
+        return fetchWrapper(endpoint, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+
+</script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.hyeonuk.jspcafe.article.domain.Article;
 import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
 import com.hyeonuk.jspcafe.global.db.DBManagerIml;
 import com.hyeonuk.jspcafe.global.exception.DataIntegrityViolationException;
+import com.hyeonuk.jspcafe.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,7 +33,7 @@ class MysqlArticleDaoTest {
         @Test
         @DisplayName("유효한 게시글을 저장하고 반환한다")
         void saveValidArticle() {
-            Article article = new Article("writer", "title", "contents");
+            Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), "title", "contents");
             Article savedArticle = articleDao.save(article);
 
             assertNotNull(savedArticle.getId());
@@ -45,7 +46,7 @@ class MysqlArticleDaoTest {
         @Test
         @DisplayName("이미 존재하는 게시글을 저장하면 업데이트된다.")
         void updateArticle(){
-            Article article = new Article("writer", "title", "contents");
+            Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), "title", "contents");
             articleDao.save(article);
 
             article.setContents("updatedContent");
@@ -70,35 +71,42 @@ class MysqlArticleDaoTest {
             @Test
             @DisplayName("title이 null이면 예외를 던진다")
             void saveWithNullTitle() {
-                Article article = new Article("writer", null, "contents");
+                Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), null, "contents");
                 assertThrows(DataIntegrityViolationException.class, () -> articleDao.save(article));
             }
 
             @Test
             @DisplayName("contents가 null이면 예외를 던진다")
             void saveWithNullContents() {
-                Article article = new Article("writer", "title", null);
+                Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), "title", null);
                 assertThrows(DataIntegrityViolationException.class, () -> articleDao.save(article));
             }
 
             @Test
-            @DisplayName("writer가 빈 문자열이면 예외를 던진다")
+            @DisplayName("writer가 null이면 예외를 던진다")
             void saveWithEmptyWriter() {
-                Article article = new Article("", "title", "contents");
+                Article article = new Article(null, "title", "contents");
+                assertThrows(DataIntegrityViolationException.class, () -> articleDao.save(article));
+            }
+
+            @Test
+            @DisplayName("writer의 id가 null이면 예외를 던진다")
+            void saveWithEmptyWriterId() {
+                Article article = new Article(new Member(null,"id1","pw1","nick1","email1"), "title", "contents");
                 assertThrows(DataIntegrityViolationException.class, () -> articleDao.save(article));
             }
 
             @Test
             @DisplayName("title이 빈 문자열이면 예외를 던진다")
             void saveWithEmptyTitle() {
-                Article article = new Article("writer", "", "contents");
+                Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), "", "contents");
                 assertThrows(DataIntegrityViolationException.class, () -> articleDao.save(article));
             }
 
             @Test
             @DisplayName("contents가 빈 문자열이면 예외를 던진다")
             void saveWithEmptyContents() {
-                Article article = new Article("writer", "title", "");
+                Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), "title", "");
                 assertThrows(DataIntegrityViolationException.class, () -> articleDao.save(article));
             }
         }
@@ -111,8 +119,8 @@ class MysqlArticleDaoTest {
         @Test
         @DisplayName("모든 게시글을 반환한다")
         void findAllArticles() {
-            Article article1 = new Article("writer1", "title1", "contents1");
-            Article article2 = new Article("writer2", "title2", "contents2");
+            Article article1 = new Article(new Member(1l,"id1","pw1","nick1","email1"), "title1", "contents1");
+            Article article2 = new Article(new Member(2l,"id2","pw2","nick2","email2"), "title2", "contents2");
             articleDao.save(article1);
             articleDao.save(article2);
 
@@ -128,7 +136,7 @@ class MysqlArticleDaoTest {
         @Test
         @DisplayName("ID로 게시글을 찾고 반환한다")
         void findArticleById() {
-            Article article = new Article("writer", "title", "contents");
+            Article article = new Article(new Member(1l,"id1","pw1","nick1","email1"), "title", "contents");
             Article savedArticle = articleDao.save(article);
 
             Optional<Article> foundArticle = articleDao.findById(savedArticle.getId());
@@ -151,7 +159,7 @@ class MysqlArticleDaoTest {
         @DisplayName("존재하는 article id면 삭제한다.")
         void deleteArticleByIdSuccess() throws Exception{
             //given
-            Article article = new Article(1l,"writer","title","contents");
+            Article article = new Article(1l,new Member(1l,"id1","pw1","nick1","email1"),"title","contents");
             articleDao.save(article);
 
             //when
