@@ -33,6 +33,38 @@ function httpPut(url, event) {
     });
 }
 
+async function httpPost(url, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const formData = new FormData(event.target);
+    const formObject = {};
+    formData.forEach((value, key) => {
+        formObject[key] = value;
+    });
+
+    const jsonString = JSON.stringify(formObject);
+    try {
+        const response = await $.ajax(url, {
+            type: 'POST',
+            cors: false,
+            data: jsonString,
+            contentType: 'application/json',
+            processData: false
+        });
+        console.log("성공 response : " + response);
+        return response;
+    } catch (xhr) {
+        let message;
+        try {
+            message = JSON.parse(xhr.responseText)['message'];
+        } catch (e) {
+            message = "실패";
+        }
+        throw message;
+    }
+}
+
 function httpGet(url) {
     fetch(url, {
         method: 'GET',
@@ -44,19 +76,29 @@ function httpGet(url) {
     })
 }
 
-function httpDelete(url) {
-    $.ajax(url, {
-        type: 'DELETE',
-        contentType: 'application/json',
-        processData: false,
-        success: function (data) {
-            window.location.href = data['redirect'];
-        },
-        error: function (xhr, textStatus, errorThrown) {
+async function httpDelete(url) {
+    try {
+        const response = await $.ajax(url, {
+            type: 'DELETE',
+            contentType: 'application/json',
+            processData: false,
+        });
+        console.log("성공 response : " + response);
+        return response;
+    } catch (xhr) {
+        if (xhr.getResponseHeader('Content-Type').includes('application/json')) {
+            let message;
+            try {
+                message = JSON.parse(xhr.responseText)['message'];
+            } catch (e) {
+                message = xhr.responseText;
+            }
+            throw message;
+        } else {
             document.body.innerHTML = xhr.responseText;
             history.pushState(null, '', url);
         }
-    });
+    }
 }
 
 window.addEventListener('popstate', function (event) {
