@@ -3,10 +3,12 @@ package woowa.cafe.router;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import woowa.cafe.dto.QuestionInfo;
+import woowa.cafe.dto.ReplyInfo;
 import woowa.cafe.dto.UpdateQuestionRequest;
 import woowa.cafe.dto.UserInfo;
 import woowa.cafe.dto.request.CreateQuestionRequest;
 import woowa.cafe.service.QnaService;
+import woowa.cafe.service.ReplyService;
 import woowa.frame.web.annotation.HttpMapping;
 import woowa.frame.web.annotation.Router;
 import woowa.frame.web.parser.FormParser;
@@ -22,10 +24,12 @@ import java.util.Map;
 public class QnaRouter {
 
     private final QnaService qnaService;
+    private final ReplyService replyService;
     private final FormParser parser;
 
-    public QnaRouter(QnaService qnaService, FormParser parser) {
+    public QnaRouter(QnaService qnaService, ReplyService replyService, FormParser parser) {
         this.qnaService = qnaService;
+        this.replyService = replyService;
         this.parser = parser;
     }
 
@@ -60,7 +64,7 @@ public class QnaRouter {
                 userInfo.name(),
                 request.getParameter("title"),
                 request.getParameter("contents"),
-                userInfo.userId()
+                userInfo.id()
         );
 
         try {
@@ -102,9 +106,9 @@ public class QnaRouter {
     @HttpMapping(method = "DELETE", urlTemplate = "/question/{id}")
     public Integer deleteQuestion(HttpServletRequest request, HttpServletResponse response) {
         String id = request.getRequestURI().substring(10);
-        String userId = (String) request.getSession().getAttribute("userId");
+        UserInfo userInfo = (UserInfo) request.getSession().getAttribute("userInfo");
 
-        if (!qnaService.deleteQuestion(id, userId)) {
+        if (!qnaService.deleteQuestion(id, userInfo.id())) {
             return HttpServletResponse.SC_BAD_REQUEST;
         }
 
@@ -115,12 +119,14 @@ public class QnaRouter {
     public String getQuestion(HttpServletRequest request, HttpServletResponse response) {
         String id = request.getRequestURI().substring(10);
         QuestionInfo question = qnaService.getQuestion(id);
+        List<ReplyInfo> replies = replyService.getAllReplies(question.id());
 
         if (question == null) {
             return "redirect:/question";
         }
 
         request.setAttribute("question", question);
+        request.setAttribute("replies", replies);
         return "/template/qna/detail.jsp";
     }
 

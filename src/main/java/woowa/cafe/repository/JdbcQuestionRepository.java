@@ -34,7 +34,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                        "authorName VARCHAR(255), " +
                        "title VARCHAR(255), " +
                        "content VARCHAR(255)," +
-                       "userId VARCHAR(255)" +
+                       "userId VARCHAR(255)," +
+                       "status VARCHAR(20)" +
                        ")";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -48,13 +49,14 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public void save(Question question) {
-        String query = "INSERT INTO questions (authorName, title, content, userId) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO questions (authorName, title, content, userId, status) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, question.getAuthorName());
             ps.setString(2, question.getTitle());
             ps.setString(3, question.getContent());
             ps.setString(4, question.getUserId());
+            ps.setString(5, question.getStatus());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,7 +66,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
     @Override
     public List<Question> findAll() {
         List<Question> questions = new ArrayList<>();
-        String query = "SELECT * FROM questions";
+        String query = "SELECT * FROM questions WHERE status != 'DELETED'";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
@@ -76,7 +78,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                         rs.getString("authorName"),
                         rs.getString("title"),
                         rs.getString("content"),
-                        rs.getString("userId")
+                        rs.getString("userId"),
+                        rs.getString("status")
                 );
                 idField.set(entity, id);
                 questions.add(entity);
@@ -91,7 +94,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public Question findById(String id) {
-        String query = "SELECT * FROM questions WHERE id = ?";
+        String query = "SELECT * FROM questions WHERE id = ? and status != 'DELETED'";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, id);
@@ -103,7 +106,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                             rs.getString("authorName"),
                             rs.getString("title"),
                             rs.getString("content"),
-                            rs.getString("userId")
+                            rs.getString("userId"),
+                            rs.getString("status")
                     );
                     idField.set(entity, id);
                     return entity;
@@ -143,7 +147,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public void deleteById(String id) {
-        String query = "DELETE FROM questions WHERE id = ?";
+        String query = "UPDATE questions SET status = 'DELETED' WHERE id = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, id);

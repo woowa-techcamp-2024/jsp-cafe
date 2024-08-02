@@ -1,26 +1,17 @@
 package woowa.cafe.repository;
 
 import org.junit.jupiter.api.*;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import woowa.cafe.domain.Question;
+import woowa.cafe.testContainer.RepositoryTestContainer;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("질문(게시판) 쿼리 테스트")
-class JdbcQuestionRepositoryTest {
-
-    @Container
-    private static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
-            .withDatabaseName("woowa")
-            .withUsername("user1")
-            .withPassword("test");
+class JdbcQuestionRepositoryTest extends RepositoryTestContainer {
 
     private final JdbcQuestionRepository jdbcQuestionRepository = new JdbcQuestionRepository(
             new TestJdbcConfig(mysql.getJdbcUrl(), mysql.getUsername(), mysql.getPassword())
@@ -35,7 +26,8 @@ class JdbcQuestionRepositoryTest {
                 "authorName",
                 "title",
                 "contents",
-                "userId"
+                "userId",
+                "ACTIVE"
         );
 
         // when

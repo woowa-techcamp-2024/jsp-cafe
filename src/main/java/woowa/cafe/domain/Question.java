@@ -7,12 +7,14 @@ public class Question {
     private String title;
     private String content;
     private String userId;
+    private String status;
 
-    public Question(String authorName, String title, String content, String userId) {
+    public Question(String authorName, String title, String content, String userId, String status) {
         this.authorName = authorName;
         this.title = title;
         this.content = content;
         this.userId = userId;
+        this.status = status;
     }
 
     public String getId() {
@@ -33,6 +35,10 @@ public class Question {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     // setter
