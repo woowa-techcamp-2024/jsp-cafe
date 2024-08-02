@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
 import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
-import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
+import woowa.camp.jspcafe.repository.dto.request.ArticleUpdateRequest;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.dto.response.ArticleUpdateResponse;
 import woowa.camp.jspcafe.web.utils.PathVariableExtractor;

@@ -13,7 +13,7 @@ import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
-import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ReplyWriteRequest;
 
 public class ReplyService {
 

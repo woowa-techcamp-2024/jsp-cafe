@@ -30,7 +30,7 @@ import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
-import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ReplyWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith({ReplyDBSetupExtension.class, UserDBSetupExtension.class, ArticleDBSetupExtension.class})

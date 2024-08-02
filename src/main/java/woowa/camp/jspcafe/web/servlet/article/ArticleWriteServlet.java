@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.service.ArticleService;
-import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ArticleWriteRequest;
 
 @WebServlet(name = "articleWriteServlet", value = "/articles/write")
 public class ArticleWriteServlet extends HttpServlet {

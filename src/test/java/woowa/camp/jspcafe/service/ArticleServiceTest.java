@@ -23,7 +23,7 @@ import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
-import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
+import woowa.camp.jspcafe.repository.dto.request.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.reply.DBReplyRepository;
 import woowa.camp.jspcafe.repository.reply.ReplyDBSetupExtension;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
@@ -32,7 +32,7 @@ import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
 import woowa.camp.jspcafe.service.dto.response.ArticleUpdateResponse;
-import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ArticleWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 class ArticleServiceTest {
