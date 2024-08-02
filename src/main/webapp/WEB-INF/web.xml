@@ -22,6 +22,10 @@
         <location>/template/error/error.jsp</location>
     </error-page>
     <error-page>
+        <error-code>409</error-code>
+        <location>/template/error/error.jsp</location>
+    </error-page>
+    <error-page>
         <error-code>500</error-code>
         <location>/template/error/error.jsp</location>
     </error-page>
