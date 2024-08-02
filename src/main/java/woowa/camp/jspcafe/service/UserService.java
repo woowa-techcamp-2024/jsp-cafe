@@ -3,8 +3,6 @@ package woowa.camp.jspcafe.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
@@ -15,7 +13,6 @@ import woowa.camp.jspcafe.service.dto.request.RegistrationRequest;
 
 public class UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final DateTimeProvider dateTimeProvider;
 

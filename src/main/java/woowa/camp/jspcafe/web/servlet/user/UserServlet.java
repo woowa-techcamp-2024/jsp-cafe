@@ -16,8 +16,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
-import woowa.camp.jspcafe.service.UserService;
 import woowa.camp.jspcafe.repository.dto.response.UserResponse;
+import woowa.camp.jspcafe.service.UserService;
 
 @WebServlet(name = "userServlet", value = {"/users", "/users/*"})
 public class UserServlet extends HttpServlet {
