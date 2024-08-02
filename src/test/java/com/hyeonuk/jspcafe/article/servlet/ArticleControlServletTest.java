@@ -7,6 +7,7 @@ import com.hyeonuk.jspcafe.global.exception.HttpBadRequestException;
 import com.hyeonuk.jspcafe.global.exception.HttpNotFoundException;
 import com.hyeonuk.jspcafe.member.domain.Member;
 import com.hyeonuk.jspcafe.member.servlets.mock.*;
+import com.hyeonuk.jspcafe.reply.dao.InMemoryReplyDao;
 import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpSession;
@@ -36,9 +37,11 @@ class ArticleControlServletTest {
         req = new MockRequest();
         res = new MockResponse();
         articleDao = new InMemoryArticleDao();
+        replyDao = new InMemoryReplyDao();
         servlet = new ArticleControlServlet();
         ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("articleDao", articleDao);
+        servletContext.setAttribute("replyDao",replyDao);
         ServletConfig servletConfig = new BaseServletConfig(servletContext);
         servlet.init(servletConfig);
     }
