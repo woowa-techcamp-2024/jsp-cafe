@@ -15,12 +15,11 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import woowa.camp.jspcafe.domain.exception.ArticleException;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.ReplyService;
 import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
-import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 
 @WebServlet(name = "articleServlet", value = {"/articles/*", ""})
 public class ArticleServlet extends HttpServlet {
@@ -48,22 +47,15 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("ArticleServlet doGet start");
-        try {
-            String contextPath = req.getContextPath();
-            Map<String, String> pathVariables;
+        String contextPath = req.getContextPath();
+        Map<String, String> pathVariables;
 
-            pathVariables = extractPathVariables(contextPath + "/articles/{id}", req.getRequestURI());
-            if (pathVariables.containsKey("id")) {
-                handleDetailArticle(req, resp, pathVariables);
-                return;
-            }
-            handleArticles(req, resp);
-        } catch (ArticleException e) {
-            log.warn("[ArticleException]", e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        } catch (Exception e) {
-            log.warn("[Exception]", e);
+        pathVariables = extractPathVariables(contextPath + "/articles/{id}", req.getRequestURI());
+        if (pathVariables.containsKey("id")) {
+            handleDetailArticle(req, resp, pathVariables);
+            return;
         }
+        handleArticles(req, resp);
     }
 
     private void handleArticles(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

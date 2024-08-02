@@ -14,8 +14,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
-import woowa.camp.jspcafe.domain.exception.ArticleException;
-import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.repository.dto.request.ArticleUpdateRequest;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.dto.response.ArticleUpdateResponse;
@@ -39,50 +37,34 @@ public class ArticleEditServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            log.debug("ArticleEditServlet doGet start");
-            Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/articles/edit/{articleId}",
-                    req.getRequestURI());
-            Long articleId = Long.parseLong(pathVariables.get("articleId"));
+        log.debug("ArticleEditServlet doGet start");
+        Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/articles/edit/{articleId}",
+                req.getRequestURI());
+        Long articleId = Long.parseLong(pathVariables.get("articleId"));
 
-            HttpSession session = req.getSession();
-            User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
+        HttpSession session = req.getSession();
+        User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
 
-            ArticleUpdateResponse updateArticle = articleService.findUpdateArticle(sessionUser, articleId);
-            req.setAttribute("article", updateArticle);
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/update_form.jsp");
-            requestDispatcher.forward(req, resp);
-            log.debug("ArticleEditServlet doGet end");
-        } catch (UnAuthorizationException e) {
-            log.warn("[UnAuthorizationException]", e);
-            resp.sendRedirect(req.getContextPath() + "/");
-        } catch (ArticleException e) {
-            log.warn("[ArticleException]", e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        ArticleUpdateResponse updateArticle = articleService.findUpdateArticle(sessionUser, articleId);
+        req.setAttribute("article", updateArticle);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/update_form.jsp");
+        requestDispatcher.forward(req, resp);
+        log.debug("ArticleEditServlet doGet end");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("ArticleEditServlet doPost start");
 
-        try {
-            String method = req.getParameter("_method");
-            if ("PUT".equalsIgnoreCase(method)) {
-                doPut(req, resp);
-                return;
-            }
+        String method = req.getParameter("_method");
+        if ("PUT".equalsIgnoreCase(method)) {
+            doPut(req, resp);
+            return;
+        }
 
-            if ("DELETE".equalsIgnoreCase(method)) {
-                doDelete(req, resp);
-                return;
-            }
-        } catch (UnAuthorizationException e) {
-            log.warn("[UnAuthorizationException]", e);
-            resp.sendRedirect(req.getContextPath() + "/");
-        } catch (ArticleException e) {
-            log.warn("[ArticleException]", e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        if ("DELETE".equalsIgnoreCase(method)) {
+            doDelete(req, resp);
+            return;
         }
 
         log.debug("ArticleEditServlet doPost end");

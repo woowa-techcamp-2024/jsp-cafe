@@ -27,7 +27,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        log.info("UserServlet init......");
+        log.debug("UserServlet init......");
         ServletContext context = config.getServletContext();
         userService = (UserService) context.getAttribute("userService");
         if (this.userService == null) {
