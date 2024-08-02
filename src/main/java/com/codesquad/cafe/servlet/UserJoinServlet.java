@@ -1,7 +1,7 @@
 package com.codesquad.cafe.servlet;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.model.UserJoinRequest;
+import com.codesquad.cafe.model.dto.UserJoinRequest;
 import com.codesquad.cafe.util.RequestParamModelMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -38,7 +38,7 @@ public class UserJoinServlet extends HttpServlet {
         log.debug("user: {}", user);
 
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            req.setAttribute("error", "중복된 이메일입니다.");
+            req.setAttribute("error", "중복된 아이디아이디입");
             req.getRequestDispatcher(USER_JOIN_FORM_JSP).forward(req, resp);
             return;
         }
@@ -50,7 +50,7 @@ public class UserJoinServlet extends HttpServlet {
             return;
         }
 
-        resp.sendRedirect("/users/list");
+        resp.sendRedirect("/users");
     }
 
 }

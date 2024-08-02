@@ -21,13 +21,13 @@ public final class TestUtil {
 
     public static void assertErrorPageResponse(HttpResponse response, int errorCode) throws IOException {
         assertEquals(errorCode, response.getStatusLine().getStatusCode());
-        assertEquals("text/html", response.getEntity().getContentType().getValue());
+        assertTrue(response.getEntity().getContentType().getValue().contains("text/html"));
         assertTrue(EntityUtils.toString(response.getEntity()).contains(errorMessages.get(errorCode)));
     }
 
     public static void assertErrorPageResponse(SavedHttpResponse response, int errorCode) {
         assertEquals(errorCode, response.getStatusLine().getStatusCode());
-        assertEquals("text/html", response.getContentType());
+        assertTrue(response.getContentType().contains("text/html"));
         assertTrue(response.getBody().contains(errorMessages.get(errorCode)));
     }
 

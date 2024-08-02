@@ -1,6 +1,7 @@
 package com.codesquad.cafe.servlet;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -8,7 +9,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogoutServlet extends UserServlet {
+public class LogoutServlet extends HttpServlet {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

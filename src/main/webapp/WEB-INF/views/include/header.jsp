@@ -45,7 +45,7 @@
                     class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
                 <li>
-                    <a href="/users/list">
+                    <a href="/users">
                         <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
                         사용자 목록
                     </a>
@@ -53,7 +53,7 @@
 
                 <c:if test="${not empty sessionScope.userPrincipal}">
                     <li>
-                        <a href="/users/${sessionScope.userPrincipal.id}">
+                        <a href="/me">
                             <i class="glyphicon glyphicon-user" style="color:#1111dd;"></i>
                             Profile
                         </a>
@@ -78,7 +78,7 @@
                     </c:when>
                     <c:when test="${not empty sessionScope.userPrincipal}">
                         <li><a href="/logout" role="button">로그아웃</a></li>
-                        <li><a href="/users/edit" role="button">개인정보수정</a></li>
+                        <li><a href="/me/edit" role="button">개인정보수정</a></li>
                     </c:when>
                 </c:choose>
             </ul>

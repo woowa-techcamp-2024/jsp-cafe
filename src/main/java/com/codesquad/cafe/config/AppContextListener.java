@@ -1,5 +1,6 @@
 package com.codesquad.cafe.config;
 
+import com.codesquad.cafe.db.CommentDao;
 import com.codesquad.cafe.db.JdbcTemplate;
 import com.codesquad.cafe.db.PostDao;
 import com.codesquad.cafe.db.UserDao;
@@ -8,14 +9,16 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,16 +29,15 @@ public class AppContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DataSource ds = null;
         try {
             Context initContext = new InitialContext();
-            ds = (DataSource) initContext.lookup("java:/comp/env/jdbc/cafe");
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
+            DataSource ds = (DataSource) initContext.lookup("java:/comp/env/jdbc/cafe");
+            registerRepository(sce.getServletContext(), ds);
+            createTable(ds);
+        } catch (Exception e) {
+            log.warn("error occurred while initializing datasource");
+            System.exit(1);
         }
-
-        registerRepository(sce.getServletContext(), ds);
-        createTable(ds);
     }
 
     public void registerRepository(ServletContext sce, DataSource ds) {
@@ -44,9 +46,10 @@ public class AppContextListener implements ServletContextListener {
         sce.setAttribute("jdbcTemplate", jdbcTemplate);
         sce.setAttribute("userRepository", new UserDao(jdbcTemplate));
         sce.setAttribute("postRepository", new PostDao(jdbcTemplate));
+        sce.setAttribute("commentDao", new CommentDao(jdbcTemplate));
     }
 
-    public void createTable(DataSource ds) {
+    public void createTable(DataSource ds) throws SQLException, IOException {
         try (Connection conn = ds.getConnection();
              Statement stmt = conn.createStatement()) {
             // init.sql 파일 읽기
@@ -64,15 +67,20 @@ public class AppContextListener implements ServletContextListener {
                 }
             }
             log.info("SQL executed: {}", sql);
-        } catch (
-                Exception e) {
-            log.warn("Fail to init table: {}", e);
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
+        DataSource dataSource = (DataSource) sce.getServletContext().getAttribute("dataSource");
+        if (dataSource != null && dataSource instanceof BasicDataSource) {
+            try {
+                ((BasicDataSource) dataSource).close();
+            } catch (SQLException e) {
+                log.warn("error occurred while destroying datasource");
+            }
+        }
     }
 
 }

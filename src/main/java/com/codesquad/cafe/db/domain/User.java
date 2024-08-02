@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db.entity;
+package com.codesquad.cafe.db.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -38,7 +38,7 @@ public class User {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("email 필수 값입니다.");
         }
-        if (createdAt == null || createdAt.isAfter(LocalDateTime.now())) {
+        if (createdAt == null || LocalDateTime.now().isBefore(createdAt)) {
             throw new IllegalArgumentException("createdAt 는 현재시간 이전이야 합니다.");
         }
         if (updatedAt == null || updatedAt.isBefore(createdAt)) {
@@ -117,6 +117,23 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
         sb.append("id=").append(id);
@@ -131,23 +148,4 @@ public class User {
         return sb.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return deleted == user.deleted && Objects.equals(id, user.id) && Objects.equals(username,
-                user.username) && Objects.equals(password, user.password) && Objects.equals(name,
-                user.name) && Objects.equals(email, user.email) && Objects.equals(createdAt,
-                user.createdAt) && Objects.equals(updatedAt, user.updatedAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, name, email, createdAt, updatedAt, deleted);
-    }
 }

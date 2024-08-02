@@ -1,7 +1,7 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.model.dto;
 
 import com.codesquad.cafe.exception.ValidationException;
-import com.codesquad.cafe.util.StringUtils;
+import com.codesquad.cafe.util.StringUtil;
 
 public class UserEditRequest {
 
@@ -69,27 +69,27 @@ public class UserEditRequest {
             sb.append("id는 1이상의 자연수여야 합니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(username)) {
+        if (StringUtil.isBlank(username)) {
             sb.append("username은 필수입니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(originalPassword)) {
+        if (StringUtil.isBlank(originalPassword)) {
             sb.append("originalPassword는 필수입니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(password)) {
+        if (StringUtil.isBlank(password)) {
             sb.append("password는 필수입니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(confirmPassword)) {
+        if (StringUtil.isBlank(confirmPassword)) {
             sb.append("confirmPassword는 필수입니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(name)) {
+        if (StringUtil.isBlank(name)) {
             sb.append("name은 필수입니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(email)) {
+        if (StringUtil.isBlank(email)) {
             sb.append("email은 필수입니다.").append("\n");
             valid = false;
         } else {

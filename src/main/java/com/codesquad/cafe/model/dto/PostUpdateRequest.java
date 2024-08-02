@@ -1,7 +1,7 @@
-package com.codesquad.cafe.model;
+package com.codesquad.cafe.model.dto;
 
 import com.codesquad.cafe.exception.ValidationException;
-import com.codesquad.cafe.util.StringUtils;
+import com.codesquad.cafe.util.StringUtil;
 
 public class PostUpdateRequest {
 
@@ -45,11 +45,11 @@ public class PostUpdateRequest {
             sb.append("authorId는 1이상의 자연수여야 합니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(title)) {
+        if (StringUtil.isBlank(title)) {
             sb.append("title은 필수입니다.").append("\n");
             valid = false;
         }
-        if (StringUtils.isBlank(content)) {
+        if (StringUtil.isBlank(content)) {
             sb.append("content는 필수입니다.").append("\n");
             valid = false;
         }

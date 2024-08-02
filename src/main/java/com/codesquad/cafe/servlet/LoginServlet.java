@@ -1,10 +1,11 @@
 package com.codesquad.cafe.servlet;
 
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.model.UserPrincipal;
-import com.codesquad.cafe.util.StringUtils;
+import com.codesquad.cafe.util.StringUtil;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoginServlet extends UserServlet {
+public class LoginServlet extends HttpServlet {
 
     public static final String SESSION_USER_PRINCIPAL_KEY = "userPrincipal";
 
@@ -39,7 +40,7 @@ public class LoginServlet extends UserServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+        if (StringUtil.isBlank(username) || StringUtil.isBlank(password)) {
             handleLoginFail(req, resp, "아이디 또는 비밀번호가 틀립니다. 다시 로그인 해주세요.");
             return;
         }

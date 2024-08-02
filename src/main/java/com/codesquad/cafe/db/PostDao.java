@@ -1,15 +1,24 @@
 package com.codesquad.cafe.db;
 
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.PostDetailsDto;
-import com.codesquad.cafe.db.rowmapper.PostDetailsDtoRowMapper;
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.PostDetail;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.db.rowmapper.PostDetailRowMapper;
 import com.codesquad.cafe.db.rowmapper.PostRowMapper;
+import com.codesquad.cafe.db.rowmapper.PostWithAuthorRowMapper;
+import com.codesquad.cafe.db.rowmapper.RowMapper;
 import com.codesquad.cafe.exception.DBException;
 import com.codesquad.cafe.exception.NoSuchDataException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +30,15 @@ public class PostDao implements PostRepository {
 
     private final PostRowMapper postRowMapper;
 
-    private final PostDetailsDtoRowMapper postDetailsDtoRowMapper;
+    private final PostWithAuthorRowMapper postWithAuthorRowMapper;
+
+    private final PostDetailRowMapper postDetailRowMapper;
 
     public PostDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.postRowMapper = new PostRowMapper();
-        this.postDetailsDtoRowMapper = new PostDetailsDtoRowMapper();
+        this.postWithAuthorRowMapper = new PostWithAuthorRowMapper();
+        this.postDetailRowMapper = new PostDetailRowMapper();
     }
 
     @Override
@@ -101,6 +113,31 @@ public class PostDao implements PostRepository {
         return findById(post.getId()).get();
     }
 
+    public void updateDeleted(Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        Map<String, Consumer<PreparedStatement>> sqls = new HashMap<>();
+        sqls.put("UPDATE `comment` SET deleted = true, updated_at = ? WHERE post_id = ?", ps -> {
+            try {
+                ps.setTimestamp(1, Timestamp.valueOf(now));
+                ps.setLong(2, id);
+            } catch (SQLException e) {
+                log.warn("error while prepare statement update deleted comment");
+                throw new DBException("fail to prepare statement PostDao.updateDeleted");
+            }
+        });
+        sqls.put("UPDATE `post` SET deleted = true, updated_at = ? WHERE id = ?", ps -> {
+            try {
+                ps.setTimestamp(1, Timestamp.valueOf(now));
+                ps.setLong(2, id);
+            } catch (SQLException e) {
+                log.warn("error while prepare statement update deleted post");
+                throw new DBException("fail to prepare statement PostDao.updateDeleted");
+            }
+        });
+
+        jdbcTemplate.executeUpdateInTransaction(sqls);
+    }
+
 
     @Override
     public Optional<Post> findById(Long id) {
@@ -126,7 +163,12 @@ public class PostDao implements PostRepository {
                 log.warn("error while prepare statement : {}", sql);
                 throw new DBException("fail to prepare statement PostDao.existsById");
             }
-        }, rs -> rs.getBoolean(1));
+        }, new RowMapper<Boolean>() {
+            @Override
+            public Boolean mapRow(ResultSet rs) throws SQLException {
+                return rs.getBoolean(1);
+            }
+        });
     }
 
     @Override
@@ -140,7 +182,7 @@ public class PostDao implements PostRepository {
     }
 
     @Override
-    public Page<PostDetailsDto> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize) {
+    public Page<PostWithAuthor> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize) {
         if (pageNum < 1 || pageSize < 1) {
             throw new IllegalArgumentException("page num and page size should be greater than 0");
         }
@@ -158,9 +200,10 @@ public class PostDao implements PostRepository {
                 + "p.updated_at as p_updated_at, "
                 + "p.deleted as p_deleted "
                 + "FROM `post` p LEFT JOIN `user` u ON p.author_id = u.id "
+                + "WHERE p.deleted = false "
                 + "ORDER BY p.created_at DESC "
                 + "LIMIT ? OFFSET ?";
-        List<PostDetailsDto> posts = jdbcTemplate.queryForList(
+        List<PostWithAuthor> posts = jdbcTemplate.queryForList(
                 sql,
                 ps -> {
                     try {
@@ -170,7 +213,7 @@ public class PostDao implements PostRepository {
                         log.warn("error while prepare statement : {}", sql);
                         throw new DBException("fail to prepare statement PostDao.PostDetailsDto");
                     }
-                }, postDetailsDtoRowMapper);
+                }, postWithAuthorRowMapper);
         return Page.of(posts, pageNum, pageSize, totalElements);
     }
 
@@ -199,11 +242,16 @@ public class PostDao implements PostRepository {
     public int countAll() {
         String sql = "SELECT count(*) FROM `post`";
         return jdbcTemplate.queryForObject(sql, ps -> {
-        }, rs -> rs.getInt(1));
+        }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs) throws SQLException {
+                return rs.getInt(1);
+            }
+        });
     }
 
     @Override
-    public Optional<PostDetailsDto> findPostWithAuthorById(Long id) {
+    public Optional<PostWithAuthor> findPostWithAuthorById(Long id) {
         String sql = "SELECT "
                 + "p.id as p_id, "
                 + "p.title as p_title, "
@@ -217,7 +265,7 @@ public class PostDao implements PostRepository {
                 + "p.deleted as p_deleted "
                 + "FROM `post` p LEFT JOIN `user` u ON p.author_id = u.id "
                 + "WHERE p.id = ?";
-        PostDetailsDto post = jdbcTemplate.queryForObject(
+        PostWithAuthor post = jdbcTemplate.queryForObject(
                 sql,
                 ps -> {
                     try {
@@ -226,7 +274,47 @@ public class PostDao implements PostRepository {
                         log.warn("error while prepare statement : {}", sql);
                         throw new DBException("fail to prepare statement PostDao.findPostWithAuthorById");
                     }
-                }, postDetailsDtoRowMapper);
+                }, postWithAuthorRowMapper);
+        return Optional.ofNullable(post);
+    }
+
+    @Override
+    public Optional<PostDetail> findPostDetailById(Long id) {
+        String sql = "SELECT "
+                + "p.id as p_id, "
+                + "p.title as p_title, "
+                + "p.content as p_content, "
+                + "p.filename as p_filename, "
+                + "p.view as p_view, "
+                + "p.author_id as p_author_id, "
+                + "u.username as u_username, "
+                + "p.created_at as p_created_at, "
+                + "p.updated_at as p_updated_at, "
+                + "p.deleted as p_deleted, "
+                + "c.id as c_id, "
+                + "c.post_id as c_post_id, "
+                + "c.parent_id as c_parent_id, "
+                + "c.user_id as c_user_id, "
+                + "c.content as c_content, "
+                + "c.created_at as c_created_at, "
+                + "c.updated_at as c_updated_at, "
+                + "c.deleted as c_deleted, "
+                + "cu.username as cu_username "
+                + "FROM `post` p LEFT JOIN `user` u ON p.author_id = u.id AND p.deleted = false "
+                + "LEFT JOIN `comment` c ON p.id = c.post_id AND c.deleted = false "
+                + "LEFT JOIN `user` cu ON c.user_id = cu.id "
+                + "WHERE p.id = ? "
+                + "ORDER BY coalesce(parent_id, c.id), c.created_at";
+        PostDetail post = jdbcTemplate.queryForObject(
+                sql,
+                ps -> {
+                    try {
+                        ps.setLong(1, id);
+                    } catch (SQLException e) {
+                        log.warn("error while prepare statement : {}", sql);
+                        throw new DBException("fail to prepare statement PostDao.findPostWithAuthorById");
+                    }
+                }, postDetailRowMapper);
         return Optional.ofNullable(post);
     }
 

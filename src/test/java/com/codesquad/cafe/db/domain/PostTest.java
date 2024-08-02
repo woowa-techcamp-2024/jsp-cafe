@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db.entity;
+package com.codesquad.cafe.db.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
 

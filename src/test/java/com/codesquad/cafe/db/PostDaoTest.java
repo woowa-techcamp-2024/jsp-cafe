@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.PostDetailsDto;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.db.domain.User;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
@@ -149,7 +149,7 @@ class PostDaoTest {
         postDao.save(Post.of(user.getId(), "fifth-title", "fifth-content", "fifth-filename"));
 
         //when
-        Page<PostDetailsDto> page = postDao.findPostWithAuthorByPageSortByCreatedAtDesc(1, 2);
+        Page<PostWithAuthor> page = postDao.findPostWithAuthorByPageSortByCreatedAtDesc(1, 2);
 
         //then
         assertEquals(2, page.getActualSize());
@@ -157,8 +157,8 @@ class PostDaoTest {
         assertEquals(2, page.getPageSize());
         assertTrue(page.getIsFirstPage());
         assertFalse(page.getIsLastPage());
-        PostDetailsDto firstPost = page.getContent().get(0);
-        PostDetailsDto secondPost = page.getContent().get(1);
+        PostWithAuthor firstPost = page.getContent().get(0);
+        PostWithAuthor secondPost = page.getContent().get(1);
         assertTrue(firstPost.getCreatedAt().isAfter(secondPost.getCreatedAt()));
         assertEquals("fifth-title", firstPost.getTitle());
         assertEquals("fourth-title", secondPost.getTitle());
@@ -176,7 +176,7 @@ class PostDaoTest {
         postDao.save(Post.of(user.getId(), "fifth-title", "fifth-content", "fifth-filename"));
 
         //when
-        Page<PostDetailsDto> page = postDao.findPostWithAuthorByPageSortByCreatedAtDesc(3, 2);
+        Page<PostWithAuthor> page = postDao.findPostWithAuthorByPageSortByCreatedAtDesc(3, 2);
 
         //then
         assertEquals(1, page.getActualSize());
@@ -184,7 +184,7 @@ class PostDaoTest {
         assertEquals(2, page.getPageSize());
         assertFalse(page.getIsFirstPage());
         assertTrue(page.getIsLastPage());
-        PostDetailsDto post = page.getContent().get(0);
+        PostWithAuthor post = page.getContent().get(0);
         assertEquals("first-title", post.getTitle());
     }
 
@@ -202,6 +202,24 @@ class PostDaoTest {
         //when & then
         assertThrows(IllegalArgumentException.class, () ->
                 postDao.findPostWithAuthorByPageSortByCreatedAtDesc(4, 2));
+    }
+
+    @DisplayName("게시글 페이지 조회- 삭제된 포스트 제외")
+    @Test
+    void findPostWithAuthorByPageSortByCreatedAtDescExcludeDeletedPost() {
+        //given
+        postDao.deleteAll();
+        postDao.save(Post.of(user.getId(), "first-title", "first-content", "first-filename"));
+        postDao.save(Post.of(user.getId(), "second-title", "second-content", "second-filename"));
+        postDao.save(Post.of(user.getId(), "third-title", "third-content", "third-filename"));
+        postDao.save(Post.of(user.getId(), "fourth-title", "fourth-content", "fourth-filename"));
+        Post post = postDao.save(Post.of(user.getId(), "fifth-title", "fifth-content", "fifth-filename"));
+        post.delete();
+        postDao.save(post);
+
+        //when & then
+        Page<PostWithAuthor> posts = postDao.findPostWithAuthorByPageSortByCreatedAtDesc(1, 1);
+        assertEquals("fourth-title", posts.getContent().get(0).getTitle());
     }
 
     @DisplayName("게시글 삭제")
@@ -270,11 +288,11 @@ class PostDaoTest {
         createPost();
 
         //when
-        Optional<PostDetailsDto> optionalPost = postDao.findPostWithAuthorById(post.getId());
+        Optional<PostWithAuthor> optionalPost = postDao.findPostWithAuthorById(post.getId());
 
         //then
         assertTrue(optionalPost.isPresent());
-        PostDetailsDto postWithDetail = optionalPost.get();
+        PostWithAuthor postWithDetail = optionalPost.get();
         assertNotNull(postWithDetail.getPostId());
         assertEquals(user.getId(), postWithDetail.getAuthorId());
         assertEquals(user.getUsername(), postWithDetail.getAuthorUsername());
@@ -286,7 +304,7 @@ class PostDaoTest {
     void update() {
         //given
         createPost();
-        post.update("updated-content", "updated-title", "updated-filename");
+        post.update("updated-title", "updated-content", "updated-filename");
 
         //when
         Post updatedPost = postDao.save(post);

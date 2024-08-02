@@ -1,5 +1,3 @@
-create database if not exists cafe;
-use cafe;
 CREATE TABLE IF NOT EXISTS `user`
 (
     `id`         bigint       NOT NULL AUTO_INCREMENT,
@@ -32,6 +30,27 @@ CREATE TABLE IF NOT EXISTS `post`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `comment`
+(
+    `id`         bigint       NOT NULL AUTO_INCREMENT,
+    `post_id`    bigint       NOT NULL,
+    `parent_id`  bigint DEFAULT NULL,
+    `user_id`    bigint       NOT NULL,
+    `content`    varchar(300) NOT NULL,
+    `created_at` datetime     NOT NULL,
+    `updated_at` datetime     NOT NULL,
+    `deleted`    tinyint      NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `post_id` (`post_id`),
+    KEY `parent_id` (`parent_id`),
+    KEY `user_id` (`user_id`),
+    CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
+    CONSTRAINT `comment_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+    CONSTRAINT `comment_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `comment` (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 7
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
 # REPLACE INTO `user` (id, username, password, name, email, created_at, updated_at)
 # VALUES (1, "woowa2024", "woowa1234", "kimwoowa", "woowa@gmail.com", now(), now());
 # REPLACE INTO `post` (id, author_id, title, content, view, created_at, updated_at)
@@ -51,3 +70,11 @@ CREATE TABLE IF NOT EXISTS `post`
 #        (10, 1, 'Tenth Post', 'This is the content of the tenth post.', 100, '2024-01-10 19:00:00',
 #         '224-01-11 10:00:00');
 #
+
+# REPLACE INTO `comment` (`id`, `post_id`, `parent_id`, `user_id`, `content`, `created_at`, `updated_at`, `deleted`)  VALUES
+#(1, 1, NULL, 1, '좋은 글 감사합니다', '2024-08-01 23:23:07', '2024-08-01 23:23:07', 0),
+#(2, 1, 1, 2, '좋아여', '2024-08-01 23:23:07', '2024-08-01 23:23:07', 0),
+#(3, 1, 2, 12, '넵', '2024-08-01 23:23:07', '2024-08-01 23:23:07', 0),
+#(4, 1, NULL, 1, '호호', '2024-08-01 23:23:07', '2024-08-01 23:23:07', 0),
+#(5, 1, 4, 12, '좋은 밤 되세요', '2024-08-01 23:23:07', '2024-08-01 23:23:07', 0),
+#(6, 1, NULL, 13, '화이팅', '2024-08-01 23:23:07', '2024-08-01 23:23:07', 0);

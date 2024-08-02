@@ -10,8 +10,8 @@ import com.codesquad.cafe.SavedHttpResponse;
 import com.codesquad.cafe.TestUtil;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.User;
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ class IndexServletTest extends E2ETestBase {
 
     private static PostRepository postRepository;
 
-    private static final String path = "/";
+    private static final String path = "/home";
 
     private User user;
 
@@ -53,7 +53,6 @@ class IndexServletTest extends E2ETestBase {
         posts.add(postRepository.save(Post.of(user.getId(), "title2", "content2", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title3", "content3", null)));
         posts.add(postRepository.save(Post.of(user.getId(), "title4", "content4", null)));
-
     }
 
     @AfterEach
@@ -154,5 +153,15 @@ class IndexServletTest extends E2ETestBase {
 
         //then
         assertErrorPageResponse(response, 405);
+    }
+
+    @Test
+    @DisplayName("매핑되지 않은 url 요청시 404 응답한다.")
+    void testUnmappedUrlReturn404() throws IOException, URISyntaxException {
+        //when
+        HttpResponse response = post("/unknown", "");
+
+        //then
+        assertErrorPageResponse(response, 404);
     }
 }

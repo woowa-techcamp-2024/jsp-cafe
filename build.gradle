@@ -20,6 +20,10 @@ dependencies {
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
 
+    compileOnly 'org.apache.tomcat:tomcat-dbcp:10.0.23'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+
     implementation 'mysql:mysql-connector-java:8.0.33'
 
     implementation 'ch.qos.logback:logback-classic:1.4.12'
@@ -28,8 +32,8 @@ dependencies {
     testImplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.0.23'
     testImplementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.0.23'
     testImplementation 'org.apache.tomcat.embed:tomcat-embed-el:10.0.23'
-    testImplementation 'org.apache.httpcomponents:httpclient:4.5.13'
     testImplementation 'org.apache.tomcat:tomcat-dbcp:10.0.23'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.13'
     testImplementation 'org.apache.tomcat:tomcat-jdbc:10.0.23'
 
     // test - h2 db

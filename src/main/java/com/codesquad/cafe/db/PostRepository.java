@@ -1,8 +1,9 @@
 package com.codesquad.cafe.db;
 
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.PostDetail;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
 import com.codesquad.cafe.exception.UnsupportedDBOperationException;
-import com.codesquad.cafe.db.entity.Post;
-import com.codesquad.cafe.db.entity.PostDetailsDto;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ public interface PostRepository {
 
     Optional<Post> findById(Long id);
 
-    default boolean existsById(Long id){
+    default boolean existsById(Long id) {
         throw new UnsupportedDBOperationException("existsById is not supported");
     }
 
@@ -20,9 +21,9 @@ public interface PostRepository {
 
     List<Post> findAll();
 
-    Page<PostDetailsDto> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize);
+    Page<PostWithAuthor> findPostWithAuthorByPageSortByCreatedAtDesc(int pageNum, int pageSize);
 
-    Optional<PostDetailsDto> findPostWithAuthorById(Long id);
+    Optional<PostWithAuthor> findPostWithAuthorById(Long id);
 
     void deleteAll();
 
@@ -32,6 +33,14 @@ public interface PostRepository {
 
     default void addView(Post post) {
         throw new UnsupportedDBOperationException("addView is not supported");
+    }
+
+    default Optional<PostDetail> findPostDetailById(Long id) {
+        throw new UnsupportedDBOperationException("addView is not supported");
+    }
+
+    default void updateDeleted(Long id) {
+        throw new UnsupportedDBOperationException("updateDeleted is not supported");
     }
 
 }

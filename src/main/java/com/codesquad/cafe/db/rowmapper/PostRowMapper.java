@@ -1,6 +1,6 @@
 package com.codesquad.cafe.db.rowmapper;
 
-import com.codesquad.cafe.db.entity.Post;
+import com.codesquad.cafe.db.domain.Post;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -19,4 +19,5 @@ public class PostRowMapper implements RowMapper<Post> {
                     rs.getTimestamp("updated_at").toLocalDateTime(),
                     rs.getBoolean("deleted"));
     }
+
 }

@@ -11,10 +11,11 @@ public final class SessionUtil {
 
     public static UserPrincipal getUserPrincipal(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if(session == null){
+        if (session == null) {
             return null;
         }
         return ((UserPrincipal) session.getAttribute(
                 LoginServlet.SESSION_USER_PRINCIPAL_KEY));
     }
+
 }

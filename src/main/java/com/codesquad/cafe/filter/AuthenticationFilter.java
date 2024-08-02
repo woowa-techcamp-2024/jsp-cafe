@@ -24,9 +24,12 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         targets = new HashMap<>();
-        targets.put(Pattern.compile("/users/edit"), List.of("GET", "POST"));
-        targets.put(Pattern.compile("/posts/create"), List.of("GET", "POST"));
-        targets.put(Pattern.compile("/users"), List.of("POST"));
+        targets.put(Pattern.compile("/posts/create"), List.of("GET"));
+        targets.put(Pattern.compile("^/posts(/([1-9]*(/edit)?)?)?$"), List.of("GET", "POST", "DELETE", "PUT"));
+        targets.put(Pattern.compile("^/users(/([1-9]+)?)?$"), List.of("GET"));
+        targets.put(Pattern.compile("^/comments(/([1-9]+)?)?$"), List.of("POST", "PUT", "DELETE"));
+        targets.put(Pattern.compile("/me"), List.of("GET", "POST", "PUT", "DELETE"));
+        targets.put(Pattern.compile("/me/edit"), List.of("GET"));
         targets.put(Pattern.compile("/logout"), List.of("GET", "POST"));
     }
 
