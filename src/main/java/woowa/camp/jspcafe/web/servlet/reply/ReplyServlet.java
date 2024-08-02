@@ -65,8 +65,6 @@ public class ReplyServlet extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.getWriter().write(result);
-        resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        resp.sendRedirect(req.getContextPath() + "/");
         log.debug("ReplyServlet doPost end");
     }
 
