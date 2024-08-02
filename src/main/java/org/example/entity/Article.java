@@ -1,5 +1,7 @@
 package org.example.entity;
 
+import java.util.List;
+
 public class Article {
 
     private Integer articleId;
@@ -51,5 +53,11 @@ public class Article {
 
     public boolean isOwner(String userId) {
         return author.equals(userId);
+    }
+
+    public boolean replyAll(List<Reply> replies) {
+        // 글쓴 사람만이 댓글을 달았는지 참고
+        return replies.stream()
+            .allMatch(reply -> reply.isOwner(author));
     }
 }

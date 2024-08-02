@@ -7,10 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import org.example.entity.Article;
+import org.example.entity.Reply;
 import org.example.service.ArticleService;
 import org.example.exception.NotSameAuthorException;
+import org.example.service.ReplyService;
 import org.example.util.BodyParser;
 import org.example.util.LoggerUtil;
 import org.example.util.SessionUtil;
@@ -21,6 +24,7 @@ import org.slf4j.Logger;
 public class SingleArticleServlet extends HttpServlet {
 
     private final ArticleService articleService = new ArticleService();
+    private final ReplyService replyService = new ReplyService();
     private final Logger logger = LoggerUtil.getLogger();
 
     @Override
@@ -42,7 +46,19 @@ public class SingleArticleServlet extends HttpServlet {
             return;
         }
 
+        List<Reply> replyList = replyService.findRepliesByArticleId(article.getArticleId());
+        logger.info("uri: {}", request.getRequestURI());
+        if(request.getRequestURI().endsWith("/replies")){
+            logger.info("replies: {}", articleId);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            String json = new JSONObject().put("replies", replyList).toString();
+            response.getWriter().write(json);
+            return;
+        }
+
         request.setAttribute("article", article);
+        request.setAttribute("replies", replyList);
         request.getRequestDispatcher("/WEB-INF/article.jsp").forward(request, response);
     }
 
@@ -64,10 +80,8 @@ public class SingleArticleServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             request.getRequestDispatcher("/WEB-INF/error/not-same-author.jsp").forward(request, response);
             return;
-        }catch (Exception e){
-            e.printStackTrace();
         }
-        logger.info("게시글 삭제 완료");
+        logger.info("delete success");
     }
 
     @Override
@@ -95,8 +109,9 @@ public class SingleArticleServlet extends HttpServlet {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
 
-        if (path.endsWith("/updateForm")) {
+        if (path.endsWith("/updateForm") || path.endsWith("/replies")) {
             path = path.replace("/updateForm", "");
+            path = path.replace("/replies", "");
         }
 
         String[] pathSplit = path.split("/");
