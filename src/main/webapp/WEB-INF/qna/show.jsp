@@ -34,16 +34,25 @@
                         </div>
                     </div>
                     <div class="article-doc">
-                        <p><%=post.getContents()%></p>
+                        <%
+                            var contents = post.getContents().split("\n");
+                            for(var content : contents){
+
+                        %><p><%=content%></p>
+                        <%
+                            }
+                        %>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="#">수정</a>
+                                <a class="link-modify-article" id="updateButton" href="/api/post/update?postId=<%=post.getId()%>">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="#" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
+                                <form class="form-delete" action="/api/post" method="POST">
+                                    <input type="hidden" name="method" value="DELETE">
+                                    <input type="hidden" name="postId" value="<%=post.getId()%>">
+                                    <input type="hidden" name="memberId" value="<%=post.getMemberId()%>">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
@@ -152,7 +161,7 @@
                     <a class="link-modify-article" href="#">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="# method="POST">
+                    <form class="delete-answer-form" action="#" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>
@@ -161,6 +170,7 @@
         </div>
     </article>
 </script>
+
 
 <!-- script references -->
 <script src="<%= request.getContextPath() %>/js/jquery-2.2.0.min.js"></script>

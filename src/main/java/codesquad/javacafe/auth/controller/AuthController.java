@@ -42,6 +42,7 @@ public class AuthController implements SubController {
 				session.setAttribute("loginInfo", loginInfo);
 				session.setMaxInactiveInterval(30 * 60); // 세션 30분 설정
 
+
 				redirectMainPage(req, res);
 				break;
 			}

@@ -25,8 +25,6 @@ public class MemberRepository {
     public void save(Member member) {
         log.debug("[Member] {}",member);
 
-
-
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -57,6 +55,7 @@ public class MemberRepository {
             if (rs.next()) {
                 pk = rs.getLong(1);
             }
+            member.setId(pk);
 
             log.debug("[Member Save] pk = {}",pk);
 
