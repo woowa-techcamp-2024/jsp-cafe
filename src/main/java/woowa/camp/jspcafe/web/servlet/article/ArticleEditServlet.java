@@ -55,7 +55,6 @@ public class ArticleEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("ArticleEditServlet doPost start");
-
         String method = req.getParameter("_method");
         if ("PUT".equalsIgnoreCase(method)) {
             doPut(req, resp);
@@ -66,7 +65,6 @@ public class ArticleEditServlet extends HttpServlet {
             doDelete(req, resp);
             return;
         }
-
         log.debug("ArticleEditServlet doPost end");
     }
 

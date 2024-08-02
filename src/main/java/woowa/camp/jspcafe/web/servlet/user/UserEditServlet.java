@@ -39,7 +39,6 @@ public class UserEditServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("userUpdateServlet doGet start");
-
         Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/users/edit/{userId}",
                 req.getRequestURI());
         Long userId = Long.parseLong(pathVariables.get("userId"));
@@ -48,7 +47,7 @@ public class UserEditServlet extends HttpServlet {
         User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
         if (isUnAuthorization(sessionUser, userId)) {
             log.warn("[UnAuthorization] 비인가 사용자입니다. - {}, {}", userId, sessionUser);
-            resp.sendRedirect("/");
+            resp.sendRedirect(req.getContextPath() + "/");
             return;
         }
 
@@ -63,7 +62,6 @@ public class UserEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("userUpdateServlet doPost start");
-
         Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/users/edit/{userId}",
                 req.getRequestURI());
         Long userId = Long.parseLong(pathVariables.get("userId"));
@@ -72,12 +70,11 @@ public class UserEditServlet extends HttpServlet {
         User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
         if (isUnAuthorization(sessionUser, userId)) {
             log.warn("[UnAuthorization] 비인가 사용자입니다. - {}, {}", userId, sessionUser);
-            resp.sendRedirect("/");
+            resp.sendRedirect(req.getContextPath() + "/");
             return;
         }
 
         String password = req.getParameter("password");
-        log.debug("기존 비밀번호 : {}", password);
         String newNickname = req.getParameter("newNickname");
         String newPassword = req.getParameter("newPassword");
         UserUpdateRequest updateRequest = new UserUpdateRequest(newPassword, newNickname);
@@ -85,7 +82,6 @@ public class UserEditServlet extends HttpServlet {
         userService.updateUserProfile(userId, password, updateRequest);
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/users");
-
         log.debug("userUpdateServlet doPost end");
     }
 

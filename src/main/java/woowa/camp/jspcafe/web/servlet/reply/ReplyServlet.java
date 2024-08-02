@@ -36,18 +36,16 @@ public class ReplyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.info("ReplyServlet doGet start");
+        log.debug("ReplyServlet doGet start");
         Long articleId = Long.parseLong(req.getParameter("articleId"));
         List<ReplyResponse> replies = replyService.findReplyList(articleId);
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(replies);
-        log.info("result - {}", result);
 
         resp.setContentType("application/json");
         resp.getWriter().write(result);
-
-        log.info("ReplyServlet doGet end");
+        log.debug("ReplyServlet doGet end");
     }
 
     @Override
@@ -59,21 +57,17 @@ public class ReplyServlet extends HttpServlet {
         Long articleId = Long.parseLong(req.getParameter("articleId"));
         String content = req.getParameter("content");
 
-        log.info("sessionUser: " + sessionUser + ", articleId: " + articleId + ", content: " + content);
-
         ReplyWriteRequest replyWriteRequest = new ReplyWriteRequest(sessionUser.getId(), articleId, content);
         ReplyResponse replyResponse = replyService.writeReply(replyWriteRequest);
-        log.info("댓글 작성 성공 = {}", replyResponse);
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(replyResponse);
-        log.info("result - {}", result);
 
         resp.setContentType("application/json");
         resp.getWriter().write(result);
-        log.debug("ReplyServlet doPost end");
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         resp.sendRedirect(req.getContextPath() + "/");
+        log.debug("ReplyServlet doPost end");
     }
 
     @Override

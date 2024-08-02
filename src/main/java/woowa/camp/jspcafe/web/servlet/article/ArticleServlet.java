@@ -62,13 +62,11 @@ public class ArticleServlet extends HttpServlet {
         int currentPage = 1;
         int totalPage = 10;
         String pageParam = req.getParameter("page");
-        log.info("pageParam: " + pageParam);
 
         if (pageParam != null && !pageParam.isEmpty()) {
             currentPage = Integer.parseInt(pageParam);
         }
         List<ArticlePreviewResponse> articles = articleService.findArticleList(currentPage);
-        log.info("articles = {}", articles);
 
         req.setAttribute("currentPage", currentPage);
         req.setAttribute("totalPages", totalPage);
@@ -85,8 +83,6 @@ public class ArticleServlet extends HttpServlet {
         Long articleId = Long.parseLong(pathVariables.get("id"));
         ArticleDetailsResponse articleDetails = articleService.findArticleDetails(articleId);
         List<ReplyResponse> replies = replyService.findReplyList(articleId);
-        log.info("게시글 - {}", articleDetails);
-        log.info("조회한 댓글들 - {}", replies);
 
         req.setAttribute("article", articleDetails);
         req.setAttribute("comments", replies);
