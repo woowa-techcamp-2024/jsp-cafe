@@ -2,15 +2,16 @@ package woowa.camp.jspcafe.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.UserException;
-import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.repository.dto.request.UserUpdateRequest;
-import woowa.camp.jspcafe.service.dto.request.RegistrationRequest;
-import woowa.camp.jspcafe.repository.dto.response.UserResponse;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
+import woowa.camp.jspcafe.repository.dto.request.UserUpdateRequest;
+import woowa.camp.jspcafe.repository.dto.response.UserResponse;
+import woowa.camp.jspcafe.repository.user.UserRepository;
+import woowa.camp.jspcafe.service.dto.request.RegistrationRequest;
 
 public class UserService {
 
@@ -24,7 +25,11 @@ public class UserService {
     }
 
     public User registration(final RegistrationRequest registrationRequest) {
-        // TODO: 회원 가입 검증 기능
+        Optional<User> userByEmail = userRepository.findByEmail(registrationRequest.email());
+        if (userByEmail.isPresent()) {
+            throw new UserException("이미 가입된 이메일입니다.");
+        }
+
         User user = new User(
                 registrationRequest.email(),
                 registrationRequest.nickname(),
