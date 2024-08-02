@@ -1,5 +1,6 @@
 package com.codesquad.cafe.config;
 
+import com.codesquad.cafe.db.CommentDao;
 import com.codesquad.cafe.db.JdbcTemplate;
 import com.codesquad.cafe.db.PostDao;
 import com.codesquad.cafe.db.UserDao;
@@ -45,6 +46,7 @@ public class AppContextListener implements ServletContextListener {
         sce.setAttribute("jdbcTemplate", jdbcTemplate);
         sce.setAttribute("userRepository", new UserDao(jdbcTemplate));
         sce.setAttribute("postRepository", new PostDao(jdbcTemplate));
+        sce.setAttribute("commentDao", new CommentDao(jdbcTemplate));
     }
 
     public void createTable(DataSource ds) throws SQLException, IOException {
