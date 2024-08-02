@@ -1,11 +1,9 @@
-package com.codesquad.cafe.db.entity;
+package com.codesquad.cafe.db.domain;
 
+import com.codesquad.cafe.util.DateTimeFormatUtil;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class PostDetailsDto {
-
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+public class PostWithAuthor {
 
     private Long postId;
 
@@ -27,7 +25,7 @@ public class PostDetailsDto {
 
     private boolean deleted;
 
-    public PostDetailsDto(Long postId,
+    public PostWithAuthor(Long postId,
                           String title,
                           String content,
                           String fileName,
@@ -49,7 +47,7 @@ public class PostDetailsDto {
         this.deleted = deleted;
     }
 
-    public PostDetailsDto(Post post, User user) {
+    public PostWithAuthor(Post post, User user) {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -62,7 +60,7 @@ public class PostDetailsDto {
     }
 
     public String getFormattedDate() {
-        return createdAt.format(formatter);
+        return DateTimeFormatUtil.getFormattedDate(createdAt);
     }
 
     public Long getPostId() {
@@ -100,4 +98,5 @@ public class PostDetailsDto {
     public boolean isDeleted() {
         return deleted;
     }
+
 }

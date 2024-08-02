@@ -1,13 +1,14 @@
 package com.codesquad.cafe.db.rowmapper;
 
-import com.codesquad.cafe.db.entity.PostDetailsDto;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class PostDetailsDtoRowMapper implements RowMapper<PostDetailsDto> {
+public class PostWithAuthorRowMapper implements RowMapper<PostWithAuthor> {
+
     @Override
-    public PostDetailsDto mapRow(ResultSet rs) throws SQLException {
-        return new PostDetailsDto(
+    public PostWithAuthor mapRow(ResultSet rs) throws SQLException {
+        return new PostWithAuthor(
                 rs.getLong("p_id"),
                 rs.getString("p_title"),
                 rs.getString("p_content"),
@@ -20,4 +21,5 @@ public class PostDetailsDtoRowMapper implements RowMapper<PostDetailsDto> {
                 rs.getBoolean("p_deleted")
         );
     }
+
 }
