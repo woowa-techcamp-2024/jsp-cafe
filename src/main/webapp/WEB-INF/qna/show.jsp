@@ -125,6 +125,7 @@
 </div>
 
 
+<%--게시글 생성 스크립트--%>
 <script>
     function postComment() {
         console.log("create comment called");
@@ -177,6 +178,7 @@
     }
 </script>
 
+<%-- 댓글 요청 스크립트--%>
 <script>
     window.onload = function () {
         loadCommentList();
@@ -201,6 +203,16 @@
     }
 </script>
 
+<%-- 게시글 삭제 --%>
+<script>
+    // $(".answer-write input[type='submit']").on("click", addAnswer);
+    $(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer);
+
+    function deleteAnswer(){
+        
+    }
+</script>
+
 <script type="text/template" id="answerTemplate">
     <article class="article">
         <div class="article-header">
@@ -218,12 +230,9 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="#">수정</a>
-                </li>
-                <li>
                     <form class="delete-answer-form" action="#" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
+                        <button type="submit" class="delete-answer-button" id="commentDelete">삭제</button>
                     </form>
                 </li>
             </ul>
