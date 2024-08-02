@@ -30,7 +30,6 @@ public class UserTest {
         assertEquals(email, user.getEmail());
     }
 
-    // Validating a user with correct email format should pass without exceptions
     @Test
     @DisplayName("정상적인 이메일 형식이면 예외가 발생하지 않는다.")
     public void validate_user_with_correct_email_format() {

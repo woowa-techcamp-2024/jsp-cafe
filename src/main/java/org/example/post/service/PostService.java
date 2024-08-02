@@ -2,12 +2,11 @@ package org.example.post.service;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
-import org.example.post.model.dto.PostResponse;
+import org.example.post.model.dto.PostDto;
 import org.example.post.repository.PostRepository;
 
 @Component
@@ -20,31 +19,30 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public PostResponse create(Post post) throws SQLException {
-        return PostResponse.toResponse(postRepository.save(post));
+    public void create(Post post) throws SQLException {
+        postRepository.save(post);
     }
 
-    public List<PostResponse> getAll() throws SQLException {
-        return postRepository.findAll().stream()
-                .map(PostResponse::toResponse)
-                .collect(Collectors.toUnmodifiableList());
+    public List<PostDto> getAll() throws SQLException {
+        return postRepository.findAll();
     }
 
-    public PostResponse getPostById(long id) throws SQLException {
-        Post post = postRepository.findById(id);
-        if (post.getPostStatus() == PostStatus.DELETED) {
+    public PostDto getPostById(long id) throws SQLException {
+        PostDto post = postRepository.findById(id);
+        if (post.getStatus() == PostStatus.DELETED) {
             throw new IllegalArgumentException("Post with id " + id + " is deleted");
         }
-        return PostResponse.toResponse(post);
+        return post;
     }
 
-    public PostResponse updatePost(PostResponse postDto) throws SQLException {
-        Post post = Post.createWithId(postDto.getId(), postDto.getWriter(), postDto.getTitle(), postDto.getContents());
-        return PostResponse.toResponse(postRepository.update(post));
+    public void updatePost(String userId, PostDto postDto) throws SQLException {
+        Post post = Post.createWithAll(postDto.getId(), userId, postDto.getTitle(), postDto.getContents(),
+                postDto.getStatus(), postDto.getCreatedAt());
+        postRepository.update(post);
     }
 
     public void deleteById(Long id) throws SQLException {
-        // TODO: 댓글이 존재한다면 삭제 불가능 한 비즈니스 로직 추가
+        // TODO: 댓글이 존재한다면 삭제 불가능 한 비즈니스 로직 추가 단 모든 댓글이 자신이 작성한것이라면 삭제 가능
         postRepository.delete(id);
     }
 }

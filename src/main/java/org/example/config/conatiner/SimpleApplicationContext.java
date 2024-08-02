@@ -98,29 +98,6 @@ public class SimpleApplicationContext implements ApplicationContext, ServletCont
                         HandlerKey key = new HandlerKey(url, httpMethod);
                         MethodHandler methodHandler = new MethodHandler(bean, method);
 
-                        // PathVariable과 RequestParam 정보 추가
-                        Map<String, Class<?>> pathVariables = new HashMap<>();
-                        Map<String, ParameterInfo> requestParams = new HashMap<>();
-
-                        Parameter[] parameters = method.getParameters();
-                        for (Parameter parameter : parameters) {
-                            if (parameter.isAnnotationPresent(PathVariable.class)) {
-                                PathVariable pathVariable = parameter.getAnnotation(PathVariable.class);
-                                String name =
-                                        pathVariable.value().isEmpty() ? parameter.getName() : pathVariable.value();
-                                pathVariables.put(name, parameter.getType());
-                            } else if (parameter.isAnnotationPresent(RequestParam.class)) {
-                                RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-                                String name =
-                                        requestParam.value().isEmpty() ? parameter.getName() : requestParam.value();
-                                requestParams.put(name, new ParameterInfo(parameter.getType(), requestParam.required(),
-                                        requestParam.defaultValue()));
-                            }
-                        }
-
-                        methodHandler.setPathVariables(pathVariables);
-                        methodHandler.setRequestParams(requestParams);
-
                         currentHandlerMap.put(key, methodHandler);
                         logger.info("Mapped \"{}\" onto {}", key, method);
                     }

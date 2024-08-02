@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 import java.util.*;
 
-@WebFilter("/questions/*")
+@WebFilter("/*")
 public class PutRequestFilter implements Filter {
 
     @Override
@@ -25,7 +25,7 @@ public class PutRequestFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             String method = httpRequest.getMethod();
-            if ("PUT".equalsIgnoreCase(method)) {
+            if ("PUT".equalsIgnoreCase(method) || "POST".equalsIgnoreCase(method)) {
                 request = new PutRequestWrapper(httpRequest);
             }
         }

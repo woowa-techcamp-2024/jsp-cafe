@@ -1,5 +1,6 @@
 package org.example.member.controller;
 
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.config.HttpMethod;
@@ -10,9 +11,10 @@ import org.example.config.annotation.RequestMapping;
 import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
 import org.example.member.model.dao.User;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.member.service.UserQueryService;
 import org.example.member.service.UserService;
+import org.example.util.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,17 +25,19 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     private final UserQueryService userQueryService;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public UserController(UserService userService, UserQueryService userQueryService) {
+    public UserController(UserService userService, UserQueryService userQueryService, SessionManager sessionManager) {
         this.userService = userService;
         this.userQueryService = userQueryService;
+        this.sessionManager = sessionManager;
     }
 
     @RequestMapping(method = HttpMethod.GET)
     public ModelAndView getUserList() throws SQLException {
         ModelAndView mv = new ModelAndView("user/UserList");
-        List<UserResponseDto> allUsers = userQueryService.findAllUsers();
+        List<UserDto> allUsers = userQueryService.findAllUsers();
         mv.addAttribute("users", allUsers);
         return mv;
     }
@@ -42,7 +46,7 @@ public class UserController {
     public ModelAndView showEditForm(@PathVariable(value = "id") String userId) throws SQLException {
         logger.info("userId: {}", userId);
         ModelAndView mv = new ModelAndView("user/UserEditForm");
-        UserResponseDto response = userQueryService.findUserByUserId(userId);
+        UserDto response = userQueryService.findUserByUserId(userId);
         mv.addAttribute("user", response);
         return mv;
     }
@@ -51,7 +55,7 @@ public class UserController {
     public ModelAndView showUserProfile(@PathVariable(value = "id") String userId) throws SQLException {
         logger.info("userId: {}", userId);
         ModelAndView mv = new ModelAndView("user/UserProfile");
-        UserResponseDto response = userQueryService.findUserByUserId(userId);
+        UserDto response = userQueryService.findUserByUserId(userId);
         mv.addAttribute("user", response);
         return mv;
     }
@@ -61,17 +65,18 @@ public class UserController {
                                         @RequestParam("userId") String userId,
                                         @RequestParam("password") String password,
                                         @RequestParam("name") String name,
-                                        @RequestParam("email") String email) throws SQLException {
-        logger.info("회원가입 시도 : {}", userId);
-        ModelAndView mav = new ModelAndView("/user/UserSignup");
+                                        @RequestParam("email") String email,
+                                        HttpSession session) throws SQLException {
+        ModelAndView mv = new ModelAndView("/user/UserProfile");
         try {
-            User user = User.createUser(userId, password, name, email);
-            userService.register(user);
-            mav.addAttribute("signupError", "회원가입에 실패했습니다. 입력한 정보를 확인해주세요.");
+            User request = User.createUser(userId, password, name, email);
+            UserDto userDto = userService.editUser(profileUser, request);
+            mv.addAttribute("user", request);
+            // 세션 내 사용자 정보 업데이트 필요
+            sessionManager.updateSessionUserInfo(session, userDto);
         } catch (SQLException e) {
-            logger.error("회원가입 처리 중 오류 발생", e);
-            mav.addAttribute("signupError", "회원가입 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            logger.error("회원정보 수정 중 에러 발생", e);
         }
-        return mav;
+        return mv;
     }
 }

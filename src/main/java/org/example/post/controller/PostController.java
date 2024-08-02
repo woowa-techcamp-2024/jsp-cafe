@@ -12,9 +12,9 @@ import org.example.config.annotation.PathVariable;
 import org.example.config.annotation.RequestMapping;
 import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.post.model.dao.Post;
-import org.example.post.model.dto.PostResponse;
+import org.example.post.model.dto.PostDto;
 import org.example.post.service.PostService;
 import org.example.util.session.SessionManager;
 import org.slf4j.Logger;
@@ -36,7 +36,8 @@ public class PostController {
 
     @RequestMapping(path = "/", method = HttpMethod.GET)
     public ModelAndView list() throws SQLException {
-        List<PostResponse> postResponses = postService.getAll();
+        List<PostDto> postResponses = postService.getAll();
+        logger.info(postResponses.toString());
         ModelAndView mv = new ModelAndView("post/PostList");
         mv.addAttribute("posts", postResponses);
 
@@ -45,21 +46,21 @@ public class PostController {
 
     @RequestMapping(path = "/questions", method = HttpMethod.GET)
     public ModelAndView getQuestionForm(HttpSession session) {
-        ModelAndView mav = new ModelAndView("/post/PostForm");
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
+        ModelAndView mv = new ModelAndView("/post/PostForm");
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         if (userDetails == null) {
             return new ModelAndView("redirect:/user/login");
         }
-        mav.addAttribute("userName", userDetails.getName());
-        return mav;
+        mv.addAttribute("userName", userDetails.getName());
+        return mv;
     }
 
     @RequestMapping(path = "/questions", method = HttpMethod.POST)
     public ModelAndView addQuestion(@RequestParam("title") String title,
                                     @RequestParam("contents") String contents,
                                     HttpSession session) throws SQLException {
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
-        Post post = Post.create(userDetails.getName(), title, contents);
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
+        Post post = Post.create(userDetails.getUserId(), title, contents);
         postService.create(post);
         ModelAndView mv = new ModelAndView("redirect:/");
         return mv;
@@ -68,19 +69,22 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.GET)
     public ModelAndView getQuestion(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostDetail");
-        PostResponse post = postService.getPostById(id);
-        mv.addAttribute("isAuthor", isAuthor(session, post));
+        PostDto post = postService.getPostById(id);
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
+        mv.addAttribute("userId", userDetails.getUserId());
+        mv.addAttribute("isAuthor", isAuthor(userDetails, post));
         mv.addAttribute("post", post);
         return mv;
     }
 
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.PUT)
-    public void editQuestion(@PathVariable("id") Long id, @RequestParam("title") String title, @RequestParam("contents") String contents,
-                                     HttpServletResponse response) throws SQLException, IOException {
-        PostResponse post = postService.getPostById(id);
-        post.setTitle(title);
-        post.setContents(contents);
-        postService.updatePost(post);
+    public void editQuestion(@PathVariable("id") Long id, @RequestParam("title") String title,
+                             @RequestParam("contents") String contents,
+                             HttpSession session,
+                             HttpServletResponse response) throws SQLException, IOException {
+        PostDto post = postService.getPostById(id);
+        post.updatePost(title, contents);
+        postService.updatePost(sessionManager.getUserDetails(session.getId()).getUserId(), post);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader("X-Redirect-Location", "/questions/" + id);
         response.getWriter().write("게시글이 성공적으로 수정되었습니다.");
@@ -89,11 +93,10 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}", method = HttpMethod.DELETE)
     public void deleteQuestion(@PathVariable("id") Long id, HttpSession session, HttpServletResponse response)
             throws SQLException, IOException {
-        PostResponse post = postService.getPostById(id);
-        UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
-        //TODO: 요구사항 구체화 + 서비스단으로 이동이 맞다.
+        PostDto post = postService.getPostById(id);
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
         if (userDetails != null) {
-            if (post.getWriter().equals(userDetails.getName())) {
+            if (post.getUsername().equals(userDetails.getName())) {
                 // 삭제처리
                 postService.deleteById(id);
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -106,8 +109,9 @@ public class PostController {
     @RequestMapping(path = "/questions/{id}/form", method = HttpMethod.GET)
     public ModelAndView getQuestionEditForm(@PathVariable("id") Long id, HttpSession session) throws SQLException {
         ModelAndView mv = new ModelAndView("post/PostEditForm");
-        PostResponse post = postService.getPostById(id);
-        boolean isAuthor = isAuthor(session, post);
+        PostDto post = postService.getPostById(id);
+        UserDto userDetails = sessionManager.getUserDetails(session.getId());
+        boolean isAuthor = isAuthor(userDetails, post);
         if (!isAuthor) {
             return new ModelAndView("redirect:/questions/" + id);
         }
@@ -116,12 +120,11 @@ public class PostController {
         return mv;
     }
 
-    private boolean isAuthor(HttpSession session, PostResponse post) {
+    private boolean isAuthor(UserDto userDetails, PostDto post) {
         boolean isAuthor = false;
 
-        if (session != null) {
-            UserResponseDto userDetails = sessionManager.getUserDetails(session.getId());
-            isAuthor = userDetails.getName().equals(post.getWriter());
+        if (userDetails != null) {
+            isAuthor = userDetails.getUserId().equals(post.getUserId());
             logger.info("isAuthor: " + isAuthor);
         }
         return isAuthor;

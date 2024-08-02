@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dao.User;
+import org.example.member.model.dto.UserDto;
 import org.example.member.repository.UserRepository;
 
 @Component
@@ -18,13 +19,17 @@ public class UserQueryService {
         this.userRepository = userRepository;
     }
 
-    public List<UserResponseDto> findAllUsers() throws SQLException {
+    public List<UserDto> findAllUsers() throws SQLException {
         return userRepository.findAllUsers()
-                .stream().map(UserResponseDto::toResponse)
+                .stream().map(UserDto::toResponse)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public UserResponseDto findUserByUserId(String userId) throws SQLException {
-        return UserResponseDto.toResponse(userRepository.findUserByUserId(userId));
+    public UserDto findUserByUserId(String userId) throws SQLException {
+        User userByUserId = userRepository.findUserByUserId(userId);
+        if (userByUserId == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        return UserDto.toResponse(userByUserId);
     }
 }

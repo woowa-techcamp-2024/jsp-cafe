@@ -19,10 +19,8 @@ public class AnnotationHandlerMapping implements HandlerMapping {
 
     @Override
     public Entry<HandlerKey, MethodHandler> getHandler(String path, HttpMethod method) {
-        logger.info("핸들러 경로 : {} {}", method, path);
         for (Entry<HandlerKey, MethodHandler> entry : handlerMap.entrySet()) {
             HandlerKey key = entry.getKey();
-            logger.info(key.toString());
             if (key.getHttpMethod() == method && UrlMatcher.match(key.getUrl(), path)) {
                 return entry;
             }

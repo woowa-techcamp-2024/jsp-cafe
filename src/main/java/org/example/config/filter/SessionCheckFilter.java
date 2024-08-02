@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 @WebFilter("/*")
 public class SessionCheckFilter implements Filter {
 
-    private static final Set<String> STATIC_PATHS = Set.of("/static/", "/js/");
+    private static final Set<String> STATIC_PATHS = Set.of("/static/", "/js/", "/images/");
     private static final Set<String> EXCLUDE_PATHS = Set.of("/", "/user/login", "/user/signup");
 
     private static final Logger logger = LoggerFactory.getLogger(SessionCheckFilter.class);

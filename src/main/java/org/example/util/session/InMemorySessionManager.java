@@ -9,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
-import org.example.member.model.dto.UserResponseDto;
+import org.example.member.model.dto.UserDto;
 import org.example.member.service.UserService;
 
 @Component
@@ -26,8 +26,12 @@ public class InMemorySessionManager implements SessionManager {
 
     @Override
     public HttpSession addSessionToManager(HttpSession session) throws SQLException {
-        String userId = (String) session.getAttribute("userId");
-        UserResponseDto user = userService.getUserFromUserId(userId);
+        Object userIdAttribute = session.getAttribute("userId");
+        if (userIdAttribute == null) {
+            throw new IllegalArgumentException();
+        }
+        String userId = (String) userIdAttribute;
+        UserDto user = userService.getUserFromUserId(userId);
 
         // 내부용 세션 객체 생성
         InternalSession internalSession = new InternalSession(session);
@@ -53,16 +57,20 @@ public class InMemorySessionManager implements SessionManager {
     }
 
     @Override
-    public UserResponseDto getUserDetails(String sessionId) {
+    public UserDto getUserDetails(String sessionId) {
         InternalSession internalSession = sessions.get(sessionId);
         if (internalSession != null) {
-            return (UserResponseDto) internalSession.getAttribute("userDetails");
+            return (UserDto) internalSession.getAttribute("userDetails");
         }
         return null;
     }
 
-    private void startCleanupTask() {
-        scheduler.scheduleAtFixedRate(this::cleanExpiredSessions, 1, 1, TimeUnit.MINUTES);
+    @Override
+    public void updateSessionUserInfo(HttpSession session, UserDto userDto) {
+        InternalSession internalSession = sessions.get(session.getId());
+        if (internalSession != null) {
+            internalSession.setAttribute("userDetails", userDto);
+        }
     }
 
     public void cleanExpiredSessions() {
@@ -83,8 +91,12 @@ public class InMemorySessionManager implements SessionManager {
                 '}';
     }
 
+    private void startCleanupTask() {
+        scheduler.scheduleAtFixedRate(this::cleanExpiredSessions, 1, 1, TimeUnit.MINUTES);
+    }
     // 내부용 세션 클래스
     private static class InternalSession {
+
         private final HttpSession originalSession;
         private final Map<String, Object> internalAttributes = new HashMap<>();
         private long lastAccessTime;
