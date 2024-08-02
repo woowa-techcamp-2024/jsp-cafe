@@ -102,6 +102,35 @@ public class JdbcTemplate {
         }
     }
 
+    public Long updateAndReturnKey(String sql, Object... values) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            for (int i = 1; i <= values.length; i++) {
+                preparedStatement.setObject(i, values[i - 1]);
+            }
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating/Updating record failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getLong(1);
+                } else {
+                    throw new SQLException("Creating/Updating record failed, no ID obtained.");
+                }
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new DbConstraintException(e);
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection);
+        }
+    }
+
     public void execute(String sql) {
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (Statement statement = connection.createStatement()) {
