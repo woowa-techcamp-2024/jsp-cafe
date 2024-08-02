@@ -26,6 +26,7 @@ public class JDBCArticleRepository implements ArticleRepository {
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContent());
             pstmt.executeUpdate();
+            pstmt.close();
             DatabaseUtils.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,4 +100,34 @@ public class JDBCArticleRepository implements ArticleRepository {
         }
         return Optional.empty();
     }
+
+    @Override
+    public void updateArticle(Article article) {
+        String sql = "UPDATE Articles SET title = ?, content = ? WHERE id = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, article.getTitle());
+            pstmt.setString(2, article.getContent());
+            pstmt.setLong(3, article.getId());
+            pstmt.executeUpdate();
+            DatabaseUtils.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteArticle(Long id) {
+        String sql = "DELETE FROM Articles WHERE id = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            DatabaseUtils.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

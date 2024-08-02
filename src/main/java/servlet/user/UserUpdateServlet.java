@@ -1,7 +1,7 @@
-package servlet;
+package servlet.user;
 
 import domain.User;
-import exception.TomcatException;
+import exception.UnAuthorizedException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -19,10 +19,10 @@ import java.io.IOException;
 
 
 @WebServlet("/users/*")
-public class ProfileServlet extends HttpServlet {
+public class UserUpdateServlet extends HttpServlet {
 
     private UserService userService;
-    Logger log = LoggerFactory.getLogger(CreateAccountServlet.class);
+    Logger log = LoggerFactory.getLogger(UserServlet.class);
 
     @Override
     public void init(ServletConfig config) {
@@ -33,38 +33,44 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("ProfileServlet doGet");
-        String pathInfo = req.getPathInfo();
-        String[] pathParts = pathInfo.split("/");
+
+        String[] pathParts = req.getPathInfo().split("/");
         Long userId = Long.parseLong(pathParts[1]);
+
+        HttpSession session = req.getSession(false);
+        AuthUtils.checkLogin(session);
+        checkAuthorization(session, userId, "수정");
 
         User user = userService.findById(userId);
         req.setAttribute("user", user);
 
-        if (pathParts.length != 2) {
-            HttpSession session = req.getSession(false);
-            if (!AuthUtils.isLoginUser(session)) {
-                resp.sendRedirect("/user/login.jsp");
-                return;
-            } else if (!((User)session.getAttribute("loginMember")).getId().equals(userId)) {
-                throw new TomcatException("다른 사용자의 정보를 수정할 수 없습니다.");
-            }
-            req.getRequestDispatcher("/user/updateForm.jsp").forward(req, resp);
-            return;
-        }
-        req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+        req.getRequestDispatcher("/user/updateForm.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("ProfileServlet doPost");
+
         String userId = req.getParameter("userId");
         String password = req.getParameter("password");
         String newPassword = req.getParameter("newPassword");
         String name = req.getParameter("name");
         String email = req.getParameter("email");
 
+        AuthUtils.checkLogin(req.getSession(false));
+        checkAuthorization(req.getSession(false), Long.parseLong(userId), "수정");
+
         log.info("userId: {}, password: {}, newPassword: {}, name: {}, email: {}", userId, password, newPassword, name, email);
         userService.changeProfile(userId, newPassword, name, email, password);
         resp.sendRedirect("/users");
     }
+
+    private void checkAuthorization(HttpSession session, Long userId, String action) {
+        // 수정(삭제) 대상과 로그인 유저가 다르면 예외 발생
+        User loginUser = (User) session.getAttribute(AuthUtils.LOGIN_MEMBER);
+        if (!loginUser.getId().equals(userId)) {
+            throw new UnAuthorizedException("다른 사용자의 정보를 " + action + "할 수 없습니다.");
+        }
+    }
+
 }

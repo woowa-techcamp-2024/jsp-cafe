@@ -1,5 +1,7 @@
 package utils;
 
+import exception.TomcatException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,7 +18,7 @@ public class DatabaseUtils {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RuntimeException("MySQL JDBC Driver not found.");
+            throw new TomcatException("MySQL JDBC Driver not found.");
         }
     }
 

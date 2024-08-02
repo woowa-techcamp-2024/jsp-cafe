@@ -1,5 +1,6 @@
-package servlet;
+package servlet.user;
 
+import domain.User;
 import dto.UsersDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -11,14 +12,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
+import utils.AuthUtils;
 
 import java.io.IOException;
 
 @WebServlet("/users")
-public class CreateAccountServlet extends HttpServlet {
+public class UserServlet extends HttpServlet {
 
     private UserService userService;
-    Logger log = LoggerFactory.getLogger(CreateAccountServlet.class);
+    Logger log = LoggerFactory.getLogger(UserServlet.class);
 
     @Override
     public void init(ServletConfig config) {
@@ -40,6 +42,16 @@ public class CreateAccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("Get /users");
+
+        String id = req.getParameter("id");
+        if(id != null) {
+            User user = userService.findById(Long.parseLong(id));
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
+            return;
+        }
+
+        AuthUtils.checkLogin(req.getSession(false));
         req.setAttribute("users", userService.findAll());
         req.getRequestDispatcher("/user/list.jsp").forward(req, resp);
     }

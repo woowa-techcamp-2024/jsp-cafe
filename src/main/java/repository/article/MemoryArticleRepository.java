@@ -33,4 +33,14 @@ public class MemoryArticleRepository implements ArticleRepository {
         return Optional.ofNullable(articleMap.get(id));
     }
 
+    @Override
+    public void updateArticle(Article article) {
+        articleMap.put(article.getId(), article);
+    }
+
+    @Override
+    public void deleteArticle(Long id) {
+        articleMap.remove(id);
+    }
+
 }

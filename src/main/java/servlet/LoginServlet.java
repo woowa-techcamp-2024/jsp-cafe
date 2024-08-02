@@ -9,6 +9,7 @@ import jakarta.servlet.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
+import utils.AuthUtils;
 
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class LoginServlet extends HttpServlet {
             User user = userService.findByUserId(userId);
             HttpSession session = req.getSession();
             // jsession으로 구별한다.
-            session.setAttribute("loginMember", user);
+            session.setAttribute(AuthUtils.LOGIN_MEMBER, user);
             session.setMaxInactiveInterval(60 * 2);
             resp.sendRedirect("/users");
         } else {

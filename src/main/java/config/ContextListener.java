@@ -24,7 +24,7 @@ public class ContextListener implements ServletContextListener {
         ArticleRepository articleRepository = new JDBCArticleRepository();
 
         UserService userService = new UserService(userRepository);
-        ArticleService articleService = new ArticleService(articleRepository, userRepository);
+        ArticleService articleService = new ArticleService(articleRepository);
 
         sce.getServletContext().setAttribute("userService", userService);
         sce.getServletContext().setAttribute("articleService", articleService);
