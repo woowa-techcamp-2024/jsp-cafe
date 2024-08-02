@@ -29,7 +29,7 @@ async function loadComments() {
 
 function createCommentHtml(reply) {
     console.log('Creating HTML for reply:', reply);
-    const escapedContent = reply.content ? $('<div>').text(reply.content).html() : '';
+    const escapedContent = reply.content ? $('<div>').html(marked.parse(DOMPurify.sanitize(reply.content))).html() : '';
     const escapedUserName = reply.userName ? $('<div>').text(reply.userName).html() : '';
     let deleteButton = '';
     if (window.serverData.currentUserId && window.serverData.currentUserId === reply.userId) {

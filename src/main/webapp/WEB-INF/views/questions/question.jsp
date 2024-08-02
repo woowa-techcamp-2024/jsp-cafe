@@ -9,7 +9,8 @@
             <c:out value="${article.userName}"/>
             on <c:out value="${article.createdDate}"/></p>
         <hr>
-        <p><c:out value="${article.content}"/></p>
+        <p class="markdown-content" id="article-content">
+        </p>
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger"><c:out value="${errorMessage}"/></div>
         </c:if>
@@ -45,9 +46,14 @@
 <script>
     // 서버 측 변수를 전역 객체로 설정
     window.serverData = {
+        content: `<c:out value="${article.content}"/>`,
         contextPath: '<c:out value="${pageContext.request.contextPath}"/>',
         articleId: <c:out value="${article.id}"/>,
         currentUserId: <c:out value="${sessionScope.user.id}"/>
     };
+
+    $(document).ready(function () {
+        $('#article-content').html(marked.parse(DOMPurify.sanitize(serverData.content)));
+    });
 </script>
 <script src="${pageContext.request.contextPath}/static/js/comments.js"></script>

@@ -17,7 +17,7 @@
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
                 <textarea class="form-control" id="content" name="content" rows="5"
-                          required><c:out value="${article.content}"/></textarea>
+                          required></textarea>
             </div>
             <button type="button" class="btn btn-primary" onclick="updateArticle()">Save Changes</button>
         </form>
@@ -29,6 +29,14 @@
 <!-- Add axios.min.js -->
 <script src="${pageContext.request.contextPath}/static/js/axios.min.js"></script>
 <script>
+    // 서버 측 변수를 전역 객체로 설정
+    window.serverData = {
+        content: `<c:out value="${article.content}"/>`,
+    }
+    $(document).ready(function () {
+        $('#content').html(DOMPurify.sanitize(serverData.content));
+    });
+
     async function updateArticle() {
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
