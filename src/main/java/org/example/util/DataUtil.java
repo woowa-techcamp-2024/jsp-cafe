@@ -19,11 +19,4 @@ public class DataUtil {
         return connectionPool.getConnection();
     }
 
-    public void releaseConnection(Connection connection) {
-        connectionPool.releaseConnection(connection);
-    }
-
-    public void shutdown() throws SQLException {
-        connectionPool.shutdown();
-    }
 }
