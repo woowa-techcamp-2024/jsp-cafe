@@ -1,4 +1,4 @@
-package woopaca.jspcafe.fixture;
+package woopaca.jspcafe.mock;
 
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.UserRepository;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class TestUserRepository implements UserRepository {
+public class MockUserRepository implements UserRepository {
 
     private final Map<Long, User> users = new HashMap<>();
     private long id = 0;

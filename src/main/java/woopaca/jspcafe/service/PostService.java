@@ -5,8 +5,10 @@ import woopaca.jspcafe.error.ForbiddenException;
 import woopaca.jspcafe.error.NotFoundException;
 import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.model.Post;
+import woopaca.jspcafe.model.Reply;
 import woopaca.jspcafe.model.User;
 import woopaca.jspcafe.repository.PostRepository;
+import woopaca.jspcafe.repository.ReplyRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.PostEditRequest;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
@@ -23,10 +25,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ReplyRepository replyRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, ReplyRepository replyRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.replyRepository = replyRepository;
     }
 
     public void writePost(WritePostRequest writePostRequest, Authentication authentication) {
@@ -69,8 +73,12 @@ public class PostService {
     }
 
     private PageInfo getPageInfo(Post post) {
-        List<Post> posts = postRepository.findAll();
-        posts.sort(Comparator.comparing(Post::getWrittenAt).reversed());
+        List<Post> posts = postRepository.findAll()
+                .stream()
+                .filter(Post::isPublished)
+                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
+                .toList();
+
         int postsSize = posts.size();
         int postIndex = posts.indexOf(post);
         boolean hasNext = postIndex < postsSize - 1;
@@ -86,20 +94,17 @@ public class PostService {
         return new PostEditResponse(post.getId(), post.getTitle(), post.getContent());
     }
 
-    public void validateWriter(Long postId, Authentication authentication) {
+    public Post validateWriter(Long postId, Authentication authentication) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
         if (!authentication.isPrincipal(post.getWriterId())) {
-            throw new ForbiddenException("[ERROR] 작성자만 수정할 수 있습니다.");
+            throw new ForbiddenException("[ERROR] 작성자만 수정•삭제할 수 있습니다.");
         }
+        return post;
     }
 
     public void updatePost(Long postId, PostEditRequest postEditRequest, Authentication authentication) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
-        if (!authentication.isPrincipal(post.getWriterId())) {
-            throw new ForbiddenException("[ERROR] 작성자만 수정할 수 있습니다.");
-        }
+        Post post = validateWriter(postId, authentication);
 
         validatePostTitleAndContent(postEditRequest.title(), postEditRequest.content());
         post.update(postEditRequest.title(), postEditRequest.content());
@@ -111,18 +116,29 @@ public class PostService {
             throw new BadRequestException("[ERROR] 제목과 내용은 필수 입력 사항입니다.");
         }
 
-        if (title.length() < 2 || content.length() < 2) {
-            throw new BadRequestException("[ERROR] 제목과 내용은 2자 이상 입력해야 합니다.");
+        if (title.length() < 2 || content.length() < 2 || title.length() > 30 || content.length() > 1000) {
+            throw new BadRequestException("[ERROR] 제목: 2 ~ 30자, 내용: 2 ~ 1000자");
         }
     }
 
     public void deletePost(Long postId, Authentication authentication) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("[ERROR] 존재하지 않는 게시글입니다."));
-        if (!authentication.isPrincipal(post.getWriterId())) {
-            throw new ForbiddenException("[ERROR] 작성자만 삭제할 수 있습니다.");
-        }
+        Post post = validateWriter(postId, authentication);
+        List<Reply> writerReplies = validateOtherUserReplies(post);
         post.softDelete();
+        writerReplies.forEach(Reply::softDelete);
+        writerReplies.forEach(replyRepository::save);
         postRepository.save(post);
+    }
+
+    private List<Reply> validateOtherUserReplies(Post post) {
+        List<Reply> replies = replyRepository.findByPostId(post.getId());
+        replies.stream()
+                .filter(Reply::isPublished)
+                .filter(reply -> !reply.getWriterId().equals(post.getWriterId()))
+                .findAny()
+                .ifPresent(reply -> {
+                    throw new BadRequestException("[ERROR] 다른 사용자의 댓글이 존재하여 삭제할 수 없습니다.");
+                });
+        return replies;
     }
 }

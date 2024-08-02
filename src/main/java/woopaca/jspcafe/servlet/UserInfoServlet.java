@@ -7,17 +7,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import woopaca.jspcafe.error.NotFoundException;
 import woopaca.jspcafe.service.UserService;
 import woopaca.jspcafe.servlet.dto.response.UserProfile;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 @WebServlet("/users/*")
 public class UserInfoServlet extends HttpServlet {
-
-    private final Logger log = LoggerFactory.getLogger(UserInfoServlet.class);
 
     private UserService userService;
 
@@ -26,6 +24,17 @@ public class UserInfoServlet extends HttpServlet {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
         this.userService = (UserService) servletContext.getAttribute("userService");
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        Pattern pattern = Pattern.compile("[^0-9/]");
+        if (pattern.matcher(pathInfo).find()) {
+            throw new NotFoundException("[ERROR] 잘못된 경로입니다.");
+        }
+
+        super.service(request, response);
     }
 
     @Override

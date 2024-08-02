@@ -5,5 +5,6 @@ public final class DatabaseInitializer {
     public static void initialize(JdbcTemplate jdbcTemplate) {
         jdbcTemplate.update(MySQLConstants.CREATE_USER_TABLE);
         jdbcTemplate.update(MySQLConstants.CREATE_POST_TABLE);
+        jdbcTemplate.update(MySQLConstants.CREATE_REPLY_TABLE);
     }
 }

@@ -42,47 +42,28 @@
         </div>
       </c:when>
     </c:choose>
-    <%--<div id="comments-count">댓글 <c:out value="${commentsCount}" />개</div>
+    <div id="comments-count">댓글 <c:out value="${replies.size()}" />개</div>
     <div id="comments-container">
-      <c:forEach var="comment" items="${comments}">
+      <c:forEach var="reply" items="${replies}">
         <div class="comment">
-          <div class="comment-writer"><c:out value="${comment.writer()}" /></div>
-          <p class="comment-content"><c:out value="${comment.content()}" /></p>
-          <div class="comment-date"><c:out value="${comment.writtenAt()}" /></div>
+          <div class="comment-writer"><c:out value="${reply.writer()}" /></div>
+          <p class="comment-content"><c:out value="${reply.content()}" /></p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="comment-date"><c:out value="${reply.writtenAt()}" /></div>
+            <c:choose>
+              <c:when test="${reply.writer() == sessionScope.authentication.principal().getNickname()}">
+                <div class="comment-delete-button" onclick="handleReplyDelete(${reply.id()})">삭제</div>
+              </c:when>
+            </c:choose>
+          </div>
         </div>
       </c:forEach>
     </div>
-    <form style="margin-bottom: 20px">
+    <form style="margin-bottom: 20px" method="post" action="${pageContext.request.contextPath}/replies">
       <div class="form-element">
         <div class="form-label"><c:out value="${user.nickname()}" /></div>
         <textarea name="content" required maxlength="200" id="content" placeholder="악플은 싫어요"></textarea>
-        <div style="display: flex; justify-content: end;">
-          <button id="comment-submit" type="submit" disabled>댓글 작성</button>
-        </div>
-      </div>
-    </form>--%>
-    <div id="comments-count">댓글 3개</div>
-    <div id="comments-container">
-      <div class="comment">
-        <div class="comment-writer">사용자</div>
-        <p class="comment-content">게시글에 댓글을 쓰면 이런 형식으로 보여집니다!</p>
-        <div class="comment-date">2024.07.25 22:47</div>
-      </div>
-      <div class="comment">
-        <div class="comment-writer">사용자</div>
-        <p class="comment-content">게시글에 댓글을 쓰면 이런 형식으로 보여집니다!</p>
-        <div class="comment-date">2024.07.25 22:47</div>
-      </div>
-      <div class="comment">
-        <div class="comment-writer">사용자</div>
-        <p class="comment-content">게시글에 댓글을 쓰면 이런 형식으로 보여집니다!</p>
-        <div class="comment-date">2024.07.25 22:47</div>
-      </div>
-    </div>
-    <form style="margin-bottom: 20px">
-      <div class="form-element">
-        <div class="form-label">사용자</div>
-        <textarea name="content" required maxlength="200" id="content" placeholder="악플은 싫어요"></textarea>
+        <input type="hidden" name="postId" value="<c:out value="${post.id()}" />">
         <div style="display: flex; justify-content: end;">
           <button id="comment-submit" type="submit" disabled>댓글 작성</button>
         </div>
@@ -123,6 +104,24 @@
       }).then(response => {
         if (response.ok) {
           window.location.href = '${pageContext.request.contextPath}/';
+        } else {
+          response.text().then(body => {
+            document.open();
+            document.write(body);
+            document.close();
+          });
+        }
+      });
+    }
+  };
+
+  const handleReplyDelete = (replyId) => {
+    if (confirm('댓글을 삭제하시겠습니까?')) {
+      fetch('${pageContext.request.contextPath}/replies/' + replyId, {
+        method: 'DELETE',
+      }).then(response => {
+        if (response.ok) {
+          window.location.reload();
         } else {
           response.text().then(body => {
             document.open();

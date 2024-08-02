@@ -58,7 +58,7 @@ public class UserService {
         return UserProfile.from(user);
     }
 
-    public void updateUserProfile(Long userId, UpdateProfileRequest updateProfileRequest, Authentication authentication) {
+    public User updateUserProfile(Long userId, UpdateProfileRequest updateProfileRequest, Authentication authentication) {
         if (!authentication.isPrincipal(userId)) {
             throw new ForbiddenException("[ERROR] 다른 사용자의 프로필을 수정할 수 없습니다.");
         }
@@ -71,12 +71,13 @@ public class UserService {
 
         String newNickname = updateProfileRequest.nickname().trim();
         if (Objects.equals(user.getNickname(), newNickname)) {
-            return;
+            return user;
         }
 
         validateDuplicateNickname(newNickname);
         user.updateNickname(newNickname);
         userRepository.save(user);
+        return user;
     }
 
     private void validateDuplicateUsername(String username) {
