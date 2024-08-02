@@ -8,7 +8,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.web.exception.AuthenticationException;
 
-@WebFilter(value = "/*")
+@WebFilter(filterName = "authenticationFilter", value = "/*")
 public class AuthenticationFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
@@ -39,25 +38,19 @@ public class AuthenticationFilter implements Filter {
             throws IOException, ServletException {
         log.info("AuthenticationFilter doFilter start");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
         if (isUnAuthenticateAPI(httpRequest)) {
             chain.doFilter(request, response);
             return;
         }
 
-        try {
-            Cookie[] cookies = ((HttpServletRequest) request).getCookies();
-            validateCookieExist(cookies);
-            Cookie authCookie = validateAuthCookieExist(cookies);
-            HttpSession session = httpRequest.getSession(false);
-            validateSessionKeyExist(session, authCookie);
-            validateSessionValue(session, authCookie);
+        Cookie[] cookies = ((HttpServletRequest) request).getCookies();
+        validateCookieExist(cookies);
+        Cookie authCookie = validateAuthCookieExist(cookies);
+        HttpSession session = httpRequest.getSession(false);
+        validateSessionKeyExist(session, authCookie);
+        validateSessionValue(session, authCookie);
 
-            chain.doFilter(request, response);  // 여기는 커버가 안된다
-        } catch (AuthenticationException e) {
-            log.warn("Authentication failed: ", e);
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/users/login");
-        }
+        chain.doFilter(request, response);
     }
 
     private boolean isUnAuthenticateAPI(HttpServletRequest httpRequest) {

@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
+import woowa.camp.jspcafe.infra.time.DateTimeProvider;
+import woowa.camp.jspcafe.infra.time.LocalDateTimeProvider;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
 import woowa.camp.jspcafe.repository.reply.DBReplyRepository;
@@ -15,8 +17,6 @@ import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.ReplyService;
 import woowa.camp.jspcafe.service.UserService;
-import woowa.camp.jspcafe.infra.time.DateTimeProvider;
-import woowa.camp.jspcafe.infra.time.LocalDateTimeProvider;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {
@@ -32,9 +32,9 @@ public class AppContextListener implements ServletContextListener {
 
         DatabaseConnector connector = new DatabaseConnector(context);
 
-        InMemoryDBInitializer.createUserTable(connector);
-        InMemoryDBInitializer.createArticleTable(connector);
-        InMemoryDBInitializer.createReplyTable(connector);
+//        InMemoryDBInitializer.createUserTable(connector);
+//        InMemoryDBInitializer.createArticleTable(connector);
+//        InMemoryDBInitializer.createReplyTable(connector);
 
         UserRepository userRepository = new DBUserRepository(connector);
         UserService userService = new UserService(userRepository, dateTimeProvider);
@@ -43,7 +43,8 @@ public class AppContextListener implements ServletContextListener {
 
         DBReplyRepository replyRepository = new DBReplyRepository(connector);
         ReplyService replyService = new ReplyService(replyRepository, userRepository, dateTimeProvider);
-        ArticleService articleService = new ArticleService(articleRepository, userRepository, replyRepository, dateTimeProvider);
+        ArticleService articleService = new ArticleService(articleRepository, userRepository, replyRepository,
+                dateTimeProvider);
 
         context.setAttribute("userRepository", userRepository);
         context.setAttribute("userService", userService);

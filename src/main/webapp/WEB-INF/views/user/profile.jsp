@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<%@ page import="woowa.camp.jspcafe.service.dto.UserResponse" %>
+<%@ page import="woowa.camp.jspcafe.repository.dto.response.UserResponse" %>
 <jsp:include page="../common/header.jsp" />
 
 <div class="container" id="main">

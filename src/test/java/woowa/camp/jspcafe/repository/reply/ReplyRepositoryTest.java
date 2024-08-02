@@ -19,7 +19,7 @@ import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.UserDBSetupExtension;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith(ReplyDBSetupExtension.class)
@@ -341,9 +341,9 @@ class ReplyRepositoryTest {
                                 ReplyResponse::getCreatedAt
                         ).containsExactly(
                                 tuple(reply1.getReplyId(), userId1, "Test Comment 1", user1.getNickname(),
-                                        fixedDateTime.getNowAsLocalDateTime()),
+                                        fixedDateTime.getNowAsLocalDateTime().toString()),
                                 tuple(reply2.getReplyId(), userId2, "Test Comment 2", user2.getNickname(),
-                                        fixedDateTime.getNowAsLocalDateTime())
+                                        fixedDateTime.getNowAsLocalDateTime().toString())
                         );
                     });
         }

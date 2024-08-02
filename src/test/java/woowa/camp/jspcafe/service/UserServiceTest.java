@@ -19,12 +19,12 @@ import woowa.camp.jspcafe.fixture.UserFixture;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.UserDBSetupExtension;
-import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
+import woowa.camp.jspcafe.repository.dto.request.UserUpdateRequest;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.InMemoryUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.RegistrationRequest;
-import woowa.camp.jspcafe.service.dto.UserResponse;
+import woowa.camp.jspcafe.service.dto.request.RegistrationRequest;
+import woowa.camp.jspcafe.repository.dto.response.UserResponse;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith(UserDBSetupExtension.class)

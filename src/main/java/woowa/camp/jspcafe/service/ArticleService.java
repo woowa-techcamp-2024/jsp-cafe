@@ -13,13 +13,13 @@ import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
-import woowa.camp.jspcafe.repository.dto.ArticleUpdateRequest;
+import woowa.camp.jspcafe.repository.dto.request.ArticleUpdateRequest;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ArticleDetailsResponse;
-import woowa.camp.jspcafe.service.dto.ArticlePreviewResponse;
-import woowa.camp.jspcafe.service.dto.ArticleUpdateResponse;
-import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ArticleWriteRequest;
+import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
+import woowa.camp.jspcafe.service.dto.response.ArticleUpdateResponse;
 
 public class ArticleService {
 

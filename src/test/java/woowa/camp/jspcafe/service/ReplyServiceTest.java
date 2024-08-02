@@ -29,8 +29,8 @@ import woowa.camp.jspcafe.repository.reply.ReplyDBSetupExtension;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
-import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
+import woowa.camp.jspcafe.service.dto.request.ReplyWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith({ReplyDBSetupExtension.class, UserDBSetupExtension.class, ArticleDBSetupExtension.class})
@@ -53,17 +53,16 @@ class ReplyServiceTest {
         @DisplayName("[Success] 생성/수정 날짜는 현재 시간으로 동일하며, 삭제 날짜는 값이 없다")
         void success() {
             // given
-            Reply reply = replyService.writeReply(new ReplyWriteRequest(1L, 2L, "댓글 내용"));
-            // when
+            User replier = new User("email@email.com", "nickname", "password", fixedDateTime.getNow());
+            Long replierId = userRepository.save(replier);
 
+            ReplyResponse replyResponse = replyService.writeReply(new ReplyWriteRequest(replierId, 2L, "댓글 내용"));
+            Reply reply = replyRepository.findById(replyResponse.getReplyId()).orElseThrow();
+            // when
+            assertReplyResponse(replyResponse, reply, replier);
             // then
-            assertThat(reply.getCreatedAt()).isEqualTo(fixedDateTime.getNowAsLocalDateTime());
-            assertThat(reply.getUpdatedAt()).isEqualTo(fixedDateTime.getNowAsLocalDateTime());
-            assertThat(reply.getDeletedAt()).isNull();
-            assertThat(reply.getUserId()).isEqualTo(1L);
-            assertThat(reply.getArticleId()).isEqualTo(2L);
-            assertThat(reply.getContent()).isEqualTo("댓글 내용");
         }
+
     }
 
     @Nested
@@ -92,14 +91,6 @@ class ReplyServiceTest {
             assertThat(result.size()).isEqualTo(1);
             ReplyResponse replyResponse = result.get(0);
             assertReplyResponse(replyResponse, reply, replier);
-        }
-
-        private void assertReplyResponse(ReplyResponse replyResponse, Reply reply, User replier) {
-            assertThat(replyResponse.getReplyId()).isEqualTo(reply.getReplyId());
-            assertThat(replyResponse.getCreatedAt()).isEqualTo(reply.getCreatedAt());
-            assertThat(replyResponse.getContent()).isEqualTo(reply.getContent());
-            assertThat(replyResponse.getUserId()).isEqualTo(reply.getUserId());
-            assertThat(replyResponse.getUserNickname()).isEqualTo(replier.getNickname());
         }
 
         @Test
@@ -280,6 +271,14 @@ class ReplyServiceTest {
                     .hasMessageContaining("편집하려는 댓글의 게시글 id와 일치하지 않습니다");
         }
 
+    }
+
+    private void assertReplyResponse(ReplyResponse replyResponse, Reply reply, User replier) {
+        assertThat(replyResponse.getReplyId()).isEqualTo(reply.getReplyId());
+        assertThat(replyResponse.getCreatedAt()).isEqualTo(reply.getCreatedAt().toString());
+        assertThat(replyResponse.getContent()).isEqualTo(reply.getContent());
+        assertThat(replyResponse.getUserId()).isEqualTo(reply.getUserId());
+        assertThat(replyResponse.getUserNickname()).isEqualTo(replier.getNickname());
     }
 
 }

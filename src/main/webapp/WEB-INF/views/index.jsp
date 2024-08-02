@@ -10,7 +10,7 @@
         <H2>김준기 카페입니다 !</H2>
     </div>
 
-    <p style="color: #888888;">전체 글 N개</p>
+<%--    <p style="color: #888888;">전체 글 N개</p>--%>
 
     <table>
         <thead>

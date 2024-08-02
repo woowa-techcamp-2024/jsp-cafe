@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import woowa.camp.jspcafe.domain.User;
-import woowa.camp.jspcafe.repository.dto.UserUpdateRequest;
+import woowa.camp.jspcafe.repository.dto.request.UserUpdateRequest;
 
 public class InMemoryUserRepository implements UserRepository {
 

@@ -1,4 +1,4 @@
-package woowa.camp.jspcafe.service.dto;
+package woowa.camp.jspcafe.service.dto.response;
 
 import woowa.camp.jspcafe.domain.Article;
 

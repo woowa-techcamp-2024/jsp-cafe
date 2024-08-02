@@ -1,6 +1,7 @@
 package woowa.camp.jspcafe.web.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.fixture.UserFixture;
+import woowa.camp.jspcafe.web.exception.AuthenticationException;
 import woowa.camp.jspcafe.web.mock.TestFilterChain;
 import woowa.camp.jspcafe.web.mock.TestHttpServletRequest;
 import woowa.camp.jspcafe.web.mock.TestHttpServletResponse;
@@ -73,10 +75,9 @@ class AuthenticationFilterTest {
             request.setRequestURI(requestURI);
             FilterChain chain = (req, res) -> {
             };
-            // when
-            filter.doFilter(request, response, chain);
-            // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            // when then
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
         @ParameterizedTest
@@ -96,10 +97,9 @@ class AuthenticationFilterTest {
             request.setCookies(new Cookie[]{new Cookie("OTHER_COOKIE", "value")});
             FilterChain chain = (req, res) -> {
             };
-            // when
-            filter.doFilter(request, response, chain);
-            // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            // when then
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
 
@@ -122,10 +122,9 @@ class AuthenticationFilterTest {
             };
             HttpSession session = request.getSession();
             session.setAttribute("WOOWA_SESSIONID", null);
-            // when
-            filter.doFilter(request, response, chain);
-            // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            // when then
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
         @ParameterizedTest
@@ -148,14 +147,14 @@ class AuthenticationFilterTest {
             session.setAttribute("WOOWA_SESSIONID", createUserWithId(1L));
             // when
             request.setCookies(new Cookie[]{new Cookie("WOOWA_SESSIONID", "2")});
-            filter.doFilter(request, response, chain);
             // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
             // when
             request.setCookies(new Cookie[]{new Cookie("WOOWA_SESSIONID", "이상한값")});
             // then
-            filter.doFilter(request, response, chain);
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
         @ParameterizedTest
@@ -176,10 +175,9 @@ class AuthenticationFilterTest {
             FilterChain chain = (req, res) -> {
             };
             HttpSession session = null;
-            //when
-            filter.doFilter(request, response, chain);
-            // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            //when then
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
         @ParameterizedTest
@@ -201,10 +199,9 @@ class AuthenticationFilterTest {
             };
             HttpSession session = request.getSession();
             session.setAttribute("WOOWA_SESSIONID", null);
-            //when
-            filter.doFilter(request, response, chain);
-            // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            //when then
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
         @ParameterizedTest
@@ -224,12 +221,11 @@ class AuthenticationFilterTest {
             FilterChain chain = (req, res) -> {
             };
             HttpSession session = request.getSession();
-            // when
+            // when then
             session.setAttribute("WOOWA_SESSIONID", new Object());
             request.setCookies(new Cookie[]{new Cookie("WOOWA_SESSIONID", "2")});
-            filter.doFilter(request, response, chain);
-            // then
-            assertThat(response.getRedirectLocation()).isEqualTo("/users/login");
+            assertThatThrownBy(() -> filter.doFilter(request, response, chain))
+                    .isInstanceOf(AuthenticationException.class);
         }
 
         @ParameterizedTest

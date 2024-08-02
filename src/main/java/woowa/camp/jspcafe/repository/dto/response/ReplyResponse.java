@@ -1,8 +1,6 @@
-package woowa.camp.jspcafe.service.dto;
+package woowa.camp.jspcafe.repository.dto.response;
 
 import java.time.LocalDateTime;
-import woowa.camp.jspcafe.domain.Reply;
-import woowa.camp.jspcafe.domain.User;
 
 public class ReplyResponse {
 
@@ -12,14 +10,14 @@ public class ReplyResponse {
     private Long userId;
     private String userNickname;
 
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public ReplyResponse(Long replyId, String content, Long userId, String userNickname, LocalDateTime createdAt) {
         this.replyId = replyId;
         this.content = content;
         this.userId = userId;
         this.userNickname = userNickname;
-        this.createdAt = createdAt;
+        this.createdAt = createdAt.toString();
     }
 
     public Long getReplyId() {
@@ -38,7 +36,7 @@ public class ReplyResponse {
         return userNickname;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 

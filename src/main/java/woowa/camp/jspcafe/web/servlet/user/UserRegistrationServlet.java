@@ -12,7 +12,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.service.UserService;
-import woowa.camp.jspcafe.service.dto.RegistrationRequest;
+import woowa.camp.jspcafe.service.dto.request.RegistrationRequest;
 
 @WebServlet(name = "userRegistrationServlet", value = "/users/registration")
 public class UserRegistrationServlet extends HttpServlet {

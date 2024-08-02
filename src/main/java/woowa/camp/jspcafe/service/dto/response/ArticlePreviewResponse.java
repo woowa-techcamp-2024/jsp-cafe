@@ -1,34 +1,31 @@
-package woowa.camp.jspcafe.service.dto;
+package woowa.camp.jspcafe.service.dto.response;
 
 import java.time.LocalDate;
 import woowa.camp.jspcafe.domain.Article;
 
-public class ArticleDetailsResponse {
+public class ArticlePreviewResponse {
 
     private Long articleId;
     private String title;
-    private String content;
     private Integer hits;
     private LocalDate createdAt;
     private Long authorId;
     private String authorNickname;
 
-    public ArticleDetailsResponse(Long articleId, String title, String content, Integer hits, LocalDate createdAt,
-                                  Long authorId, String authorNickname) {
+    private ArticlePreviewResponse(Long articleId, String title, Integer hits, LocalDate createdAt, Long authorId,
+                                   String authorNickname) {
         this.articleId = articleId;
         this.title = title;
-        this.content = content;
         this.hits = hits;
         this.createdAt = createdAt;
         this.authorId = authorId;
         this.authorNickname = authorNickname;
     }
 
-    public static ArticleDetailsResponse of(Article article, Long authorId, String authorNickname) {
-        return new ArticleDetailsResponse(
+    public static ArticlePreviewResponse of(Article article, Long authorId, String authorNickname) {
+        return new ArticlePreviewResponse(
                 article.getId(),
                 article.getTitle(),
-                article.getContent(),
                 article.getHits(),
                 article.getCreatedAt(),
                 authorId,
@@ -59,20 +56,16 @@ public class ArticleDetailsResponse {
         return authorNickname;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     @Override
     public String toString() {
-        return "ArticleDetailsResponse{" +
+        return "ArticlePreviewResponse{" +
                 "articleId=" + articleId +
                 ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
                 ", hits=" + hits +
                 ", createdAt=" + createdAt +
                 ", authorId=" + authorId +
                 ", authorNickname='" + authorNickname + '\'' +
                 '}';
     }
+
 }

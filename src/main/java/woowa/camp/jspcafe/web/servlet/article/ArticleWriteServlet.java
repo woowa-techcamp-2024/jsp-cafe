@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.service.ArticleService;
-import woowa.camp.jspcafe.service.dto.ArticleWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ArticleWriteRequest;
 
 @WebServlet(name = "articleWriteServlet", value = "/articles/write")
 public class ArticleWriteServlet extends HttpServlet {
@@ -42,10 +42,8 @@ public class ArticleWriteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("ArticleWriteServlet doPost start");
-
         String title = req.getParameter("title");
         String content = req.getParameter("content");
-        log.info("title: " + title + ", content: " + content);
 
         User sessionUser = (User) req.getSession().getAttribute("WOOWA_SESSIONID");
         ArticleWriteRequest articleWriteRequest = new ArticleWriteRequest(sessionUser.getId(), title, content);

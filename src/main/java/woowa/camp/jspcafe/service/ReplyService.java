@@ -10,10 +10,10 @@ import woowa.camp.jspcafe.domain.exception.ReplyException;
 import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.service.dto.ReplyResponse;
-import woowa.camp.jspcafe.service.dto.ReplyWriteRequest;
+import woowa.camp.jspcafe.service.dto.request.ReplyWriteRequest;
 
 public class ReplyService {
 
@@ -28,7 +28,7 @@ public class ReplyService {
         this.dateTimeProvider = dateTimeProvider;
     }
 
-    public Reply writeReply(ReplyWriteRequest replyWriteRequest) {
+    public ReplyResponse writeReply(ReplyWriteRequest replyWriteRequest) {
         LocalDateTime currentTime = dateTimeProvider.getNowAsLocalDateTime();
 
         Reply reply = new Reply(replyWriteRequest.userId(),
@@ -37,8 +37,11 @@ public class ReplyService {
                 currentTime,
                 currentTime,
                 null);
+        replyRepository.save(reply);
+        User replier = findReplier(reply.getUserId());
 
-        return replyRepository.save(reply);
+        return new ReplyResponse(reply.getReplyId(), reply.getContent(),
+                reply.getUserId(), replier.getNickname(), reply.getCreatedAt());
     }
 
     public List<ReplyResponse> findReplyList(Long articleId) {
@@ -54,18 +57,6 @@ public class ReplyService {
 
         replyRepository.softDeleteById(reply.getReplyId(), dateTimeProvider.getNowAsLocalDateTime());
     }
-
-//    // TODO
-//    public void updateReply(User user, ReplyUpdateRequest replyUpdateRequest) {
-//        Reply reply = findReply(replyUpdateRequest.replyId());
-//        User replier = findReplier(user.getId());
-//
-//        validateAuthorization(user, replier);
-//        validateSameArticle(replyUpdateRequest.articleId(), reply);
-//
-//        Reply updateReply = Reply.update(reply, replyUpdateRequest.content(), dateTimeProvider.getNowAsLocalDateTime());
-//        replyRepository.update(updateReply);
-//    }
 
     private Reply findReply(Long replyId) {
         return replyRepository.findById(replyId)
