@@ -38,7 +38,7 @@ public class RepliesServlet extends MappingHttpServlet {
 
         String requestBody = getRequestBody(req);
         LinkedHashMap<String, Object> parsedReq = new Gson().fromJson(requestBody, LinkedHashMap.class);
-        articleId = Long.parseLong(parsedReq.get("articleId").toString());
+        articleId = ((Double) parsedReq.get("articleId")).longValue();
         content = parsedReq.get("content").toString();
 
         if (content.isEmpty()) {
