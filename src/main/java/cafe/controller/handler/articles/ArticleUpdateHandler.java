@@ -5,6 +5,7 @@ import cafe.domain.entity.User;
 import cafe.dto.ArticleDto;
 import cafe.service.ArticleService;
 import cafe.service.SessionService;
+import cafe.util.JsonUtil;
 import com.google.gson.Gson;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -12,7 +13,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 public class ArticleUpdateHandler implements Handler {
@@ -41,19 +41,10 @@ public class ArticleUpdateHandler implements Handler {
         User user = sessionService.findUserBySession(session);
         articleService.verifyArticleId(user, req.getRequestURI());
 
-        String jsonData = this.readJson(req);
+        String jsonData = JsonUtil.readJson(req.getReader());
         ArticleDto article = new Gson().fromJson(jsonData, ArticleDto.class);
         articleService.update(req.getRequestURI(), article.getTitle(), article.getContents());
     }
 
-    private String readJson(HttpServletRequest req) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = req.getReader()) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        }
-        return sb.toString();
-    }
+
 }

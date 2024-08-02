@@ -1,17 +1,33 @@
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (
-    userId VARCHAR(255) NOT NULL PRIMARY KEY,
+    userId VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL
-);
+    email VARCHAR(255) NOT NULL,
+    created VARCHAR(255) NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (userId));
 
 CREATE TABLE IF NOT EXISTS articles (
-    articleId VARCHAR(255) NOT NULL PRIMARY KEY,
+    articleId VARCHAR(255) NOT NULL,
     writer VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     contents CLOB NOT NULL,
-    created VARCHAR(255) NOT NULL
-);
+    created VARCHAR(255) NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (articleId),
+    FOREIGN KEY (writer) REFERENCES users(userId) ON DELETE CASCADE);
+
+CREATE TABLE IF NOT EXISTS comments (
+    commentId VARCHAR(255) NOT NULL,
+    userId VARCHAR(255) NOT NULL,
+    articleId VARCHAR(255) NOT NULL,
+    contents CLOB NOT NULL,
+    created VARCHAR(255) NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (commentId),
+    FOREIGN KEY (articleId) REFERENCES articles(articleId) ON DELETE CASCADE,
+    FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE);

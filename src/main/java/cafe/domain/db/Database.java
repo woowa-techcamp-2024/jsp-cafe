@@ -49,6 +49,9 @@ public interface Database<K, V> {
 
             if (!rs.next()) return null;
             Object[] objects = new Object[fields.length];
+            Object deleted = rs.getObject("deleted");
+            if (deleted != null && (boolean) deleted) return null;
+
             for (int i = 0; i < fields.length; i++) {
                 objects[i] = rs.getString(fields[i].getName());
             }
@@ -72,6 +75,9 @@ public interface Database<K, V> {
 
             while (rs.next()) {
                 Object[] objects = new Object[fields.length];
+                Object deleted = rs.getObject("deleted");
+                if (deleted != null && (boolean) deleted) continue;
+
                 for (int i = 0; i < fields.length; i++) objects[i] = rs.getString(fields[i].getName());
                 V data = constructor.newInstance(objects);
                 result.put((K) new String(rs.getBytes(1)), data);
@@ -115,6 +121,16 @@ public interface Database<K, V> {
         }
     }
 
+    default void deleteHardAll() {
+        String className = findClassName();
+        try (Connection connection = getConnector().connect()) {
+            String deleteAllSQL = sqlGenerator.generateDeleteHardAllSQL(className);
+            connection.prepareStatement(deleteAllSQL).executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private Field[] findFields() {
         Class<?> clazz = (Class<?>) ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1];
         return clazz.getDeclaredFields();
@@ -134,5 +150,4 @@ public interface Database<K, V> {
             return null;
         }
     }
-
 }

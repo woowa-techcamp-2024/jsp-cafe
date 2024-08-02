@@ -22,5 +22,6 @@ public class ArticleListHandler implements Handler {
         req.setAttribute("articles", articleService.findAll());
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/article/list.jsp");
         dispatcher.forward(req, resp);
+        // TODO: 댓글 추가
     }
 }
