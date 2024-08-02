@@ -110,8 +110,8 @@ public class ArticleUpdateApi extends HttpServlet {
             List<Reply> replies = replyDataHandler.findAllByArticleId(article.getArticleId());
             for (Reply r : replies) {
                 r.delete();
-                replyDataHandler.update(r);
             }
+            replyDataHandler.deleteAllByArticleId(articleId);
             article.delete();
             Article upateArticle = articleDataHandler.update(article);
             if (upateArticle != null) {

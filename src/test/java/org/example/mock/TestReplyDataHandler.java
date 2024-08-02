@@ -24,4 +24,9 @@ public class TestReplyDataHandler implements ReplyDataHandler {
     public List<Reply> findAllByArticleId(Long articleId) {
         return List.of();
     }
+
+    @Override
+    public void deleteAllByArticleId(Long articleId) {
+
+    }
 }

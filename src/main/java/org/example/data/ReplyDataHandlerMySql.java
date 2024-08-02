@@ -97,4 +97,17 @@ public class ReplyDataHandlerMySql implements ReplyDataHandler {
         }
         return replies;
     }
+
+    @Override
+    public void deleteAllByArticleId(Long articleId) {
+        String sql = "UPDATE replies SET alive_status = ? where replies.article_id = ?";
+        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+                sql)) {
+            pstmt.setString(1, AliveStatus.DELETED.name());
+            pstmt.setLong(2, articleId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update reply", e);
+        }
+    }
 }
