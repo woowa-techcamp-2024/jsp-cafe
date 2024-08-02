@@ -42,7 +42,7 @@ class MySQLQuestionRepositoryTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Long expectedId = 1L;
+
         Question save = new Question(title, content, writer, userId);
         // when
         Long id = questionRepository.save(save);
@@ -50,6 +50,7 @@ class MySQLQuestionRepositoryTest {
 
         // then
         assertEquals(content, questionRepository.findById(id).getContent());
+        assertEquals("userId", questionRepository.findById(id).getWriter());
     }
 
     @Test
@@ -87,7 +88,7 @@ class MySQLQuestionRepositoryTest {
         // then
         assertEquals(title, question.getTitle());
         assertEquals(content, question.getContent());
-        assertEquals(writer, question.getWriter());
+        assertEquals("userId", question.getWriter());
     }
 
     @Test

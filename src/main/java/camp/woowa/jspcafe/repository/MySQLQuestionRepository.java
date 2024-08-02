@@ -20,11 +20,10 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public Long save(Question question) {
-        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer, writer_id) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
+        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("INSERT INTO question (title, content, writer_id) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);){
             pstmt.setString(1, question.getTitle());
             pstmt.setString(2, question.getContent());
-            pstmt.setString(3, question.getWriter());
-            pstmt.setLong(4, question.getWriterId());
+            pstmt.setLong(3, question.getWriterId());
             pstmt.executeUpdate();
 
             try (var gk = pstmt.getGeneratedKeys()) {
@@ -42,7 +41,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
     @Override
     public List<Question> findAll() {
         List<Question> questions = new ArrayList<>();
-        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT * FROM question WHERE is_deleted = FALSE");){
+        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id FROM question q, user u WHERE q.is_deleted = FALSE AND q.writer_id = u.id");){
             var rs = pstmt.executeQuery();
             while (rs.next()) {
                 questions.add(new Question(rs.getLong("id"), rs.getString("title"), rs.getString("content"), rs.getString("writer"), rs.getLong("writer_id")));
@@ -56,7 +55,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
 
     @Override
     public Question findById(Long id) {
-        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT * FROM question WHERE id = ? AND is_deleted = FALSE");){
+        try (var conn = ds.getConnection(); var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id FROM question q, user u WHERE q.id = ? AND q.is_deleted = FALSE AND q.writer_id = u.id");){
             pstmt.setLong(1, id);
             var rs = pstmt.executeQuery();
             if (rs.next()) {

@@ -19,6 +19,10 @@ public class Reply {
         this(null, content, questionId, writer, writerId);
     }
 
+    public Reply(String content, Long questionId, Long userId) {
+        this(null, content, questionId, null, userId);
+    }
+
 
     public Long getId() {
         return id;

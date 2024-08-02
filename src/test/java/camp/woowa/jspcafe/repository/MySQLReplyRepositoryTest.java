@@ -54,14 +54,14 @@ class MySQLReplyRepositoryTest {
         String content = "content";
 
         // when
-        Long id = replyRepository.save(new Reply(content, questionId, writer, userId));
+        Long id = replyRepository.save(new Reply(content, questionId, userId));
         Reply reply = replyRepository.findById(id);
 
         // then
-        assertEquals(reply.getContent(), content);
-        assertEquals(reply.getQuestionId(), questionId);
-        assertEquals(reply.getWriter(), writer);
-        assertEquals(reply.getWriterId(), userId);
+        assertEquals(content, reply.getContent());
+        assertEquals(questionId, reply.getQuestionId());
+        assertEquals("userId", reply.getWriter());
+        assertEquals(userId, reply.getWriterId());
     }
 
     @Test

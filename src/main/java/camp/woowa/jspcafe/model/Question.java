@@ -15,6 +15,10 @@ public class Question {
         this.writerId = writerId;
     }
 
+    public Question(String title, String content, Long writerId) {
+        this(null, title, content, null, writerId);
+    }
+
     public Question(String title, String content, String writer, long writerId) {
         this(null, title, content, writer, writerId);
     }
