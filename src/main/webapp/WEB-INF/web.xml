@@ -31,4 +31,12 @@
         <filter-name>ExceptionFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <servlet>
+        <servlet-name>errorServlet</servlet-name>
+        <jsp-file>/WEB-INF/views/error.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>errorServlet</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
 </web-app>

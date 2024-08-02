@@ -1,5 +1,6 @@
 package com.woowa.cafe.servlet.qna;
 
+import com.woowa.cafe.dto.article.ReplyDto;
 import com.woowa.cafe.dto.article.SaveReplyDto;
 import com.woowa.cafe.exception.HttpException;
 import com.woowa.cafe.service.ReplyService;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static com.woowa.cafe.config.GsonConfig.gson;
 
 @WebServlet(name = "replyServlet", urlPatterns = {"/reply", "/reply/*"})
 public class ReplyServlet extends HttpServlet {
@@ -33,9 +36,15 @@ public class ReplyServlet extends HttpServlet {
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         Map<String, String> bodyFormData = HttpMessageUtils.getBodyFormData(req);
 
-        Long articleId = replyService.save(SaveReplyDto.from(bodyFormData), (String) req.getSession().getAttribute("memberId"));
+        for (String string : bodyFormData.keySet()) {
+            log.debug("key: {}, value: {}", string, bodyFormData.get(string));
+        }
 
-        resp.sendRedirect("/question/" + articleId);
+        ReplyDto reply = replyService.save(SaveReplyDto.from(bodyFormData), (String) req.getSession().getAttribute("memberId"));
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(gson.toJson(reply));
     }
 
     @Override
@@ -53,9 +62,5 @@ public class ReplyServlet extends HttpServlet {
         String memberId = (String) session.getAttribute("memberId");
 
         replyService.delete(replyId, memberId);
-        Map<String, String> bodyFormData = HttpMessageUtils.getBodyFormData(req);
-        resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
-        String input = bodyFormData.get("replyArticleId").trim();
-        resp.setHeader("Location", "/question/" + Long.parseLong(input));
     }
 }

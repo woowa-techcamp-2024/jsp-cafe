@@ -52,6 +52,7 @@ public class UserServlet extends HttpServlet {
 
         if (lastPath.equals("form")) {
             getUpdateForm(req, resp, path[path.length - 2]);
+            return;
         }
 
         getProfile(req, resp, lastPath);
@@ -77,7 +78,8 @@ public class UserServlet extends HttpServlet {
 
     private void getUpdateForm(final HttpServletRequest req, final HttpServletResponse resp, final String userId) throws ServletException, IOException {
         Member member = memberService.findById(userId);
-        if (!member.getMemberId().equals(userId)) {
+
+        if (!member.getMemberId().equals(req.getSession().getAttribute(SESSION_INFO))) {
             throw new HttpException(HttpServletResponse.SC_FORBIDDEN, "다른 사용자의 정보는 수정할 수 없습니다.");
         }
         req.setAttribute("member", member);

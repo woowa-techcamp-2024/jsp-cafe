@@ -49,12 +49,12 @@ class ReplyServiceTest {
         Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
 
         String replyContent = "replyContent";
-        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        ReplyDto save = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
         List<ReplyDto> replies = articleService.findById(articleId).replies();
         List<ArticleListDto> articles = articleService.findAll();
 
         assertAll(
-                () -> assertNotNull(replyId),
+                () -> assertNotNull(save.replyId()),
                 () -> assertEquals(1, replies.size()),
                 () -> assertEquals(replyContent, replies.get(0).contents()),
                 () -> assertEquals(1, articles.get(0).replyCount())
@@ -86,8 +86,8 @@ class ReplyServiceTest {
         Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
 
         String replyContent = "replyContent";
-        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
-        replyService.delete(replyId, writerId);
+        ReplyDto save = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.delete(save.replyId(), writerId);
         List<ReplyDto> replies = articleService.findById(articleId).replies();
         List<ArticleListDto> articles = articleService.findAll();
 
@@ -109,7 +109,7 @@ class ReplyServiceTest {
         Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
 
         String replyContent = "replyContent";
-        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        ReplyDto save = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
         List<ReplyDto> replies = articleService.findById(articleId).replies();
         List<ArticleListDto> articles = articleService.findAll();
 
@@ -127,11 +127,11 @@ class ReplyServiceTest {
         Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
 
         String replyContent = "replyContent";
-        Long replyId = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        ReplyDto save = replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
         List<ReplyDto> replies = articleService.findById(articleId).replies();
         List<ArticleListDto> articles = articleService.findAll();
 
-        assertThrows(IllegalArgumentException.class, () -> replyService.delete(replyId, "otherId"));
+        assertThrows(IllegalArgumentException.class, () -> replyService.delete(save.replyId(), "otherId"));
     }
 
 }

@@ -55,15 +55,15 @@
                 } else if (response.ok) {
                     return response.text();
                 } else {
-                    throw new Error('Network response was not ok');
+                    return response.json().then(errorData => {
+                        const status = response.status;
+                        const message = errorData.message;
+                        throw new Error(`Error ${status}: ${message}`);
+                    });
                 }
-            })
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            }).catch((error) => {
+            alert(error.message);
+        });
     }
 </script>
 

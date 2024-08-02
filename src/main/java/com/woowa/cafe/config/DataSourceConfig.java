@@ -29,14 +29,14 @@ public class DataSourceConfig {
     public static void createTable(final DataSource dataSource) {
         new Thread(() -> {
             String dropMemberTable = "DROP TABLE IF EXISTS members";
-            String createMemberTable = "CREATE TABLE members (" +
+            String createMemberTable = "CREATE TABLE IF NOT EXISTS members (" +
                     "member_id VARCHAR(255) PRIMARY KEY, " +
                     "password VARCHAR(255), " +
                     "name VARCHAR(255), " +
                     "email VARCHAR(255))";
 
             String dropArticleTable = "DROP TABLE IF EXISTS articles";
-            String createArticleTable = "CREATE TABLE articles (" +
+            String createArticleTable = "CREATE TABLE IF NOT EXISTS articles (" +
                     "article_id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                     "writer_id VARCHAR(255), " +
                     "title VARCHAR(255), " +
@@ -48,7 +48,7 @@ public class DataSourceConfig {
                     "index idx_article_is_deleted (is_deleted))";
 
             String dropReplyTable = "DROP TABLE IF EXISTS replies";
-            String createReplyTable = "CREATE TABLE replies (" +
+            String createReplyTable = "CREATE TABLE IF NOT EXISTS replies (" +
                     "reply_id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                     "article_id BIGINT, " +
                     "writer_id VARCHAR(255), " +

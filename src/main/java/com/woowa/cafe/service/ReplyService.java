@@ -2,6 +2,7 @@ package com.woowa.cafe.service;
 
 import com.woowa.cafe.domain.Article;
 import com.woowa.cafe.domain.Reply;
+import com.woowa.cafe.dto.article.ReplyDto;
 import com.woowa.cafe.dto.article.SaveReplyDto;
 import com.woowa.cafe.exception.HttpException;
 import com.woowa.cafe.repository.qna.ArticleRepository;
@@ -20,7 +21,7 @@ public class ReplyService {
         this.replyRepository = replyRepository;
     }
 
-    public Long save(final SaveReplyDto replyDto, final String writerId) {
+    public ReplyDto save(final SaveReplyDto replyDto, final String writerId) {
         Article article = articleRepository.findById(replyDto.articleId())
                 .orElseThrow(() -> new HttpException(SC_NOT_FOUND, "존재하지 않는 게시글입니다."));
 
@@ -30,7 +31,7 @@ public class ReplyService {
         article.increaseReplyCount();
         articleRepository.update(article);
 
-        return reply.getArticleId();
+        return ReplyDto.of(reply, writerId);
     }
 
     public void delete(final Long replyId, final String memberId) {
