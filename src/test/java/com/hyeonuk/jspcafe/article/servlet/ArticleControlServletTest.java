@@ -7,6 +7,7 @@ import com.hyeonuk.jspcafe.global.exception.HttpBadRequestException;
 import com.hyeonuk.jspcafe.global.exception.HttpNotFoundException;
 import com.hyeonuk.jspcafe.member.domain.Member;
 import com.hyeonuk.jspcafe.member.servlets.mock.*;
+import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ class ArticleControlServletTest {
     private MockResponse res;
     private ArticleDao articleDao;
     private ArticleControlServlet servlet;
+    private ReplyDao replyDao;
 
     @BeforeEach
     void setUp() throws ServletException {
