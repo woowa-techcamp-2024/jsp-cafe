@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.filter;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,18 +39,20 @@ class AuthenticateFilterTest {
     @InjectMocks
     private AuthenticateFilter filter;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testDoFilter_AuthorizedUser() throws IOException, ServletException {
         // Arrange
+        userService = mock(UserService.class);
+        when(userService.validateAuthorization(any())).thenReturn(true);
+        ServiceLocator.registerService(UserService.class, userService);
+        MockitoAnnotations.openMocks(this);
+
         User user = new User(1L, "userId", "password", "name", "email");
+
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute("user")).thenReturn(user);
-        when(userService.validateAuthorization(user)).thenReturn(true);
+
 
         // Act
         filter.doFilter(request, response, chain);
@@ -62,10 +65,14 @@ class AuthenticateFilterTest {
     @Test
     void testDoFilter_UnauthorizedUser() throws IOException, ServletException {
         // Arrange
+        userService = mock(UserService.class);
+        when(userService.validateAuthorization(any())).thenReturn(false);
+        ServiceLocator.registerService(UserService.class, userService);
+        MockitoAnnotations.openMocks(this);
+
         User user = new User(1L, "userId", "password", "name", "email");
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute("user")).thenReturn(user);
-        when(userService.validateAuthorization(user)).thenReturn(false);
 
         // Act
         filter.doFilter(request, response, chain);
@@ -79,21 +86,31 @@ class AuthenticateFilterTest {
 
     @Test
     void testDoFilter_NoSession() throws IOException, ServletException {
+        // Arrange
+        MockitoAnnotations.openMocks(this);
+
         when(request.getSession(false)).thenReturn(null);
 
+        // Act
         filter.doFilter(request, response, chain);
 
+        // Assert
         verify(response).sendRedirect("/user/login");
         verify(chain, never()).doFilter(request, response);
     }
 
     @Test
     void testDoFilter_NoUser() throws IOException, ServletException {
+        // Arrange
+        MockitoAnnotations.openMocks(this);
+
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute("user")).thenReturn(null);
 
+        // Act
         filter.doFilter(request, response, chain);
 
+        // Assert
         verify(response).sendRedirect("/user/login");
         verify(chain, never()).doFilter(request, response);
     }
