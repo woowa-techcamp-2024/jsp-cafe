@@ -197,18 +197,22 @@ public class UserServletTest {
         @Test
         @DisplayName("비밀번호 인증을 먼저 하지 않으면 사용자 정보를 수정할 수 없다")
         void given_tryChaneEmailAndPasswordWithoutPasswordChecking_then_cannotUpdate() throws ServletException, IOException {
-            //when
+            //given
             signupAndLogin(config, request);
-            request.setParameter("name", "Updated Name");
-            request.setParameter("email", "updated@example.com");
+            User loginUser = getLoginUser();
+            String updatedName = "Updated Name";
+            String updateMail = "updated@example.com";
+            request.setParameter("name", updatedName);
+            request.setParameter("email", updateMail);
             request.setRequestURI("/users/profile");
 
             //when
             userServlet.doPost(request, response);
 
             //then
+            assertThat(request.getAttribute("isFailed")).isEqualTo(true);
             User updatedUser = userDao.findByUserId(getLoginUser().getUserId()).orElse(null);
-            assertThat(updatedUser.getName()).isEqualTo("Test User");
+            assertThat(updatedUser.getEmail()).isEqualTo(loginUser.getEmail());
         }
 
         @Test

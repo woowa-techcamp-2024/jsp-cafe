@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArticleDao extends CommonDao<Article, Long> {
+    Optional<Article> findByIdForUpdate(Long id);
     Optional<ArticleDto> findByIdAsDto(Long id);
     List<ArticleDto> findAllAsDto();
 }

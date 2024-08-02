@@ -1,6 +1,6 @@
 package codesqaud;
 
-import codesqaud.app.dao.JdbcTemplate;
+import codesqaud.app.db.JdbcTemplate;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.jdbcx.JdbcDataSource;
 import org.h2.tools.Server;
@@ -39,17 +39,17 @@ public class TestDataSource {
         return INSTANCE.jdbcConnectionPool;
     }
 
-    public static void create() throws SQLException {
+    public static void create() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(INSTANCE.jdbcConnectionPool);
 
         jdbcTemplate.execute("""
-                CREATE TABLE IF NOT EXISTS users (
+                 CREATE TABLE IF NOT EXISTS users (
                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
                      user_id VARCHAR(50) NOT NULL UNIQUE,
                      password VARCHAR(255) NOT NULL,
                      name VARCHAR(100) NOT NULL,
                      email VARCHAR(100) NOT NULL
-                );
+                 );
                 """);
 
         jdbcTemplate.execute("""
@@ -57,7 +57,20 @@ public class TestDataSource {
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     title VARCHAR (200) NOT NULL,
                     contents TEXT NOT NULL,
-                    author_id VARCHAR (50) NOT NULL
+                    activate BOOLEAN NOT NULL,
+                    author_id BIGINT REFERENCES users(id),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS replies (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    contents TEXT NOT NULL,
+                    activate BOOLEAN NOT NULL,
+                    article_id BIGINT REFERENCES articles(id),
+                    author_id BIGINT REFERENCES users(id),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
                 """);
     }

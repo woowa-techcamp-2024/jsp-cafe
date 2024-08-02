@@ -1,10 +1,14 @@
 package codesqaud.app.config;
 
-import codesqaud.app.dao.*;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.article.DbArticleDao;
+import codesqaud.app.dao.reply.DbReplyDao;
+import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dao.user.DbUserDao;
 import codesqaud.app.dao.user.UserDao;
+import codesqaud.app.db.JdbcTemplate;
+import codesqaud.app.service.ArticleService;
+import codesqaud.app.service.ReplyService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -59,11 +63,15 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private static void executeDropTable(JdbcTemplate jdbcTemplate) {
         jdbcTemplate.execute("""
-                DROP TABLE articles;
+                DROP TABLE IF EXISTS replies;
                 """);
 
         jdbcTemplate.execute("""
-                DROP TABLE users;
+                DROP TABLE IF EXISTS articles;
+                """);
+
+        jdbcTemplate.execute("""
+                DROP TABLE IF EXISTS users;
                 """);
     }
 
@@ -83,7 +91,20 @@ public class ServletContextInitializer implements ServletContextListener {
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     title VARCHAR (200) NOT NULL,
                     contents TEXT NOT NULL,
-                    author_id VARCHAR (50) NOT NULL
+                    activate BOOLEAN NOT NULL,
+                    author_id BIGINT REFERENCES users(id),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS replies (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    contents TEXT NOT NULL,
+                    activate BOOLEAN NOT NULL,
+                    article_id BIGINT REFERENCES articles(id),
+                    author_id BIGINT REFERENCES users(id),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
                 """);
     }
@@ -94,5 +115,15 @@ public class ServletContextInitializer implements ServletContextListener {
 
         ArticleDao articleDao = new DbArticleDao(jdbcTemplate);
         servletContext.setAttribute("articleDao", articleDao);
+
+        ReplyDao replyDao = new DbReplyDao(jdbcTemplate);
+        servletContext.setAttribute("replyDao", replyDao);
+
+        DataSource dataSource = (DataSource) servletContext.getAttribute("dataSource");
+        ArticleService articleService = new ArticleService(articleDao, replyDao, dataSource);
+        servletContext.setAttribute("articleService", articleService);
+
+        ReplyService replyService = new ReplyService(replyDao);
+        servletContext.setAttribute("replyService", replyService);
     }
 }

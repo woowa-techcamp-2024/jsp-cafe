@@ -1,43 +1,35 @@
 package codesqaud.app.dto;
 
-import java.util.List;
-
-public class ArticleDto {
+public class ReplyDto {
     private final Long id;
-    private final String title;
     private final String contents;
+    private final Boolean activate;
     private final String createdAt;
     private final UserDto author;
-    private final Boolean activate;
     private boolean isMine;
 
-    public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author, Boolean activate) {
+    public ReplyDto(Long id, String contents, Boolean activate, String createdAt, UserDto author) {
         this.id = id;
-        this.title = title;
         this.contents = contents;
+        this.activate = activate;
         this.createdAt = createdAt;
         this.author = author;
-        this.activate = activate;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public String getContents() {
         return contents;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
     public Boolean getActivate() {
         return activate;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
     }
 
     public UserDto getAuthor() {
@@ -56,13 +48,13 @@ public class ArticleDto {
         return new Builder();
     }
 
+
     public static final class Builder {
         private Long id;
-        private String title;
         private String contents;
+        private Boolean activate;
         private String createdAt;
         private UserDto author;
-        private Boolean activate;
 
         private Builder() {
         }
@@ -72,18 +64,8 @@ public class ArticleDto {
             return this;
         }
 
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-
         public Builder contents(String contents) {
             this.contents = contents;
-            return this;
-        }
-
-        public Builder createdAt(String createdAt) {
-            this.createdAt = createdAt;
             return this;
         }
 
@@ -92,13 +74,18 @@ public class ArticleDto {
             return this;
         }
 
+        public Builder createdAt(String createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
         public Builder author(UserDto author) {
             this.author = author;
             return this;
         }
 
-        public ArticleDto build() {
-            return new ArticleDto(id, title, contents, createdAt, author, activate);
+        public ReplyDto build() {
+            return new ReplyDto(id, contents, activate, createdAt, author);
         }
     }
 }
