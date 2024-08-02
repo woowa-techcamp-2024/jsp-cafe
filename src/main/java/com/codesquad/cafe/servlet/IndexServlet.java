@@ -3,7 +3,7 @@ package com.codesquad.cafe.servlet;
 import com.codesquad.cafe.db.Page;
 import com.codesquad.cafe.db.PostRepository;
 import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.entity.PostDetailsDto;
+import com.codesquad.cafe.db.domain.PostWithAuthor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,9 +34,9 @@ public class IndexServlet extends HttpServlet {
         int pageSize = getRequestedPageSize(req);
 
         try {
-            Page<PostDetailsDto> page = postRepository.findPostWithAuthorByPageSortByCreatedAtDesc(pageNum, pageSize);
+            Page<PostWithAuthor> page = postRepository.findPostWithAuthorByPageSortByCreatedAtDesc(pageNum, pageSize);
             req.setAttribute("page", page);
-            req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(req, resp);
         } catch (IllegalArgumentException e) {
             resp.sendError(400);
         }

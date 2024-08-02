@@ -77,6 +77,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>comment</servlet-name>
+        <servlet-class>com.codesquad.cafe.servlet.CommentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>comment</servlet-name>
+        <url-pattern>/comments/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>login</servlet-name>
         <servlet-class>com.codesquad.cafe.servlet.LoginServlet</servlet-class>
     </servlet>
@@ -100,7 +109,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>index</servlet-name>
-        <url-pattern></url-pattern>
+        <url-pattern>/home</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
