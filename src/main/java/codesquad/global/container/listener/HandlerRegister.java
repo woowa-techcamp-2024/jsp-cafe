@@ -15,6 +15,7 @@ import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.dao.UserQuery;
+import codesquad.global.filter.AuthenticationFilter;
 import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.handler.UserHandler;
 import codesquad.user.handler.UserRegisterFormHandler;
@@ -23,13 +24,12 @@ import codesquad.user.handler.UsersHandler;
 import codesquad.user.service.SignInService;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.UpdateUserService;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -53,9 +53,6 @@ public class HandlerRegister implements ServletContextListener {
         DeleteCommentService deleteCommentService = (DeleteCommentService) servletContext.getAttribute("DeleteCommentService");
         // Handler 등록
         List<HandlerMapping> handlerMappings = new ArrayList<>();
-//        registerHandlerMapping(handlerMappings, new IndexServlet(articleQuery));
-//        registerHandlerMapping(handlerMappings, new LoginServlet(signInService));
-//        registerHandlerMapping(handlerMappings, new LogoutServlet());
         registerHandlerMapping(handlerMappings, new QnaHandler(articleQuery, updateArticleService, deleteArticleService));
         registerHandlerMapping(handlerMappings, new QnasHandler(registerArticleService));
         registerHandlerMapping(handlerMappings, new QnaRegisterFormHandler());
@@ -68,6 +65,10 @@ public class HandlerRegister implements ServletContextListener {
         registerHandlerMapping(handlerMappings, new CommentHandler(deleteCommentService));
         servletContext.setAttribute("HandlerMappings", handlerMappings);
         logger.info("HandlerMapping registered on context");
+
+        FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("AuthenticationFilter", new AuthenticationFilter());
+        filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
+        logger.info("AuthenticationFilter registered");
     }
 
     private void registerHandlerMapping(List<HandlerMapping> handlerMappings, RequestHandler handler) {

@@ -1,8 +1,11 @@
 package codesquad.global.filter;
 
+import codesquad.common.handler.HandlerMapping;
+import codesquad.common.handler.RequestHandler;
 import codesquad.common.handler.annotation.Authorized;
 import codesquad.user.domain.User;
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -11,7 +14,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,44 +33,30 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         ServletContext servletContext = filterConfig.getServletContext();
-        Map<String, ? extends ServletRegistration> servletRegistrations = servletContext.getServletRegistrations();
 
-        for (ServletRegistration registration : servletRegistrations.values()) {
-            String className = registration.getClassName();
-            try {
-                // 서블릿 클래스 로드
-                Class<?> servletClass = Class.forName(className);
-                // 서블릿 클래스의 메서드 정보 출력
-                Method[] methods = servletClass.getDeclaredMethods();
-                // Authorized annotation 유무 확인
-                for (Method method : methods) {
-                    // doGet/doPost/doPut/doDelete만 분리
-                    String methodString = exchange(method);
-                    if (methodString == null) {
-                        continue;
-                    }
-                    // 있으면 requestMap, 없으면 whiteMap에 등록
-                    Authorized annotation = method.getAnnotation(Authorized.class);
-                    if (annotation == null) {
-                        Collection<String> mappings = registration.getMappings();
-                        List<Pattern> patterns = whiteMap.getOrDefault(methodString, new ArrayList<>());
-                        for (String mapping : mappings) {
-                            patterns.add(Pattern.compile(mapping.replaceAll("\\*", ".*")));
-                        }
-                        whiteMap.put(methodString, patterns);
-                        logger.info("Filter Registered except: {} {}", methodString, mappings);
-                        continue;
-                    }
-                    Collection<String> mappings = registration.getMappings();
-                    List<Pattern> patterns = requestMap.getOrDefault(methodString, new ArrayList<>());
-                    for (String mapping : mappings) {
-                        patterns.add(Pattern.compile(mapping.replaceAll("\\*", ".*")));
-                    }
-                    requestMap.put(methodString, patterns);
-                    logger.info("Filter Registered : {} {}", methodString, mappings);
+        // Handler의 Authorize 확인
+        logger.info("checking handler");
+        List<HandlerMapping> handlerMappings = (List<HandlerMapping>) servletContext.getAttribute("HandlerMappings");
+        for (HandlerMapping handlerMapping : handlerMappings) {
+            Pattern pattern = handlerMapping.getPattern();
+            RequestHandler handler = handlerMapping.getHandler();
+
+            for (Method method : handler.getClass().getDeclaredMethods()) {
+                String methodString = exchange(method);
+                if (methodString == null) {
+                    continue;
                 }
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+
+                Authorized annotation = method.getAnnotation(Authorized.class);
+                if (annotation == null) {
+                    logger.info("Authorized not found for {} {}", method.getName(), pattern);
+                    whiteMap.computeIfAbsent(methodString, (key) -> new ArrayList<>()).add(pattern);
+                    logger.info("Filter registered exception: {} {}", methodString, pattern);
+                } else {
+                    logger.info("Authorized found for {} {}", method.getName(), pattern);
+                    requestMap.computeIfAbsent(methodString, (key) -> new ArrayList<>()).add(pattern);
+                    logger.info("Filter registered: {} {}", methodString, pattern);
+                }
             }
         }
     }
@@ -92,11 +84,14 @@ public class AuthenticationFilter implements Filter {
         String method = httpRequest.getMethod();
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
 
+        logger.info("checking request authentication");
+
         if (whiteMap.containsKey(method)) {
             List<Pattern> patterns = whiteMap.get(method);
             for (Pattern pattern : patterns) {
                 Matcher matcher = pattern.matcher(path);
                 if (matcher.matches()) {
+                    logger.info("white request {}", path);
                     chain.doFilter(request, response);
                     return;
                 }
@@ -108,6 +103,7 @@ public class AuthenticationFilter implements Filter {
             for (Pattern pattern : patterns) {
                 Matcher matcher = pattern.matcher(path);
                 if (matcher.matches() && !isAuthenticated(httpRequest)) {
+                    logger.info("black request unauthenticated");
                     httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
                     return;
                 }

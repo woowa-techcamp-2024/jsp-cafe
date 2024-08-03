@@ -23,4 +23,12 @@ public class HandlerMapping {
     public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         handler.handle(request, response);
     }
+
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+    public RequestHandler getHandler() {
+        return handler;
+    }
 }
