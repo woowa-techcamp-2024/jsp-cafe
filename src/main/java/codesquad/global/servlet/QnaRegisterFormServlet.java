@@ -1,6 +1,6 @@
 package codesquad.global.servlet;
 
-import codesquad.common.authorization.annotation.Authorized;
+import codesquad.common.handler.annotation.Authorized;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

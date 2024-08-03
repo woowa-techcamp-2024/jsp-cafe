@@ -1,20 +1,19 @@
-package codesquad.global.servlet;
+package codesquad.user.handler;
 
-import codesquad.common.authorization.annotation.Authorized;
+import codesquad.common.handler.annotation.Authorized;
 import codesquad.common.exception.DuplicateIdException;
 import codesquad.common.exception.IncorrectPasswordException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.dao.UserQuery.QueryRequest;
 import codesquad.global.dao.UserQuery.UserResponse;
+import codesquad.common.handler.RequestHandler;
+import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.SignUpService.Command;
 import codesquad.user.service.UpdateUserService;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,21 +23,18 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/users")
-public class UsersServlet extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(UsersServlet.class);
+@RequestMapping("/users")
+public class UsersHandler extends HttpServlet implements RequestHandler {
+    private static final Logger logger = LoggerFactory.getLogger(UsersHandler.class);
 
-    private UserQuery userQuery;
-    private SignUpService signUpService;
-    private UpdateUserService updateUserService;
+    private final UserQuery userQuery;
+    private final SignUpService signUpService;
+    private final UpdateUserService updateUserService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext servletContext = config.getServletContext();
-        userQuery = (UserQuery) servletContext.getAttribute("UserQuery");
-        signUpService = (SignUpService) servletContext.getAttribute("SignUpService");
-        updateUserService = (UpdateUserService) servletContext.getAttribute("UpdateUserService");
-        logger.info("UsersServlet initialized");
+    public UsersHandler(UserQuery userQuery, SignUpService signUpService, UpdateUserService updateUserService) {
+        this.userQuery = userQuery;
+        this.signUpService = signUpService;
+        this.updateUserService = updateUserService;
     }
 
     /**
@@ -110,5 +106,10 @@ public class UsersServlet extends HttpServlet {
             return;
         }
         resp.sendRedirect(req.getContextPath() + "/users");
+    }
+
+    @Override
+    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.service(req, resp);
     }
 }

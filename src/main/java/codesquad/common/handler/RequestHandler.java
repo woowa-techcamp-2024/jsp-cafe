@@ -1,4 +1,4 @@
-package codesquad.global.handler;
+package codesquad.common.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

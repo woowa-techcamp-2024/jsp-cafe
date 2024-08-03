@@ -10,8 +10,12 @@ import codesquad.user.service.SignInService;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.UpdateUserService;
 import jakarta.servlet.ServletContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceRegister implements AppInit {
+    private static final Logger logger = LoggerFactory.getLogger(ServiceRegister.class);
+
     @Override
     public void onStartUp(ServletContext servletContext) throws Exception {
         // Repository 조회
@@ -26,6 +30,7 @@ public class ServiceRegister implements AppInit {
         servletContext.setAttribute("UpdateArticleService", new UpdateArticleService(articleRepository));
         servletContext.setAttribute("RegisterArticleService", new RegisterArticleService(articleRepository));
         servletContext.setAttribute("DeleteArticleService", new DeleteArticleServiceImpl(articleRepository, commentRepository));
+        logger.info("Service registered on context");
     }
 
     @Override

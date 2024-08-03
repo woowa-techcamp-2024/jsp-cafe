@@ -1,4 +1,4 @@
-package codesquad.global.servlet;
+package codesquad.user.handler;
 
 import codesquad.mock.http.MockRequest;
 import codesquad.mock.http.MockRequestDispatcher;
@@ -10,19 +10,19 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-class UserRegisterFormServletTest {
+class UserRegisterFormHandlerTest {
     private MockRequestDispatcher mockRequestDispatcher;
-    private UserRegisterFormServlet userRegisterFormServlet;
+    private UserRegisterFormHandler userRegisterFormHandler;
 
     @BeforeEach
     void setUp() {
         mockRequestDispatcher = new MockRequestDispatcher();
-        userRegisterFormServlet = new UserRegisterFormServlet();
+        userRegisterFormHandler = new UserRegisterFormHandler();
     }
 
     @Nested
     @DisplayName("GET /users/register-form")
-    class UserRegisterFormServletIs {
+    class UserRegisterFormHandlerIs {
         @Test
         @DisplayName("forward to : /WEB-INF/views/user/form.jsp")
         void doGet() throws ServletException, IOException {
@@ -31,7 +31,7 @@ class UserRegisterFormServletTest {
             HttpServletResponse response = new MockResponse();
 
             // when
-            userRegisterFormServlet.doGet(request, response);
+            userRegisterFormHandler.doGet(request, response);
 
             // then
             Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/user/form.jsp");

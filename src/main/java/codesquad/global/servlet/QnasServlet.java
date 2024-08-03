@@ -2,7 +2,7 @@ package codesquad.global.servlet;
 
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.RegisterArticleService.Command;
-import codesquad.common.authorization.annotation.Authorized;
+import codesquad.common.handler.annotation.Authorized;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;

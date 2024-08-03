@@ -3,7 +3,7 @@ package codesquad.global.servlet;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.article.service.UpdateArticleService.Command;
-import codesquad.common.authorization.annotation.Authorized;
+import codesquad.common.handler.annotation.Authorized;
 import codesquad.common.exception.CommentExistException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;

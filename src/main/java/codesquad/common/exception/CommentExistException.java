@@ -1,4 +1,4 @@
 package codesquad.common.exception;
 
-public class CommentExistException extends Exception{
+public class CommentExistException extends Exception {
 }
