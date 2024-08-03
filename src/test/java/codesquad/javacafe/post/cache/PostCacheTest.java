@@ -63,7 +63,7 @@ class PostCacheTest {
             body.put("memberId", new String[]{"1"});
             PostRequestDto postDto = new PostRequestDto(body);
             postDto.setMemberId(memberId);
-            Post save = PostRepository.getInstance().save(postDto);
+            Post save = PostRepository.getInstance().save(postDto.toEntity());
             list.add(save.getId());
         }
 

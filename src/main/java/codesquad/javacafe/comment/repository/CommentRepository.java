@@ -63,7 +63,7 @@ public class CommentRepository {
 
     public List<Comment> findAll(long postId) {
         log.debug("[Comment Repository] post id = {}", postId);
-        var sql = "select c.id, c.post_id, c.comment_contents, c.comment_create, m.id, m.member_name" +
+        var sql = "select c.id as commentPk, c.post_id, c.comment_contents, c.comment_create, m.id as memberPk, m.member_name" +
                 " from comment c inner join member m" +
                 " on c.member_id = m.id where c.post_id = ?";
 
@@ -81,11 +81,11 @@ public class CommentRepository {
                 var commentList = new ArrayList<Comment>();
                 do {
                     var comment = new Comment();
-                    comment.setId(rs.getLong("c.id"));
+                    comment.setId(rs.getLong("commentPk"));
                     comment.setPostId(rs.getLong("post_id"));
                     comment.setComment(rs.getString("comment_contents"));
                     comment.setCreatedAt(rs.getTimestamp("comment_create").toLocalDateTime());
-                    var id = rs.getLong("m.id");
+                    var id = rs.getLong("memberPk");
                     var memberName = rs.getString("member_name");
                     var member = new Member();
                     member.setId(id);

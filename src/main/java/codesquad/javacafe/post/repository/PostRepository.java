@@ -28,8 +28,7 @@ public class PostRepository {
     }
 
 
-    public Post save(PostRequestDto postDto) {
-        Post post = postDto.toEntity();
+    public Post save(Post post) {
         var sql = "insert into post(post_writer, post_title, post_contents, post_create, member_id)\n" +
                 "values (?,?,?,?,?)";
 
@@ -147,8 +146,7 @@ public class PostRepository {
         }
     }
 
-    public int update(PostRequestDto postDto) {
-        Post post = postDto.toEntity();
+    public int update(Post post) {
         var sql = "update post set post_title = ?, post_contents =?\n" +
                 "where id = ? and member_id = ?";
 

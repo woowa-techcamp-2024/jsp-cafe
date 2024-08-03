@@ -102,7 +102,7 @@ public class PostControllerTest {
         PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
         postDto.setMemberId(memberId);
-        Post savePost = PostRepository.getInstance().save(postDto);
+        Post savePost = PostRepository.getInstance().save(postDto.toEntity());
 
         // Simulate GET request with query parameters
         HttpServletRequest request = new CustomHttpServletRequest();
@@ -131,7 +131,7 @@ public class PostControllerTest {
         body.put("title", new String[]{"title1"});
         body.put("contents", new String[]{"contents1"});
         PostRequestDto postDto = new PostRequestDto(body);
-        PostRepository.getInstance().save(postDto);
+        PostRepository.getInstance().save(postDto.toEntity());
 
         // Simulate GET request with query parameters
         HttpServletRequest request = new CustomHttpServletRequest();
@@ -191,7 +191,7 @@ public class PostControllerTest {
         PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
         postDto.setMemberId(memberId);
-        Post savePost = PostRepository.getInstance().save(postDto);
+        Post savePost = PostRepository.getInstance().save(postDto.toEntity());
 
         // Simulate PUT request with query parameters
         HttpServletRequest request = new CustomHttpServletRequest();
@@ -225,7 +225,7 @@ public class PostControllerTest {
         PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
         postDto.setMemberId(memberId);
-        Post savePost = PostRepository.getInstance().save(postDto);
+        Post savePost = PostRepository.getInstance().save(postDto.toEntity());
 
         // Simulate DELETE request with query parameters
         HttpServletRequest request = new CustomHttpServletRequest();
@@ -276,7 +276,7 @@ public class PostControllerTest {
         PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
         postDto.setMemberId(memberId);
-        Post savePost = PostRepository.getInstance().save(postDto);
+        Post savePost = PostRepository.getInstance().save(postDto.toEntity());
 
         // Simulate PUT request with unauthorized user
         HttpServletRequest request = new CustomHttpServletRequest();
@@ -327,7 +327,7 @@ public class PostControllerTest {
         PostRequestDto postDto = new PostRequestDto(body);
         postDto.setWriter("User One");
         postDto.setMemberId(memberId);
-        Post savePost = PostRepository.getInstance().save(postDto);
+        Post savePost = PostRepository.getInstance().save(postDto.toEntity());
 
         // Simulate DELETE request with unauthorized user
         HttpServletRequest request = new CustomHttpServletRequest();

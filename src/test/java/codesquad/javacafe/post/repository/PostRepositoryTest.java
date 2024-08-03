@@ -90,7 +90,7 @@ public class PostRepositoryTest {
     public void testSave() throws SQLException {
         PostRequestDto postDto = createPostDto("User One", "title", "contents");
         postDto.setMemberId(memberId);
-        postRepository.save(postDto);
+        postRepository.save(postDto.toEntity());
 
         List<Post> posts = postRepository.findAll();
         assertNotNull(posts);
@@ -107,8 +107,8 @@ public class PostRepositoryTest {
         postDto1.setMemberId(memberId);
         postDto2.setMemberId(memberId);
 
-        postRepository.save(postDto1);
-        postRepository.save(postDto2);
+        postRepository.save(postDto1.toEntity());
+        postRepository.save(postDto2.toEntity());
 
         List<Post> posts = postRepository.findAll();
         assertNotNull(posts);
@@ -125,7 +125,7 @@ public class PostRepositoryTest {
     public void testFindById() throws SQLException {
         PostRequestDto postDto = createPostDto("User One", "title", "contents");
         postDto.setMemberId(memberId);
-        postRepository.save(postDto);
+        postRepository.save(postDto.toEntity());
 
         List<Post> posts = postRepository.findAll();
         assertNotNull(posts);
@@ -142,12 +142,12 @@ public class PostRepositoryTest {
     public void testUpdate() throws SQLException {
         PostRequestDto postDto = createPostDto("User One", "title", "contents");
         postDto.setMemberId(memberId);
-        Post savedPost = postRepository.save(postDto);
+        Post savedPost = postRepository.save(postDto.toEntity());
 
         // Update the post
         PostRequestDto updatePost = new PostRequestDto(savedPost.getId(), "updatedTitle", "updatedContents", memberId);
 
-        int rowsAffected = postRepository.update(updatePost);
+        int rowsAffected = postRepository.update(updatePost.toEntity());
 
         assertEquals(1, rowsAffected);
 
@@ -161,7 +161,7 @@ public class PostRepositoryTest {
     public void testDelete() throws SQLException {
         PostRequestDto postDto = createPostDto("User One", "title", "contents");
         postDto.setMemberId(memberId);
-        Post savedPost = postRepository.save(postDto);
+        Post savedPost = postRepository.save(postDto.toEntity());
 
         // Delete the post
         int rowsAffected = postRepository.delete(savedPost.getId());

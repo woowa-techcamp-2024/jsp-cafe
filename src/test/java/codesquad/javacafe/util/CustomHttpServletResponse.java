@@ -4,6 +4,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -14,6 +15,8 @@ public class CustomHttpServletResponse implements HttpServletResponse {
     private String redirectedUrl;
     private String forwardedUrl;
     private int statusCode;
+    private final CharArrayWriter charArrayWriter = new CharArrayWriter();
+
 
     @Override
     public void addCookie(Cookie cookie) {
@@ -134,7 +137,11 @@ public class CustomHttpServletResponse implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return null;
+        return new PrintWriter(charArrayWriter);
+    }
+
+    public String getOutput() {
+        return charArrayWriter.toString();
     }
 
     @Override
