@@ -3,38 +3,39 @@ package com.jspcafe.board.service;
 import com.jspcafe.board.model.Article;
 import com.jspcafe.board.model.ArticleDao;
 import com.jspcafe.exception.ArticleNotFoundException;
-
 import java.util.List;
 
 public class ArticleService {
-    private final ArticleDao articleDao;
 
-    public ArticleService(final ArticleDao articleDao) {
-        this.articleDao = articleDao;
-    }
+  private final ArticleDao articleDao;
 
-    public String write(final String title, final String nickname, final String content) {
-        Article article = Article.create(title, nickname, content);
-        articleDao.save(article);
-        return article.id();
-    }
+  public ArticleService(final ArticleDao articleDao) {
+    this.articleDao = articleDao;
+  }
 
-    public Article findById(final String id) {
-        return articleDao.findById(id)
-                .orElseThrow(() -> new ArticleNotFoundException("Article id not found, id: " + id));
-    }
+  public String write(final String userId, final String title, final String nickname,
+      final String content) {
+    Article article = Article.create(userId, title, nickname, content);
+    articleDao.save(article);
+    return article.id();
+  }
 
-    public List<Article> findAll() {
-        return articleDao.findAll();
-    }
+  public Article findById(final String id) {
+    return articleDao.findById(id)
+        .orElseThrow(() -> new ArticleNotFoundException("Article id not found, id: " + id));
+  }
 
-    public void update(final String id, final String title, final String content) {
-        Article article = findById(id);
-        Article updateArticle = article.update(title, content);
-        articleDao.update(updateArticle);
-    }
+  public List<Article> findAll() {
+    return articleDao.findAll();
+  }
 
-    public void delete(final String id) {
-        articleDao.delete(id);
-    }
+  public void update(final String id, final String title, final String content) {
+    Article article = findById(id);
+    Article updateArticle = article.update(title, content);
+    articleDao.update(updateArticle);
+  }
+
+  public boolean delete(final String id, final String userId) {
+    return articleDao.delete(id, userId);
+  }
 }
