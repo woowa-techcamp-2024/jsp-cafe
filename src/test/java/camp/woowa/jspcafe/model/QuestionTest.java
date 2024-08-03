@@ -3,6 +3,8 @@ package camp.woowa.jspcafe.model;
 import camp.woowa.jspcafe.model.Question;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QuestionTest {
@@ -15,7 +17,7 @@ class QuestionTest {
         String writer = "1234";
 
         // when
-        Question question = new Question(id, title, content, writer, 1L);
+        Question question = new Question(id, title, content, writer, 1L, LocalDateTime.now());
 
         // then
         assertEquals(id, question.getId());
@@ -31,7 +33,7 @@ class QuestionTest {
         String title = "title";
         String content = "content";
         String writer = "1234";
-        Question question = new Question(id, title, content, writer, 1L);
+        Question question = new Question(id, title, content, writer, 1L, LocalDateTime.now());
         String updatedTitle = "updatedTitle";
         String updatedContent = "updatedContent";
         // when

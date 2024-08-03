@@ -18,7 +18,7 @@
                       <div class="article-header-text">
                           <a href="/users/${question.writerId}" class="article-author-name"> ${question.writer}</a>
                           <a href="${pageContext.request.contextPath}/questions/413" class="article-header-time" title="퍼머링크">
-                              2015-12-30 01:47
+                              ${question.createdAt.toString().replace('T', ' ')}
                               <i class="icon-link"></i>
                           </a>
                       </div>
@@ -153,7 +153,7 @@
                             </ul>
                         </div>`;
                     }
-                    html += template.format(answer.writer, '2024-08-31', answer.content, replyUtils);
+                    html += template.format(answer.writer, answer.createdAt, answer.content, replyUtils);
                 }
 
                 $('#reply').before(html);

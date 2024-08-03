@@ -26,7 +26,11 @@ public class QuestionService {
     }
 
     public Question findById(Long id) {
-        return questionRepository.findById(id);
+        Question question = questionRepository.findById(id);
+        if (question == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Question not found.");
+        }
+        return question;
     }
 
     public void update(Long id, String updatedTitle, String updatedContent, long writerId) {

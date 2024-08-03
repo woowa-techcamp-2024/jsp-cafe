@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.filter;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.service.UserService;
 import jakarta.servlet.FilterChain;
@@ -16,11 +17,10 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {"/qna/*"})
 public class AuthenticateFilter extends HttpFilter {
     private static final String REDIRECT_LOGIN = "/user/login";
-    private UserService userService;
-    @Override
-    public void init() throws ServletException {
-        ServletContext sc = getServletContext();
-        userService = (UserService) sc.getAttribute("userService");
+    private final UserService userService;
+
+    public AuthenticateFilter() {
+        userService = ServiceLocator.getService(UserService.class);
     }
 
     @Override

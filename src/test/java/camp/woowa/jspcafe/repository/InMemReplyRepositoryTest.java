@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ReplyRepositoryTest {
+class InMemReplyRepositoryTest {
     private ReplyRepository replyRepository;
 
     @BeforeEach

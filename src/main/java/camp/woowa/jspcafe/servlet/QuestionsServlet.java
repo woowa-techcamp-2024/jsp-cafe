@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlet;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.User;
@@ -7,7 +8,6 @@ import camp.woowa.jspcafe.service.QuestionService;
 import camp.woowa.jspcafe.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,19 +18,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 
-import static utils.SessionUtils.getSessionUser;
+import static camp.woowa.jspcafe.utils.SessionUtils.getSessionUser;
 
 @WebServlet(value = "/questions/*")
 public class QuestionsServlet extends HttpServlet {
-    private QuestionService questionService;
-    private UserService userService;
+    private final QuestionService questionService;
+    private final UserService userService;
 
-    @Override
-    public void init() throws ServletException {
-        ServletContext sc = getServletContext();
-
-        questionService = (QuestionService) sc.getAttribute("questionService");
-        userService = (UserService) sc.getAttribute("userService");
+    public QuestionsServlet() {
+        questionService = ServiceLocator.getService(QuestionService.class);
+        userService = ServiceLocator.getService(UserService.class);
     }
 
     @Override
@@ -128,9 +125,10 @@ public class QuestionsServlet extends HttpServlet {
         findByUserIdOrThrow(w.getUserId()); // 실제 존재하는 지 확인
 
         // PUT request json body to Object
-        try (BufferedReader reader = req.getReader()){
+        try (BufferedReader reader = req.getReader()) {
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> dataMap = mapper.readValue(reader, new TypeReference<Map<String, String>>() {});
+            Map<String, String> dataMap = mapper.readValue(reader, new TypeReference<Map<String, String>>() {
+            });
 
             String title = dataMap.get("title");
             String content = dataMap.get("content");

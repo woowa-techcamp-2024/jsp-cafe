@@ -1,45 +1,49 @@
 package camp.woowa.jspcafe;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.db.DatabaseManager;
+import camp.woowa.jspcafe.db.MySQLDatabaseManager;
 import camp.woowa.jspcafe.repository.*;
 import camp.woowa.jspcafe.service.QuestionService;
 import camp.woowa.jspcafe.service.ReplyService;
 import camp.woowa.jspcafe.service.UserService;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
-import java.sql.Connection;;
+import javax.sql.DataSource;
 
 public class DIContextListener implements ServletContextListener {
+    DatabaseManager dm;
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DIContextListener.class);
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ServletContext sc = sce.getServletContext();
-
         // DB Connection
-        Connection conn = DatabaseManager.getConnection();
+       dm = new MySQLDatabaseManager();
 
-        if (conn == null) {
-            logger.error("DB Connection Error");
-            throw new RuntimeException("DB Connection Error");
-        }
+        // TODO: 코드 리오더링에 따른 순서 보장 불가 고려
 
-        // UserRepository를 생성하고 UserService에 주입
-        UserRepository userRepository = new MySQLUserRepository(conn);
+        // UserRepository 를 생성하고 UserService 에 주입
+        UserRepository userRepository = RepositoryFactory.createUserRepository(dm);
         UserService userService = new UserService(userRepository);
-        sc.setAttribute("userService", userService);
+        ServiceLocator.registerService(UserService.class, userService);
 
-        // ReplyRepository를 생성하고 ReplyService에 주입
-        ReplyRepository replyRepository = new MySQLReplyRepository(conn);
+        // ReplyRepository 를 생성하고 ReplyService 에 주입
+        ReplyRepository replyRepository = RepositoryFactory.createReplyRepository(dm);
         ReplyService replyService = new ReplyService(replyRepository);
-        sc.setAttribute("replyService", replyService);
+        ServiceLocator.registerService(ReplyService.class, replyService);
 
-        // QuestionRepository를 생성하고 QuestionService에 주입
-        QuestionRepository questionRepository = new MySQLQuestionRepository(conn);
+        // QuestionRepository 를 생성하고 QuestionService 에 주입
+        QuestionRepository questionRepository = RepositoryFactory.createQuestionRepository(dm);
         QuestionService questionService = new QuestionService(questionRepository, replyService);
-        sc.setAttribute("questionService", questionService);
+        ServiceLocator.registerService(QuestionService.class, questionService);
+    }
 
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        ServletContextListener.super.contextDestroyed(sce);
+
+        // DB Connection 종료
+        dm.close();
     }
 }

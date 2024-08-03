@@ -2,6 +2,7 @@ package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.model.Question;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +15,7 @@ public class InMemQuestionRepository implements QuestionRepository {
     @Override
     public Long save(Question question) {
         Long id = sequence_id.getAndIncrement();
-        questions.put(id, new Question(id, question.getTitle(), question.getContent(), question.getWriter(), question.getWriterId()));
+        questions.put(id, new Question(id, question.getTitle(), question.getContent(), question.getWriter(), question.getWriterId(), LocalDateTime.now()));
         return id;
     }
 

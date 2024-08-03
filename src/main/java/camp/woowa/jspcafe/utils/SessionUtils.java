@@ -1,4 +1,4 @@
-package utils;
+package camp.woowa.jspcafe.utils;
 
 import camp.woowa.jspcafe.model.User;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.servlet;
 
+import camp.woowa.jspcafe.core.ServiceLocator;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Reply;
@@ -7,7 +8,7 @@ import camp.woowa.jspcafe.model.User;
 import camp.woowa.jspcafe.service.ReplyService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletContext;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,16 +19,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static utils.SessionUtils.getSessionUser;
+import static camp.woowa.jspcafe.utils.SessionUtils.getSessionUser;
 
 @WebServlet("/replies/*")
 public class RepliesServlet extends HttpServlet {
-    private ReplyService replyService;
+    private final ReplyService replyService;
 
-    @Override
-    public void init() throws ServletException {
-        ServletContext sc = getServletContext();
-        replyService = (ReplyService) sc.getAttribute("replyService");
+    public RepliesServlet() {
+        replyService = ServiceLocator.getService(ReplyService.class);
     }
 
     @Override
@@ -129,6 +128,7 @@ public class RepliesServlet extends HttpServlet {
             List<Reply> replies = replyService.findByQuestionId(questionId);
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
             resp.setContentType("application/json");
             mapper.writeValue(resp.getWriter(), replies);
         } catch (IOException | NumberFormatException e) {
