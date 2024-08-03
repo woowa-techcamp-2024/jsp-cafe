@@ -1,5 +1,6 @@
 package codesquad.javacafe.post.service;
 
+import codesquad.javacafe.comment.async.AsyncCommentDeleter;
 import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.common.exception.ServerErrorCode;
 import codesquad.javacafe.post.dto.request.PostRequestDto;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class PostService {
@@ -59,5 +61,6 @@ public class PostService {
         if (deleteResult == 0) {
             throw ClientErrorCode.POST_IS_NULL.customException("request post id = " + postId);
         }
+        AsyncCommentDeleter.getInstance().asyncDelete(postId, new AtomicInteger(0));
     }
 }

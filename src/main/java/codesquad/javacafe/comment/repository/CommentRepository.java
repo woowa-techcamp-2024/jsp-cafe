@@ -3,6 +3,8 @@ package codesquad.javacafe.comment.repository;
 import codesquad.javacafe.comment.entity.Comment;
 import codesquad.javacafe.member.entity.Member;
 import codesquad.javacafe.member.repository.MemberRepository;
+import codesquad.javacafe.post.repository.PostRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +53,7 @@ public class CommentRepository {
 
             return comment;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", CommentRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);
@@ -101,7 +103,7 @@ public class CommentRepository {
             }
 
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when findById, Class info = {}", CommentRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, rs);
@@ -109,7 +111,7 @@ public class CommentRepository {
 
     }
 
-    public int delete(long commentId) {
+    public int deleteOne(long commentId) {
         var sql = "delete from comment where id = ?";
 
         Connection con = null;
@@ -123,7 +125,28 @@ public class CommentRepository {
 
             return result;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", CommentRepository.class);
+            throw new RuntimeException(exception);
+        } finally {
+            close(con, ps, null);
+        }
+    }
+
+    public int deletePostComments(long postId) {
+        var sql = "delete from comment where post_id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, postId);
+            int result = ps.executeUpdate();
+
+            return result;
+        } catch (SQLException exception) {
+            log.error("[SQLException] throw error when member save, Class Info = {}", CommentRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);

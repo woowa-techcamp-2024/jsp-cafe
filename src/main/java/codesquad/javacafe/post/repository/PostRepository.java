@@ -58,7 +58,7 @@ public class PostRepository {
 
             return post;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);
@@ -100,7 +100,7 @@ public class PostRepository {
             }
 
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when findById, Class info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, rs);
@@ -140,7 +140,7 @@ public class PostRepository {
 
         } catch (SQLException exception) {
             exception.printStackTrace();
-            log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when findById, Class info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, rs);
@@ -170,7 +170,7 @@ public class PostRepository {
 
             return result;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);
@@ -192,7 +192,7 @@ public class PostRepository {
 
             return result;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);

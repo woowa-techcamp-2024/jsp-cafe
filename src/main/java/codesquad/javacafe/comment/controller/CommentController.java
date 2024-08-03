@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CommentController implements SubController {
     private static final Logger log = LoggerFactory.getLogger(CommentController.class);
@@ -40,8 +41,12 @@ public class CommentController implements SubController {
                 var postId = Long.parseLong(req.getParameter("postId"));
                 var commentList = CommentService.getInstance().getCommentList(postId);
 
-                var jsonResponse = gson.toJson(commentList);
-                sendResponse(res, jsonResponse);
+                if (Objects.isNull(commentList)) {
+                    res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                } else {
+                    var jsonResponse = gson.toJson(commentList);
+                    sendResponse(res, jsonResponse);
+                }
 
                 break;
             }

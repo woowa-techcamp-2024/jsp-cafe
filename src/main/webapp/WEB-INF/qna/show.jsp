@@ -129,20 +129,22 @@
 
 
         var template = '';
-        commentData.forEach(comment=> {
-            console.log(comment);
-            var addTemplate = $('#answerTemplate').html();
-            var formattedComment = addTemplate
-                .replace('{authorName}', comment.member.name) // Assuming memberId is used as authorName
-                .replace('{createdAt}', comment.createdAt)
-                .replace('{comment}', comment.comment.replaceAll(/\n/g, '<br>'))
-                .replaceAll('{commentId}', comment.id);
+        if(commentData != null){
 
-            template += formattedComment;
-        });
+            commentData.forEach(comment=> {
+                console.log(comment);
+                var addTemplate = $('#answerTemplate').html();
+                var formattedComment = addTemplate
+                    .replace('{authorName}', comment.member.name) // Assuming memberId is used as authorName
+                    .replace('{createdAt}', comment.createdAt)
+                    .replace('{comment}', comment.comment.replaceAll(/\n/g, '<br>'))
+                    .replaceAll('{commentId}', comment.id);
 
-        // console.log(template);
-        $('.qna-comment-slipp-articles').append(template);
+                template += formattedComment;
+            });
+
+            $('.qna-comment-slipp-articles').append(template);
+        }
     }
 </script>
 
