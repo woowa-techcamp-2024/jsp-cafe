@@ -1,6 +1,6 @@
 package codesquad.global.container.listener;
 
- import codesquad.article.handler.QnaHandler;
+import codesquad.article.handler.QnaHandler;
 import codesquad.article.handler.QnaRegisterFormHandler;
 import codesquad.article.handler.QnaUpdateFormHandler;
 import codesquad.article.handler.QnasHandler;

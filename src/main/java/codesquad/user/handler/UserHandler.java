@@ -1,11 +1,10 @@
 package codesquad.user.handler;
 
-import codesquad.common.handler.RequestHandler;
+import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.servlet.annotation.RequestMapping;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RequestMapping("^/users/\\d+$")
-public class UserHandler extends HttpServlet implements RequestHandler {
+public class UserHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserHandler.class);
 
     private final UserQuery userQuery;
@@ -58,10 +57,5 @@ public class UserHandler extends HttpServlet implements RequestHandler {
             return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/update-form")));
         }
         return Long.parseLong(pathInfo.substring(1));
-    }
-
-    @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.service(req, resp);
     }
 }

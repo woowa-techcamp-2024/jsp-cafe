@@ -1,11 +1,10 @@
 package codesquad.article.handler;
 
-import codesquad.common.handler.RequestHandler;
+import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RequestMapping("^/questions/\\d+/update-form$")
-public class QnaUpdateFormHandler extends HttpServlet implements RequestHandler {
+public class QnaUpdateFormHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnaUpdateFormHandler.class);
 
     private final ArticleQuery articleQuery;
@@ -61,10 +60,5 @@ public class QnaUpdateFormHandler extends HttpServlet implements RequestHandler 
             return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/update-form")));
         }
         return Long.parseLong(pathInfo.substring(1));
-    }
-
-    @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.service(req, resp);
     }
 }

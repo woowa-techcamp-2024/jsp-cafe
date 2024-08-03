@@ -1,20 +1,19 @@
 package codesquad.user.handler;
 
-import codesquad.common.handler.annotation.Authorized;
 import codesquad.common.exception.DuplicateIdException;
 import codesquad.common.exception.IncorrectPasswordException;
 import codesquad.common.exception.NoSuchElementException;
+import codesquad.common.handler.HttpServletRequestHandler;
+import codesquad.common.handler.annotation.Authorized;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.dao.UserQuery.QueryRequest;
 import codesquad.global.dao.UserQuery.UserResponse;
-import codesquad.common.handler.RequestHandler;
 import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.SignUpService.Command;
 import codesquad.user.service.UpdateUserService;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/users")
-public class UsersHandler extends HttpServlet implements RequestHandler {
+public class UsersHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(UsersHandler.class);
 
     private final UserQuery userQuery;
@@ -106,10 +105,5 @@ public class UsersHandler extends HttpServlet implements RequestHandler {
             return;
         }
         resp.sendRedirect(req.getContextPath() + "/users");
-    }
-
-    @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.service(req, resp);
     }
 }
