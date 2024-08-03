@@ -33,6 +33,9 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
         article.delete(userId);
         List<Comment> comments = commentRepository.findAllByArticleId(articleId);
         for (Comment comment : comments) {
+            if (comment.getStatus() == Status.DELETED) {
+                continue;
+            }
             try {
                 comment.delete(userId);
             } catch (UnauthorizedRequestException e) {

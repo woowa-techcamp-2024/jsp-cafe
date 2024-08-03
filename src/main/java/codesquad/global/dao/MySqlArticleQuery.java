@@ -1,5 +1,6 @@
 package codesquad.global.dao;
 
+import codesquad.comment.domain.vo.Status;
 import codesquad.common.db.connection.ConnectionManager;
 
 import java.sql.Connection;
@@ -56,7 +57,7 @@ public class MySqlArticleQuery implements ArticleQuery {
             connection = connectionManager.getConnection();
             String sql = """
                     SELECT a.id AS articleId, a.title, a.content, u.id AS writerId, u.user_id AS writer,
-                           c.id AS commentId, c.content AS commentContent, c.writer AS commenter,
+                           c.id AS commentId, c.content AS commentContent, c.writer AS commenter, c.status AS commentStatus,
                            u2.id AS commenterId
                     FROM articles a
                     LEFT JOIN users u ON a.writer = u.user_id
@@ -83,8 +84,9 @@ public class MySqlArticleQuery implements ArticleQuery {
                 }
                 // Comment
                 Long commentId = resultSet.getLong("commentId");
+                Status commentStatus = Status.of(resultSet.getString("commentStatus"));
                 // Check if there are any comments
-                if (commentId != 0) {
+                if (commentId != 0 && (commentStatus == Status.COMMENTED)) {
                     Long commenterId = resultSet.getLong("commenterId");
                     String commenter = resultSet.getString("commenter");
                     String commentContent = resultSet.getString("commentContent");
