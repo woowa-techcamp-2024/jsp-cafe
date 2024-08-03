@@ -1,13 +1,12 @@
-package codesquad.global.servlet;
+package codesquad.article.handler;
 
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.RegisterArticleService.Command;
+import codesquad.common.handler.RequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.domain.User;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,17 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/questions")
-public class QnasServlet extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(QnasServlet.class);
+@RequestMapping("/questions")
+public class QnasHandler extends HttpServlet implements RequestHandler {
+    private static final Logger logger = LoggerFactory.getLogger(QnasHandler.class);
 
-    private RegisterArticleService registerArticleService;
+    private final RegisterArticleService registerArticleService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext servletContext = config.getServletContext();
-        registerArticleService = (RegisterArticleService) servletContext.getAttribute("RegisterArticleService");
-        logger.info("QnasServlet initialized");
+    public QnasHandler(RegisterArticleService registerArticleService) {
+        this.registerArticleService = registerArticleService;
     }
 
     /**
@@ -44,5 +40,10 @@ public class QnasServlet extends HttpServlet {
         registerArticleService.register(command);
 
         resp.sendRedirect(req.getContextPath() + "/");
+    }
+
+    @Override
+    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.service(req, resp);
     }
 }

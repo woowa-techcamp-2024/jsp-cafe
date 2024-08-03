@@ -1,5 +1,9 @@
 package codesquad.global.container.listener;
 
+ import codesquad.article.handler.QnaHandler;
+import codesquad.article.handler.QnaRegisterFormHandler;
+import codesquad.article.handler.QnaUpdateFormHandler;
+import codesquad.article.handler.QnasHandler;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
@@ -46,9 +50,10 @@ public class HandlerRegister implements ServletContextListener {
 //        registerHandlerMapping(handlerMappings, new IndexServlet(articleQuery));
 //        registerHandlerMapping(handlerMappings, new LoginServlet(signInService));
 //        registerHandlerMapping(handlerMappings, new LogoutServlet());
-//        registerHandlerMapping(handlerMappings, new QnaRegisterFormServlet());
-//        registerHandlerMapping(handlerMappings, new QnaServlet(articleQuery, updateArticleService, deleteArticleService));
-//        registerHandlerMapping(handlerMappings, new QnasServlet(registerArticleService));
+        registerHandlerMapping(handlerMappings, new QnaHandler(articleQuery, updateArticleService, deleteArticleService));
+        registerHandlerMapping(handlerMappings, new QnasHandler(registerArticleService));
+        registerHandlerMapping(handlerMappings, new QnaRegisterFormHandler());
+        registerHandlerMapping(handlerMappings, new QnaUpdateFormHandler(articleQuery));
         registerHandlerMapping(handlerMappings, new UserHandler(userQuery));
         registerHandlerMapping(handlerMappings, new UsersHandler(userQuery, signUpService, updateUserService));
         registerHandlerMapping(handlerMappings, new UserRegisterFormHandler());

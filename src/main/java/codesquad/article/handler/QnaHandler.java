@@ -1,20 +1,18 @@
-package codesquad.global.servlet;
+package codesquad.article.handler;
 
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.article.service.UpdateArticleService.Command;
-import codesquad.common.handler.annotation.Authorized;
 import codesquad.common.exception.CommentExistException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
+import codesquad.common.handler.RequestHandler;
+import codesquad.common.handler.annotation.Authorized;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.dao.ArticleQuery.ArticleDetailResponse;
-import codesquad.global.dao.ArticleQuery.ArticleResponse;
+import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.domain.User;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -23,24 +21,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
-@WebServlet(urlPatterns = "/questions/*")
-public class QnaServlet extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(QnaServlet.class);
+@RequestMapping("^/questions/\\d+$")
+public class QnaHandler extends HttpServlet implements RequestHandler {
+    private static final Logger logger = LoggerFactory.getLogger(QnaHandler.class);
 
-    private ArticleQuery articleQuery;
-    private UpdateArticleService updateArticleService;
-    private DeleteArticleService deleteArticleService;
+    private final ArticleQuery articleQuery;
+    private final UpdateArticleService updateArticleService;
+    private final DeleteArticleService deleteArticleService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext servletContext = config.getServletContext();
-        articleQuery = (ArticleQuery) servletContext.getAttribute("ArticleQuery");
-        updateArticleService = (UpdateArticleService) servletContext.getAttribute("UpdateArticleService");
-        deleteArticleService = (DeleteArticleService) servletContext.getAttribute("DeleteArticleService");
-        logger.info("QnaServlet initialized");
+    public QnaHandler(ArticleQuery articleQuery, UpdateArticleService updateArticleService, DeleteArticleService deleteArticleService) {
+        this.articleQuery = articleQuery;
+        this.updateArticleService = updateArticleService;
+        this.deleteArticleService = deleteArticleService;
     }
 
     /**
@@ -51,14 +45,22 @@ public class QnaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("requesting article info");
-        String pathInfo = req.getPathInfo();
-        if (pathInfo.endsWith("/update-form")) {
-            logger.info("requesting user update form");
-            processUpdateForm(req, resp);
-        } else {
-            logger.info("requesting user info");
-            processArticleInfo(req, resp);
+        long articleId;
+        try {
+            articleId = extractIdFromPath(req);
+        } catch (NumberFormatException e) {
+            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
         }
+        Optional<ArticleDetailResponse> articleResponse = articleQuery.findDetailById(articleId);
+        if (articleResponse.isEmpty()) {
+            req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        req.setAttribute("articleDetailResponse", articleResponse.get());
+        req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp").forward(req, resp);
     }
 
     /**
@@ -134,50 +136,6 @@ public class QnaServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/");
     }
 
-    private void processUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long articleId;
-        try {
-            articleId = extractIdFromPath(req);
-        } catch (NumberFormatException e) {
-            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
-            return;
-        }
-        User loginUser = (User) req.getSession().getAttribute("loginUser");
-        Optional<ArticleResponse> findArticleResponse = articleQuery.findById(articleId);
-        if (findArticleResponse.isEmpty()) {
-            req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
-            return;
-        }
-        if (!Objects.equals(findArticleResponse.get().writerId(), loginUser.getId())) {
-            req.setAttribute("errorMsg", "다른 사람의 글을 수정할 수 없습니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
-            return;
-        }
-        req.setAttribute("articleResponse", findArticleResponse.get());
-        req.getRequestDispatcher("/WEB-INF/views/qna/update-form.jsp").forward(req, resp);
-    }
-
-    private void processArticleInfo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long articleId;
-        try {
-            articleId = extractIdFromPath(req);
-        } catch (NumberFormatException e) {
-            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
-            return;
-        }
-        Optional<ArticleDetailResponse> articleResponse = articleQuery.findDetailById(articleId);
-        if (articleResponse.isEmpty()) {
-            req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
-            return;
-        }
-        req.setAttribute("articleDetailResponse", articleResponse.get());
-        req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp").forward(req, resp);
-    }
-
     private long extractIdFromPath(HttpServletRequest req) {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || !pathInfo.startsWith("/")) {
@@ -187,5 +145,10 @@ public class QnaServlet extends HttpServlet {
             return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/update-form")));
         }
         return Long.parseLong(pathInfo.substring(1));
+    }
+
+    @Override
+    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.service(req, resp);
     }
 }

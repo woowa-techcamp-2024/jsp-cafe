@@ -39,6 +39,7 @@ public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("IndexServlet doGet");
         QueryRequest queryRequest = new QueryRequest(1, 10, Status.PUBLISHED);
         List<ArticleResponse> articleResponses = articleQuery.findAll(queryRequest);
         req.setAttribute("articleResponses", articleResponses);

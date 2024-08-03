@@ -1,4 +1,4 @@
-package codesquad.global.servlet;
+package codesquad.article.handler;
 
 import codesquad.mock.http.MockRequest;
 import codesquad.mock.http.MockRequestDispatcher;
@@ -10,19 +10,19 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-class QnaRegisterFormServletTest {
+class QnaRegisterFormHandlerTest {
     private MockRequestDispatcher mockRequestDispatcher;
-    private QnaRegisterFormServlet qnaRegisterFormServlet;
+    private QnaRegisterFormHandler qnaRegisterFormHandler;
 
     @BeforeEach
     void setUp() {
         mockRequestDispatcher = new MockRequestDispatcher();
-        qnaRegisterFormServlet = new QnaRegisterFormServlet();
+        qnaRegisterFormHandler = new QnaRegisterFormHandler();
     }
 
     @Nested
     @DisplayName("GET /qna/register-form")
-    class QnaRegisterFormServletIs {
+    class QnaRegisterFormHandlerIs {
         @Test
         @DisplayName("forward to : /WEB-INF/views/qna/form.jsp")
         void doGet() throws ServletException, IOException {
@@ -31,7 +31,7 @@ class QnaRegisterFormServletTest {
             HttpServletResponse response = new MockResponse();
 
             // when
-            qnaRegisterFormServlet.doGet(request, response);
+            qnaRegisterFormHandler.doGet(request, response);
 
             // then
             Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/qna/form.jsp");
