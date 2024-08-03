@@ -107,14 +107,11 @@ public class ArticleUpdateApi extends HttpServlet {
             return;
         }
         if (article != null) {
-            // 댓글이 없어야만 삭제 가능
             List<Reply> replies = replyDataHandler.findAllByArticleId(article.getArticleId());
-            if (!replies.isEmpty()) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("{\"error\": \"댓글이 없는 글 만 삭제 가능합니다.\"}");
-                return;
+            for (Reply r : replies) {
+                r.delete();
             }
-            //
+            replyDataHandler.deleteAllByArticleId(articleId);
             article.delete();
             Article upateArticle = articleDataHandler.update(article);
             if (upateArticle != null) {

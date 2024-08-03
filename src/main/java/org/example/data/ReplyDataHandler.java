@@ -11,4 +11,6 @@ public interface ReplyDataHandler {
     Reply findByReplyId(Long replyId);
 
     List<Reply> findAllByArticleId(Long articleId);
+
+    void deleteAllByArticleId(Long articleId);
 }

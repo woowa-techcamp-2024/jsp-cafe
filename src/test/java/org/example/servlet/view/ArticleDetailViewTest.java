@@ -13,6 +13,7 @@ import org.example.domain.Article;
 import org.example.mock.TestArticleDataHandler;
 import org.example.mock.TestHttpServletRequest;
 import org.example.mock.TestHttpServletResponse;
+import org.example.mock.TestReplyDataHandler;
 import org.example.mock.TestRequestDispatcher;
 import org.example.mock.TestServletConfig;
 import org.example.mock.TestServletContext;
@@ -23,6 +24,7 @@ public class ArticleDetailViewTest {
 
     private ArticleDetailView servlet;
     private TestArticleDataHandler articleDataHandler;
+    private TestReplyDataHandler replyDataHandler;
     private TestHttpServletRequest request;
     private TestHttpServletResponse response;
     private TestServletContext servletContext;
@@ -32,11 +34,13 @@ public class ArticleDetailViewTest {
     @BeforeEach
     public void setUp() throws ServletException {
         articleDataHandler = new TestArticleDataHandler();
+        replyDataHandler = new TestReplyDataHandler();
         request = new TestHttpServletRequest();
         response = new TestHttpServletResponse();
         servletContext = new TestServletContext();
 
         servletContext.setAttribute(DataHandler.ARTICLE.getValue(), articleDataHandler);
+        servletContext.setAttribute(DataHandler.REPLY.getValue(), replyDataHandler);
         servletConfig = new TestServletConfig(servletContext);
         servlet = new ArticleDetailView();
         servlet.init(servletConfig);

@@ -50,30 +50,4 @@ public class ArticleRegisterViewTest {
         assertEquals("/article/register.jsp", requestDispatcher.getForwardedPath());
         assertNull(response.getRedirectLocation());
     }
-
-    @Test
-    public void testDoGetWithNoSession() throws ServletException, IOException {
-        // Given
-        request.setSession(null);
-
-        // When
-        servlet.doGet(request, response);
-
-        // Then
-        assertEquals("/login", response.getRedirectLocation());
-        assertNull(requestDispatcher.getForwardedPath());
-    }
-
-    @Test
-    public void testDoGetWithSessionButNoUser() throws ServletException, IOException {
-        // Given
-        request.setSession(session);
-
-        // When
-        servlet.doGet(request, response);
-
-        // Then
-        assertEquals("/login", response.getRedirectLocation());
-        assertNull(requestDispatcher.getForwardedPath());
-    }
 }

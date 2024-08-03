@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import org.example.constance.AliveStatus;
 import org.example.constance.DataHandler;
@@ -61,7 +62,7 @@ public class ReplyRegisterApi extends HttpServlet {
         User user = (User) session.getAttribute(SessionName.USER.getName());
         //
         Reply reply = new Reply(user.getUserId(), article.getArticleId(), user.getNickname(), comment,
-                AliveStatus.ALIVE, LocalDateTime.now());
+                AliveStatus.ALIVE, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         Reply saveReply = replyDataHandler.insert(reply);
         if (saveReply != null) {
             resp.setStatus(HttpServletResponse.SC_OK);

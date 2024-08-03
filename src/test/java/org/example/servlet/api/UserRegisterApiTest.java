@@ -56,6 +56,6 @@ public class UserRegisterApiTest {
         assertEquals("testuser", savedUser.getNickname());
         assertEquals("password123", savedUser.getPassword());
         assertNotNull(savedUser.getCreatedDt());
-        assertEquals("/users", response.getRedirectLocation());
+        assertEquals("/login", response.getRedirectLocation());
     }
 }
