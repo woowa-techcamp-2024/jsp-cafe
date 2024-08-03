@@ -1,6 +1,7 @@
 package codesquad.article.infra;
 
 import codesquad.article.domain.Article;
+import codesquad.article.domain.vo.Status;
 import codesquad.article.repository.ArticleRepository;
 import codesquad.common.db.connection.ConnectionManager;
 
@@ -26,11 +27,12 @@ public class MySqlArticleRepository implements ArticleRepository {
         ResultSet resultSet = null;
         try {
             connection = connectionManager.getConnection();
-            String sql = "insert into articles(title,writer,content) values(?,?,?)";
+            String sql = "insert into articles(title,writer,content,status) values(?,?,?,?)";
             preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, article.getTitle());
             preparedStatement.setString(2, article.getWriter());
             preparedStatement.setString(3, article.getContent());
+            preparedStatement.setString(4, article.getStatus().name());
             preparedStatement.executeUpdate();
             resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -61,7 +63,8 @@ public class MySqlArticleRepository implements ArticleRepository {
                 String title = resultSet.getString("title");
                 String writer = resultSet.getString("writer");
                 String content = resultSet.getString("content");
-                return Optional.of(new Article(id, title, writer, content));
+                String status = resultSet.getString("status");
+                return Optional.of(new Article(id, title, writer, content, Status.of(status)));
             }
             return Optional.empty();
         } catch (SQLException e) {
@@ -86,7 +89,34 @@ public class MySqlArticleRepository implements ArticleRepository {
                 String title = resultSet.getString("title");
                 String writer = resultSet.getString("writer");
                 String content = resultSet.getString("content");
-                return Optional.of(new Article(id, title, writer, content));
+                String status = resultSet.getString("status");
+                return Optional.of(new Article(id, title, writer, content, Status.of(status)));
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
+        }
+    }
+
+    @Override
+    public Optional<Article> findByIdForShare(Long id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
+            String sql = "select * from articles where id = ? for share";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String title = resultSet.getString("title");
+                String writer = resultSet.getString("writer");
+                String content = resultSet.getString("content");
+                String status = resultSet.getString("status");
+                return Optional.of(new Article(id, title, writer, content, Status.of(status)));
             }
             return Optional.empty();
         } catch (SQLException e) {
@@ -112,7 +142,8 @@ public class MySqlArticleRepository implements ArticleRepository {
                 String title = resultSet.getString("title");
                 String writer = resultSet.getString("writer");
                 String content = resultSet.getString("content");
-                articles.add(new Article(id, title, writer, content));
+                String status = resultSet.getString("status");
+                articles.add(new Article(id, title, writer, content, Status.of(status)));
             }
             return articles;
         } catch (SQLException e) {

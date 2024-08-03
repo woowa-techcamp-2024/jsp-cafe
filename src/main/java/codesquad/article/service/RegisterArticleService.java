@@ -1,6 +1,7 @@
 package codesquad.article.service;
 
 import codesquad.article.domain.Article;
+import codesquad.article.domain.vo.Status;
 import codesquad.article.repository.ArticleRepository;
 
 public class RegisterArticleService {
@@ -14,7 +15,7 @@ public class RegisterArticleService {
         String title = cmd.title();
         String writer = cmd.writer();
         String content = cmd.content();
-        return repository.save(new Article(title, writer, content));
+        return repository.save(new Article(title, writer, content, Status.PUBLISHED));
     }
 
     public record Command(

@@ -12,6 +12,8 @@ public interface ArticleRepository {
 
     Optional<Article> findByIdForUpdate(Long id);
 
+    Optional<Article> findByIdForShare(Long id);
+
     List<Article> findAll();
 
     void update(Article article);

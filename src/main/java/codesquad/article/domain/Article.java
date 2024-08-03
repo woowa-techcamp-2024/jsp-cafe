@@ -16,28 +16,30 @@ public class Article {
      * @param title:   5<size<15
      * @param writer:
      * @param content:
+     * @param status:
      */
-    public Article(String title, String writer, String content) {
+    public Article(String title, String writer, String content, Status status) {
         this.title = title;
         this.writer = writer;
         this.content = content;
-        this.status = Status.PUBLISHED;
+        this.status = status;
     }
 
     /**
      * 검증 로직
      *
-     * @param id
-     * @param title
-     * @param writer
-     * @param content
+     * @param id:
+     * @param title:
+     * @param writer:
+     * @param content:
+     * @param status:
      */
-    public Article(Long id, String title, String writer, String content) {
+    public Article(Long id, String title, String writer, String content, Status status) {
         this.id = id;
         this.title = title;
         this.writer = writer;
         this.content = content;
-        this.status = Status.PUBLISHED;
+        this.status = status;
     }
 
     public Article(Long id, Article article) {
