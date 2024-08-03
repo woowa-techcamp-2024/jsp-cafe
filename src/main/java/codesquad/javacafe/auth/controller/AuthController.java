@@ -12,6 +12,7 @@ import codesquad.javacafe.auth.service.AuthService;
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.member.service.MemberService;
+import codesquad.javacafe.post.service.PostService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,9 +60,9 @@ public class AuthController implements SubController {
 	}
 
 	public void redirectMainPage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		var memberList = MemberService.getInstance().getMemberList();
-		req.setAttribute("memberList", memberList);
-		var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
+		var postList = PostService.getInstance().getAllPosts();
+		req.setAttribute("postList", postList);
+		var dispatcher = req.getRequestDispatcher("/WEB-INF/index.jsp");
 		dispatcher.forward(req, res);
 	}
 }

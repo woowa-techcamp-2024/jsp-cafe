@@ -46,8 +46,21 @@ public class CommentController implements SubController {
                 break;
             }
             case "POST":{
-                Map<String, Object> body = getBody(req);
-                var commentRequestDto = new CommentRequestDto(body);
+                var body = getBody(req);
+                log.debug("data get");
+                // Extract data from JSON object
+                long postId = body.get("postId").getAsLong();
+                long memberId = body.get("memberId").getAsLong();
+                String comment = body.get("comment").getAsString();
+                log.debug("data get success");
+
+                var data = new HashMap<String, Object>();
+                data.put("postId", postId);
+                data.put("memberId", memberId);
+                data.put("comment", comment);
+
+                log.debug("data = {}",data);
+                var commentRequestDto = new CommentRequestDto(data);
                 log.debug("[CommentController Save] commentRequestDto: {}", commentRequestDto);
                 var commentResponseDto = CommentService.getInstance().save(commentRequestDto);
                 log.debug("[CommentController Response DTO] commentResponseDto: {}", commentResponseDto);
@@ -56,6 +69,18 @@ public class CommentController implements SubController {
                 log.debug("[CommentController Response JSON] jsonResponse: {}", jsonResponse);
 
                 sendResponse(res, jsonResponse);
+                break;
+            }
+            case "DELETE":{
+                var body = getBody(req);
+                try {
+                    var commentId = body.get("commentId").getAsLong();
+                    log.debug("CommentController Delete] commentId: {}", commentId);
+                    CommentService.getInstance().delete(commentId);
+                    res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                } catch (Exception exception) {
+                    throw ClientErrorCode.PARAMETER_IS_NULL.customException("Comment Request Info = " + body);
+                }
                 break;
             }
             default: throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("request uri = "+ req.getRequestURI() + ", request method = "+method);
@@ -74,7 +99,7 @@ public class CommentController implements SubController {
         }
     }
 
-    private Map<String,Object> getBody(HttpServletRequest req) {
+    private JsonObject getBody(HttpServletRequest req) {
         try {
             Map<String, Object> data = new HashMap<>();
 
@@ -90,20 +115,8 @@ public class CommentController implements SubController {
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(jsonBuffer.toString(), JsonObject.class);
 
-            log.debug("data get");
-            // Extract data from JSON object
-            long postId = jsonObject.get("postId").getAsLong();
-            long memberId = jsonObject.get("memberId").getAsLong();
-            String comment = jsonObject.get("comment").getAsString();
-            log.debug("data get success");
-            data.put("postId", postId);
-            data.put("memberId", memberId);
-            data.put("comment", comment);
 
-            log.debug("data = {}",data);
-
-
-            return data;
+            return jsonObject;
         } catch (IOException exception) {
             throw ServerErrorCode.INTERNAL_SERVER_ERROR.customException("exception occurred while reading request body, exception message = "+exception.getMessage());
         }

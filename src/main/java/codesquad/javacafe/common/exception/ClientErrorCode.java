@@ -10,7 +10,8 @@ public enum ClientErrorCode implements ErrorCode{
 	UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
 	ACCESS_DENIED(HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다."),
 	PARAMETER_IS_NULL(HttpStatus.BAD_REQUEST, "필요한 파라미터를 입력해주세요"),
-	POST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "게시글 접근 권한이 없습니다.");
+	POST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "게시글 접근 권한이 없습니다."),
+	COMMENT_IS_NULL(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

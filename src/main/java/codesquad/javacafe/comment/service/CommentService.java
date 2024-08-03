@@ -4,6 +4,7 @@ import codesquad.javacafe.comment.dto.request.CommentRequestDto;
 import codesquad.javacafe.comment.dto.response.CommentResponseDto;
 import codesquad.javacafe.comment.entity.Comment;
 import codesquad.javacafe.comment.repository.CommentRepository;
+import codesquad.javacafe.common.exception.ClientErrorCode;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,5 +27,12 @@ public class CommentService {
         return commentList.stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public void delete(long commentId) {
+        var result = CommentRepository.getInstance().delete(commentId);
+        if (result == 0) {
+            throw ClientErrorCode.COMMENT_IS_NULL.customException("comment id = " + commentId);
+        }
     }
 }

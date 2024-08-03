@@ -56,12 +56,29 @@ public class AuthControllerTest {
                 "member_name VARCHAR(255)" +
                 ")";
         statement.execute(createTableSql);
+
+        createTableSql = "CREATE TABLE if not exists post (" +
+            "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+            "post_writer VARCHAR(255), " +
+            "post_title VARCHAR(255), " +
+            "post_contents TEXT, " +
+            "post_create TIMESTAMP," +
+            "member_id BIGINT NOT NULL" +
+            ")";
+        statement.execute(createTableSql);
+
         statement.close();
         connection.close();
     }
 
     private void clearTable() throws SQLException {
         var sql = "DELETE FROM member";
+        try (var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+
+
+        sql = "DELETE FROM post";
         try (var statement = connection.createStatement()) {
             statement.execute(sql);
         }
@@ -99,7 +116,7 @@ public class AuthControllerTest {
         authController.doProcess(request, response);
 
         assertNotNull(request.getSession().getAttribute("loginInfo"));
-        assertEquals("/WEB-INF/user/list.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
+        assertEquals("/WEB-INF/index.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
     }
 
     @Test

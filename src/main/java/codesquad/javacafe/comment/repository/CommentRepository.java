@@ -108,4 +108,25 @@ public class CommentRepository {
         }
 
     }
+
+    public int delete(long commentId) {
+        var sql = "delete from comment where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, commentId);
+            int result = ps.executeUpdate();
+
+            return result;
+        } catch (SQLException exception) {
+            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            throw new RuntimeException(exception);
+        } finally {
+            close(con, ps, null);
+        }
+    }
 }
