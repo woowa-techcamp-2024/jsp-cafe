@@ -5,6 +5,7 @@ import codesquad.article.service.DeleteArticleServiceImpl;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.comment.repository.CommentRepository;
+import codesquad.comment.service.DeleteCommentService;
 import codesquad.comment.service.RegisterCommentServiceImpl;
 import codesquad.user.repository.UserRepository;
 import codesquad.user.service.SignInService;
@@ -33,6 +34,7 @@ public class ServiceRegister implements AppInit {
         servletContext.setAttribute("DeleteArticleService", new DeleteArticleServiceImpl(articleRepository, commentRepository));
         // comment 관련 서비스
         servletContext.setAttribute("RegisterCommentService", new RegisterCommentServiceImpl(articleRepository, commentRepository));
+        servletContext.setAttribute("DeleteCommentService", new DeleteCommentService(commentRepository));
         logger.info("Service registered on context");
     }
 
