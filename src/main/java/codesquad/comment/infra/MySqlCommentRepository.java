@@ -20,6 +20,34 @@ public class MySqlCommentRepository implements CommentRepository {
     }
 
     @Override
+    public Long save(Comment comment) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionManager.getConnection();
+            String sql = "insert into comments(article_id,writer,content,status) values(?,?,?,?)";
+            preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, comment.getArticleId());
+            preparedStatement.setString(2, comment.getWriter());
+            preparedStatement.setString(3, comment.getContent());
+            preparedStatement.setString(4, comment.getStatus().name());
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                long id = resultSet.getLong(1);
+                comment = new Comment(id, comment);
+                return id;
+            }
+            throw new SQLException("Failed to insert article");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionManager.close(connection, preparedStatement, resultSet);
+        }
+    }
+
+    @Override
     public List<Comment> findAllByArticleId(Long articleId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

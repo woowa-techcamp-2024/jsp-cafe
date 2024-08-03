@@ -1,6 +1,7 @@
 package codesquad.global.container.initializer;
 
 import codesquad.article.service.DeleteArticleService;
+import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.db.transaction.JdbcTransactionManager;
 import codesquad.common.db.transaction.TransactionProxy;
 import jakarta.servlet.ServletContext;
@@ -20,9 +21,13 @@ public class TransactionProxyPostProcessor implements AppInit {
         // 등록된 TransactionManager 조회
         JdbcTransactionManager jdbcTransactionManager = (JdbcTransactionManager) servletContext.getAttribute("JdbcTransactionManager");
         // 등록된 DeleteArticleService를 TxProxy로 래핑
-        DeleteArticleService target = (DeleteArticleService) servletContext.getAttribute("DeleteArticleService");
-        DeleteArticleService proxyService = (DeleteArticleService) Proxy.newProxyInstance(DeleteArticleService.class.getClassLoader(), new Class[]{DeleteArticleService.class}, new TransactionProxy(target, jdbcTransactionManager));
-        servletContext.setAttribute("DeleteArticleService", proxyService);
+        DeleteArticleService deleteArticleService = (DeleteArticleService) servletContext.getAttribute("DeleteArticleService");
+        DeleteArticleService deleteArticleServiceProxy = (DeleteArticleService) Proxy.newProxyInstance(DeleteArticleService.class.getClassLoader(), new Class[]{DeleteArticleService.class}, new TransactionProxy(deleteArticleService, jdbcTransactionManager));
+        servletContext.setAttribute("DeleteArticleService", deleteArticleServiceProxy);
+        // 등록된 RegisterCommentService를 TxProxy로 래핑
+        RegisterCommentService registerCommentService = (RegisterCommentService) servletContext.getAttribute("RegisterCommentService");
+        RegisterCommentService registerCommentServiceProxy = (RegisterCommentService) Proxy.newProxyInstance(RegisterCommentService.class.getClassLoader(), new Class[]{RegisterCommentService.class}, new TransactionProxy(registerCommentService, jdbcTransactionManager));
+        servletContext.setAttribute("RegisterCommentService", registerCommentServiceProxy);
         logger.info("TransactionProxyPostProcessor done");
     }
 

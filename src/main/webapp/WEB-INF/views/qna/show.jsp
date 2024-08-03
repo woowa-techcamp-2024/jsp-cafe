@@ -129,11 +129,11 @@
                                     }
                                 }
                             %>
-                            <form class="submit-write">
+                            <form class="submit-write" action="/questions/<%=article.articleId()%>/answers" method="POST">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea name="contents" id="contents" class="form-control" placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
                                 <div class="clearfix"/>
                             </form>
                         </div>

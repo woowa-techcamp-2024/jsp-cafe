@@ -7,6 +7,8 @@ import codesquad.article.handler.QnasHandler;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
+import codesquad.comment.handler.CommentsHandler;
+import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
 import codesquad.global.dao.ArticleQuery;
@@ -45,6 +47,7 @@ public class HandlerRegister implements ServletContextListener {
         UpdateArticleService updateArticleService = (UpdateArticleService) servletContext.getAttribute("UpdateArticleService");
         RegisterArticleService registerArticleService = (RegisterArticleService) servletContext.getAttribute("RegisterArticleService");
         DeleteArticleService deleteArticleService = (DeleteArticleService) servletContext.getAttribute("DeleteArticleService");
+        RegisterCommentService registerCommentService = (RegisterCommentService) servletContext.getAttribute("RegisterCommentService");
         // Handler 등록
         List<HandlerMapping> handlerMappings = new ArrayList<>();
 //        registerHandlerMapping(handlerMappings, new IndexServlet(articleQuery));
@@ -58,6 +61,7 @@ public class HandlerRegister implements ServletContextListener {
         registerHandlerMapping(handlerMappings, new UsersHandler(userQuery, signUpService, updateUserService));
         registerHandlerMapping(handlerMappings, new UserRegisterFormHandler());
         registerHandlerMapping(handlerMappings, new UserUpdateFormHandler(userQuery));
+        registerHandlerMapping(handlerMappings, new CommentsHandler(registerCommentService));
         servletContext.setAttribute("HandlerMappings", handlerMappings);
         logger.info("HandlerMapping registered on context");
     }

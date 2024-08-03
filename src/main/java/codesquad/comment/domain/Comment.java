@@ -10,11 +10,11 @@ public class Comment {
     private String content;
     private Status status;
 
-    public Comment(Long articleId, String writer, String content) {
+    public Comment(Long articleId, String writer, String content, Status status) {
         this.articleId = articleId;
         this.writer = writer;
         this.content = content;
-        this.status = Status.COMMENTED;
+        this.status = status;
     }
 
     public Comment(Long id, Long articleId, String writer, String content, Status status) {
@@ -35,6 +35,22 @@ public class Comment {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getArticleId() {
+        return articleId;
+    }
+
+    public String getWriter() {
+        return writer;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public void delete(String userId) throws UnauthorizedRequestException {
