@@ -18,6 +18,7 @@ import com.wootecam.jspcafe.servlet.question.QuestionDeleteServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionDetailServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionEditServlet;
 import com.wootecam.jspcafe.servlet.question.QuestionServlet;
+import com.wootecam.jspcafe.servlet.reply.ReplyDeleteServlet;
 import com.wootecam.jspcafe.servlet.reply.ReplyServlet;
 import com.wootecam.jspcafe.servlet.user.SignInServlet;
 import com.wootecam.jspcafe.servlet.user.SignOutServlet;
@@ -77,7 +78,9 @@ public class ApplicationContextListener implements ServletContextListener {
                 .addMapping("/questions/delete/*");
 
         servletContext.addServlet("replyServlet", new ReplyServlet(replyService, objectMapper))
-                .addMapping("/reply");
+                .addMapping("/replies");
+        servletContext.addServlet("replyDeleteServlet", new ReplyDeleteServlet(replyService))
+                .addMapping("/replies/delete/*");
     }
 
     @Override

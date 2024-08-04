@@ -53,7 +53,7 @@ public class JdbcReplyRepository implements ReplyRepository {
 
     @Override
     public Optional<Reply> findById(final Long id) {
-        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE deleted_at IS NULL and id = ?";
+        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE deleted_at IS NULL AND id = ?";
 
         Reply reply = jdbcTemplate.selectOne(
                 query,
@@ -73,7 +73,7 @@ public class JdbcReplyRepository implements ReplyRepository {
 
     @Override
     public List<Reply> findAllByQuestionPrimaryId(final Long questionPrimaryId) {
-        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE question_primary_id = ?";
+        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE deleted_at IS NULL AND question_primary_id = ?";
 
         return jdbcTemplate.selectAll(
                 query,
@@ -86,6 +86,16 @@ public class JdbcReplyRepository implements ReplyRepository {
                         resultSet.getLong(5),
                         resultSet.getLong(6)
                 )
+        );
+    }
+
+    @Override
+    public void delete(final Long id) {
+        String query = "UPDATE reply SET deleted_at = now() WHERE id = ?";
+
+        jdbcTemplate.update(
+                query
+                , ps -> ps.setLong(1, id)
         );
     }
 }

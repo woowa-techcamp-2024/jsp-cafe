@@ -37,6 +37,10 @@ public class Reply {
         }
     }
 
+    public boolean isWriter(final Long userPrimaryId) {
+        return this.userPrimaryId.equals(userPrimaryId);
+    }
+
     public Long getId() {
         return id;
     }

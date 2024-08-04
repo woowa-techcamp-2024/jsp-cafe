@@ -88,10 +88,8 @@
                                                 <a class="link-modify-article" href="#none">수정</a>
                                             </li>
                                             <li>
-                                                <form class="delete-answer-form" action="#none" method="POST">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <button type="submit" class="delete-answer-button">삭제</button>
-                                                </form>
+                                                <a href="/replies/delete/${reply.id}"
+                                                   class="delete-answer-button">삭제</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -137,10 +135,7 @@
                     <a class="link-modify-article" href="#none">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="#none" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
+                    <a href="/replies/delete/{3}" class="delete-answer-button">삭제</a>
                 </li>
             </ul>
         </div>
@@ -172,6 +167,7 @@
             });
         })
 
+        // 질문 수정
         $('#edit-form-link').on('click', function (e) {
             e.preventDefault();
 
@@ -185,11 +181,12 @@
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
-                    window.location.href = '/';
+                    window.location.href = "/users/sign-in";
                 }
             });
         })
 
+        // 댓글 작성
         $('.submit-write').on('submit', function (e) {
             e.preventDefault();
 
@@ -197,7 +194,7 @@
             let formData = form.serialize();
 
             $.ajax({
-                url: "${pageContext.request.contextPath}/reply",
+                url: "${pageContext.request.contextPath}/replies",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -208,7 +205,7 @@
                     console.log(response.contents);
 
                     // 댓글 작성 성공 시 새로운 댓글 HTML 추가
-                    var newReplyHTML = createReplyHTML(response.writer, formatTime(response.createdTime), response.contents);
+                    var newReplyHTML = createReplyHTML(response.writer, formatTime(response.createdTime), response.contents, response.id);
                     $('.qna-comment-slipp-articles').append(newReplyHTML);
 
                     // 댓글 작성 폼 초기화
@@ -226,17 +223,49 @@
                 }
             });
         });
+
+        // 댓글 삭제
+        $(document).on('click', '.delete-answer-button', function (e) {
+            e.preventDefault();
+
+            var $this = $(this);
+            var clickedUrl = $this.attr('href');
+            var $article = $this.closest('article');
+
+            $.ajax({
+                url: clickedUrl,
+                type: 'POST',
+                success: function () {
+                    // 해당 댓글 요소 삭제
+                    $article.remove();
+
+                    // 댓글 수 감소
+                    var $commentCount = $('.qna-comment-count트strong');
+                    var currentCount = parseInt($commentCount.text());
+                    var newCount = Math.max(currentCount - 1, 0);  // 음수가 되지 않도록 함
+                    $commentCount.text(newCount);
+
+                    // 댓글 갯수 업데이
+                    $('.qna-comment-count').html('<strong>' + newCount + '</strong>개의 의견');
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText;
+                    alert(status + ": " + errorMessage);
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
+                }
+            });
+        });
     });
 
-    function createReplyHTML(writer, createdTime, contents) {
+    function createReplyHTML(writer, createdTime, contents, id) {
         // HTML 템플릿 가져오기
         var template = $('#answerTemplate').html();
 
         // 템플릿에 데이터 치환
         var html = template.replace('{0}', writer)
             .replace('{1}', createdTime)
-            .replace('{2}', contents);
-        // todo 3, 4번 만들어놓기
+            .replace('{2}', contents)
+            .replace('{3}', id);
         return $(html).get(0);
     }
 </script>
