@@ -1,6 +1,6 @@
 package codesquad.fixture.user;
 
-import codesquad.domain.user.User;
+import codesquad.user.domain.User;
 
 public interface UserFixture {
     default User alice() {

@@ -1,4 +1,4 @@
-<%@ page import="codesquad.domain.user.User" %>
+<%@ page import="codesquad.user.domain.User" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <div class="navbar navbar-default" id="subnav">
     <div class="col-md-12">

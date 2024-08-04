@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="codesquad.domain.user.User" %>
+<%@ page import="codesquad.global.dao.UserQuery.UserResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -25,17 +25,17 @@
                 <div class="well well-sm">
                     <div class="media">
                         <%
-                            User user = (User) request.getAttribute("user");
+                            UserResponse user = (UserResponse) request.getAttribute("user");
                         %>
                         <a class="thumbnail pull-left" href="#">
                             <img class="media-object" src="/static/images/80-text.png">
                         </a>
                         <div class="media-body">
-                            <h4 class="media-heading"><%=user.getName()%>
+                            <h4 class="media-heading"><%=user.name()%>
                             </h4>
                             <p>
                                 <a href="#" class="btn btn-xs btn-default"><span
-                                        class="glyphicon glyphicon-envelope"></span>&nbsp;<%=user.getEmail()%>
+                                        class="glyphicon glyphicon-envelope"></span>&nbsp;<%=user.email()%>
                                 </a>
                             </p>
                         </div>

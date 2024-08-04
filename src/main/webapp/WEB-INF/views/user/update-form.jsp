@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="codesquad.global.dao.UserQuery.UserResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -20,7 +21,7 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
             <%
-                User user = (User) request.getAttribute("user");
+                UserResponse user = (UserResponse) request.getAttribute("user");
             %>
             <form name="question" method="post" action="${pageContext.request.contextPath}/users">
                 <div class="form-group">
@@ -36,11 +37,11 @@
                 <input type="hidden" name="_method" value="PUT">
                 <div class="form-group">
                     <label for="id">id</label>
-                    <input class="form-control" id="id" name="id" value="<%=user.getId()%>" type="hidden"/>
+                    <input class="form-control" id="id" name="id" value="<%=user.id()%>" type="hidden"/>
                 </div>
                 <div class="form-group">
                     <label for="userId">사용자 id</label>
-                    <input class="form-control" id="userId" name="userId" value="<%=user.getUserId()%>" disabled/>
+                    <input class="form-control" id="userId" name="userId" value="<%=user.userId()%>" disabled/>
                 </div>
                 <div class="form-group">
                     <label for="password">비밀번호</label>
@@ -48,11 +49,11 @@
                 </div>
                 <div class="form-group">
                     <label for="name">이름</label>
-                    <input class="form-control" id="name" name="name" value="<%=user.getName()%>"/>
+                    <input class="form-control" id="name" name="name" value="<%=user.name()%>"/>
                 </div>
                 <div class="form-group">
                     <label for="email">이메일</label>
-                    <input class="form-control" id="email" name="email" value="<%=user.getEmail()%>"/>
+                    <input class="form-control" id="email" name="email" value="<%=user.email()%>"/>
                 </div>
                 <button type="submit" class="btn btn-success clearfix pull-right">수정하기</button>
                 <div class="clearfix"/>

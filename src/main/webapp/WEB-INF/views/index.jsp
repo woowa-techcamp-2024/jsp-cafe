@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="codesquad.servlet.dao.ArticleQuery.ArticleResponse" %>
+<%@ page import="codesquad.global.dao.ArticleQuery.ArticleResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -68,7 +68,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="${pageContext.request.contextPath}/qna/register-form" class="btn btn-primary pull-right"
+                    <a href="${pageContext.request.contextPath}/questions/register-form" class="btn btn-primary pull-right"
                        role="button">질문하기</a>
                 </div>
             </div>
