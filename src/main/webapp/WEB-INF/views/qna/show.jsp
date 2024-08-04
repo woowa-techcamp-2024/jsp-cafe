@@ -52,7 +52,6 @@
                     <div class="article-doc">
                         <%
                             while (st.hasMoreElements()) {
-
                         %>
                         <p><%=st.nextToken()%>
                         </p>
@@ -86,12 +85,12 @@
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong><%=comments == null ? 0 : comments.size()%></strong>개의 의견
                         </p>
-                        <div class="qna-comment-slipp-articles">
+                        <div class="qna-comment-slipp-articles" id="comment-list">
                             <%
                                 if (comments != null) {
                                     for (CommentResponse comment : comments) {
                             %>
-                            <article class="article" id="answer-1405">
+                            <article class="article" id="comment-<%=comment.id()%>">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
                                         <img src="https://graph.facebook.com/v2.3/1324855987/picture"
@@ -100,7 +99,7 @@
                                     <div class="article-header-text">
                                         <a href="/users/<%=comment.commenterId()%>"
                                            class="article-author-name"><%=comment.commenter()%></a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
+                                        <a href="#comment-<%=comment.id()%>" class="article-header-time" title="퍼머링크">
                                             2016-01-12 14:06
                                         </a>
                                     </div>
@@ -129,14 +128,15 @@
                                     }
                                 }
                             %>
-                            <form class="submit-write" action="/questions/<%=article.articleId()%>/answers" method="POST">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea name="contents" id="contents" class="form-control" placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                                <div class="clearfix"/>
-                            </form>
                         </div>
+                        <form class="submit-write" id="comment-form"
+                              action="/questions/<%=article.articleId()%>/answers" method="POST">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea name="contents" id="contents" class="form-control" placeholder="Update your status"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                            <div class="clearfix"></div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -144,27 +144,27 @@
     </div>
 </div>
 
-<script type="text/template" id="answerTemplate">
-    <article class="article">
+<script type="text/template" id="commentTemplate">
+    <article class="article" id="comment-{3}">
         <div class="article-header">
             <div class="article-header-thumb">
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
+                <a href="/users/{0}" class="article-author-name">{1}</a>
+                <div class="article-header-time">{2}</div>
             </div>
         </div>
         <div class="article-doc comment-doc">
-            {2}
+            <p>{4}</p>
         </div>
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/questions/{5}/answers/{3}/update-form">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <form class="delete-answer-form" action="/questions/{5}/answers/{3}" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>
@@ -178,5 +178,52 @@
 <script src="/static/js/jquery-2.2.0.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/scripts.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#comment-form').on('submit', function (e) {
+            e.preventDefault();
+            const articleId = '<%=article.articleId()%>';
+            const contents = $('#contents').val();
+            $.ajax({
+                type: 'POST',
+                url: '/questions/' + articleId + '/answers',
+                data: {contents: contents},
+                success: function(response) {
+                    const responseData = JSON.parse(response);
+                    const comment = responseData.data;
+                    const template = $('#commentTemplate').html()
+                        .replaceAll('{0}', comment.commenterId)
+                        .replaceAll('{1}', comment.commenter)
+                        .replaceAll('{2}', new Date().toISOString().slice(0, 19).replace('T', ' '))
+                        .replaceAll('{3}', comment.id)
+                        .replaceAll('{4}', comment.content)
+                        .replaceAll('{5}', articleId);
+                    $('#comment-list').append(template);
+                    $('#contents').val('');
+                },
+                error: function () {
+                    alert('Error submitting comment.');
+                }
+            });
+        });
+
+        $(document).on('submit', '.delete-answer-form', function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const commentId = form.closest('.article').attr('id').split('-')[1];
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: {_method: 'DELETE'},
+                success: function () {
+                    $('#comment-' + commentId).remove();
+                },
+                error: function () {
+                    alert('Error deleting comment.');
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
