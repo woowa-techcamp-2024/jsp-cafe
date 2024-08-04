@@ -1,13 +1,16 @@
 package com.wootecam.jspcafe.servlet.question;
 
 import com.wootecam.jspcafe.domain.Question;
+import com.wootecam.jspcafe.domain.Reply;
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.QuestionService;
+import com.wootecam.jspcafe.service.ReplyService;
 import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +20,11 @@ public class QuestionDetailServlet extends AbstractHttpServlet {
     private static final Logger log = LoggerFactory.getLogger(QuestionDetailServlet.class);
 
     private final QuestionService questionService;
+    private final ReplyService replyService;
 
-    public QuestionDetailServlet(final QuestionService questionService) {
+    public QuestionDetailServlet(final QuestionService questionService, final ReplyService replyService) {
         this.questionService = questionService;
+        this.replyService = replyService;
     }
 
     @Override
@@ -35,10 +40,13 @@ public class QuestionDetailServlet extends AbstractHttpServlet {
         Long id = parseSuffixPathVariable(req.getPathInfo());
 
         Question question = questionService.read(id);
+        List<Reply> replies = replyService.readAll(question.getId());
 
         log.info(question.toString());
 
         req.setAttribute("question", question);
+        req.setAttribute("replies", replies);
+
         req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp")
                 .forward(req, resp);
     }

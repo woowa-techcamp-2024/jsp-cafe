@@ -5,6 +5,7 @@ import com.wootecam.jspcafe.config.KeyHolder;
 import com.wootecam.jspcafe.domain.Reply;
 import com.wootecam.jspcafe.domain.ReplyRepository;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 public class JdbcReplyRepository implements ReplyRepository {
@@ -68,5 +69,23 @@ public class JdbcReplyRepository implements ReplyRepository {
         );
 
         return Optional.ofNullable(reply);
+    }
+
+    @Override
+    public List<Reply> findAllByQuestionPrimaryId(final Long questionPrimaryId) {
+        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE question_primary_id = ?";
+
+        return jdbcTemplate.selectAll(
+                query,
+                ps -> ps.setLong(1, questionPrimaryId),
+                resultSet -> new Reply(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getTimestamp(4).toLocalDateTime(),
+                        resultSet.getLong(5),
+                        resultSet.getLong(6)
+                )
+        );
     }
 }

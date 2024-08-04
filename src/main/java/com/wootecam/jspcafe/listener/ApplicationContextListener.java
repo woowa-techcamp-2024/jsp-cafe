@@ -69,7 +69,7 @@ public class ApplicationContextListener implements ServletContextListener {
 
         servletContext.addServlet("questionServlet", new QuestionServlet(questionService))
                 .addMapping("/questions");
-        servletContext.addServlet("questionDetailServlet", new QuestionDetailServlet(questionService))
+        servletContext.addServlet("questionDetailServlet", new QuestionDetailServlet(questionService, replyService))
                 .addMapping("/questions/*");
         servletContext.addServlet("questionEditServlet", new QuestionEditServlet(questionService))
                 .addMapping("/questions/edit/*");

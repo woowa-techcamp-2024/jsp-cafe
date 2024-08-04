@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
 
 <!DOCTYPE html>
 <html lang="kr">
@@ -55,10 +57,46 @@
                     </div>
                 </article>
 
+                <c:set var="currentReplies" value="${requestScope.replies}"/>
+
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>${fn:length(currentReplies)}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
+                            <c:forEach var="reply" items="${currentReplies}" varStatus="status">
+                                <article class="article">
+                                    <div class="article-header">
+                                        <div class="article-header-thumb">
+                                            <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                                 class="article-author-thumb" alt="">
+                                        </div>
+                                        <div class="article-header-text">
+                                            <a href="#" class="article-author-name">${reply.writer}</a>
+                                            <div class="article-header-time">
+                                                <fmt:parseDate value="${reply.createdTime}" pattern="yyyy-MM-dd'T'HH:mm"
+                                                               var="createdTime" type="both" parseLocale="ko"/>
+                                                <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${createdTime}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="article-doc comment-doc">
+                                            ${reply.contents}
+                                    </div>
+                                    <div class="article-util">
+                                        <ul class="article-util-list">
+                                            <li>
+                                                <a class="link-modify-article" href="#none">수정</a>
+                                            </li>
+                                            <li>
+                                                <form class="delete-answer-form" action="#none" method="POST">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="delete-answer-button">삭제</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </article>
+                            </c:forEach>
                         </div>
                         <form class="submit-write">
                             <input class="form-control" id="questionId" name="questionId" type="hidden"
@@ -168,12 +206,18 @@
                     console.log(response.writer);
                     console.log(response.createdTime);
                     console.log(response.contents);
+
                     // 댓글 작성 성공 시 새로운 댓글 HTML 추가
                     var newReplyHTML = createReplyHTML(response.writer, formatTime(response.createdTime), response.contents);
                     $('.qna-comment-slipp-articles').append(newReplyHTML);
 
                     // 댓글 작성 폼 초기화
                     form.find('textarea').val('');
+
+                    // 댓글 수 증가 및 화면 업데이트
+                    var currentCount = parseInt($('.qna-comment-count strong').text());
+                    var newCount = currentCount + 1;
+                    $('.qna-comment-count').html('<strong>' + newCount + '</strong>개의 의견');
                 },
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
@@ -181,7 +225,7 @@
                     window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
                 }
             });
-        })
+        });
     });
 
     function createReplyHTML(writer, createdTime, contents) {

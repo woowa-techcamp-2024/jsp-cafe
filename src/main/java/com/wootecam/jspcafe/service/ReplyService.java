@@ -4,6 +4,7 @@ import com.wootecam.jspcafe.domain.Reply;
 import com.wootecam.jspcafe.domain.ReplyRepository;
 import com.wootecam.jspcafe.exception.NotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReplyService {
 
@@ -19,5 +20,9 @@ public class ReplyService {
 
         return replyRepository.findById(savedId)
                 .orElseThrow(() -> new NotFoundException("댓글을 찾을 수 없습니다."));
+    }
+
+    public List<Reply> readAll(final Long questionId) {
+        return replyRepository.findAllByQuestionPrimaryId(questionId);
     }
 }
