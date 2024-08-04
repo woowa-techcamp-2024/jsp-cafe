@@ -183,7 +183,7 @@
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
-                    window.location.href = "/users/sign-in";
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
                 }
             });
         })
