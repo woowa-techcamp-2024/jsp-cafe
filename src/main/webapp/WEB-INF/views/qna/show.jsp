@@ -149,6 +149,8 @@
 
 <script>
     $(document).ready(function () {
+
+        // 질문 삭제
         $('.form-delete').on('submit', function (e) {
             e.preventDefault();
 
@@ -162,7 +164,7 @@
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
-                    window.location.href = '/';
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
                 }
             });
         })
