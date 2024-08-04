@@ -2,6 +2,7 @@ package com.wootecam.jspcafe.service;
 
 import com.wootecam.jspcafe.domain.Question;
 import com.wootecam.jspcafe.domain.QuestionRepository;
+import com.wootecam.jspcafe.domain.ReplyRepository;
 import com.wootecam.jspcafe.exception.BadRequestException;
 import com.wootecam.jspcafe.exception.NotFoundException;
 import java.time.LocalDateTime;
@@ -15,9 +16,11 @@ public class QuestionService {
     private static final Logger log = LoggerFactory.getLogger(QuestionService.class);
 
     private final QuestionRepository questionRepository;
+    private final ReplyRepository replyRepository;
 
-    public QuestionService(final QuestionRepository questionRepository) {
+    public QuestionService(final QuestionRepository questionRepository, final ReplyRepository replyRepository) {
         this.questionRepository = questionRepository;
+        this.replyRepository = replyRepository;
     }
 
     public void append(final String writer, final String title, final String contents, final Long writerId) {
@@ -64,12 +67,17 @@ public class QuestionService {
         if (Objects.isNull(questionId)) {
             throw new NotFoundException("삭제 할 질문을 찾을 수 없습니다.");
         }
-
         Question question = read(questionId);
 
         if (!question.isSameWriter(signInUserId)) {
             throw new BadRequestException("다른 사용자의 질문은 삭제할 수 없습니다.");
         }
+
+        if (replyRepository.existsReplyByIdAndOtherUserPrimaryId(questionId, signInUserId)) {
+            throw new BadRequestException("다른 사용자가 댓글을 단 질문은 삭제할 수 없습니다.");
+        }
+
+        replyRepository.deleteAllByQuestionPrimaryId(questionId);
         questionRepository.deleteById(questionId);
     }
 }

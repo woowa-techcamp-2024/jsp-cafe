@@ -98,4 +98,28 @@ public class JdbcReplyRepository implements ReplyRepository {
                 , ps -> ps.setLong(1, id)
         );
     }
+
+    @Override
+    public boolean existsReplyByIdAndOtherUserPrimaryId(final Long id, final Long userPrimaryId) {
+        String query = "SELECT EXISTS(SELECT 1 FROM reply WHERE reply.deleted_at IS NULL AND question_primary_id = ? AND users_primary_id != ?)";
+
+        return jdbcTemplate.selectOne(
+                query,
+                ps -> {
+                    ps.setLong(1, id);
+                    ps.setLong(2, userPrimaryId);
+                },
+                resultSet -> resultSet.getBoolean(1)
+        );
+    }
+
+    @Override
+    public void deleteAllByQuestionPrimaryId(final Long questionPrimaryId) {
+        String query = "UPDATE reply SET deleted_at = now() WHERE deleted_at IS NULL AND question_primary_id = ?";
+
+        jdbcTemplate.update(
+                query,
+                ps -> ps.setLong(1, questionPrimaryId)
+        );
+    }
 }

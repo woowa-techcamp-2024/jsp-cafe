@@ -12,4 +12,8 @@ public interface ReplyRepository {
     List<Reply> findAllByQuestionPrimaryId(Long questionId);
 
     void delete(Long id);
+
+    boolean existsReplyByIdAndOtherUserPrimaryId(final Long id, Long userPrimaryId);
+
+    void deleteAllByQuestionPrimaryId(Long questionPrimaryId);
 }

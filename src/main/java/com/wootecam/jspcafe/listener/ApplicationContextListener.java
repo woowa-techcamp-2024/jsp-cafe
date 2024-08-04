@@ -50,7 +50,7 @@ public class ApplicationContextListener implements ServletContextListener {
         ReplyRepository replyRepository = new JdbcReplyRepository(jdbcTemplate);
 
         UserService userService = new UserService(userRepository);
-        QuestionService questionService = new QuestionService(questionRepository);
+        QuestionService questionService = new QuestionService(questionRepository, replyRepository);
         ReplyService replyService = new ReplyService(replyRepository);
 
         servletContext.addServlet("homeServlet", new HomeServlet(questionService))
