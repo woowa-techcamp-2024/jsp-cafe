@@ -3,6 +3,7 @@ package codesquad.global.filter;
 import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ import java.util.regex.Pattern;
  * <h4>설명</h4>
  * 인증이 된 사용자만 접근할 수 있는 요청들을 선처리하는 필터입니다.
  * <h4>사용법</h4>
- * ReqeustHandler 구현체의 메서드에 {@link Authorized}를 붙이면 {@link codesquad.global.servlet.annotation.RequestMapping}의 path를 필터에 등록하게 됩니다.
+ * ReqeustHandler 구현체의 메서드에 {@link Authorized}를 붙이면 {@link RequestMapping}의 path를 필터에 등록하게 됩니다.
  * 하단은 `POST /questions`를 인증이 필요한 요청으로 등록하는 예시입니다.
  * <pre>
  *     {@code

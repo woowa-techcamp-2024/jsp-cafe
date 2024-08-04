@@ -9,7 +9,7 @@ import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.dao.UserQuery.QueryRequest;
 import codesquad.global.dao.UserQuery.UserResponse;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.SignUpService.Command;

@@ -19,7 +19,7 @@ import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.filter.AuthenticationFilter;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.handler.UserHandler;
 import codesquad.user.handler.UserRegisterFormHandler;
 import codesquad.user.handler.UserUpdateFormHandler;

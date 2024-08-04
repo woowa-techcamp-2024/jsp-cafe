@@ -3,7 +3,7 @@ package codesquad.article.handler;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.ArticleQuery;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

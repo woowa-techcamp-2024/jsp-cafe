@@ -5,7 +5,7 @@ import codesquad.article.service.RegisterArticleService.Command;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
 import codesquad.common.handler.annotation.Response;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

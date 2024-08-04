@@ -2,7 +2,7 @@ package codesquad.user.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Response;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

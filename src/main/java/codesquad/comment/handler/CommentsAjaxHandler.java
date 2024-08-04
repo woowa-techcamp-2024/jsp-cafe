@@ -7,7 +7,7 @@ import codesquad.common.handler.ReturnType;
 import codesquad.common.handler.annotation.Response;
 import codesquad.common.http.response.ApiResponse;
 import codesquad.global.dao.ArticleQuery;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
