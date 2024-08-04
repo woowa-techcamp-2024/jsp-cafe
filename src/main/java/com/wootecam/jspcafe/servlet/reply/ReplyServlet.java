@@ -37,7 +37,7 @@ public class ReplyServlet extends AbstractHttpServlet {
         Reply reply = replyService.append(
                 Long.parseLong(parameters.get("questionId")),
                 signInUser.getId(),
-                signInUser.getUserId(),
+                signInUser.getName(),
                 parameters.get("contents")
         );
 
