@@ -34,9 +34,8 @@ public class QuestionServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("QuestionServlet service");
-        String requestURI = req.getRequestURI();
         for (HandlerMapping handlerMapping : handlerMappings) {
-            if (handlerMapping.matches(requestURI)) {
+            if (handlerMapping.matches(req)) {
                 handlerMapping.handle(req, resp);
                 return;
             }

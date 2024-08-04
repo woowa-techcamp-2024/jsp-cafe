@@ -2,6 +2,7 @@ package codesquad.user.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.servlet.annotation.RequestMapping;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Optional;
 
+@Response
 @RequestMapping("^/users/\\d+$")
 public class UserHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserHandler.class);

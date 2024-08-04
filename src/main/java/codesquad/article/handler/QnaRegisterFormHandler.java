@@ -2,6 +2,7 @@ package codesquad.article.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.servlet.annotation.RequestMapping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@Response
 @RequestMapping("/questions/register-form")
 public class QnaRegisterFormHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnaRegisterFormHandler.class);

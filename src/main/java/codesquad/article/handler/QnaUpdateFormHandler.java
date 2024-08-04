@@ -1,6 +1,7 @@
 package codesquad.article.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.servlet.annotation.RequestMapping;
 import codesquad.user.domain.User;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
+@Response
 @RequestMapping("^/questions/\\d+/update-form$")
 public class QnaUpdateFormHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnaUpdateFormHandler.class);

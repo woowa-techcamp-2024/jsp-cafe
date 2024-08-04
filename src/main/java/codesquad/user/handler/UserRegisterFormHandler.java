@@ -1,6 +1,7 @@
 package codesquad.user.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.servlet.annotation.RequestMapping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@Response
 @RequestMapping("/users/register-form")
 public class UserRegisterFormHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserRegisterFormHandler.class);

@@ -13,6 +13,7 @@ import codesquad.comment.service.DeleteCommentService;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.filter.AuthenticationFilter;
@@ -72,14 +73,26 @@ public class HandlerRegister implements ServletContextListener {
     }
 
     private void registerHandlerMapping(List<HandlerMapping> handlerMappings, RequestHandler handler) {
-        RequestMapping annotation = handler.getClass().getAnnotation(RequestMapping.class);
-        if (annotation == null) {
-            return;
+        RequestMapping requestMappingAnnotation = handler.getClass().getAnnotation(RequestMapping.class);
+        if (requestMappingAnnotation == null) {
+            throw new RuntimeException("No RequestMapping annotation found");
         }
-        Pattern[] patterns = toPatterns(annotation.value());
+        Response responseAnnotation = getResponseAnnotation(handler);
+        Pattern[] patterns = toPatterns(requestMappingAnnotation.value());
         for (Pattern pattern : patterns) {
-            handlerMappings.add(new HandlerMapping(pattern, handler));
+            handlerMappings.add(new HandlerMapping(pattern, handler, responseAnnotation.returnType()));
         }
+    }
+
+    private Response getResponseAnnotation(RequestHandler handler) {
+        Response[] responses = handler.getClass().getAnnotationsByType(Response.class);
+        if (responses.length == 0) {
+            throw new RuntimeException("No Response annotation found");
+        }
+        if (responses.length > 1) {
+            throw new RuntimeException("Multi Response annotation found");
+        }
+        return responses[0];
     }
 
     private Pattern[] toPatterns(String... requestMaps) {
