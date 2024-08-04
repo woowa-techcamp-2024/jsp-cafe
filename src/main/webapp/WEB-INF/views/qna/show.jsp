@@ -240,7 +240,7 @@
                     $article.remove();
 
                     // 댓글 수 감소
-                    var $commentCount = $('.qna-comment-count트strong');
+                    var $commentCount = $('.qna-comment-count strong');
                     var currentCount = parseInt($commentCount.text());
                     var newCount = Math.max(currentCount - 1, 0);  // 음수가 되지 않도록 함
                     $commentCount.text(newCount);
