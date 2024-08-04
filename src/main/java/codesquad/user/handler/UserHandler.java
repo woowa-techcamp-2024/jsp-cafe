@@ -56,8 +56,8 @@ public class UserHandler extends HttpServletRequestHandler {
             throw new NumberFormatException("Invalid path info");
         }
         if (pathInfo.endsWith("/update-form")) {
-            return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/update-form")));
+            return Long.parseLong(pathInfo.substring("/users/".length(), pathInfo.indexOf("/update-form")));
         }
-        return Long.parseLong(pathInfo.substring(1));
+        return Long.parseLong(pathInfo.substring("/users/".length()));
     }
 }

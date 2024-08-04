@@ -65,7 +65,7 @@ public class CommentHandler extends HttpServletRequestHandler {
         if (pathInfo == null || !pathInfo.startsWith("/")) {
             throw new NumberFormatException("Invalid path info");
         }
-        return Long.parseLong(pathInfo.substring("/".length(), pathInfo.indexOf("/answers")));
+        return Long.parseLong(pathInfo.substring("/questions/".length(), pathInfo.indexOf("/answers")));
     }
 
     private long extractCommentIdFromPath(HttpServletRequest req) {

@@ -113,7 +113,7 @@ public class AuthenticationFilter implements Filter {
         String method = httpRequest.getMethod();
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
 
-        logger.info("checking request authentication");
+        logger.info("checking request authentication {} {}", method, path);
         if (requestMap.containsKey(method)) {
             List<Pattern> patterns = requestMap.get(method);
             for (Pattern pattern : patterns) {

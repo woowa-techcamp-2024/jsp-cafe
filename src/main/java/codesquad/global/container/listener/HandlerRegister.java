@@ -1,12 +1,11 @@
 package codesquad.global.container.listener;
 
-import codesquad.article.handler.QnaHandler;
-import codesquad.article.handler.QnaRegisterFormHandler;
-import codesquad.article.handler.QnaUpdateFormHandler;
-import codesquad.article.handler.QnasHandler;
+import codesquad.article.handler.*;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
+import codesquad.auth.handler.LoginHandler;
+import codesquad.auth.handler.LogoutHandler;
 import codesquad.comment.handler.CommentAjaxHandler;
 import codesquad.comment.handler.CommentHandler;
 import codesquad.comment.handler.CommentsAjaxHandler;
@@ -68,6 +67,9 @@ public class HandlerRegister implements ServletContextListener {
         registerHandlerMapping(handlerMappings, new CommentHandler(deleteCommentService));
         registerHandlerMapping(handlerMappings, new CommentAjaxHandler(deleteCommentService));
         registerHandlerMapping(handlerMappings, new CommentsAjaxHandler(registerCommentService));
+        registerHandlerMapping(handlerMappings, new LoginHandler(signInService));
+        registerHandlerMapping(handlerMappings, new LogoutHandler());
+        registerHandlerMapping(handlerMappings, new IndexHandler(articleQuery));
         servletContext.setAttribute("HandlerMappings", handlerMappings);
         logger.info("HandlerMapping registered on context");
 

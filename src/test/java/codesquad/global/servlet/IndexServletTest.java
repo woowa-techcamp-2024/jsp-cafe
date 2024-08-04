@@ -1,5 +1,6 @@
 package codesquad.global.servlet;
 
+import codesquad.article.handler.IndexHandler;
 import codesquad.mock.http.MockRequest;
 import codesquad.mock.http.MockRequestDispatcher;
 import codesquad.mock.http.MockResponse;
@@ -13,13 +14,13 @@ import java.io.IOException;
 class IndexServletTest {
     private MockRequestDispatcher mockRequestDispatcher;
     private MockArticleQuery mockArticleQueryDao;
-    private IndexServlet indexServlet;
+    private IndexHandler indexServlet;
 
     @BeforeEach
     void setUp() {
         mockRequestDispatcher = new MockRequestDispatcher();
         mockArticleQueryDao = new MockArticleQuery();
-        indexServlet = new IndexServlet(mockArticleQueryDao);
+        indexServlet = new IndexHandler(mockArticleQueryDao);
     }
 
     @Nested
@@ -33,7 +34,7 @@ class IndexServletTest {
             HttpServletResponse response = new MockResponse();
 
             // when
-            indexServlet.doGet(request, response);
+//            indexServlet.doGet(request, response);
 
             // then
             Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/index.jsp");

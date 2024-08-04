@@ -67,8 +67,8 @@ public class CommentsAjaxHandler extends HttpServletRequestHandler {
             throw new NumberFormatException("Invalid path info");
         }
         if (pathInfo.endsWith("/answers")) {
-            return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/answers")));
+            return Long.parseLong(pathInfo.substring("/questions/".length(), pathInfo.indexOf("/answers")));
         }
-        return Long.parseLong(pathInfo.substring(1));
+        return Long.parseLong(pathInfo.substring("/questions/".length()));
     }
 }
