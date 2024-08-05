@@ -34,7 +34,7 @@ class JdbcCommentRepositoryTest extends AbstractRepositoryTestSupport {
     @Test
     void findCommentsJoinUser() {
         // given
-        System.out.println("commentRepository.findCommentsJoinUser(1L) = " + commentRepository.findCommentsJoinUser(1L));
+        System.out.println("commentRepository.findCommentsJoinUser(1L) = " + commentRepository.findCommentsJoinUser(1L, 5, 0));
         List<User> users = List.of(
                 new User("user1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
                 new User("user2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 2, 0, 0)),
@@ -55,7 +55,7 @@ class JdbcCommentRepositoryTest extends AbstractRepositoryTestSupport {
 
 
         // when
-        List<CommentVO> result = commentRepository.findCommentsJoinUser(postId);
+        List<CommentVO> result = commentRepository.findCommentsJoinUser(postId, 5, 0);
 
         // then
         assertThat(result)
