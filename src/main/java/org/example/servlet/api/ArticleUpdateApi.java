@@ -91,6 +91,9 @@ public class ArticleUpdateApi extends HttpServlet {
         log.info("[ArticleUpdateApi] doDelete called");
         req.setCharacterEncoding("UTF-8");
 
+        HttpSession session = req.getSession(false);
+        User user = (User) session.getAttribute(SessionName.USER.getName());
+
         String pathInfo = req.getPathInfo();
         String[] pathParts = pathInfo.split("/");
         Long articleId = Long.parseLong(pathParts[1]);
@@ -108,6 +111,17 @@ public class ArticleUpdateApi extends HttpServlet {
         }
         if (article != null) {
             List<Reply> replies = replyDataHandler.findAllByArticleId(article.getArticleId());
+            boolean deletable = true;
+            for (Reply r : replies) {
+                if (!r.getUserId().equals(user.getUserId())) {
+                    deletable = false;
+                }
+            }
+            if (!deletable) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"내가 쓰지 않은 댓글이 있어 글을 삭제하지 못합니다.\"}");
+                return;
+            }
             for (Reply r : replies) {
                 r.delete();
             }
