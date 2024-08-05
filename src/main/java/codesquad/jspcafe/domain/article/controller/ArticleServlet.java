@@ -3,8 +3,6 @@ package codesquad.jspcafe.domain.article.controller;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.service.ArticleService;
-import codesquad.jspcafe.domain.reply.payload.respose.ReplyCommonResponse;
-import codesquad.jspcafe.domain.reply.service.ReplyService;
 import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +15,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -30,17 +27,15 @@ import java.util.NoSuchElementException;
 public class ArticleServlet extends HttpServlet {
 
     private transient ArticleService articleService;
-    private transient ReplyService replyService;
 
     /**
-     * ArticleServlet을 초기화합니다. <br> ArticleService와 ReplyService를 ServletContext에서 가져옵니다.
+     * ArticleServlet을 초기화합니다. <br> ArticleService를 ServletContext에서 가져옵니다.
      *
      * @throws ServletException 초기화 중 오류가 발생할 경우
      */
     @Override
     public void init() throws ServletException {
         articleService = (ArticleService) getServletContext().getAttribute("articleService");
-        replyService = (ReplyService) getServletContext().getAttribute("replyService");
     }
 
 
@@ -77,10 +72,7 @@ public class ArticleServlet extends HttpServlet {
         }
         String articleId = pathInfo.substring(1);
         ArticleCommonResponse articleCommonResponse = articleService.getArticleById(articleId);
-        List<ReplyCommonResponse> replyCommonResponses = replyService.getRepliesByArticleId(
-            Long.parseLong(articleId));
         req.setAttribute("article", articleCommonResponse);
-        req.setAttribute("replies", replyCommonResponses);
         req.getRequestDispatcher("/WEB-INF/jsp/question.jsp").forward(req, resp);
     }
 
