@@ -25,7 +25,7 @@ public class QuestionsServlet extends HttpServlet {
             page = "0";
         }
         if(size == null) {
-            size = "10";
+            size = "15";
         }
         ResponseEntity response = questionHandler.findQuestions(Integer.parseInt(page), Integer.parseInt(size));
         req.setAttribute("questions", response.getModel().get("questions"));
