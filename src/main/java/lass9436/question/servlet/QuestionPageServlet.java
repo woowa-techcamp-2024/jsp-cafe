@@ -62,8 +62,23 @@ public class QuestionPageServlet extends HttpServlet {
 	}
 
 	private String handleList(HttpServletRequest req, HttpServletResponse resp) {
-		req.setAttribute("questions", questionRepository.findAll());
+		long page = getPageParameter(req.getParameter("page"));
+		long pageSize = 15;
+		req.setAttribute("questions", questionRepository.findAllPageable(page, pageSize));
+		req.setAttribute("maxPage", (long) Math.ceil((double) questionRepository.count() / pageSize));
 		return "/list.jsp";
+	}
+
+	private long getPageParameter(String pageParam) {
+		if (pageParam == null || pageParam.trim().isEmpty()) {
+			return 1;
+		}
+		try {
+			long page = Long.parseLong(pageParam);
+			return page > 0 ? page : 1;
+		} catch (NumberFormatException e) {
+			return 1;
+		}
 	}
 
 	private String handleDetail(HttpServletRequest req, HttpServletResponse resp) {
