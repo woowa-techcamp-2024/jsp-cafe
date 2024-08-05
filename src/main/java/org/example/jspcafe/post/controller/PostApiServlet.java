@@ -14,6 +14,7 @@ import org.example.jspcafe.comment.request.CommentModifyRequest;
 import org.example.jspcafe.comment.service.CommentService;
 import org.example.jspcafe.di.ApplicationContext;
 import org.example.jspcafe.post.request.PostModifyRequest;
+import org.example.jspcafe.post.response.CommentList;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.post.service.PostService;
 
@@ -105,12 +106,16 @@ public class PostApiServlet extends HttpServlet {
          */
         if (split.length == 5 && split[4].equals("comments")) {
             Long postId = Long.parseLong(split[split.length - 2]);
-            final CommentResponse[] comments = commentService.findCommentsJoinUser(postId).toArray(CommentResponse[]::new);
+
+            int page = Integer.parseInt(req.getParameter("page"));
+            int size = Integer.parseInt(req.getParameter("size"));
+
+            CommentList commentList = commentService.findCommentsJoinUser(postId, page, size);
 
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             PrintWriter out = resp.getWriter();
-            String jsonResponse = objectMapper.writeValueAsString(comments);
+            String jsonResponse = objectMapper.writeValueAsString(commentList);
             out.print(jsonResponse);
             out.flush();
             return;
