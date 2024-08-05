@@ -24,7 +24,7 @@ public class UsersServlet extends HttpServlet {
     private UserRepository userRepository;
     private Logger logger = LoggerFactory.getLogger(UserServlet.class);
     @Override
-    public void init(ServletConfig config){
+    public void init(ServletConfig config) {
         ServletContext context = config.getServletContext();
         this.userRepository = (UserRepository) context.getAttribute("UserRepository");
         this.userService = (UserService) context.getAttribute("UserService");
@@ -49,7 +49,12 @@ public class UsersServlet extends HttpServlet {
         String userId = req.getParameter("userId");
         String nickname = req.getParameter("nickname");
         String password = req.getParameter("password");
-        User user = new User(userId,password,nickname,email);
+        User user = User.builder()
+                .userId(userId)
+                .password(password)
+                .nickname(nickname)
+                .email(email)
+                .build();
         userService.register(user);
         resp.sendRedirect("users");
     }
