@@ -52,4 +52,22 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.findFirst()
 			.orElse(null);
 	}
+
+	@Override
+	public List<Question> findAllPageable(long page, long pageSize) {
+		long startIndex = (page - 1) * pageSize;
+		return questions.stream()
+				.filter(q -> "Y".equals(q.getUseYn())) // useYn이 'Y'인 질문만 선택
+				.sorted((q1, q2) -> Long.compare(q2.getQuestionSeq(), q1.getQuestionSeq())) // questionSeq 내림차순 정렬
+				.skip(startIndex)
+				.limit(pageSize)
+				.toList();
+	}
+
+	@Override
+	public long count() {
+		return questions.stream()
+				.filter(q -> "Y".equals(q.getUseYn())) // useYn이 'Y'인 질문만 카운트
+				.count();
+	}
 }
