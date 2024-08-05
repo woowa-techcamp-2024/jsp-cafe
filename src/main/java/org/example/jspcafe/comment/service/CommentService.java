@@ -45,7 +45,14 @@ public class CommentService {
     }
 
     public CommentList findCommentsJoinUser(Long postId, int page, int size) {
+        if (page < 1) {
+            page = 1; // 페이지 번호가 1보다 작으면 1로 설정
+        }
+        if (size < 1) {
+            size = 5; // 사이즈가 1보다 작으면 기본값 5로 설정
+        }
         int offset = (page - 1) * size;
+
         final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId, size, offset);
         int count = commentRepository.count(postId);
 
