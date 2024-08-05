@@ -12,4 +12,8 @@ public interface CommentRepository {
 	void deleteByCommentSeq(long commentSeq);
 
 	List<Comment> findByQuestionSeq(long questionSeq);
+
+	List<Comment> findRangeByQuestionSeq(long questionSeq, long startCommentSeq, int count);
+
+	long countByQuestionSeq(long questionSeq);
 }
