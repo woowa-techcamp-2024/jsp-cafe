@@ -14,11 +14,14 @@ public class QuestionJdbcRepository implements QuestionRepository {
     private static final String INSERT = "INSERT INTO QUESTION (title, content, writer) VALUES (?, ?, ?)";
     private static final String SELECT = "SELECT * FROM QUESTION WHERE is_deleted = false";
     private static final String SELECT_BY_ID = "SELECT * FROM QUESTION WHERE question_id = ? and is_deleted = false";
+    private static final String COUNT = "SELECT COUNT(question_id) FROM QUESTION WHERE is_deleted = false;";
+    private static final String COUNT_BY_KEYWORD = "SELECT COUNT(question_id) FROM QUESTION WHERE is_deleted = false and (title like %?% or content like %?%)";
     private static final String DELETE = "DELETE FROM QUESTION";
     private static final String DELETE_BY_ID = "DELETE FROM QUESTION WHERE question_id = ?";
     private static final String UPDATE_BY_ID = "UPDATE QUESTION SET title = ?, content = ?, writer = ?, is_deleted = ? WHERE question_id = ?";
 
     private static final QuestionRowMapper questionRowMapper = new QuestionRowMapper();
+    private static final LongRowMapper longRowMapper = new LongRowMapper();
     private final JdbcTemplate jdbcTemplate;
 
     public QuestionJdbcRepository(JdbcTemplate jdbcTemplate) {
@@ -40,6 +43,15 @@ public class QuestionJdbcRepository implements QuestionRepository {
 
     public List<Question> findAll() {
         return jdbcTemplate.query(SELECT, questionRowMapper);
+    }
+
+    @Override
+    public Long count(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return jdbcTemplate.queryForObject(COUNT, longRowMapper);
+        }
+
+        return jdbcTemplate.queryForObject(COUNT_BY_KEYWORD, longRowMapper, keyword, keyword);
     }
 
     @Override
@@ -69,6 +81,14 @@ public class QuestionJdbcRepository implements QuestionRepository {
                     rs.getBoolean("is_deleted"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
+        }
+    }
+
+    static class LongRowMapper implements RowMapper<Long> {
+
+        @Override
+        public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return rs.getLong(1);
         }
     }
 }

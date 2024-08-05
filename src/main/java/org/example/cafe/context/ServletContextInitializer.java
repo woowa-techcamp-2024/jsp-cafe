@@ -56,6 +56,9 @@ public class ServletContextInitializer implements ServletContextListener {
             setContext("QuestionRepository", () ->
                     new QuestionJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
 
+            setContext("PostCountCache", () ->
+                    new PostCountCache(getBean("QuestionRepository", QuestionRepository.class)));
+
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));
             setContext("AuthService", () ->
@@ -78,5 +81,11 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private <T> T getBean(String name, Class<T> clazz) {
         return clazz.cast(servletContext.getAttribute(name));
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        getBean("DbConnector", DbConnector.class).close();
+        getBean("PostCountCache", PostCountCache.class).close();
     }
 }

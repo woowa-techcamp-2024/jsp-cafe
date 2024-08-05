@@ -10,6 +10,8 @@ public interface QuestionRepository {
 
     List<Question> findAll();
 
+    Long count(String keyword);
+
     void update(Question question);
 
     void delete(Long id);
