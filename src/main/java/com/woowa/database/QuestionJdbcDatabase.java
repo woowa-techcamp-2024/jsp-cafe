@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -80,7 +79,13 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
     }
 
     @Override
-    public List<Question> findAllOrderByCreatedAt(int page, int size) {
+    public Page<Question> findAllOrderByCreatedAt(int page, int size) {
+        List<Question> questions = findQuestionsOrderByCreatedAt(page, size);
+        Long count = countQuestions();
+        return Page.of(questions, count, page, size);
+    }
+
+    private List<Question> findQuestionsOrderByCreatedAt(int page, int size) {
         String sql = "select * from question q"
                 + " join user u on u.user_id = q.user_id"
                 + " where deleted is false"
@@ -102,6 +107,27 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
                 questions.add(question);
             }
             return questions;
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
+        }
+    }
+
+    private Long countQuestions() {
+        String sql = "select coalesce(count(*), 0) as question_count from question";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return rs.getLong("question_count");
+            }
+            return 0L;
         } catch (SQLException e) {
             throw new IllegalArgumentException("SQL 예외", e);
         } finally {

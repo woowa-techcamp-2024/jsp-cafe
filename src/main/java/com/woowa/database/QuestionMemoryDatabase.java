@@ -22,11 +22,12 @@ public class QuestionMemoryDatabase implements QuestionDatabase {
     }
 
     @Override
-    public List<Question> findAllOrderByCreatedAt(int page, int size) {
-        return questions.values().stream()
+    public Page<Question> findAllOrderByCreatedAt(int page, int size) {
+        List<Question> content = questions.values().stream()
                 .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
                 .limit((long) page * size + size).skip((long) page * size)
                 .toList();
+        return Page.of(content, (long) questions.values().size(), page, size);
     }
 
     @Override

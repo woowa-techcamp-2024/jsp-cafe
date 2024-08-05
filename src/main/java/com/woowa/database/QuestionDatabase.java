@@ -9,7 +9,7 @@ public interface QuestionDatabase {
 
     List<Question> findAll();
 
-    List<Question> findAllOrderByCreatedAt(int page, int size);
+    Page<Question> findAllOrderByCreatedAt(int page, int size);
 
     Optional<Question> findById(String questionId);
 
