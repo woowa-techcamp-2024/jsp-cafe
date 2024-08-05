@@ -95,6 +95,16 @@
 
 <script>
   $(document).ready(function () {
+
+    loadReplies(${articleCommonResponse.id});
+
+    $('#top_holder').after(
+        '<button id="loadMoreButton" class="btn btn-success" style="display: none;">더 보기</button>');
+
+    $('#loadMoreButton').on('click', function () {
+      loadReplies(${articleCommonResponse.id});
+    });
+
     $('#questionDelete').on('submit', function (e) {
       e.preventDefault();
 

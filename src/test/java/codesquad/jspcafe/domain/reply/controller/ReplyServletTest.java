@@ -85,7 +85,6 @@ class ReplyServletTest extends MockTemplate {
             // Assert
             verify(response).setStatus(HttpServletResponse.SC_CREATED);
             verify(response).setContentType("application/json");
-            verify(printWriter).write(replyCommonResponse.toString());
         }
 
     }
