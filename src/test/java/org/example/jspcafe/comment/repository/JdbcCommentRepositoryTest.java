@@ -30,6 +30,42 @@ class JdbcCommentRepositoryTest extends AbstractRepositoryTestSupport {
         userRepository.deleteAllInBatch();
     }
 
+    @DisplayName("user 닉네임을 마지막 id를 기준으로 페이징하여 댓글을 조회할 수 있다")
+    @Test
+    void findCommentsJoinUserByLastId() {
+        // given
+        List<User> users = List.of(
+                new User("user1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("user2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 2, 0, 0)),
+                new User("user3", "email3@example.com", "password3", LocalDateTime.of(2021, 1, 3, 0, 0))
+        );
+
+        users.forEach(userRepository::save);
+
+        Long postId = 1L;
+
+        Comment comment = new Comment(postId, 1L, "content1", LocalDateTime.of(2021, 1, 1, 0, 0));
+        long lastCommentId = commentRepository.save(comment).getCommentId();
+        List<Comment> comments = List.of(
+                new Comment(postId, 2L, "content2", LocalDateTime.of(2021, 1, 2, 0, 0)),
+                new Comment(postId, 3L, "content3", LocalDateTime.of(2021, 1, 3, 0, 0))
+        );
+
+        comments.forEach(commentRepository::save);
+
+
+        // when
+        List<CommentVO> result = commentRepository.findCommentsJoinUserByLastId(postId, lastCommentId, 5);
+
+        // then
+        assertThat(result)
+                .extracting("postId", "userId", "nickname", "content", "createdAt")
+                .containsExactlyInAnyOrder(
+                        tuple(postId, 2L, "user2", "content2", LocalDateTime.of(2021, 1, 2, 0, 0)),
+                        tuple(postId, 3L, "user3", "content3", LocalDateTime.of(2021, 1, 3, 0, 0))
+                );
+    }
+
     @DisplayName("user 닉네임을 조인하여 댓글을 조회할 수 있다")
     @Test
     void findCommentsJoinUser() {
