@@ -37,7 +37,7 @@ public class MockServletContext implements ServletContext {
         ArticleService articleService = new ArticleService(articleDao, replyDao, dataSource);
         attributes.put("articleService", articleService);
 
-        ReplyService replyService = new ReplyService(replyDao);
+        ReplyService replyService = new ReplyService(articleDao, replyDao, dataSource);
         attributes.put("replyService", replyService);
     }
 
