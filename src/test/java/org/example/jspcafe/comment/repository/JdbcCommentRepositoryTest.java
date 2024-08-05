@@ -15,6 +15,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 class JdbcCommentRepositoryTest extends AbstractRepositoryTestSupport {
@@ -66,52 +67,39 @@ class JdbcCommentRepositoryTest extends AbstractRepositoryTestSupport {
                 );
     }
 
-//    @DisplayName("주어진 게시물 ID 목록에 대한 모든 댓글을 조회할 수 있다")
-//    @Test
-//    void findAllByPostIdsJoinFetch() {
-//        // given
-//        System.out.println("commentRepository.findCommentsJoinUser(1L) = " + commentRepository.findCommentsJoinUser(1L));
-//
-//        List<User> users = List.of(
-//                new User("user1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
-//                new User("user2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 2, 0, 0)),
-//                new User("user3", "email3@example.com", "password3", LocalDateTime.of(2021, 1, 3, 0, 0))
-//        );
-//
-//        users.forEach(userRepository::save);
-//
-//
-//        List<Comment> comments = List.of(
-//                new Comment(1L, 1L, "content1", LocalDateTime.of(2021, 1, 1, 0, 0)),
-//                new Comment(1L, 2L, "content2", LocalDateTime.of(2021, 1, 2, 0, 0)),
-//                new Comment(2L, 3L, "content3", LocalDateTime.of(2021, 1, 3, 0, 0))
-//        );
-//
-//        comments.forEach(commentRepository::save);
-//
-//        // when
-//        List<CommentVO> result = commentRepository.findAllByPostIdsJoinFetch(List.of(1L, 2L));
-//
-//        System.out.println("result = " + result);
-//        // then
-//        assertThat(result)
-//                .extracting("postId", "userId", "nickname", "content", "createdAt")
-//                .containsExactlyInAnyOrder(
-//                        tuple(1L, 1L, "user1", "content1", LocalDateTime.of(2021, 1, 1, 0, 0)),
-//                        tuple(1L, 2L, "user2", "content2", LocalDateTime.of(2021, 1, 2, 0, 0)),
-//                        tuple(2L, 3L, "user3", "content3", LocalDateTime.of(2021, 1, 3, 0, 0))
-//                );
-//    }
+    @DisplayName("주어진 게시물 ID 목록에 대한 댓글 수를 확인할 수 있다.")
+    @Test
+    void findAllByPostIdsJoinFetch() {
+        // given
+        List<User> users = List.of(
+                new User("user1", "email1@example.com", "password1", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new User("user2", "email2@example.com", "password2", LocalDateTime.of(2021, 1, 2, 0, 0)),
+                new User("user3", "email3@example.com", "password3", LocalDateTime.of(2021, 1, 3, 0, 0))
+        );
 
-//    @DisplayName("빈 게시물 ID 목록을 제공하면 빈 결과를 반환한다")
-//    @Test
-//    void findAllByPostIdsJoinFetchWithEmptyList() {
-//        // when
-//        List<CommentVO> result = commentRepository.findAllByPostIdsJoinFetch(List.of());
-//
-//        // then
-//        assertThat(result).isEmpty();
-//    }
+        users.forEach(userRepository::save);
+
+        Long postId1 = 1L;
+        Long postId2 = 2L;
+        List<Comment> comments = List.of(
+                new Comment(1L, 1L, "content1", LocalDateTime.of(2021, 1, 1, 0, 0)),
+                new Comment(1L, 2L, "content2", LocalDateTime.of(2021, 1, 2, 0, 0)),
+                new Comment(2L, 3L, "content3", LocalDateTime.of(2021, 1, 3, 0, 0))
+        );
+
+        comments.forEach(commentRepository::save);
+
+        // when
+        int count1 = commentRepository.count(postId1);
+        int count2 = commentRepository.count(postId2);
+
+        // then
+        assertAll(
+                () -> assertThat(count1).isEqualTo(2),
+                () -> assertThat(count2).isEqualTo(1)
+        );
+
+    }
 
     @DisplayName("기존 댓글을 저장하면 기존 댓글을 반환한다")
     @Test
