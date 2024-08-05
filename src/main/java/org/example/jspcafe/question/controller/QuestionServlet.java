@@ -15,7 +15,7 @@ import org.example.jspcafe.user.User;
 import java.io.IOException;
 import java.util.List;
 
-import static org.example.jspcafe.common.RequestUtil.getUserFromSession;
+import static org.example.jspcafe.common.RequestUtil.getUserFromReqSession;
 
 @WebServlet("/questions")
 public class QuestionServlet extends HttpServlet {
@@ -27,7 +27,6 @@ public class QuestionServlet extends HttpServlet {
         ServletContext context = config.getServletContext();
         this.questionRepository = (QuestionRepository) context.getAttribute("QuestionRepository");
         this.questionService = (QuestionService) context.getAttribute("QuestionService");
-
     }
 
     @Override
@@ -39,7 +38,7 @@ public class QuestionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        User user = getUserFromSession(req);
+        User user = getUserFromReqSession(req);
 
         if (user == null) {
             resp.sendRedirect("/login");
