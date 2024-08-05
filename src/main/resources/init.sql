@@ -18,6 +18,7 @@ CREATE TABLE Question (
                           title VARCHAR(200) NOT NULL,
                           contents TEXT NOT NULL,
                           date TIMESTAMP NOT NULL,
+                          status BOOLEAN NOT NULL DEFAULT TRUE,
                           user_id BIGINT,
                           FOREIGN KEY (user_id) REFERENCES Users(id)
 );
@@ -36,15 +37,15 @@ CREATE TABLE Reply (
 -- 예제 데이터 삽입
 -- Users 데이터
 INSERT INTO Users (user_id, password, nickname, email)
-VALUES ('seungsu', '994499', '김승수', 'seungsu123@naver.com'),
-       ('user2', 'password2', '닉네임2', 'user2@example.com'),
-       ('user3', 'password3', '닉네임3', 'user3@example.com');
+VALUES ('test1', 'test', '닉네임1', 'user1@example.com'),
+       ('test2', 'test', '닉네임2', 'user2@example.com'),
+       ('test3', 'test', '닉네임3', 'user3@example.com');
 
 -- Question 데이터
-INSERT INTO Question (title, contents, date, user_id)
-VALUES ('첫 번째 질문', '첫 번째 질문 내용', CURRENT_TIMESTAMP, 1),
-       ('두 번째 질문', '두 번째 질문 내용', CURRENT_TIMESTAMP, 2),
-       ('세 번째 질문', '세 번째 질문 내용', CURRENT_TIMESTAMP, 3);
+INSERT INTO Question (title, contents, date, status, user_id)
+VALUES ('첫 번째 질문', '첫 번째 질문 내용', CURRENT_TIMESTAMP, TRUE, 1),
+       ('두 번째 질문', '두 번째 질문 내용', CURRENT_TIMESTAMP, TRUE, 2),
+       ('세 번째 질문', '세 번째 질문 내용', CURRENT_TIMESTAMP, TRUE, 3);
 
 -- Reply 데이터
 INSERT INTO Reply (user_id, question_id, contents, date)
