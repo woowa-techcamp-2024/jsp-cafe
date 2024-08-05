@@ -43,7 +43,7 @@ public class DataSourceConfig {
                     "contents TEXT, " +
                     "reply_count BIGINT, " +
                     "is_deleted BOOLEAN, " +
-                    "create_at TIMESTAMP, " +
+                    "created_at TIMESTAMP, " +
                     "modified_at TIMESTAMP, " +
                     "index idx_article_is_deleted (is_deleted))";
 
@@ -54,7 +54,7 @@ public class DataSourceConfig {
                     "writer_id VARCHAR(255), " +
                     "contents TEXT, " +
                     "is_deleted BOOLEAN, " +
-                    "create_at TIMESTAMP, " +
+                    "created_at TIMESTAMP, " +
                     "modified_at TIMESTAMP, " +
                     "index idx_reply_is_deleted (is_deleted))";
 

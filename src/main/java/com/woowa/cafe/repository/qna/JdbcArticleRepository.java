@@ -21,7 +21,7 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public Long save(final Article article) {
-        String sql = "INSERT INTO articles (writer_id, title, contents, reply_count, is_deleted, create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (writer_id, title, contents, reply_count, is_deleted, created_at, modified_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, article.getWriterId());
@@ -60,7 +60,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                             resultSet.getString("title"),
                             resultSet.getString("contents"),
                             resultSet.getLong("reply_count"),
-                            resultSet.getTimestamp("create_at").toLocalDateTime(),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
                             resultSet.getTimestamp("modified_at").toLocalDateTime()));
                 }
             }
@@ -83,7 +83,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                         resultSet.getString("title"),
                         resultSet.getString("contents"),
                         resultSet.getLong("reply_count"),
-                        resultSet.getTimestamp("create_at").toLocalDateTime(),
+                        resultSet.getTimestamp("created_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime());
                 articles.add(article);
             }
