@@ -20,7 +20,7 @@ public class HttpMethodOverrideFilter extends HttpFilter {
             req = new HttpServletRequestWrapper(req) {
                 @Override
                 public String getMethod() {
-                    return overridingMethod;
+                    return overridingMethod.toUpperCase();
                 }
             };
         }
