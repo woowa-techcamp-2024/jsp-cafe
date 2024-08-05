@@ -1,7 +1,6 @@
 package org.example.jspcafe.database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +27,12 @@ public class SimpleConnectionPool {
         return instance;
     }
 
-    public synchronized Connection getConnection() throws SQLException {
+    public synchronized Connection getConnection()  {
         if (connectionPool.isEmpty()) {
             if (usedConnections.size() < MAX_POOL_SIZE) {
                 connectionPool.add(createConnection());
             } else {
-                throw new SQLException("Maximum pool size reached, no available connections!");
+                throw new RuntimeException("Pool is full");
             }
         }
 
@@ -54,10 +53,6 @@ public class SimpleConnectionPool {
             e.printStackTrace();
             throw new RuntimeException("Failed to create a new connection!");
         }
-    }
-
-    public int getSize() {
-        return connectionPool.size() + usedConnections.size();
     }
 
     public static void shutdown() throws SQLException {
