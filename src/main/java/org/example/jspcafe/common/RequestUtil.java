@@ -33,7 +33,7 @@ public class RequestUtil {
         return pathInfo;
     }
 
-    public static User getUserFromSession(HttpServletRequest req) {
+    public static User getUserFromReqSession(HttpServletRequest req) {
         HttpSession session = req.getSession(false); // false: 세션이 없으면 null을 반환
         return  (User) (session != null ? session.getAttribute("authUser") : null);
     }
