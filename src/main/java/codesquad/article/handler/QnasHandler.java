@@ -4,7 +4,8 @@ import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.RegisterArticleService.Command;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.Response;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@Response
 @RequestMapping("/questions")
 public class QnasHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnasHandler.class);

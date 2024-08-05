@@ -24,6 +24,7 @@ public class WebServletContainerInitializer implements ServletContainerInitializ
         ServletRegistration.Dynamic jspServlet = servletContext.addServlet("jsp", "org.apache.jasper.servlet.JspServlet");
         jspServlet.setLoadOnStartup(1);
         jspServlet.addMapping("*.jsp");
+        jspServlet.addMapping("/WEB-INF/*");
 
         List<AppInit> appInitList = new ArrayList<>();
         for (Class<?> appInitClass : set) {

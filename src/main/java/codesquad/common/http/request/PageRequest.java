@@ -1,4 +1,4 @@
-package codesquad.common;
+package codesquad.common.http.request;
 
 public class PageRequest {
     private final Integer pageNumber;

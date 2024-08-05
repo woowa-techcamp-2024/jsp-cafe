@@ -1,6 +1,6 @@
 package codesquad.global.dao;
 
-import codesquad.common.PageRequest;
+import codesquad.common.http.request.PageRequest;
 
 import java.util.List;
 import java.util.Optional;

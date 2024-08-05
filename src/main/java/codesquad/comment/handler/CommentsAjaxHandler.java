@@ -3,9 +3,15 @@ package codesquad.comment.handler;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.handler.HttpServletRequestHandler;
+import codesquad.common.handler.ReturnType;
 import codesquad.common.handler.annotation.Response;
+import codesquad.common.http.response.ApiResponse;
+import codesquad.global.dao.ArticleQuery;
 import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,14 +20,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@Response
+@Response(returnType = ReturnType.JSON)
 @RequestMapping("/questions/\\d+/answers")
-public class CommentsHandler extends HttpServletRequestHandler {
-    private static final Logger logger = LoggerFactory.getLogger(CommentsHandler.class);
+public class CommentsAjaxHandler extends HttpServletRequestHandler {
+    private static final Logger logger = LoggerFactory.getLogger(CommentsAjaxHandler.class);
 
     private final RegisterCommentService registerCommentService;
 
-    public CommentsHandler(RegisterCommentService registerCommentService) {
+    public CommentsAjaxHandler(RegisterCommentService registerCommentService) {
         this.registerCommentService = registerCommentService;
     }
 
@@ -34,19 +40,25 @@ public class CommentsHandler extends HttpServletRequestHandler {
         try {
             articleId = extractIdFromPath(req);
         } catch (NumberFormatException e) {
-            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         RegisterCommentService.Command command = new RegisterCommentService.Command(articleId, loginUser.getUserId(), content);
+        Long registeredId;
         try {
-            registerCommentService.register(command);
+            registeredId = registerCommentService.register(command);
         } catch (NoSuchElementException e) {
-            req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
-            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        resp.sendRedirect(req.getContextPath() + "/questions/" + articleId);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        ArticleQuery.CommentResponse data = new ArticleQuery.CommentResponse(registeredId, loginUser.getId(), loginUser.getUserId(), content);
+        ApiResponse<ArticleQuery.CommentResponse> response = new ApiResponse<>(200, "OK", data);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String responseStr = objectMapper.writeValueAsString(response);
+        objectMapper.writeValue(resp.getWriter(), responseStr);
     }
 
     private long extractIdFromPath(HttpServletRequest req) {

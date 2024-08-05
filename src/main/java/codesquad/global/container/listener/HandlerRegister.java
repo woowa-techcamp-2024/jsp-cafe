@@ -1,22 +1,24 @@
 package codesquad.global.container.listener;
 
-import codesquad.article.handler.QnaHandler;
-import codesquad.article.handler.QnaRegisterFormHandler;
-import codesquad.article.handler.QnaUpdateFormHandler;
-import codesquad.article.handler.QnasHandler;
+import codesquad.article.handler.*;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
+import codesquad.auth.handler.LoginHandler;
+import codesquad.auth.handler.LogoutHandler;
+import codesquad.comment.handler.CommentAjaxHandler;
 import codesquad.comment.handler.CommentHandler;
+import codesquad.comment.handler.CommentsAjaxHandler;
 import codesquad.comment.handler.CommentsHandler;
 import codesquad.comment.service.DeleteCommentService;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.filter.AuthenticationFilter;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.handler.UserHandler;
 import codesquad.user.handler.UserRegisterFormHandler;
 import codesquad.user.handler.UserUpdateFormHandler;
@@ -63,6 +65,11 @@ public class HandlerRegister implements ServletContextListener {
         registerHandlerMapping(handlerMappings, new UserUpdateFormHandler(userQuery));
         registerHandlerMapping(handlerMappings, new CommentsHandler(registerCommentService));
         registerHandlerMapping(handlerMappings, new CommentHandler(deleteCommentService));
+        registerHandlerMapping(handlerMappings, new CommentAjaxHandler(deleteCommentService));
+        registerHandlerMapping(handlerMappings, new CommentsAjaxHandler(registerCommentService));
+        registerHandlerMapping(handlerMappings, new LoginHandler(signInService));
+        registerHandlerMapping(handlerMappings, new LogoutHandler());
+        registerHandlerMapping(handlerMappings, new IndexHandler(articleQuery));
         servletContext.setAttribute("HandlerMappings", handlerMappings);
         logger.info("HandlerMapping registered on context");
 
@@ -72,14 +79,26 @@ public class HandlerRegister implements ServletContextListener {
     }
 
     private void registerHandlerMapping(List<HandlerMapping> handlerMappings, RequestHandler handler) {
-        RequestMapping annotation = handler.getClass().getAnnotation(RequestMapping.class);
-        if (annotation == null) {
-            return;
+        RequestMapping requestMappingAnnotation = handler.getClass().getAnnotation(RequestMapping.class);
+        if (requestMappingAnnotation == null) {
+            throw new RuntimeException("No RequestMapping annotation found");
         }
-        Pattern[] patterns = toPatterns(annotation.value());
+        Response responseAnnotation = getResponseAnnotation(handler);
+        Pattern[] patterns = toPatterns(requestMappingAnnotation.value());
         for (Pattern pattern : patterns) {
-            handlerMappings.add(new HandlerMapping(pattern, handler));
+            handlerMappings.add(new HandlerMapping(pattern, handler, responseAnnotation.returnType()));
         }
+    }
+
+    private Response getResponseAnnotation(RequestHandler handler) {
+        Response[] responses = handler.getClass().getAnnotationsByType(Response.class);
+        if (responses.length == 0) {
+            throw new RuntimeException("No Response annotation found");
+        }
+        if (responses.length > 1) {
+            throw new RuntimeException("Multi Response annotation found");
+        }
+        return responses[0];
     }
 
     private Pattern[] toPatterns(String... requestMaps) {

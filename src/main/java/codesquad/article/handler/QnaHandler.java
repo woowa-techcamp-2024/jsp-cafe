@@ -8,9 +8,10 @@ import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.ArticleQuery;
 import codesquad.global.dao.ArticleQuery.ArticleDetailResponse;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Optional;
 
+@Response
 @RequestMapping("^/questions/\\d+$")
 public class QnaHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnaHandler.class);
@@ -141,8 +143,8 @@ public class QnaHandler extends HttpServletRequestHandler {
             throw new NumberFormatException("Invalid path info");
         }
         if (pathInfo.endsWith("/update-form")) {
-            return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/update-form")));
+            return Long.parseLong(pathInfo.substring("/questions/".length(), pathInfo.indexOf("/update-form")));
         }
-        return Long.parseLong(pathInfo.substring(1));
+        return Long.parseLong(pathInfo.substring("/questions/".length()));
     }
 }

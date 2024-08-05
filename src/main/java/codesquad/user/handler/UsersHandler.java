@@ -5,10 +5,11 @@ import codesquad.common.exception.IncorrectPasswordException;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.UserQuery;
 import codesquad.global.dao.UserQuery.QueryRequest;
 import codesquad.global.dao.UserQuery.UserResponse;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.SignUpService.Command;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+@Response
 @RequestMapping("/users")
 public class UsersHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(UsersHandler.class);

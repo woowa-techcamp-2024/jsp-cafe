@@ -2,8 +2,9 @@ package codesquad.user.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
+import codesquad.common.handler.annotation.Response;
 import codesquad.global.dao.UserQuery;
-import codesquad.global.servlet.annotation.RequestMapping;
+import codesquad.common.handler.annotation.RequestMapping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Optional;
 
+@Response
 @RequestMapping("^/users/\\d+$")
 public class UserHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserHandler.class);
@@ -54,8 +56,8 @@ public class UserHandler extends HttpServletRequestHandler {
             throw new NumberFormatException("Invalid path info");
         }
         if (pathInfo.endsWith("/update-form")) {
-            return Long.parseLong(pathInfo.substring(1, pathInfo.indexOf("/update-form")));
+            return Long.parseLong(pathInfo.substring("/users/".length(), pathInfo.indexOf("/update-form")));
         }
-        return Long.parseLong(pathInfo.substring(1));
+        return Long.parseLong(pathInfo.substring("/users/".length()));
     }
 }
