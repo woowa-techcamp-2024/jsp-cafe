@@ -31,9 +31,8 @@ class QuestionServiceTest {
     @Nested
     class 게시글을_삭제한다 {
 
-        // Successfully deletes a question when the user is the writer and no other user's replies exist
         @Test
-        void test_delete_question_success() {
+        void 게시글을_삭제할_수_있다() {
             String loginUserId = "user1";
             Long questionId = 1L;
             Question question = new Question(questionId, "title", "content", loginUserId);
@@ -48,9 +47,8 @@ class QuestionServiceTest {
             assertTrue(question.isDeleted());
         }
 
-        // Deletes all replies associated with the question before deleting the question
         @Test
-        void test_delete_all_replies_before_deleting_question() {
+        void 게시글_작성자가_쓴_댓글만_있다면_게시글을_삭제할_수_있다() {
             String loginUserId = "user1";
             Long questionId = 1L;
             Question question = new Question(questionId, "title", "content", loginUserId);
@@ -67,9 +65,8 @@ class QuestionServiceTest {
             verify(replyRepository).update(reply2);
         }
 
-        // Throws BadRequestException when there are replies from other users
         @Test
-        void test_throw_BadRequestException_when_other_user_replies_exist() {
+        void 다른_사용자의_댓글이_있다면_예외가_발생한다() {
             String loginUserId = "user1";
             Long questionId = 1L;
             Question question = new Question(questionId, "title", "content", loginUserId);

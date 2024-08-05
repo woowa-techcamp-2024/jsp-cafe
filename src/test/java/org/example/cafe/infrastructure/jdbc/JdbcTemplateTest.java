@@ -2,6 +2,7 @@ package org.example.cafe.infrastructure.jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.util.List;
 import org.example.cafe.common.exception.CafeException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.infrastructure.database.DbConnector;
+import org.example.cafe.infrastructure.jdbc.exception.JdbcTemplateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -138,6 +140,20 @@ class JdbcTemplateTest {
                     () -> assertThat(result.get(2).getTitle()).isEqualTo("title3")
             );
         }
+
+        @Test
+        void 데이터가_존재하지_않는다면_빈_리스트를_반환한다() {
+            // given
+            final String selectSql = "SELECT * FROM QUESTION";
+
+            // when
+            List<Question> result = jdbcTemplate.query(selectSql, questionRowMapper);
+
+            // then
+            assertAll(
+                    () -> assertThat(result).isEmpty()
+            );
+        }
     }
 
     @Nested
@@ -162,6 +178,20 @@ class JdbcTemplateTest {
             assertAll(
                     () -> assertThat(question).isNotNull(),
                     () -> assertThat(question.getTitle()).isEqualTo("title3")
+            );
+        }
+
+        @Test
+        void 데이터가_존재하지_않는다면_null을_반환한다() {
+            // given
+            final String selectSql = "SELECT * FROM QUESTION WHERE question_id = ?";
+
+            // when
+            Question question = jdbcTemplate.queryForObject(selectSql, questionRowMapper, 0L);
+
+            // then
+            assertAll(
+                    () -> assertThat(question).isNull()
             );
         }
     }
@@ -236,6 +266,15 @@ class JdbcTemplateTest {
                     () -> assertThat(result.getContent()).isEqualTo("UpdatedContent"),
                     () -> assertThat(result.getWriter()).isEqualTo("UpdatedWriter")
             );
+        }
+
+        @Test
+        void 존재하지_않는_데이터_수정_요청_시_예외가_발생한다() {
+            // given
+            final String updateSql = "UPDATE QUESTION SET title = ?, content = ?, writer = ? WHERE question_id = ?";
+
+            // when then
+            assertThrows(JdbcTemplateException.class, () -> jdbcTemplate.update(updateSql, null, 0L));
         }
     }
 

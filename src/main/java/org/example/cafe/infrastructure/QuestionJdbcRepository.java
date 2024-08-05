@@ -1,16 +1,13 @@
 package org.example.cafe.infrastructure;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import org.example.cafe.common.exception.CafeException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.QuestionRepository;
-import org.example.cafe.infrastructure.database.DbConnector;
+import org.example.cafe.infrastructure.jdbc.GeneratedKeyHolder;
+import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
+import org.example.cafe.infrastructure.jdbc.RowMapper;
 
 public class QuestionJdbcRepository implements QuestionRepository {
 
@@ -21,121 +18,57 @@ public class QuestionJdbcRepository implements QuestionRepository {
     private static final String DELETE_BY_ID = "DELETE FROM QUESTION WHERE question_id = ?";
     private static final String UPDATE_BY_ID = "UPDATE QUESTION SET title = ?, content = ?, writer = ?, is_deleted = ? WHERE question_id = ?";
 
-    private final DbConnector dbConnector;
+    private static final QuestionRowMapper questionRowMapper = new QuestionRowMapper();
+    private final JdbcTemplate jdbcTemplate;
 
-    public QuestionJdbcRepository(DbConnector dbConnector) {
-        this.dbConnector = dbConnector;
+    public QuestionJdbcRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Long save(Question question) {
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
-                     Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, question.getTitle());
-            preparedStatement.setString(2, question.getContent());
-            preparedStatement.setString(3, question.getWriter());
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(INSERT, keyHolder, question.getTitle(), question.getContent(), question.getWriter());
 
-            int row = preparedStatement.executeUpdate();
-            if (row != 1) {
-                throw new CafeException("Failed to insert question " + question.getQuestionId());
-            }
-
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (!generatedKeys.next()) {
-                throw new CafeException("Cannot get generate key");
-            }
-
-            return generatedKeys.getLong(1);
-        } catch (SQLException e) {
-            throw new CafeException("Failed to insert question " + question.getQuestionId(), e);
-        }
+        return keyHolder.getKey();
     }
 
     @Override
     public Question findById(Long id) {
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID)) {
-            preparedStatement.setLong(1, id);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return new Question(resultSet.getLong("question_id"),
-                            resultSet.getString("title"),
-                            resultSet.getString("content"),
-                            resultSet.getString("writer"),
-                            resultSet.getBoolean("is_deleted"),
-                            resultSet.getTimestamp("created_at").toLocalDateTime());
-                }
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new CafeException("Failed to find question " + id, e);
-        }
+        return jdbcTemplate.queryForObject(SELECT_BY_ID, questionRowMapper, id);
     }
 
     public List<Question> findAll() {
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT)) {
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Question> result = new ArrayList<>();
-
-                while (resultSet.next()) {
-                    result.add(new Question(resultSet.getLong("question_id"),
-                            resultSet.getString("title"),
-                            resultSet.getString("content"),
-                            resultSet.getString("writer"),
-                            resultSet.getBoolean("is_deleted"),
-                            resultSet.getTimestamp("created_at").toLocalDateTime()));
-                }
-
-                return result;
-            }
-        } catch (SQLException e) {
-            throw new CafeException("Failed to find questions", e);
-        }
+        return jdbcTemplate.query(SELECT, questionRowMapper);
     }
 
     @Override
     public void update(Question question) {
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BY_ID)) {
-            preparedStatement.setString(1, question.getTitle());
-            preparedStatement.setString(2, question.getContent());
-            preparedStatement.setString(3, question.getWriter());
-            preparedStatement.setBoolean(4, question.isDeleted());
-            preparedStatement.setLong(5, question.getQuestionId());
-
-            int row = preparedStatement.executeUpdate();
-            if (row != 1) {
-                throw new CafeException("Failed to update question " + question.getQuestionId());
-            }
-        } catch (SQLException e) {
-            throw new CafeException("Failed to update question " + question.getQuestionId(), e);
-        }
+        jdbcTemplate.update(UPDATE_BY_ID, null,
+                question.getTitle(), question.getContent(), question.getWriter(), question.isDeleted(),
+                question.getQuestionId());
     }
 
     public void delete(Long id) {
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
-            preparedStatement.setLong(1, id);
-
-            int row = preparedStatement.executeUpdate();
-            if (row != 1) {
-                throw new CafeException("Failed to delete question " + id);
-            }
-        } catch (SQLException e) {
-            throw new CafeException("Failed to delete question " + id, e);
-        }
+        jdbcTemplate.update(DELETE_BY_ID, null, id);
     }
 
     public void deleteAll() {
-        try (Connection connection = dbConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new CafeException("Failed to delete Questions", e);
+        jdbcTemplate.update(DELETE, null);
+    }
+
+    static class QuestionRowMapper implements RowMapper<Question> {
+
+        @Override
+        public Question mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Question(
+                    rs.getLong("question_id"),
+                    rs.getString("title"),
+                    rs.getString("content"),
+                    rs.getString("writer"),
+                    rs.getBoolean("is_deleted"),
+                    rs.getTimestamp("created_at").toLocalDateTime()
+            );
         }
     }
 }

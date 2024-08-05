@@ -20,6 +20,7 @@ import org.example.cafe.infrastructure.QuestionJdbcRepository;
 import org.example.cafe.infrastructure.ReplyJdbcRepository;
 import org.example.cafe.infrastructure.UserJdbcRepository;
 import org.example.cafe.infrastructure.database.DbConnector;
+import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
 import org.slf4j.Logger;
 
 @WebListener
@@ -45,13 +46,15 @@ public class ServletContextInitializer implements ServletContextListener {
             });
 
             setContext("DbConnector", () -> new DbConnector().init());
+            setContext("JdbcTemplate", () ->
+                    new JdbcTemplate(getBean("DbConnector", DbConnector.class).getDataSource()));
 
             setContext("UserRepository", () ->
-                    new UserJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new UserJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
             setContext("ReplyRepository", () ->
-                    new ReplyJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new ReplyJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
             setContext("QuestionRepository", () ->
-                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new QuestionJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
 
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));

@@ -61,8 +61,11 @@ public class JdbcTemplate {
 
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... args) {
         List<T> results = query(sql, rowMapper, args);
-        if (results.size() != 1) {
+        if (results.size() > 1) {
             throw new JdbcTemplateException("Failed to query: result size is " + results.size());
+        }
+        if (results.isEmpty()) {
+            return null;
         }
         return results.get(0);
     }
@@ -74,10 +77,7 @@ public class JdbcTemplate {
 
             setArgPreparedStatement(args, preparedStatement);
 
-            int row = preparedStatement.executeUpdate();
-            if (row != 1) {
-                throw new JdbcTemplateException("Failed to update " + sql);
-            }
+            preparedStatement.executeUpdate();
 
             if (keyHolder != null) {
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
