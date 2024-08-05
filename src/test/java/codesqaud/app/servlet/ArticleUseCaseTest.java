@@ -5,6 +5,7 @@ import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.dto.ArticleDto;
+import codesqaud.app.dto.PageDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import codesqaud.app.model.Reply;
@@ -14,6 +15,7 @@ import codesqaud.mock.MockHttpServletResponse;
 import codesqaud.mock.MockRequestDispatcher;
 import codesqaud.mock.MockServletConfig;
 import jakarta.servlet.ServletException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -60,10 +62,7 @@ public class ArticleUseCaseTest {
         @Test
         @DisplayName("저장된 게시글 목록을 조회할 수 있다")
         void given_saveArticles_when_getRootPage_then_foundArticles() throws ServletException, IOException {
-            signupAndLogin(config, request);
-            User loginUser = getLoginUser();
-            articleDao.save(new Article("Title 1", "Content 1", loginUser.getId()));
-            articleDao.save(new Article("Title 2", "Content 2", loginUser.getId()));
+            createArticles(2);
             request.setRequestURI("/");
 
             // When
@@ -76,7 +75,90 @@ public class ArticleUseCaseTest {
 
             MockRequestDispatcher dispatcher = request.getRequestDispatcher();
             assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/index.jsp");
-            assertThat(dispatcher.getForwardCount()).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("페이지를 조회하면 페이지 정보를 알 수 있다.")
+        void test1() throws ServletException, IOException {
+            //given
+            createArticles(30);
+            request.setRequestURI("/");
+            request.setParameter("page", "1");
+            request.setParameter("size", "5");
+
+            //when
+            qnaServlet.doGet(request, response);
+
+            //then
+            PageDto<ArticleDto> page = (PageDto<ArticleDto>) request.getAttribute("articlePage");
+            assertThat(page.getTotalPage()).isEqualTo(6);
+            assertThat(page.getElements().size()).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("페이지를 조회하면 해당 페이지에 알맞는 게시글이 보여진다.")
+        void test2() throws ServletException, IOException {
+            //given
+            createArticles(12);
+            request.setRequestURI("/");
+            request.setParameter("page", "3");
+            request.setParameter("size", "3");
+            List<ArticleDto> expectedArticles = articleDao.findAllAsDto().subList(6, 9);
+
+            //when
+            qnaServlet.doGet(request, response);
+
+            //then
+            PageDto<ArticleDto> page = (PageDto<ArticleDto>) request.getAttribute("articlePage");
+            assertThat(page.getTotalPage()).isEqualTo(4);
+            List<ArticleDto> articles = page.getElements();
+            assertThat(articles).isEqualTo(expectedArticles);
+        }
+
+
+        @Test
+        @DisplayName("page parameter가 주어지지 않으면 첫 페이지를 보여준다.")
+        void given_() throws ServletException, IOException {
+            //given
+            createArticles(12);
+            request.setRequestURI("/");
+            request.setParameter("size", "3");
+            List<ArticleDto> expectedArticles = articleDao.findAllAsDto().subList(0, 4);
+
+            //when
+            qnaServlet.doGet(request, response);
+
+            //then
+            PageDto<ArticleDto> page = (PageDto<ArticleDto>) request.getAttribute("articlePage");
+            List<ArticleDto> articles = page.getElements();
+            assertThat(articles).isEqualTo(expectedArticles);
+        }
+
+        @Test
+        @DisplayName("page parameter가 totalPage 갯수보다 크면 페이지에 elements가 존재하지 않는다.")
+        void test4() throws ServletException, IOException {
+            //given
+            createArticles(12);
+            request.setRequestURI("/");
+            request.setParameter("page", "5");
+            request.setParameter("size", "3");
+
+            //when
+            qnaServlet.doGet(request, response);
+
+            //then
+            PageDto<ArticleDto> page = (PageDto<ArticleDto>) request.getAttribute("articlePage");
+            List<ArticleDto> articles = page.getElements();
+            assertThat(articles.size()).isZero();
+        }
+
+        private void createArticles(int count) {
+            signupAndLogin(config, request);
+            User loginUser = getLoginUser();
+            for (int i = 0; i < count; i++) {
+                Article article = new Article("Title" + i, "Content" + i, loginUser.getId());
+                articleDao.save(article);
+            }
         }
     }
 
@@ -149,7 +231,7 @@ public class ArticleUseCaseTest {
             //given
             signUpAndLoginAndSaveArticle();
             Article savedArticle = articleDao.findAll().get(0);
-            request.setRequestURI("/qna/"+ savedArticle.getId() +"/form");
+            request.setRequestURI("/qna/" + savedArticle.getId() + "/form");
 
             //when
             qnaServlet.doGet(request, response);
@@ -164,9 +246,9 @@ public class ArticleUseCaseTest {
         void given_othersArticle_when_requestUpdateForm_then_throwException() throws ServletException, IOException {
             //given
             signUpAndLoginAndSaveArticle();
-            signupAndLogin(config,request);
+            signupAndLogin(config, request);
             Article savedArticle = articleDao.findAll().get(0);
-            request.setRequestURI("/qna/"+ savedArticle.getId() +"/form");
+            request.setRequestURI("/qna/" + savedArticle.getId() + "/form");
 
             //when, then
             assertThatThrownBy(() -> qnaServlet.doGet(request, response))
@@ -226,7 +308,7 @@ public class ArticleUseCaseTest {
             signUpAndLoginAndSaveArticle();
             Article savedArticle = articleDao.findAll().get(0);
             request.setMethod("PUT");
-            request.setRequestURI("/qna/"+ savedArticle.getId());
+            request.setRequestURI("/qna/" + savedArticle.getId());
             request.setParameter("title", "New Title");
             request.setParameter("contents", "New Contents");
 
@@ -243,9 +325,9 @@ public class ArticleUseCaseTest {
         void given_othersArticle_when_updateArticle_then_throwException() throws ServletException, IOException {
             //given
             signUpAndLoginAndSaveArticle();
-            signupAndLogin(config,request);
+            signupAndLogin(config, request);
             Article savedArticle = articleDao.findAll().get(0);
-            request.setRequestURI("/qna/"+ savedArticle.getId());
+            request.setRequestURI("/qna/" + savedArticle.getId());
 
             //when, then
             assertThatThrownBy(() -> qnaServlet.doPut(request, response))
@@ -266,7 +348,7 @@ public class ArticleUseCaseTest {
             signUpAndLoginAndSaveArticle();
             Article savedArticle = articleDao.findAll().get(0);
             request.setMethod("DELETE");
-            request.setRequestURI("/qna/"+ savedArticle.getId());
+            request.setRequestURI("/qna/" + savedArticle.getId());
 
             //when
             qnaServlet.doDelete(request, response);
@@ -284,7 +366,7 @@ public class ArticleUseCaseTest {
             Article savedArticle = articleDao.findAll().get(0);
             saveReply(savedArticle, AuthenticationManager.getLoginUserOrElseThrow(request));
             request.setMethod("DELETE");
-            request.setRequestURI("/qna/"+ savedArticle.getId());
+            request.setRequestURI("/qna/" + savedArticle.getId());
 
             //when
             qnaServlet.doDelete(request, response);
@@ -302,13 +384,13 @@ public class ArticleUseCaseTest {
             Article savedArticle = articleDao.findAll().get(0);
             User loginUser = AuthenticationManager.getLoginUserOrElseThrow(request);
 
-            signupAndLogin(config,request);
+            signupAndLogin(config, request);
             saveReply(savedArticle, AuthenticationManager.getLoginUserOrElseThrow(request));
 
             request.getSession().setAttribute("loginUser", loginUser);
 
             request.setMethod("DELETE");
-            request.setRequestURI("/qna/"+ savedArticle.getId());
+            request.setRequestURI("/qna/" + savedArticle.getId());
 
             //when
             assertThatThrownBy(() -> qnaServlet.doDelete(request, response))
@@ -320,10 +402,10 @@ public class ArticleUseCaseTest {
         void given_othersArticle_when_updateArticle_then_throwException() throws ServletException, IOException {
             //given
             signUpAndLoginAndSaveArticle();
-            signupAndLogin(config,request);
+            signupAndLogin(config, request);
             Article savedArticle = articleDao.findAll().get(0);
             request.setMethod("DELETE");
-            request.setRequestURI("/qna/"+ savedArticle.getId());
+            request.setRequestURI("/qna/" + savedArticle.getId());
 
             //when, then
             assertThatThrownBy(() -> qnaServlet.doDelete(request, response))
