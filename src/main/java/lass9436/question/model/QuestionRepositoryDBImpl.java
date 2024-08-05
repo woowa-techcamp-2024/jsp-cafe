@@ -127,6 +127,49 @@ public class QuestionRepositoryDBImpl implements QuestionRepository {
 		return question;
 	}
 
+	@Override
+	public List<Question> findAllPageable(long page, long pageSize) {
+		String query = "SELECT * FROM questions WHERE useYn = 'Y' ORDER BY questionSeq DESC LIMIT ? OFFSET ?";
+		List<Question> questions = new ArrayList<>();
+
+		try (Connection connection = Database.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setLong(1, pageSize);
+			statement.setLong(2, (page - 1) * pageSize);
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				questions.add(mapRowToQuestion(resultSet));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return questions;
+	}
+
+	@Override
+	public long count() {
+		String query = "SELECT COUNT(*) FROM questions WHERE useYn = 'Y'";
+		long count = 0;
+
+		try (Connection connection = Database.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(query);
+			 ResultSet resultSet = statement.executeQuery()) {
+
+			if (resultSet.next()) {
+				count = resultSet.getLong(1);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return count;
+	}
+
 	private Question mapRowToQuestion(ResultSet resultSet) throws SQLException {
 		Question question = new Question();
 		question.setQuestionSeq(resultSet.getLong("questionSeq"));
