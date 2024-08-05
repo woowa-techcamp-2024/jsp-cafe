@@ -4,6 +4,7 @@ import codesqaud.app.AuthenticationManager;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.db.TransactionManager;
+import codesqaud.app.dto.PageDto;
 import codesqaud.app.dto.ReplyDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
@@ -17,10 +18,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import static jakarta.servlet.http.HttpServletResponse.*;
 
 public class ReplyService {
+    private static final int DEFAULT_PAGE_SIZE = 5;
+
     private final ArticleDao articleDao;
     private final ReplyDao replyDao;
     private final DataSource dataSource;
@@ -29,6 +33,51 @@ public class ReplyService {
         this.articleDao = articleDao;
         this.replyDao = replyDao;
         this.dataSource = dataSource;
+    }
+
+    /*
+        GET Handlers
+     */
+    public void handleGetReplies(HttpServletRequest req, HttpServletResponse resp, Long articleId) throws IOException {
+        User loginUser = AuthenticationManager.getLoginUserOrElseThrow(req);
+        ObjectMapper mapper = new ObjectMapper();
+
+        Long pointer = getPointer(req);
+        int size = getSize(req);
+        int fetchSize = size + 1;
+
+        List<ReplyDto> replies = replyDao.findPageWithPointer(articleId, pointer, fetchSize);
+        boolean hasNext = false;
+        if(replies.size() == fetchSize) {
+            replies.remove(size);
+            hasNext = true;
+        }
+        replies.forEach(replyDto -> replyDto.setMine(loginUser.getId()));
+        long totalRepliesCount = replyDao.count(articleId);
+        PageDto<ReplyDto> page = new PageDto<>(replies, hasNext, totalRepliesCount);
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(SC_OK);
+        resp.getWriter().write(mapper.writeValueAsString(page));
+    }
+
+    private int getSize(HttpServletRequest req) {
+        String sizeParameter = req.getParameter("size");
+        int size = DEFAULT_PAGE_SIZE;
+        if (sizeParameter != null) {
+            size = Integer.parseInt(sizeParameter);
+        }
+        return size;
+    }
+
+    private Long getPointer(HttpServletRequest req) {
+        String pointerParameter = req.getParameter("pointer");
+        Long pointer = null;
+        if (pointerParameter != null) {
+            pointer = Long.parseLong(pointerParameter);
+        }
+        return pointer;
     }
 
     /*
@@ -48,7 +97,7 @@ public class ReplyService {
             Article article = articleDao.findByIdForUpdate(articleId)
                     .orElseThrow(() -> new HttpException(SC_NOT_FOUND));
 
-            if(!article.isActivate()) {
+            if (!article.isActivate()) {
                 throw new HttpException(SC_FORBIDDEN, "댓글 작성 중 문제가 발생했습니다.");
             }
             replyDao.save(reply);

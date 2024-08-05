@@ -70,10 +70,6 @@ public class ArticleService {
         article.setMine(loginUser.getId());
         req.setAttribute("article", article);
 
-        List<ReplyDto> replies = replyDao.findByArticleIdAsDto(article.getId());
-        replies.forEach(replyDto -> replyDto.setMine(loginUser.getId()));
-        req.setAttribute("replies", replies);
-
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(SHOW_JSP);
         requestDispatcher.forward(req, resp);
     }

@@ -68,6 +68,13 @@ public class QnaServlet extends HttpServlet {
             return;
         }
 
+        matcher = REPLY_BASE_PATTERN.matcher(req.getRequestURI());
+        if (matcher.matches()) {
+            Long articleId = Long.parseLong(matcher.group(1));
+            replyService.handleGetReplies(req, resp, articleId);
+            return;
+        }
+
         throw new HttpException(SC_NOT_FOUND);
     }
 
