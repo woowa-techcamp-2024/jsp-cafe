@@ -16,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,9 +43,10 @@ public class QnaExclusiveLockTransactionTest {
         TestDataSource.drop();
     }
 
+    //TODO: 작업을 완료 한 후에 테스트하도록 수정
     @Test
     @DisplayName("트랜잭션에서 Article을 배타락으로 조회하면 해당 레코드를 참조해서 Reply를 생성할 수 없다.")
-    public void testArticleDeleteTransaction() throws SQLException {
+    public void testArticleDeleteTransaction() throws SQLException, InterruptedException {
         //given
         DataSource dataSource = TestDataSource.getDataSource();
 
@@ -68,12 +68,9 @@ public class QnaExclusiveLockTransactionTest {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         executorService.execute(() -> {
-                    try {
-                        TransactionManager.startTransaction(dataSource, Connection.TRANSACTION_REPEATABLE_READ);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    articleDao.findByIdForUpdate(article.getId());
+                    TransactionManager.executeTransaction(dataSource, () -> {
+                        articleDao.findByIdForUpdate(article.getId());
+                    });
                 }
         );
 
