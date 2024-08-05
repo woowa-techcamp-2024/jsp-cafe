@@ -12,4 +12,8 @@ public interface QuestionRepository {
 	void deleteByQuestionSeq(long questionSeq); // Delete by questionSeq
 
 	Question findByTitle(String title); // Read by title
+
+	List<Question> findAllPageable(long page, long pageSize);
+
+	long count();
 }
