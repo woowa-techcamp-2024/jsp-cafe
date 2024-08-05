@@ -52,7 +52,7 @@ public class TransactionManager {
 
     public static void commit() throws SQLException {
         Connection connection = connectionHolder.get();
-        if(connection == null) {
+        if (connection == null) {
             throw new TransactionException("진행중인 트랜잭션이 없습니다.");
         }
 
@@ -61,7 +61,7 @@ public class TransactionManager {
 
     public static void rollback() throws SQLException {
         Connection connection = connectionHolder.get();
-        if(connection == null) {
+        if (connection == null) {
             throw new TransactionException("진행중인 트랜잭션이 없습니다.");
         }
 
