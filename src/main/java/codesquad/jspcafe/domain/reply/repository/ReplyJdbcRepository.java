@@ -28,9 +28,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
             user BIGINT NOT NULL,
             contents TEXT NOT NULL,
             created_at TIMESTAMP NOT NULL,
-            deleted_at TIMESTAMP,
-            FOREIGN KEY (article) REFERENCES articles (id),
-            FOREIGN KEY (user) REFERENCES users (id)
+            deleted_at TIMESTAMP
         );""";
     private final JDBCConnectionManager connectionManager;
 
@@ -83,19 +81,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Reply reply = new Reply(
-                    resultSet.getLong("r.id"),
-                    resultSet.getLong("r.article"),
-                    new User(
-                        resultSet.getLong("u.id"),
-                        resultSet.getString("u.user_id"),
-                        resultSet.getString("u.password"),
-                        resultSet.getString("u.username"),
-                        resultSet.getString("u.email")
-                    ),
-                    resultSet.getString("r.contents"),
-                    resultSet.getTimestamp("r.created_at").toLocalDateTime()
-                );
+                Reply reply = getReply(resultSet);
                 return Optional.of(reply);
             }
         } catch (SQLException e) {
@@ -107,25 +93,31 @@ public class ReplyJdbcRepository implements ReplyRepository {
     @Override
     public List<Reply> findByArticleId(Long articleId) {
         List<Reply> results = new ArrayList<>();
-        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.deleted_at IS NULL ORDER BY r.id DESC";
+        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.deleted_at IS NULL ORDER BY r.id LIMIT 6";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, articleId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                results.add(new Reply(
-                    resultSet.getLong("r.id"),
-                    resultSet.getLong("r.article"),
-                    new User(
-                        resultSet.getLong("u.id"),
-                        resultSet.getString("u.user_id"),
-                        resultSet.getString("u.password"),
-                        resultSet.getString("u.username"),
-                        resultSet.getString("u.email")
-                    ),
-                    resultSet.getString("r.contents"),
-                    resultSet.getTimestamp("r.created_at").toLocalDateTime()
-                ));
+                results.add(getReply(resultSet));
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return Collections.unmodifiableList(results);
+    }
+
+    @Override
+    public List<Reply> findByArticleId(Long articleId, Long replyId) {
+        List<Reply> results = new ArrayList<>();
+        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.id > ? AND r.deleted_at IS NULL ORDER BY r.id LIMIT 6";
+        try (Connection connection = connectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            preparedStatement.setLong(1, articleId);
+            preparedStatement.setLong(2, replyId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                results.add(getReply(resultSet));
             }
         } catch (SQLException e) {
             log.error(e.getMessage());
@@ -153,5 +145,21 @@ public class ReplyJdbcRepository implements ReplyRepository {
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private Reply getReply(ResultSet resultSet) throws SQLException {
+        return new Reply(
+            resultSet.getLong("r.id"),
+            resultSet.getLong("r.article"),
+            new User(
+                resultSet.getLong("u.id"),
+                resultSet.getString("u.user_id"),
+                resultSet.getString("u.password"),
+                resultSet.getString("u.username"),
+                resultSet.getString("u.email")
+            ),
+            resultSet.getString("r.contents"),
+            resultSet.getTimestamp("r.created_at").toLocalDateTime()
+        );
     }
 }

@@ -14,5 +14,7 @@ public interface ReplyRepository {
 
     List<Reply> findByArticleId(Long articleId);
 
+    List<Reply> findByArticleId(Long articleId, Long replyId);
+
     Long delete(Reply reply);
 }

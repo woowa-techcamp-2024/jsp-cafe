@@ -40,6 +40,14 @@ public class ReplyMemoryRepository implements ReplyRepository {
     }
 
     @Override
+    public List<Reply> findByArticleId(Long articleId, Long replyId) {
+        return map.values().stream().sorted((r1, r2) -> r2.getId().compareTo(r1.getId()))
+            .filter(reply -> reply.getArticle().equals(articleId) && reply.getId().equals(replyId))
+            .limit(6)
+            .toList();
+    }
+
+    @Override
     public Long delete(Reply reply) {
         return map.remove(reply.getId()).getId();
     }
