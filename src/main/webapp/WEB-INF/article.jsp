@@ -10,7 +10,8 @@
     <script>
       // 전역 변수로 서버 측 데이터 설정
       var articleId = ${article.articleId};
-      //var initialReplies = ${replies}; // replies는 JSON 문자열로 직렬화해야 합니다.
+      var replyCount = 5; // 초기 댓글 개수
+      var currentOffset = 0; // 현재 댓글 오프셋
     </script>
     <script src="<c:url value='/static/js/comment.js'/>"></script> <!-- 외부 JS 파일 -->
 </head>
@@ -43,6 +44,7 @@
                 </div>
             </c:forEach>
         </div>
+        <button id="loadMoreReplies" class="btn btn-primary" style="display: none;">댓글 더보기</button>
     </div>
 
     <!-- 댓글 작성 폼 -->

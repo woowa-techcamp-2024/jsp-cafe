@@ -57,7 +57,7 @@ public class ArticleService {
             () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
-        List<Reply> replies = replyRepository.findAllByArticleId(i);
+        List<Reply> replies = replyRepository.findRealAll(i);
 
         // 게시글 작성자와 로그인한 사용자가 같은지 확인
         if (!article.isOwner(userId)) {

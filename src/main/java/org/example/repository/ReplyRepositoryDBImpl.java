@@ -45,13 +45,15 @@ public class ReplyRepositoryDBImpl implements ReplyRepository {
     }
 
     @Override
-    public List<Reply> findAllByArticleId(int articleId) {
+    public List<Reply> findAllByArticleId(int articleId, int start, int count) {
         List<Reply> replies = new ArrayList<>();
-        String query = "SELECT * FROM replies WHERE article_id = ? AND deleted = FALSE";
+        String query = "SELECT * FROM replies WHERE article_id = ? AND deleted = FALSE LIMIT ?, ?";
 
         try (Connection conn = DatabaseManager.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, articleId);
+            pstmt.setInt(2, start);
+            pstmt.setInt(3, count);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -122,5 +124,50 @@ public class ReplyRepositoryDBImpl implements ReplyRepository {
             instance.save(new Reply("content2", "test", 2));
         }
         return instance;
+    }
+
+    @Override
+    public int findReplyCount(Integer articleId) {
+        String query = "SELECT COUNT(*) FROM replies WHERE article_id = ? AND deleted = FALSE";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, articleId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to find reply count", e);
+        }
+        return 0;
+    }
+
+    @Override
+    public List<Reply> findRealAll(int articleId) {
+        List<Reply> replies = new ArrayList<>();
+        String query = "SELECT * FROM replies WHERE article_id = ? AND deleted = FALSE";
+
+        try (Connection conn = DatabaseManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, articleId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Reply reply = new Reply(
+                        rs.getInt("reply_id"),
+                        rs.getString("content"),
+                        rs.getString("author"),
+                        rs.getInt("article_id"),
+                        rs.getBoolean("deleted")
+                    );
+                    replies.add(reply); // 리스트에 Reply 객체 추가
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to find all replies by article id", e);
+        }
+        return replies;
     }
 }
