@@ -1,12 +1,11 @@
 package codesquad.javacafe.comment.controller;
 
 import codesquad.javacafe.comment.dto.request.CommentRequestDto;
-import codesquad.javacafe.comment.dto.response.CommentResponseDto;
 import codesquad.javacafe.comment.service.CommentService;
 import codesquad.javacafe.comment.util.LocalDateTimeSerializer;
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.common.exception.ClientErrorCode;
-import codesquad.javacafe.common.exception.ServerErrorCode;
+import codesquad.javacafe.common.util.JsonUtils;
 import com.google.gson.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,13 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class CommentController implements SubController {
@@ -45,13 +40,13 @@ public class CommentController implements SubController {
                     res.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 } else {
                     var jsonResponse = gson.toJson(commentList);
-                    sendResponse(res, jsonResponse);
+                    JsonUtils.sendResponse(res, jsonResponse);
                 }
 
                 break;
             }
             case "POST":{
-                var body = getBody(req);
+                var body = JsonUtils.getBody(req);
                 log.debug("data get");
                 // Extract data from JSON object
                 long postId = body.get("postId").getAsLong();
@@ -73,11 +68,11 @@ public class CommentController implements SubController {
                 var jsonResponse = gson.toJson(commentResponseDto);
                 log.debug("[CommentController Response JSON] jsonResponse: {}", jsonResponse);
 
-                sendResponse(res, jsonResponse);
+                JsonUtils.sendResponse(res, jsonResponse);
                 break;
             }
             case "DELETE":{
-                var body = getBody(req);
+                var body = JsonUtils.getBody(req);
                 try {
                     var commentId = body.get("commentId").getAsLong();
                     log.debug("CommentController Delete] commentId: {}", commentId);
@@ -92,38 +87,4 @@ public class CommentController implements SubController {
         }
     }
 
-    private void sendResponse(HttpServletResponse res, String jsonResponse) {
-        res.setContentType("application/json");
-        res.setCharacterEncoding("UTF-8");
-        res.setStatus(HttpServletResponse.SC_CREATED);
-
-        try {
-            res.getWriter().write(jsonResponse);
-        } catch (IOException exception) {
-            throw ServerErrorCode.INTERNAL_SERVER_ERROR.customException(exception.getMessage());
-        }
-    }
-
-    private JsonObject getBody(HttpServletRequest req) {
-        try {
-            Map<String, Object> data = new HashMap<>();
-
-            log.debug("input json");
-            StringBuilder jsonBuffer = new StringBuilder();
-            String line;
-            try (BufferedReader reader = new  BufferedReader(new InputStreamReader(req.getInputStream()))) {
-                while ((line = reader.readLine()) != null) {
-                    jsonBuffer.append(line);
-                }
-            }
-
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(jsonBuffer.toString(), JsonObject.class);
-
-
-            return jsonObject;
-        } catch (IOException exception) {
-            throw ServerErrorCode.INTERNAL_SERVER_ERROR.customException("exception occurred while reading request body, exception message = "+exception.getMessage());
-        }
-    }
 }

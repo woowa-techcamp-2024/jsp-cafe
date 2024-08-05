@@ -167,7 +167,7 @@ public class PostControllerTest {
         System.out.println(byId);
         Member byMember = MemberRepository.getInstance().findByUserId("user1");
         System.out.println(byMember);
-        List<Post> all = PostRepository.getInstance().findAll();
+        List<Post> all = PostRepository.getInstance().findAll(0);
         System.out.println("all");
         System.out.println(all);
 

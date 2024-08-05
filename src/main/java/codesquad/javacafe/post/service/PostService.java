@@ -43,8 +43,9 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public List<PostResponseDto> getAllPosts() {
-        var postList = PostRepository.getInstance().findAll();
+    public List<PostResponseDto> getAllPosts(int pageNumber) {
+        int offset = (pageNumber-1)*15;
+        var postList = PostRepository.getInstance().findAll(offset);
         if (postList == null) {
             log.debug("[PostService] postList is null");
             return null;
@@ -60,10 +61,15 @@ public class PostService {
     }
 
     public void deletePost(long postId) {
-        int deleteResult = PostRepository.getInstance().delete(postId);
+        var deleteResult = PostRepository.getInstance().delete(postId);
         if (deleteResult == 0) {
             throw ClientErrorCode.POST_IS_NULL.customException("request post id = " + postId);
         }
         AsyncCommentDeleter.getInstance().asyncDelete(postId, new AtomicInteger(0));
     }
+
+    public int getAllPostCount() {
+        return PostRepository.getInstance().countAll();
+    }
+
 }

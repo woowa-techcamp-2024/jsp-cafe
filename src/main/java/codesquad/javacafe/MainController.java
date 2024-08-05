@@ -23,8 +23,18 @@ public class MainController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("[MainController] GET request");
-        var postList = PostService.getInstance().getAllPosts();
+        var postList = PostService.getInstance().getAllPosts(1);
         req.setAttribute("postList",postList);
+        var pageCount = PostService.getInstance().getAllPostCount();
+        var startPage = 1;
+        var endPage = startPage + 4;
+        if(endPage*15 > pageCount) {
+            endPage = (pageCount+14)/15;
+            req.setAttribute("isEnd",true);
+        }
+
+        req.setAttribute("startPage", 1);
+        req.setAttribute("endPage", endPage);
         var dispatcher = req.getRequestDispatcher("/WEB-INF/index.jsp");
         dispatcher.forward(req, resp);
     }

@@ -92,7 +92,7 @@ public class PostRepositoryTest {
         postDto.setMemberId(memberId);
         postRepository.save(postDto.toEntity());
 
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAll(0);
         assertNotNull(posts);
         assertEquals(1, posts.size());
         assertEquals("User One", posts.get(0).getWriter());
@@ -110,7 +110,7 @@ public class PostRepositoryTest {
         postRepository.save(postDto1.toEntity());
         postRepository.save(postDto2.toEntity());
 
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAll(0);
         assertNotNull(posts);
         assertEquals(2, posts.size());
         assertEquals("User One", posts.get(0).getWriter());
@@ -127,7 +127,7 @@ public class PostRepositoryTest {
         postDto.setMemberId(memberId);
         postRepository.save(postDto.toEntity());
 
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAll(0);
         assertNotNull(posts);
         assertEquals(1, posts.size());
 

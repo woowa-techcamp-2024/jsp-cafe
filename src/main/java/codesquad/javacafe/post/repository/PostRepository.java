@@ -65,10 +65,12 @@ public class PostRepository {
         }
     }
 
-    public List<Post> findAll() {
+    public List<Post> findAll(int offset) {
         var sql = " select p.id, p.post_title, p.post_contents,p.post_create, m.member_name" +
                 " from post p inner join member m " +
-                "on m.id = p.member_id ";
+                "on m.id = p.member_id " +
+                " order by post_create desc" +
+                " limit ?, 15";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -77,6 +79,7 @@ public class PostRepository {
         try {
             con = getConnection();
             ps = con.prepareStatement(sql);
+            ps.setInt(1, offset);
 
 
             rs = ps.executeQuery();
@@ -188,6 +191,31 @@ public class PostRepository {
             ps.setLong(1, postId);
             int result = ps.executeUpdate();
 
+            return result;
+        } catch (SQLException exception) {
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
+            throw new RuntimeException(exception);
+        } finally {
+            close(con, ps, null);
+        }
+    }
+
+    public int countAll() {
+        var sql = "select count(*) from post";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            var result = 0;
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
             return result;
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
