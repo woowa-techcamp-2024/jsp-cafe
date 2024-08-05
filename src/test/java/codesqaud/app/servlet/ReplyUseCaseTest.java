@@ -3,7 +3,6 @@ package codesqaud.app.servlet;
 import codesqaud.TestDataSource;
 import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.reply.ReplyDao;
-import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import codesqaud.app.model.Reply;
 import codesqaud.app.model.User;
@@ -11,6 +10,7 @@ import codesqaud.mock.MockHttpServletRequest;
 import codesqaud.mock.MockHttpServletResponse;
 import codesqaud.mock.MockServletConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 
@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import static codesqaud.app.AuthenticationManager.getLoginUserOrElseThrow;
 import static codesqaud.util.LoginUtils.signupAndLogin;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class ReplyUseCaseTest {
     private QnaServlet qnaServlet;
@@ -49,25 +48,24 @@ public class ReplyUseCaseTest {
     }
 
     @Nested
-    @DisplayName("답글을 작성할 때 때")
+    @DisplayName("답글을 작성할 때")
     class CreateReply {
         @Test
         @DisplayName("답글 내용을 작성하면 댓글을 생성할 수 있다.")
         void given_articleAndReply_when_createReply_then_saveReply() throws ServletException, IOException {
             //given
-            String contents = "Content";
-
+            String body = "{ \"contents\": \"hello\" }";
+            request.setInputStream(body);
             signUpAndLoginAndSaveArticle();
             Article article = articleDao.findAll().get(0);
             request.setRequestURI("/qna/" + article.getId() + "/replies");
-            request.setParameter("contents", contents);
 
             //when
             qnaServlet.doPost(request, response);
 
             //then
             Reply reply = replyDao.findAll().get(0);
-            Assertions.assertThat(reply.getContents()).isEqualTo(contents);
+            Assertions.assertThat(reply.getContents()).isEqualTo("hello");
         }
     }
 
@@ -98,7 +96,7 @@ public class ReplyUseCaseTest {
         }
 
         @Test
-        @DisplayName("삭제할 답변글이 본인의 답변글이면 삭제에 성공한다.")
+        @DisplayName("삭제할 답변글이 본인의 답변이 아니면 삭제가 실패한다.")
         void given_othersReply_when_deleteReply_then_throwException() throws ServletException, IOException {
             //given
             signUpAndLoginAndSaveArticle();
@@ -112,9 +110,12 @@ public class ReplyUseCaseTest {
             request.setMethod("DELETE");
             request.setRequestURI("/qna/"+ article.getId() + "/replies/" + reply.getId());
 
-            //when, then
-            assertThatThrownBy(() -> qnaServlet.doDelete(request, response))
-                    .isInstanceOf(HttpException.class);
+            //when
+            qnaServlet.doDelete(request, response);
+
+            //then
+            assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_FORBIDDEN);
+            assertThat(replyDao.findAll().size()).isEqualTo(1);
         }
     }
 
