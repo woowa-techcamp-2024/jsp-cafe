@@ -10,8 +10,8 @@ import java.util.Random;
 import org.example.constance.AliveStatus;
 
 public class FakeDataGenerator {
-    private static final int USER_COUNT = 10;
-    private static final int ARTICLE_COUNT = 150;
+    private static final int USER_COUNT = 10_000;
+    private static final int ARTICLE_COUNT = 500_000;
     private static final int MAX_REPLIES = 10;
     private static final String[] ALIVE_STATUS = {AliveStatus.ALIVE.name(), AliveStatus.DELETED.name()};
 
