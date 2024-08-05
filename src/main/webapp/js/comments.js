@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    let currentPage = 1;
+    let lastCommentId = 0; // 마지막으로 불러온 댓글의 ID
     const commentsPerPage = 5;
     let totalComments = 0;
 
@@ -8,9 +8,9 @@ $(document).ready(function() {
         return `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월 ${String(date.getDate()).padStart(2, '0')}일 ${String(date.getHours()).padStart(2, '0')}시 ${String(date.getMinutes()).padStart(2, '0')}분 ${String(date.getSeconds()).padStart(2, '0')}초`;
     }
 
-    function loadComments(postId, page = 1, append = false) {
+    function loadComments(postId, lastId = 0, append = false) {
         $.ajax({
-            url: `${contextPath}/api/posts/${postId}/comments?page=${page}&size=${commentsPerPage}`,
+            url: `${contextPath}/api/posts/${postId}/comments?lastCommentId=${lastId}&size=${commentsPerPage}`,
             type: 'GET',
             success: function(response) {
                 const comments = response.comments;
@@ -33,14 +33,17 @@ $(document).ready(function() {
                         ` : ''}
                     </div>`;
                     $('.comments-list').append(commentHtml);
+
+                    // 마지막으로 불러온 댓글 ID 업데이트
+                    lastCommentId = comment.commentId;
                 });
 
                 // 디버깅을 위한 로그 추가
                 console.log(`Total Comments: ${totalComments}`);
                 console.log(`Comments Loaded: ${comments.length}`);
-                console.log(`Current Page: ${page}`);
+                console.log(`Last Comment ID: ${lastCommentId}`);
 
-                if (totalComments > commentsPerPage * page) {
+                if (totalComments > $('.comment').length) {
                     console.log("Show Load More Button");
                     $('#loadMoreButton').show();
                 } else {
@@ -59,8 +62,7 @@ $(document).ready(function() {
 
     // 더보기 버튼 클릭 시 다음 페이지 댓글 불러오기
     $('#loadMoreButton').on('click', function() {
-        currentPage++;
-        loadComments(postId, currentPage, true);
+        loadComments(postId, lastCommentId, true);
     });
 
     // 댓글 작성 버튼 클릭 시 AJAX 요청 보내기
@@ -77,8 +79,7 @@ $(document).ready(function() {
             data: JSON.stringify({ content: content }),
             success: function(result) {
                 alert('댓글이 성공적으로 작성되었습니다.');
-                currentPage = 1; // 페이지를 초기화
-                loadComments(postId); // 첫 페이지부터 다시 로드
+                loadComments(postId, lastCommentId, true); // 마지막 댓글 ID부터 다시 로드
                 $('.comment-form-textarea').val(''); // 입력 필드 초기화
             },
             error: function(xhr, status, error) {
@@ -103,8 +104,9 @@ $(document).ready(function() {
             type: 'DELETE',
             success: function(result) {
                 alert('댓글이 성공적으로 삭제되었습니다.');
-                currentPage = 1; // 페이지를 초기화
-                loadComments(postId); // 첫 페이지부터 다시 로드
+                $(`[data-comment-id="${commentId}"]`).remove(); // 삭제된 댓글만 목록에서 제거
+                totalComments--; // 총 댓글 수 감소
+                $('#commentCount').text(totalComments); // 댓글 수 업데이트
             },
             error: function(xhr, status, error) {
                 alert('댓글 삭제 중 오류가 발생했습니다.');
@@ -145,8 +147,9 @@ $(document).ready(function() {
             data: JSON.stringify({ content: newContent }),
             success: function(result) {
                 alert('댓글이 성공적으로 수정되었습니다.');
-                currentPage = 1; // 페이지를 초기화
-                loadComments(postId); // 첫 페이지부터 다시 로드
+                var commentElement = $(`[data-comment-id="${commentId}"]`);
+                commentElement.find('.comment-content').text(newContent); // 수정된 내용 업데이트
+                commentElement.find('.edit-comment-container').remove(); // 수정 창 닫기
             },
             error: function(xhr, status, error) {
                 alert('댓글 수정 중 오류가 발생했습니다.');
