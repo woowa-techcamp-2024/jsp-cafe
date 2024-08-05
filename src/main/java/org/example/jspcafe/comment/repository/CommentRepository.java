@@ -9,6 +9,7 @@ public interface CommentRepository extends Repository<Comment> {
 //    List<CommentVO> findAllByPostIdsJoinFetch(List<Long> postIds);
     void deleteAllInBatch();
     List<CommentVO> findCommentsJoinUser(Long postId);
+    int count(Long postId);
 
     List<Comment> findAllByPostId(Long postId);
 }
