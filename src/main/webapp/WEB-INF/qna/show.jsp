@@ -113,8 +113,12 @@
     const articleId = ${article.id}; // JSP에서 articleId를 가져옵니다
 
     function loadComments() {
+        let url = `/qna/\${articleId}/replies`;
+        if(currentPointer !== 0) {
+            url += `?pointer=\${currentPointer}`
+        }
         $.ajax({
-            url: `/qna/\${articleId}/replies?pointer=\${currentPointer}`,
+            url: url,
             method: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -179,11 +183,10 @@
             success: function (data, status) {
                 var answerTemplate = $("#answerTemplate").html();
                 var template = answerTemplate.format(data.id, data.author.name, data.createdAt, data.contents, data.id);
-                $(".qna-comment-slipp-articles").append(template);
+                $(".qna-comment-slipp-articles").prepend(template);
                 $("textarea[name=contents]").val("");
 
                 var tagId = "reply-" + data.id;
-                window.location.hash = tagId;
 
                 let commentCount = getCommentCount();
                 updateCommentCount(commentCount + 1);

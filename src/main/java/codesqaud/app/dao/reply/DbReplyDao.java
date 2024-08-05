@@ -90,7 +90,10 @@ public class DbReplyDao implements ReplyDao {
 
     @Override
     public List<Reply> findAll() {
-        String sql = "SELECT * FROM replies WHERE activate = true";
+        String sql = """
+        SELECT * FROM replies WHERE activate = true
+        ORDER BY id DESC
+        """;
         return jdbcTemplate.query(sql, REPLY_ROW_MAPPER);
     }
 
@@ -144,7 +147,8 @@ public class DbReplyDao implements ReplyDao {
                 SELECT replies.id, replies.contents, replies.author_id, replies.created_at, replies.activate,
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM replies JOIN users ON replies.author_id = users.id
-                WHERE replies.article_id = ? AND replies.id > ? AND replies.activate = true
+                WHERE replies.article_id = ? AND replies.id < ? AND replies.activate = true
+                ORDER BY replies.id DESC
                 LIMIT ?
                 """;
 

@@ -73,7 +73,7 @@ public class ReplyService {
 
     private Long getPointer(HttpServletRequest req) {
         String pointerParameter = req.getParameter("pointer");
-        Long pointer = null;
+        Long pointer = Long.MAX_VALUE;
         if (pointerParameter != null) {
             pointer = Long.parseLong(pointerParameter);
         }
