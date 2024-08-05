@@ -7,26 +7,20 @@ public class Page<T> {
     private final List<T> content;
     private final Long totalElements;
     private final int totalPages;
-    private final int startPage;
-    private final int endPage;
     private final int page;
     private final int size;
 
-    public Page(List<T> content, Long totalElements, int totalPages, int startPage, int endPage, int page, int size) {
+    public Page(List<T> content, Long totalElements, int totalPages, int page, int size) {
         this.content = content;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
-        this.startPage = startPage;
-        this.endPage = endPage;
         this.page = page;
         this.size = size;
     }
 
     public static <T> Page<T> of(List<T> content, Long count, int page, int size) {
         int totalPages = (int) Math.ceil((double) count / size);
-        int startPage = Math.max(0, page - 2);
-        int endPage = Math.min(startPage + 4, totalPages - 1);
-        return new Page<>(content, count, totalPages, startPage, endPage, page, size);
+        return new Page<>(content, count, totalPages, page, size);
     }
 
     public List<T> getContent() {
@@ -39,14 +33,6 @@ public class Page<T> {
 
     public int getTotalPages() {
         return totalPages;
-    }
-
-    public int getStartPage() {
-        return startPage;
-    }
-
-    public int getEndPage() {
-        return endPage;
     }
 
     public int getPage() {
@@ -65,15 +51,14 @@ public class Page<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Page<?> page = (Page<?>) o;
-        return totalPages == page.totalPages && startPage == page.startPage && endPage == page.endPage
-                && Objects.equals(content, page.content) && Objects.equals(totalElements,
-                page.totalElements);
+        Page<?> page1 = (Page<?>) o;
+        return totalPages == page1.totalPages && page == page1.page && size == page1.size && Objects.equals(
+                content, page1.content) && Objects.equals(totalElements, page1.totalElements);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(content, totalElements, totalPages, startPage, endPage);
+        return Objects.hash(content, totalElements, totalPages, page, size);
     }
 
     @Override
@@ -82,8 +67,8 @@ public class Page<T> {
                 "content=" + content +
                 ", totalElements=" + totalElements +
                 ", totalPages=" + totalPages +
-                ", startPage=" + startPage +
-                ", endPage=" + endPage +
+                ", page=" + page +
+                ", size=" + size +
                 '}';
     }
 }
