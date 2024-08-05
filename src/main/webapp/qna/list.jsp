@@ -25,10 +25,11 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <c:forEach var="question" items="${questions}" varStatus="status">
+                <c:forEach var="question" items="${questions.content}" varStatus="status">
                     <%
                         Question question = (Question) pageContext.getAttribute("question");
-                        String dateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm").format(question.getCreatedAt());
+                        String dateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm")
+                                .format(question.getCreatedAt());
                         pageContext.setAttribute("createdAt", dateTime);
                     %>
                     <li>
@@ -55,17 +56,27 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                        <c:if test="${questions.page > 0}">
+                            <li><a href="?page=${questions.page - 1}">«</a></li>
+                        </c:if>
+                        <c:forEach begin="${questions.startPage}" end="${questions.endPage}" var="i">
+                            <c:choose>
+                                <c:when test="${questions.page == i}">
+                                    <li class="active"><span>${i + 1}</span></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li><a href="?page=${i}">${i + 1}</a></li>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                        <c:if test="${questions.page < questions.totalPages - 1}">
+                            <li><a href="?page=${questions.page + 1}">»</a></li>
+                        </c:if>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="${pageContext.request.contextPath}/qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="${pageContext.request.contextPath}/qna/form.jsp" class="btn btn-primary pull-right"
+                       role="button">질문하기</a>
                 </div>
             </div>
         </div>
