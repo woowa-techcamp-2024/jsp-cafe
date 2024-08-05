@@ -82,6 +82,25 @@ class QuestionServiceTest extends ServiceTest {
     }
 
     @Nested
+    class countAll_메소드는 {
+
+        @Test
+        void 현재_존재하는_모든_질문의_갯수를_반환한다() {
+            // given
+            userRepository.save(new User("userId", "password", "name", "email"));
+            questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+            questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+
+            // when
+            int questionCount = questionService.countAll();
+
+            // then
+            assertThat(questionCount).isEqualTo(3);
+        }
+    }
+
+    @Nested
     class readAll_메소드는 {
 
         @Test
@@ -93,11 +112,34 @@ class QuestionServiceTest extends ServiceTest {
             questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
             // when
-            List<Question> questions = questionService.readAll();
+            List<Question> questions = questionService.readAll(0, 15);
 
             // then
             assertThat(questions).size()
                     .isEqualTo(3);
+        }
+
+        @Nested
+        class 페이징_요청으로_페이지와_사이즈를_전달하면 {
+
+            @Test
+            void 페이지네이션을_한다() {
+                userRepository.save(new User("userId", "password", "name", "email"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+
+                // when
+                List<Question> questions = questionService.readAll(0, 2);
+
+                // then
+                assertAll(
+                        () -> assertThat(questions).hasSize(2),
+                        () -> assertThat(questions.get(0).getId()).isEqualTo(4),
+                        () -> assertThat(questions.get(1).getId()).isEqualTo(3)
+                );
+            }
         }
     }
 
