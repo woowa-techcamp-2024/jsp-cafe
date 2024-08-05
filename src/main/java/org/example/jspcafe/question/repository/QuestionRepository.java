@@ -13,4 +13,8 @@ public interface QuestionRepository {
     List<Question> getAll();
 
     Optional<Question> findById(Long id);
+
+    boolean update(Question question);
+
+    boolean delete(Long id);
 }
