@@ -7,6 +7,7 @@ import org.example.jspcafe.comment.repository.CommentVO;
 import org.example.jspcafe.comment.request.CommentCreateRequest;
 import org.example.jspcafe.comment.request.CommentDeleteRequest;
 import org.example.jspcafe.comment.request.CommentModifyRequest;
+import org.example.jspcafe.post.response.CommentList;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.repository.UserRepository;
@@ -43,9 +44,12 @@ public class CommentService {
         );
     }
 
-    public List<CommentResponse> findCommentsJoinUser(Long postId) {
-        final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId);
-        return comments.stream()
+    public CommentList findCommentsJoinUser(Long postId, int page, int size) {
+        int offset = (page - 1) * size;
+        final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId, size, offset);
+        int count = commentRepository.count(postId);
+
+        List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> new CommentResponse(
                         comment.commentId(),
                         comment.userId(),
@@ -54,6 +58,7 @@ public class CommentService {
                         comment.content(),
                         comment.createdAt()
                 )).toList();
+        return new CommentList(commentResponses, count);
     }
 
     public void deleteComment(final CommentDeleteRequest request) {
