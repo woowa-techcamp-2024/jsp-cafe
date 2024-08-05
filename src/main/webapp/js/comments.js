@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    let lastCommentId = 0; // 마지막으로 불러온 댓글의 ID
+    let firstCommentId = Number.MAX_SAFE_INTEGER; // 처음으로 불러온 댓글의 ID
     const commentsPerPage = 5;
     let totalComments = 0;
 
@@ -8,9 +8,9 @@ $(document).ready(function() {
         return `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월 ${String(date.getDate()).padStart(2, '0')}일 ${String(date.getHours()).padStart(2, '0')}시 ${String(date.getMinutes()).padStart(2, '0')}분 ${String(date.getSeconds()).padStart(2, '0')}초`;
     }
 
-    function loadComments(postId, lastId = 0, append = false) {
+    function loadComments(postId, firstId = Number.MAX_SAFE_INTEGER, append = false) {
         $.ajax({
-            url: `${contextPath}/api/posts/${postId}/comments?lastCommentId=${lastId}&size=${commentsPerPage}`,
+            url: `${contextPath}/api/posts/${postId}/comments?firstCommentId=${firstId}&size=${commentsPerPage}`,
             type: 'GET',
             success: function(response) {
                 const comments = response.comments;
@@ -32,16 +32,18 @@ $(document).ready(function() {
                         <button class="delete-comment-button">삭제</button>
                         ` : ''}
                     </div>`;
-                    $('.comments-list').append(commentHtml);
+                    $('.comments-list').append(commentHtml); // 새로운 댓글을 맨 위로 추가
 
-                    // 마지막으로 불러온 댓글 ID 업데이트
-                    lastCommentId = comment.commentId;
+                    // 처음으로 불러온 댓글 ID 업데이트
+                    if (comment.commentId < firstCommentId) {
+                        firstCommentId = comment.commentId;
+                    }
                 });
 
                 // 디버깅을 위한 로그 추가
                 console.log(`Total Comments: ${totalComments}`);
                 console.log(`Comments Loaded: ${comments.length}`);
-                console.log(`Last Comment ID: ${lastCommentId}`);
+                console.log(`First Comment ID: ${firstCommentId}`);
 
                 if (totalComments > $('.comment').length) {
                     console.log("Show Load More Button");
@@ -62,7 +64,7 @@ $(document).ready(function() {
 
     // 더보기 버튼 클릭 시 다음 페이지 댓글 불러오기
     $('#loadMoreButton').on('click', function() {
-        loadComments(postId, lastCommentId, true);
+        loadComments(postId, firstCommentId, true);
     });
 
     // 댓글 작성 버튼 클릭 시 AJAX 요청 보내기
@@ -79,7 +81,7 @@ $(document).ready(function() {
             data: JSON.stringify({ content: content }),
             success: function(result) {
                 alert('댓글이 성공적으로 작성되었습니다.');
-                loadComments(postId, lastCommentId, true); // 마지막 댓글 ID부터 다시 로드
+                loadComments(postId, Number.MAX_SAFE_INTEGER, false); // 처음부터 로드하여 새 댓글이 맨 위에 오게 함
                 $('.comment-form-textarea').val(''); // 입력 필드 초기화
             },
             error: function(xhr, status, error) {
