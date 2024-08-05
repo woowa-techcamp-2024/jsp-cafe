@@ -45,7 +45,7 @@
     <div id="comments-count">댓글 <c:out value="${replies.size()}" />개</div>
     <div id="comments-container">
       <c:forEach var="reply" items="${replies}">
-        <div class="comment">
+        <div class="comment" id="<c:out value="comment-${reply.id()}"/>">
           <div class="comment-writer"><c:out value="${reply.writer()}" /></div>
           <p class="comment-content"><c:out value="${reply.content()}" /></p>
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -116,6 +116,7 @@
               const commentsContainer = document.getElementById('comments-container');
               const comment = document.createElement('div');
               comment.className = 'comment';
+              comment.id = 'comment-' + reply.id;
               comment.innerHTML = '<div class="comment-writer">' + reply.writer + '</div>' +
                 '<p class="comment-content">' + reply.content + '</p>' +
                 '<div style="display: flex; justify-content: space-between; align-items: center;">' +
@@ -129,13 +130,6 @@
         }
       });
     });
-
-    document.querySelectorAll('.move-post-disabled')
-      .forEach(function (link) {
-        link.addEventListener('click', function (event) {
-          event.preventDefault();
-        });
-      });
   });
 
   const handleDeleteSubmit = () => {
@@ -162,13 +156,14 @@
         method: 'DELETE',
       }).then(response => {
         if (response.ok) {
-          window.location.reload();
+          document.getElementById('comment-' + replyId).remove();
         } else {
-          response.text().then(body => {
-            document.open();
-            document.write(body);
-            document.close();
-          });
+          response.text()
+            .then(body => {
+              document.open();
+              document.write(body);
+              document.close();
+            });
         }
       });
     }
