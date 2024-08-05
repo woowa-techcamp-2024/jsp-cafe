@@ -10,7 +10,7 @@ import woopaca.jspcafe.repository.PostRepository;
 import woopaca.jspcafe.repository.ReplyRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.WriteReplyRequest;
-import woopaca.jspcafe.servlet.dto.response.RepliesResponse;
+import woopaca.jspcafe.servlet.dto.response.ReplyResponse;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class ReplyService {
         this.userRepository = userRepository;
     }
 
-    public void writeReply(WriteReplyRequest writeReplyRequest, Authentication authentication) {
+    public ReplyResponse writeReply(WriteReplyRequest writeReplyRequest, Authentication authentication) {
         Long postId = writeReplyRequest.postId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("[ERROR] 게시글을 찾을 수 없습니다."));
@@ -38,6 +38,7 @@ public class ReplyService {
         validateReplyContent(writeReplyRequest.content());
         Reply reply = new Reply(writeReplyRequest.content(), authentication.principal().getId(), postId);
         replyRepository.save(reply);
+        return ReplyResponse.of(reply, authentication.principal().getNickname());
     }
 
     private void validateReplyContent(String content) {
@@ -50,7 +51,7 @@ public class ReplyService {
         }
     }
 
-    public List<RepliesResponse> getReplies(Long postId) {
+    public List<ReplyResponse> getReplies(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("[ERROR] 게시글을 찾을 수 없습니다."));
         if (post.isDeleted()) {
@@ -60,7 +61,7 @@ public class ReplyService {
         List<Reply> replies = replyRepository.findByPostId(postId);
         return replies.stream()
                 .filter(Reply::isPublished)
-                .map(reply -> RepliesResponse.of(reply, findWriterNickname(reply)))
+                .map(reply -> ReplyResponse.of(reply, findWriterNickname(reply)))
                 .toList();
     }
 

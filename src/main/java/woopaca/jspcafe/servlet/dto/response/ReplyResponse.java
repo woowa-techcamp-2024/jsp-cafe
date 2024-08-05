@@ -4,10 +4,10 @@ import woopaca.jspcafe.model.Reply;
 
 import java.time.format.DateTimeFormatter;
 
-public record RepliesResponse(Long id, String content, String writer, String writtenAt) {
+public record ReplyResponse(Long id, String content, String writer, String writtenAt) {
 
-    public static RepliesResponse of(Reply reply, String writer) {
+    public static ReplyResponse of(Reply reply, String writer) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-        return new RepliesResponse(reply.getId(), reply.getContent(), writer, reply.getWrittenAt().format(formatter));
+        return new ReplyResponse(reply.getId(), reply.getContent(), writer, reply.getWrittenAt().format(formatter));
     }
 }
