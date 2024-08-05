@@ -44,17 +44,13 @@ public class CommentService {
         );
     }
 
-    public CommentList findCommentsJoinUser(Long postId, int page, int size) {
-        if (page < 1) {
-            page = 1; // 페이지 번호가 1보다 작으면 1로 설정
-        }
+    public CommentList findCommentsJoinUserByLastId(Long postId, long lastCommentId, int size) {
         if (size < 1) {
             size = 5; // 사이즈가 1보다 작으면 기본값 5로 설정
         }
-        int offset = (page - 1) * size;
 
-        final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId, size, offset);
-        int count = commentRepository.count(postId);
+        final List<CommentVO> comments = commentRepository.findCommentsJoinUserByLastId(postId, lastCommentId, size);
+        int totalCount = commentRepository.count(postId);
 
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> new CommentResponse(
@@ -65,7 +61,32 @@ public class CommentService {
                         comment.content(),
                         comment.createdAt()
                 )).toList();
-        return new CommentList(commentResponses, count);
+
+        return new CommentList(commentResponses, totalCount);
+    }
+
+    public CommentList findCommentsJoinUser(Long postId, int page, int size) {
+        if (page < 1) {
+            page = 1; // 페이지 번호가 1보다 작으면 1로 설정
+        }
+        if (size < 1) {
+            size = 5; // 사이즈가 1보다 작으면 기본값 5로 설정
+        }
+        int offset = (page - 1) * size;
+
+        final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId, size, offset);
+        int totalCount = commentRepository.count(postId);
+
+        List<CommentResponse> commentResponses = comments.stream()
+                .map(comment -> new CommentResponse(
+                        comment.commentId(),
+                        comment.userId(),
+                        comment.postId(),
+                        comment.nickname(),
+                        comment.content(),
+                        comment.createdAt()
+                )).toList();
+        return new CommentList(commentResponses, totalCount);
     }
 
     public void deleteComment(final CommentDeleteRequest request) {

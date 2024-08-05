@@ -107,10 +107,16 @@ public class PostApiServlet extends HttpServlet {
         if (split.length == 5 && split[4].equals("comments")) {
             Long postId = Long.parseLong(split[split.length - 2]);
 
-            int page = Integer.parseInt(req.getParameter("page"));
-            int size = Integer.parseInt(req.getParameter("size"));
+            // lastCommentId를 받아서 처리하도록 변경함
+            String lastCommentIdParam = req.getParameter("lastCommentId");
+            long lastCommentId = lastCommentIdParam != null ? Long.parseLong(lastCommentIdParam) : 0L;
 
-            CommentList commentList = commentService.findCommentsJoinUser(postId, page, size);
+            // size 파라미터를 받아서 처리
+            String sizeParam = req.getParameter("size");
+
+            int size = sizeParam != null ? Integer.parseInt(sizeParam) : 5; // 기본값 5 설정
+
+            CommentList commentList = commentService.findCommentsJoinUserByLastId(postId, lastCommentId, size);
 
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
@@ -118,7 +124,6 @@ public class PostApiServlet extends HttpServlet {
             String jsonResponse = objectMapper.writeValueAsString(commentList);
             out.print(jsonResponse);
             out.flush();
-            return;
         }
     }
 
