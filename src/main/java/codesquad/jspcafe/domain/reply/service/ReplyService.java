@@ -1,5 +1,6 @@
 package codesquad.jspcafe.domain.reply.service;
 
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.domain.reply.domain.Reply;
 import codesquad.jspcafe.domain.reply.payload.request.ReplyCreateRequest;
 import codesquad.jspcafe.domain.reply.payload.request.ReplyUpdateRequest;
@@ -31,10 +32,17 @@ public class ReplyService {
         return ReplyCommonResponse.from(replyRepository.save(reply));
     }
 
-    public List<ReplyCommonResponse> getRepliesByArticleId(Long articleId) {
-        return replyRepository.findByArticleId(articleId).stream()
-            .map(ReplyCommonResponse::from)
-            .toList();
+    public CursorPaginationResult<ReplyCommonResponse> getRepliesByArticleId(Long articleId) {
+        List<ReplyCommonResponse> result = replyRepository.findByArticleId(articleId)
+            .stream().map(ReplyCommonResponse::from).toList();
+        return CursorPaginationResult.of(result, 5);
+    }
+
+    public CursorPaginationResult<ReplyCommonResponse> getRepliesByArticleId(Long articleId,
+        Long replyId) {
+        List<ReplyCommonResponse> result = replyRepository.findByArticleId(articleId, replyId)
+            .stream().map(ReplyCommonResponse::from).toList();
+        return CursorPaginationResult.of(result, 5);
     }
 
     public ReplyCommonResponse updateReply(ReplyUpdateRequest request)
