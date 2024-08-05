@@ -13,6 +13,8 @@ import org.example.cafe.domain.ReplyRepository;
 
 public class QuestionService {
 
+    public static final int PAGE_SIZE = 15;
+
     private final QuestionRepository questionRepository;
     private final ReplyRepository replyRepository;
 
@@ -27,8 +29,8 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public List<Question> findAll() {
-        return questionRepository.findAll();
+    public List<Question> findAll(Long page) {
+        return questionRepository.findAll(page, PAGE_SIZE);
     }
 
     public Question findById(Long id) {

@@ -56,7 +56,7 @@ public class ServletContextInitializer implements ServletContextListener {
             setContext("QuestionRepository", () ->
                     new QuestionJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
 
-            setContext("PostCountCache", () ->
+            setContext("QuestionCountCache", () ->
                     new QuestionCountCache(getBean("QuestionRepository", QuestionRepository.class)));
 
             setContext("UserService", () ->

@@ -12,7 +12,14 @@ import org.example.cafe.infrastructure.jdbc.RowMapper;
 public class QuestionJdbcRepository implements QuestionRepository {
 
     private static final String INSERT = "INSERT INTO QUESTION (title, content, writer) VALUES (?, ?, ?)";
-    private static final String SELECT = "SELECT * FROM QUESTION WHERE is_deleted = false";
+    private static final String SELECT = """
+            select * from Question as q1 JOIN (
+                select question_id from QUESTION
+                WHERE is_deleted = false
+                ORDER BY created_at DESC 
+                LIMIT ?, ?) as q2
+                on q1.question_id = q2.question_id;
+            """;
     private static final String SELECT_BY_ID = "SELECT * FROM QUESTION WHERE question_id = ? and is_deleted = false";
     private static final String COUNT = "SELECT COUNT(question_id) FROM QUESTION WHERE is_deleted = false;";
     private static final String COUNT_BY_KEYWORD = "SELECT COUNT(question_id) FROM QUESTION WHERE is_deleted = false and (title like %?% or content like %?%)";
@@ -41,8 +48,10 @@ public class QuestionJdbcRepository implements QuestionRepository {
         return jdbcTemplate.queryForObject(SELECT_BY_ID, questionRowMapper, id);
     }
 
-    public List<Question> findAll() {
-        return jdbcTemplate.query(SELECT, questionRowMapper);
+    public List<Question> findAll(Long page, int pageSize) {
+        long offset = (page - 1) * pageSize;
+
+        return jdbcTemplate.query(SELECT, questionRowMapper, offset, pageSize);
     }
 
     @Override

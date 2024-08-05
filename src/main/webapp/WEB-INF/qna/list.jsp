@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/WEB-INF/functions.tld" prefix="fn" %>
+
 <%@ include file="/WEB-INF/base/head.jsp" %>
 <%@ include file="/WEB-INF/base/header.jsp" %>
 <%@ include file="/WEB-INF/base/nav.jsp" %>
@@ -32,21 +33,46 @@
                 </c:forEach>
             </ul>
             <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6 text-center">
-                    <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                <div class="col-md-12 text-center">
+                    <ul class="pagination">
+                        <c:if test="${currentPage > 1}">
+                            <li><a href="?page=1">«</a></li>
+                        </c:if>
+                        <%
+                            long currentPage = (long) request.getAttribute("currentPage");
+                            long totalPage = (long) request.getAttribute("totalPage");
+
+                            long startPage = currentPage - 2;
+                            long endPage = currentPage + 2;
+
+                            if (startPage < 1) {
+                                endPage += (1 - startPage);
+                                startPage = 1;
+                            }
+                            if (endPage > totalPage) {
+                                startPage -= (endPage - totalPage);
+                                endPage = totalPage;
+                            }
+                            if (startPage < 1) {
+                                startPage = 1;
+                            }
+
+                            request.setAttribute("startPage", startPage);
+                            request.setAttribute("endPage", endPage);
+                        %>
+                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                            <li class="<c:if test='${i == currentPage}'>active</c:if>">
+                                <a href="?page=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+                        <c:if test="${currentPage + 2< totalPage}">
+                            <li><a href="?page=${totalPage}">»</a></li>
+                        </c:if>
                     </ul>
                 </div>
-                <div class="col-md-3 qna-write">
-                    <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>
-                </div>
+            </div>
+            <div class="col-md-3 qna-write">
+                <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>
             </div>
         </div>
     </div>
