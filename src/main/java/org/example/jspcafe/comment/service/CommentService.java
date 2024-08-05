@@ -44,12 +44,12 @@ public class CommentService {
         );
     }
 
-    public CommentList findCommentsJoinUserByLastId(Long postId, long lastCommentId, int size) {
+    public CommentList findCommentsJoinUserByFirstId(Long postId, long firstCommentId, int size) {
         if (size < 1) {
             size = 5; // 사이즈가 1보다 작으면 기본값 5로 설정
         }
 
-        final List<CommentVO> comments = commentRepository.findCommentsJoinUserByLastId(postId, lastCommentId, size);
+        final List<CommentVO> comments = commentRepository.findCommentsJoinUserByFirstId(postId, firstCommentId, size);
         int totalCount = commentRepository.count(postId);
 
         List<CommentResponse> commentResponses = comments.stream()
