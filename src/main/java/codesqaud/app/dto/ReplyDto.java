@@ -1,5 +1,9 @@
 package codesqaud.app.dto;
 
+import codesqaud.app.model.Reply;
+import codesqaud.app.model.User;
+import codesqaud.app.util.TimeUtils;
+
 public class ReplyDto {
     private final Long id;
     private final String contents;
@@ -14,6 +18,16 @@ public class ReplyDto {
         this.activate = activate;
         this.createdAt = createdAt;
         this.author = author;
+    }
+
+    public static ReplyDto from(Reply reply, User user) {
+        return ReplyDto.builder()
+                .id(reply.getId())
+                .contents(reply.getContents())
+                .activate(reply.getActivate())
+                .createdAt(TimeUtils.toStringForUser(reply.getCreatedAt()))
+                .author(UserDto.from(user))
+                .build();
     }
 
     public Long getId() {

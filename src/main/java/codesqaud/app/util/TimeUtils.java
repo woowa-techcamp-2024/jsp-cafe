@@ -14,9 +14,13 @@ public class TimeUtils {
         return OffsetDateTime.ofInstant(timestamp.toInstant(), ZoneId.of("Asia/Seoul"));
     }
 
+    public static String toStringForUser(OffsetDateTime offsetDateTime) {
+        return offsetDateTime.format(FORMAT_FOR_USER);
+    }
+
     public static String toStringForUser(Timestamp timestamp) {
         OffsetDateTime offsetDateTime = toOffsetDateTime(timestamp);
-        return offsetDateTime.toLocalDateTime().format(FORMAT_FOR_USER);
+        return toStringForUser(offsetDateTime);
     }
 
     public static String toStringForQuery(OffsetDateTime offsetDateTime) {

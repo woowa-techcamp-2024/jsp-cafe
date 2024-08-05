@@ -123,7 +123,7 @@ public class ServletContextInitializer implements ServletContextListener {
         ArticleService articleService = new ArticleService(articleDao, replyDao, dataSource);
         servletContext.setAttribute("articleService", articleService);
 
-        ReplyService replyService = new ReplyService(replyDao);
+        ReplyService replyService = new ReplyService(articleDao, replyDao, dataSource);
         servletContext.setAttribute("replyService", replyService);
     }
 }
