@@ -6,20 +6,33 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 public class MockHttpServletResponse implements HttpServletResponse {
+    private int status;
     private String redirectedUrl;
+    private StringWriter stringWriter = new StringWriter();
+    private PrintWriter writer = new PrintWriter(stringWriter);
+
+    public String getRedirectedUrl() {
+        return redirectedUrl;
+    }
+
+    public String getWrittenContent() {
+        return stringWriter.toString();
+    }
 
     @Override
     public void sendRedirect(String location) throws IOException {
         redirectedUrl = location;
     }
 
-    public String getRedirectedUrl() {
-        return redirectedUrl;
+    @Override
+    public PrintWriter getWriter() throws IOException {
+        return writer;
     }
 
     @Override
@@ -84,12 +97,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setStatus(int sc) {
-
+        this.status = sc;
     }
 
     @Override
     public int getStatus() {
-        return 0;
+        return status;
     }
 
     @Override
@@ -119,11 +132,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        return null;
-    }
-
-    @Override
-    public PrintWriter getWriter() throws IOException {
         return null;
     }
 

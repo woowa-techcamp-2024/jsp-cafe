@@ -16,6 +16,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     private Map<String, Object> attributes = new HashMap<>();
     private MockHttpSession session;
     private MockRequestDispatcher dispatcher;
+    private MockServletInputStream inputStream;
 
     public void setMethod(String method) {
         this.method = method;
@@ -32,6 +33,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     public void setParameter(String name, String value) {
         parameters.put(name, value);
+    }
+
+    public void setInputStream(String body) {
+        MockServletInputStream mockServletInputStream = new MockServletInputStream();
+        mockServletInputStream.setInputStream(body);
+        this.inputStream = mockServletInputStream;
     }
 
     @Override
@@ -63,6 +70,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override
     public String getRequestURI() {
         return uri;
+    }
+
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
+        return inputStream;
     }
 
 
@@ -243,11 +255,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override
     public String getContentType() {
         return "";
-    }
-
-    @Override
-    public ServletInputStream getInputStream() throws IOException {
-        return null;
     }
 
     @Override
