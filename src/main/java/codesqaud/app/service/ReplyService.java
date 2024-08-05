@@ -86,7 +86,7 @@ public class ReplyService {
             return;
         }
 
-
+        replyDao.delete(reply);
         resp.setStatus(SC_OK);
         String message = "sucess";
         resp.getWriter().write(objectMapper.writeValueAsString(message));
