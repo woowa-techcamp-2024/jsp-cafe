@@ -84,9 +84,13 @@ public class QuestionPageServlet extends HttpServlet {
 	private String handleDetail(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
 		Question question = questionRepository.findByQuestionSeq(seq);
-		List<Comment> comments = commentRepository.findByQuestionSeq(seq);
+		List<Comment> comments = commentRepository.findRangeByQuestionSeq(seq, Long.MAX_VALUE, 5);
+		long lastCommentSeq = comments.get(comments.size() - 1).getCommentSeq();
+		long count =  commentRepository.countByQuestionSeq(seq);
 		req.setAttribute("question", question);
 		req.setAttribute("comments", comments);
+		req.setAttribute("count", count);
+		req.setAttribute("lastCommentSeq", lastCommentSeq);
 		return "/detail.jsp";
 	}
 
