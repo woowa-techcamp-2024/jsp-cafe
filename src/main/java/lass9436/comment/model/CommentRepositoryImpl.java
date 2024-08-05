@@ -34,6 +34,11 @@ public class CommentRepositoryImpl implements CommentRepository {
 	}
 
 	@Override
+	public long countByQuestionSeq(long questionSeq) {
+		return 0;
+	}
+
+	@Override
 	public List<Comment> findByQuestionSeq(long questionSeq) {
 		List<Comment> comments = new ArrayList<>();
 		for (Comment comment : commentStore.values()) {
@@ -42,6 +47,27 @@ public class CommentRepositoryImpl implements CommentRepository {
 			}
 		}
 		return comments;
+	}
+
+	@Override
+	public List<Comment> findRangeByQuestionSeq(long questionSeq, long startCommentSeq, int count) {
+		List<Comment> result = new ArrayList<>();
+
+		// 모든 댓글을 순회하며 조건에 맞는 댓글을 찾습니다.
+		for (Comment comment : commentStore.values()) {
+			// 해당 질문의 댓글이고, startCommentSeq보다 작은 commentSeq를 가진 경우
+			if (comment.getQuestionSeq() == questionSeq && comment.getCommentSeq() < startCommentSeq) {
+				result.add(comment);
+			}
+		}
+
+		// commentSeq를 기준으로 내림차순 정렬 (최신 댓글이 먼저 오도록)
+		result.sort((c1, c2) -> Long.compare(c2.getCommentSeq(), c1.getCommentSeq()));
+
+		// count 개수만큼만 반환
+		return result.stream()
+				.limit(count)
+				.toList();
 	}
 }
 
