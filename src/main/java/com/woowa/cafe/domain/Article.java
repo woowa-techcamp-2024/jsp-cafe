@@ -83,7 +83,7 @@ public class Article {
 
     public String getFormattedUpdatedAt() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(createdAt);
+        return formatter.format(updatedAt);
     }
 
     public LocalDateTime getCreatedAt() {
