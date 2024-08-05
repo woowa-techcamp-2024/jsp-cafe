@@ -24,9 +24,9 @@ public class ArticleService {
 
     }
 
-    public List<Article> findAll() {
+    public List<Article> findAll(int page, int pageSize) {
         // 게시글 목록 조회
-        return articleRepository.findAll();
+        return articleRepository.findAll(page, pageSize);
     }
 
     public Article findById(int i) {
@@ -75,5 +75,10 @@ public class ArticleService {
         // 게시글 삭제
         articleRepository.deleteById(i);
         logger.info("게시글 삭제 완료");
+    }
+
+    public int getTotalPage(int pageSize) {
+        // 총 페이지 수 계산
+        return articleRepository.getTotalPage(pageSize);
     }
 }

@@ -43,9 +43,13 @@ public class StaticResourceFilter implements Filter {
         }
         else if (req.getRequestURI().equals("/")) {
             ArticleService articleService = new ArticleService();
-            logger.info("articles {}", articleService.findAll());
-            request.setAttribute("articles", articleService.findAll());
-            request.getRequestDispatcher("/WEB-INF/main.jsp").forward(request, response);
+            int page = req.getParameter("page") == null ? 1 : Integer.parseInt(req.getParameter("page"));
+            int pageSize = req.getParameter("pageSize") == null ? 5 : Integer.parseInt(req.getParameter("pageSize"));
+            req.setAttribute("articles", articleService.findAll(page, pageSize));
+            req.setAttribute("page", page);
+            req.setAttribute("size", pageSize);
+            req.setAttribute("totalPage", articleService.getTotalPage(pageSize));
+            req.getRequestDispatcher("/WEB-INF/main.jsp").forward(req, res);
         } else {
             chain.doFilter(request, response);
         }

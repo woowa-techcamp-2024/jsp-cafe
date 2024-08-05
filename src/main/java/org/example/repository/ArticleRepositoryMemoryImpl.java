@@ -35,7 +35,7 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAll() {
+    public List<Article> findAll(int page, int pageSize) {
         return new ArrayList<>(articles.values());
     }
 
@@ -52,5 +52,10 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     @Override
     public void deleteById(int id) {
         return;
+    }
+
+    @Override
+    public int getTotalPage(int pageSize) {
+        return 0;
     }
 }
