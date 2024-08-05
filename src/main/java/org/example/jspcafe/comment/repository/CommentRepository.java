@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CommentRepository extends Repository<Comment> {
     void deleteAllInBatch();
-    List<CommentVO> findCommentsJoinUserByLastId(Long postId, long lastCommentId, int limit);
+    List<CommentVO> findCommentsJoinUserByFirstId(Long postId, long lastCommentId, int limit);
     List<CommentVO> findCommentsJoinUser(Long postId, int limit, int offset);
     int count(Long postId);
     List<Comment> findAllByPostId(Long postId);
