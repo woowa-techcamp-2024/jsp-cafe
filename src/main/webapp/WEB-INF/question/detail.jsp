@@ -26,7 +26,6 @@
                         <div class="article-header-text">
                             <a href="/userPage?action=detail&seq=${question.userSeq}" class="article-author-name">${question.writer}</a>
                             <a href="/questionPage?action=detail&seq=${question.questionSeq}" class="article-header-time" title="퍼머링크">
-                                2015-12-30 01:47
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -56,7 +55,7 @@
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>${comments.size()}</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>${count}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
                             <c:forEach var="comment" items="${comments}" varStatus="status">
                             <article class="article" id="comment-${comment.commentSeq}">
@@ -90,6 +89,11 @@
                             </article>
                             </c:forEach>
                         </div>
+                        <c:if test="${count > 5}">
+                            <button id="load-more-comments" type="button" onclick="getMoreComments()">
+                                댓글 더보기
+                            </button>
+                        </c:if>
                         <form class="submit-write" id="post-comment-form">
                             <div class="form-group" style="padding:14px;">
                                 <textarea id="post-comment-text" name="contents" class="form-control" placeholder="Update your status"></textarea>
@@ -135,6 +139,76 @@
 </script>
 
 <script>
+    let lastCommentSeq = ${lastCommentSeq}; // 초기값을 가장 큰 수로 설정
+    let count = ${count};
+    let remainCount = count - 5;
+
+    function getMoreComments() {
+        const questionSeq = "${question.questionSeq}";
+
+        fetch(`/comment?questionSeq=${question.questionSeq}&startCommentSeq=`+ lastCommentSeq, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(comments => {
+                const commentContainer = document.querySelector('.qna-comment-slipp-articles');
+
+                comments.forEach(comment => {
+                    const article = document.createElement('article');
+                    lastCommentSeq = Math.min(lastCommentSeq, comment.commentSeq);
+                    article.className = 'article';
+                    article.id = 'comment-' + comment.commentSeq;
+                    article.innerHTML =
+                        '<div class="article-header">' +
+                        '<div class="article-header-thumb">' +
+                        '<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">' +
+                        '</div>' +
+                        '<div class="article-header-text">' +
+                        '<a href="/userPage?action=detail&seq=' + comment.userSeq + '" class="article-author-name">' + comment.writer + '</a>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="article-doc comment-doc">' +
+                        '<p>' + comment.contents + '</p>' +
+                        '</div>' +
+                        '<div class="article-util">' +
+                        '<ul class="article-util-list">' +
+                        (${sessionScope.userSeq} === comment.userSeq ?
+                            '<li>' +
+                            '<a class="link-modify-article" href="#">수정</a>' +
+                            '</li>' +
+                            '<li>' +
+                            '<form class="delete-answer-form" action="#" method="POST">' +
+                            '<input type="hidden" name="_method" value="DELETE">' +
+                            '<button type="button" class="delete-answer-button" onclick="deleteComment(' + comment.commentSeq + ')">삭제</button>' +
+                            '</form>' +
+                            '</li>'
+                            : '') +
+                        '</ul>' +
+                    '</div>';
+
+                    commentContainer.appendChild(article);
+                });
+
+                remainCount -= comments.length;
+
+                // 더 보여줄 댓글이 없으면 '더보기' 버튼 숨기기
+                if (remainCount <= 0) {
+                    document.querySelector('#load-more-comments').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // 에러 처리
+            });
+    }
 function deleteComment(commentSeq) {
     fetch(`/comment?seq=` + commentSeq, {
         method: 'DELETE'
@@ -212,7 +286,8 @@ function postComment() {
                 '</div>';
 
             // Append the new article to the div with class 'qna-comment-slipp-articles'
-            document.querySelector('.qna-comment-slipp-articles').appendChild(article);
+            const commentContainer = document.querySelector('.qna-comment-slipp-articles');
+            commentContainer.insertBefore(article, commentContainer.firstChild);
             const commentCountElement = document.querySelector('.qna-comment-count strong');
             const currentCount = parseInt(commentCountElement.textContent);
             commentCountElement.textContent = currentCount + 1;
