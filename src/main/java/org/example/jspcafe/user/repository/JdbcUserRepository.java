@@ -12,7 +12,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public Long save(User user) {
         String sql = "INSERT INTO Users (user_id, password, nickname, email) VALUES (?, ?, ?, ?)";
-9        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, user.getUserId());
