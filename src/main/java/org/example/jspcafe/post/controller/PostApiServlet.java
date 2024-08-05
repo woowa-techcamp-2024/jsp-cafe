@@ -108,15 +108,15 @@ public class PostApiServlet extends HttpServlet {
             Long postId = Long.parseLong(split[split.length - 2]);
 
             // lastCommentId를 받아서 처리하도록 변경함
-            String lastCommentIdParam = req.getParameter("lastCommentId");
-            long lastCommentId = lastCommentIdParam != null ? Long.parseLong(lastCommentIdParam) : 0L;
+            String firstCommentIdParam = req.getParameter("firstCommentId");
+            long firstCommentId = firstCommentIdParam != null ? Long.parseLong(firstCommentIdParam) : Long.MAX_VALUE;
 
             // size 파라미터를 받아서 처리
             String sizeParam = req.getParameter("size");
 
             int size = sizeParam != null ? Integer.parseInt(sizeParam) : 5; // 기본값 5 설정
 
-            CommentList commentList = commentService.findCommentsJoinUserByLastId(postId, lastCommentId, size);
+            CommentList commentList = commentService.findCommentsJoinUserByFirstId(postId, firstCommentId, size);
 
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
