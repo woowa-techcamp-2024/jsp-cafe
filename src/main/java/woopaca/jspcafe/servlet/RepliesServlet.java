@@ -1,5 +1,6 @@
 package woopaca.jspcafe.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -12,11 +13,15 @@ import woopaca.jspcafe.model.Authentication;
 import woopaca.jspcafe.resolver.RequestParametersResolver;
 import woopaca.jspcafe.service.ReplyService;
 import woopaca.jspcafe.servlet.dto.request.WriteReplyRequest;
+import woopaca.jspcafe.servlet.dto.response.ReplyResponse;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @WebServlet("/replies/*")
 public class RepliesServlet extends HttpServlet {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private ReplyService replyService;
 
@@ -29,12 +34,17 @@ public class RepliesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        WriteReplyRequest writeReplyRequest =
-                RequestParametersResolver.resolve(request.getParameterMap(), WriteReplyRequest.class);
+        String requestBody = request.getReader()
+                .lines()
+                .collect(Collectors.joining());
+        WriteReplyRequest writeReplyRequest = objectMapper.readValue(requestBody, WriteReplyRequest.class);
         HttpSession session = request.getSession();
         Authentication authentication = (Authentication) session.getAttribute("authentication");
-        replyService.writeReply(writeReplyRequest, authentication);
-        response.sendRedirect("/posts/" + writeReplyRequest.postId());
+        ReplyResponse replyResponse = replyService.writeReply(writeReplyRequest, authentication);
+        response.setContentType("application/json");
+        String responseBody = objectMapper.writeValueAsString(replyResponse);
+        response.getWriter()
+                .write(responseBody);
     }
 
     @Override
