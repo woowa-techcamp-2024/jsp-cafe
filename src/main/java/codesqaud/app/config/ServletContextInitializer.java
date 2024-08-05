@@ -105,7 +105,12 @@ public class ServletContextInitializer implements ServletContextListener {
                     article_id BIGINT REFERENCES articles(id),
                     author_id BIGINT REFERENCES users(id),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                
                 );
+                """);
+
+        jdbcTemplate.execute("""
+                CREATE INDEX idx_article_id_activate_id ON replies (article_id, id DESC, activate DESC)
                 """);
     }
 

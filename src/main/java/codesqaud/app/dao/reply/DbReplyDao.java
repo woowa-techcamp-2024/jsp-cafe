@@ -136,6 +136,7 @@ public class DbReplyDao implements ReplyDao {
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM replies JOIN users ON replies.author_id = users.id
                 WHERE replies.article_id = ? AND replies.activate = true
+                ORDER BY replies.id DESC
                 """;
 
         return jdbcTemplate.query(sql, REPLY_DTO_ROW_MAPPER, articleId);
