@@ -20,6 +20,7 @@ import org.example.domain.Reply;
 public class ArticleRepliesGetApi extends HttpServlet {
     private ReplyDataHandler replyDataHandler;
     private ObjectMapper objectMapper;
+    private static final int REPLIES_PER_PAGE = 5;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -44,4 +45,17 @@ public class ArticleRepliesGetApi extends HttpServlet {
         out.flush();
     }
 
+    private int getPageNumber(HttpServletRequest request) {
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                int page = Integer.parseInt(pageParam);
+                if (page > 0) {
+                    return page;
+                }
+            } catch (NumberFormatException e) {
+            }
+        }
+        return 1; // 기본값은 1페이지
+    }
 }

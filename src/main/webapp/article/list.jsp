@@ -14,6 +14,13 @@
 <%
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     List<Article> articles = (List<Article>)request.getAttribute("articles");
+    int currentPage = (Integer) request.getAttribute("currentPage");
+    int totalPageNumber = (Integer) request.getAttribute("totalPageNumber");
+
+    int pageGroup = 5; // 페이지 그룹 크기
+    int currentGroup = (int)Math.ceil((double)currentPage / pageGroup);
+    int startPage = (currentGroup - 1) * pageGroup + 1;
+    int endPage = Math.min(currentGroup * pageGroup, totalPageNumber);
 %>
     <div class="container">
         <%@ include file="/common/header.jsp" %>
@@ -41,6 +48,23 @@
                     <% } %>
                 </tbody>
             </table>
+            <div class="pagination">
+                <% if (startPage > 1) { %>
+                    <a href="?page=<%= startPage - pageGroup %>" class="page-link prev">&laquo;</a>
+                <% } %>
+
+                <% for (int i = startPage; i <= endPage; i++) { %>
+                    <% if (i == currentPage) { %>
+                        <a href="?page=<%= i %>" class="page-link active"><%= i %></a>
+                    <% } else { %>
+                        <a href="?page=<%= i %>" class="page-link"><%= i %></a>
+                    <% } %>
+                <% } %>
+
+                <% if (endPage < totalPageNumber) { %>
+                    <a href="?page=<%= endPage + 1 %>" class="page-link next">&raquo;</a>
+                <% } %>
+            </div>
             <div class="action-buttons">
                 <a href="/articles/register">
                     <button class="btn">글쓰기</button>

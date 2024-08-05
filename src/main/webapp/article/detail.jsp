@@ -61,6 +61,8 @@
                 <% } %>
             </div>
 
+            <button id="loadMoreReplies" class="btn" style="display: none;">더보기</button>
+
             <!-- 댓글 작성 폼 -->
             <div class="reply-form">
                 <h3>댓글 작성</h3>
@@ -94,6 +96,10 @@
             }
         });
 
+        var allReplies = [];
+        var currentPage = 1;
+        var repliesPerPage = 5;
+
         loadReplies();
 
         function loadReplies() {
@@ -101,6 +107,7 @@
                 url: '/api/articles/replies/' + <%= article.getArticleId() %>,
                 type: 'GET',
                 success: function(replies) {
+                    allReplies = replies;
                     updateReplyList(replies);
                 },
                 error: function(xhr, status, error) {
@@ -114,8 +121,11 @@
             $replyList.empty();
 
             var currentUserId = '<%= currentUser != null ? currentUser.getUserId() : "" %>';
+            var startIndex = 0;
+            var endIndex = currentPage * repliesPerPage;
 
-            replies.forEach(function(reply) {
+            for(var i=startIndex; i < endIndex && i < allReplies.length; i++){
+                var reply = allReplies[i];
                 var deleteButton = '';
                 if (reply.userId == currentUserId) {
                     deleteButton = '<button class="btn delete-reply" data-reply-id="' + reply.replyId + '">삭제</button>';
@@ -131,12 +141,27 @@
                         deleteButton +
                     '</div>';
 
+                updateLoadMoreButton();
                 $replyList.append(replyHtml);
-            });
+            }
 
             // 삭제 버튼에 이벤트 리스너 다시 추가
             $('.delete-reply').click(deleteReplyHandler);
         }
+
+        function updateLoadMoreButton() {
+            var $loadMoreButton = $('#loadMoreReplies');
+            if (currentPage * repliesPerPage < allReplies.length) {
+                $loadMoreButton.show();
+            } else {
+                $loadMoreButton.hide();
+            }
+        }
+
+        $('#loadMoreReplies').click(function() {
+            currentPage++;
+            updateReplyList();
+        });
 
         $('#submitReply').click(function() {
             var comment = $('#replyComment').val();
