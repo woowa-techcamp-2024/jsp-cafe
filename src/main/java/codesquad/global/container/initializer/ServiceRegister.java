@@ -1,7 +1,9 @@
 package codesquad.global.container.initializer;
 
+import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.repository.ArticleRepository;
 import codesquad.article.service.DeleteArticleServiceImpl;
+import codesquad.article.service.QueryArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.comment.repository.CommentRepository;
@@ -24,6 +26,7 @@ public class ServiceRegister implements AppInit {
         UserRepository userRepository = (UserRepository) servletContext.getAttribute("UserRepository");
         ArticleRepository articleRepository = (ArticleRepository) servletContext.getAttribute("ArticleRepository");
         CommentRepository commentRepository = (CommentRepository) servletContext.getAttribute("CommentRepository");
+        ArticleQuery articleQuery = (ArticleQuery) servletContext.getAttribute("ArticleQuery");
         // user 관련 서비스
         servletContext.setAttribute("SignInService", new SignInService(userRepository));
         servletContext.setAttribute("SignUpService", new SignUpService(userRepository));
@@ -32,6 +35,7 @@ public class ServiceRegister implements AppInit {
         servletContext.setAttribute("UpdateArticleService", new UpdateArticleService(articleRepository));
         servletContext.setAttribute("RegisterArticleService", new RegisterArticleService(articleRepository));
         servletContext.setAttribute("DeleteArticleService", new DeleteArticleServiceImpl(articleRepository, commentRepository));
+        servletContext.setAttribute("QueryArticleService", new QueryArticleService(articleQuery));
         // comment 관련 서비스
         servletContext.setAttribute("RegisterCommentService", new RegisterCommentServiceImpl(articleRepository, commentRepository));
         servletContext.setAttribute("DeleteCommentService", new DeleteCommentService(commentRepository));

@@ -1,5 +1,6 @@
 package codesquad.global.servlet;
 
+import codesquad.article.handler.dto.request.ArticleQueryRequest;
 import codesquad.article.handler.dto.response.ArticleDetailResponse;
 import codesquad.article.handler.dto.response.ArticleResponse;
 import codesquad.article.handler.dao.ArticleQuery;
@@ -25,11 +26,16 @@ public class MockArticleQuery implements ArticleQuery {
     }
 
     @Override
-    public List<ArticleResponse> findAll(QueryRequest queryRequest) {
+    public List<ArticleResponse> findAll(ArticleQueryRequest queryRequest) {
         if (articleResponse == null) {
             return Collections.emptyList();
         }
         return List.of(articleResponse);
+    }
+
+    @Override
+    public Long count(ArticleQueryRequest articleQueryRequest) {
+        return 0L;
     }
 
     public void stub(ArticleResponse articleResponse) {

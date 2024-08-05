@@ -3,6 +3,7 @@ package codesquad.global.container.listener;
 import codesquad.article.handler.*;
 import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.service.DeleteArticleService;
+import codesquad.article.service.QueryArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.auth.handler.LoginHandler;
@@ -53,12 +54,13 @@ public class HandlerRegister implements ServletContextListener {
         DeleteArticleService deleteArticleService = (DeleteArticleService) servletContext.getAttribute("DeleteArticleService");
         RegisterCommentService registerCommentService = (RegisterCommentService) servletContext.getAttribute("RegisterCommentService");
         DeleteCommentService deleteCommentService = (DeleteCommentService) servletContext.getAttribute("DeleteCommentService");
+        QueryArticleService queryArticleService = (QueryArticleService) servletContext.getAttribute("QueryArticleService");
         // Handler 등록
         List<HandlerMapping> handlerMappings = new ArrayList<>();
-        registerHandlerMapping(handlerMappings, new QnaHandler(articleQuery, updateArticleService, deleteArticleService));
+        registerHandlerMapping(handlerMappings, new QnaHandler(queryArticleService, updateArticleService, deleteArticleService));
         registerHandlerMapping(handlerMappings, new QnasHandler(registerArticleService));
         registerHandlerMapping(handlerMappings, new QnaRegisterFormHandler());
-        registerHandlerMapping(handlerMappings, new QnaUpdateFormHandler(articleQuery));
+        registerHandlerMapping(handlerMappings, new QnaUpdateFormHandler(queryArticleService));
         registerHandlerMapping(handlerMappings, new UserHandler(userQuery));
         registerHandlerMapping(handlerMappings, new UsersHandler(userQuery, signUpService, updateUserService));
         registerHandlerMapping(handlerMappings, new UserRegisterFormHandler());
@@ -69,7 +71,7 @@ public class HandlerRegister implements ServletContextListener {
         registerHandlerMapping(handlerMappings, new CommentsAjaxHandler(registerCommentService));
         registerHandlerMapping(handlerMappings, new LoginHandler(signInService));
         registerHandlerMapping(handlerMappings, new LogoutHandler());
-        registerHandlerMapping(handlerMappings, new IndexHandler(articleQuery));
+        registerHandlerMapping(handlerMappings, new IndexHandler(queryArticleService));
         servletContext.setAttribute("HandlerMappings", handlerMappings);
         logger.info("HandlerMapping registered on context");
 

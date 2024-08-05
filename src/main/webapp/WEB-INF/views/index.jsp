@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="java.util.List" %>
 <%@ page import="codesquad.article.handler.dto.response.ArticleResponse" %>
+<%@ page import="codesquad.article.handler.dto.response.PagedArticleResponse" %>
+<%@ page import="codesquad.common.http.response.PageInfo" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -24,9 +25,9 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    List<ArticleResponse> articles = (List<ArticleResponse>) request.getAttribute("articleResponses");
+                    PagedArticleResponse<ArticleResponse> articles = (PagedArticleResponse<ArticleResponse>) request.getAttribute("articleResponses");
                     if (articles != null) {
-                        for (ArticleResponse article : articles) {
+                        for (ArticleResponse article : articles.getContent()) {
                 %>
                 <li>
                     <div class="wrap">
@@ -58,17 +59,36 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                        <%
+                            PageInfo pageInfo = articles.getPageInfo();
+                            Integer currentPageNumber = pageInfo.pageNumber();
+                            if (!pageInfo.isFirst()) {
+                        %>
+                        <li><a href="?pageSize=15&pageNumber=<%=currentPageNumber-1%>">«</a></li>
+                        <%
+                            }
+                        %>
+                        <%
+                            int startPage = Math.max(currentPageNumber - 2, 1);
+                            for (int pageNumber = startPage; pageNumber < startPage + 5 && pageNumber <= pageInfo.totalPages(); pageNumber++) {
+                        %>
+                        <li><a href="?pageSize=15&pageNumber=<%=pageNumber%>"><%=pageNumber%>
+                        </a></li>
+                        <%
+                            }
+                        %>
+                        <%
+                            if (!pageInfo.isLast()) {
+                        %>
+                        <li><a href="?pageSize=15&pageNumber=<%=currentPageNumber+1%>">»</a></li>
+                        <%
+                            }
+                        %>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="${pageContext.request.contextPath}/questions/register-form" class="btn btn-primary pull-right"
+                    <a href="${pageContext.request.contextPath}/questions/register-form"
+                       class="btn btn-primary pull-right"
                        role="button">질문하기</a>
                 </div>
             </div>

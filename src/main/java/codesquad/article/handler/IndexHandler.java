@@ -1,8 +1,10 @@
 package codesquad.article.handler;
 
 import codesquad.article.domain.vo.Status;
-import codesquad.article.handler.dao.ArticleQuery;
+import codesquad.article.handler.dto.request.ArticleQueryRequest;
 import codesquad.article.handler.dto.response.ArticleResponse;
+import codesquad.article.handler.dto.response.PagedArticleResponse;
+import codesquad.article.service.QueryArticleService;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.common.handler.annotation.Response;
@@ -13,17 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 
 @Response
 @RequestMapping("/")
 public class IndexHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
 
-    private final ArticleQuery articleQuery;
+    private final QueryArticleService queryArticleService;
 
-    public IndexHandler(ArticleQuery articleQuery) {
-        this.articleQuery = articleQuery;
+    public IndexHandler(QueryArticleService queryArticleService) {
+        this.queryArticleService = queryArticleService;
     }
 
     @Override
@@ -35,8 +36,8 @@ public class IndexHandler extends HttpServletRequestHandler {
             pageNumber = "1";
             pageSize = "15";
         }
-        ArticleQuery.QueryRequest queryRequest = new ArticleQuery.QueryRequest(Integer.parseInt(pageNumber), Integer.parseInt(pageSize), Status.PUBLISHED);
-        List<ArticleResponse> articleResponses = articleQuery.findAll(queryRequest);
+        ArticleQueryRequest queryRequest = new ArticleQueryRequest(Integer.parseInt(pageNumber), Integer.parseInt(pageSize), Status.PUBLISHED);
+        PagedArticleResponse<ArticleResponse> articleResponses = queryArticleService.findAll(queryRequest);
         req.setAttribute("articleResponses", articleResponses);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }

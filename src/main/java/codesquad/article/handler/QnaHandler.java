@@ -1,8 +1,8 @@
 package codesquad.article.handler;
 
-import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.handler.dto.response.ArticleDetailResponse;
 import codesquad.article.service.DeleteArticleService;
+import codesquad.article.service.QueryArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.article.service.UpdateArticleService.Command;
 import codesquad.common.exception.CommentExistException;
@@ -28,12 +28,12 @@ import java.util.Optional;
 public class QnaHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnaHandler.class);
 
-    private final ArticleQuery articleQuery;
+    private final QueryArticleService queryArticleService;
     private final UpdateArticleService updateArticleService;
     private final DeleteArticleService deleteArticleService;
 
-    public QnaHandler(ArticleQuery articleQuery, UpdateArticleService updateArticleService, DeleteArticleService deleteArticleService) {
-        this.articleQuery = articleQuery;
+    public QnaHandler(QueryArticleService queryArticleService, UpdateArticleService updateArticleService, DeleteArticleService deleteArticleService) {
+        this.queryArticleService = queryArticleService;
         this.updateArticleService = updateArticleService;
         this.deleteArticleService = deleteArticleService;
     }
@@ -54,7 +54,7 @@ public class QnaHandler extends HttpServletRequestHandler {
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        Optional<ArticleDetailResponse> articleResponse = articleQuery.findDetailById(articleId);
+        Optional<ArticleDetailResponse> articleResponse = queryArticleService.findDetailById(articleId);
         if (articleResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
