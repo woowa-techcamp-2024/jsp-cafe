@@ -1,15 +1,18 @@
 package codesquad.javacafe.post.service;
 
+import codesquad.javacafe.comment.async.AsyncCommentDeleter;
 import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.common.exception.ServerErrorCode;
 import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.dto.response.PostResponseDto;
+import codesquad.javacafe.post.entity.Post;
 import codesquad.javacafe.post.repository.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class PostService {
@@ -24,7 +27,8 @@ public class PostService {
     }
 
     public static void updatePost(PostRequestDto postDto) {
-        int update = PostRepository.getInstance().update(postDto);
+        var post = postDto.toEntity();
+        int update = PostRepository.getInstance().update(post);
         if (update == 0) {
             throw ClientErrorCode.POST_IS_NULL.customException("request post info = " + postDto);
         }
@@ -51,7 +55,8 @@ public class PostService {
     }
 
     public void createPost(PostRequestDto postDto) {
-        PostRepository.getInstance().save(postDto);
+        var post = postDto.toEntity();
+        PostRepository.getInstance().save(post);
     }
 
     public void deletePost(long postId) {
@@ -59,5 +64,6 @@ public class PostService {
         if (deleteResult == 0) {
             throw ClientErrorCode.POST_IS_NULL.customException("request post id = " + postId);
         }
+        AsyncCommentDeleter.getInstance().asyncDelete(postId, new AtomicInteger(0));
     }
 }

@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
@@ -15,6 +16,7 @@ public class CustomHttpServletRequest implements HttpServletRequest {
     private Map<String, Object> attributes = new HashMap<>();
     private HttpSession session;
     private String uri;
+    private byte[] body;
 
     public void setMethod(String method) {
         this.method = method;
@@ -169,11 +171,39 @@ public class CustomHttpServletRequest implements HttpServletRequest {
     @Override
     public String getContentType() { return ""; }
     @Override
-    public ServletInputStream getInputStream() throws IOException { return null; }
+    public ServletInputStream getInputStream() throws IOException {
+        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body);
+        return new ServletInputStream() {
+            @Override
+            public boolean isFinished() {
+                return byteArrayInputStream.available() == 0;
+            }
+
+            @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+                // Not implemented
+            }
+
+            @Override
+            public int read() throws IOException {
+                return byteArrayInputStream.read();
+            }
+        };
+    }
+
     @Override
     public String getParameter(String s) { String[] values = parameters.get(s); return values != null && values.length > 0 ? values[0] : null; }
     @Override
     public Enumeration<String> getParameterNames() { return null; }
     @Override
     public String[] getParameterValues(String s) { return new String[0]; }
+
+    public void setBody(String s) {
+        this.body = s.getBytes();
+    }
 }

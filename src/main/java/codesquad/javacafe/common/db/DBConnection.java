@@ -23,7 +23,6 @@ public class DBConnection {
 
     public static Connection getConnection() {
         try {
-           // Class.forName("com.mysql.jdbc.Driver");
             var connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
             log.info("[Connection]  connection info = {}, class = {}", connection, connection.getClass());

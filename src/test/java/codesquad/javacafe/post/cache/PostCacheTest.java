@@ -56,19 +56,19 @@ class PostCacheTest {
         request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
         List<Long> list = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             body.put("writer", new String[]{"writer1"});
             body.put("title", new String[]{"title1"});
             body.put("contents", new String[]{"contents1"});
             body.put("memberId", new String[]{"1"});
             PostRequestDto postDto = new PostRequestDto(body);
             postDto.setMemberId(memberId);
-            Post save = PostRepository.getInstance().save(postDto);
+            Post save = PostRepository.getInstance().save(postDto.toEntity());
             list.add(save.getId());
         }
 
         long notCacheStart = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             ((CustomHttpServletRequest) request).setMethod("GET");
             ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
             System.out.println(request.getAttribute("userId"));
@@ -81,7 +81,7 @@ class PostCacheTest {
 
 
         long cacheHitStart = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             ((CustomHttpServletRequest) request).setMethod("GET");
             ((CustomHttpServletRequest) request).addParameter("postId",  + list.get(i)+ "");
             postController.doProcess(request, response);
@@ -123,7 +123,7 @@ class PostCacheTest {
         expectedList = List.of(0L, 1L, 3L, 4L, 2L);
         assertEquals(expectedList,list);
 
-        for (int i = 5; i <= 100; i++) {
+        for (int i = 5; i <= 1000; i++) {
             PostResponseDto postResponseDto = new PostResponseDto(i, "writer" + i, "title" + i, "contents" + i, LocalDateTime.now());
             PostCache.getInstance().set(i, postResponseDto);
         }

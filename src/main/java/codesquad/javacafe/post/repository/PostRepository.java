@@ -28,8 +28,7 @@ public class PostRepository {
     }
 
 
-    public Post save(PostRequestDto postDto) {
-        Post post = postDto.toEntity();
+    public Post save(Post post) {
         var sql = "insert into post(post_writer, post_title, post_contents, post_create, member_id)\n" +
                 "values (?,?,?,?,?)";
 
@@ -58,7 +57,7 @@ public class PostRepository {
 
             return post;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);
@@ -100,7 +99,7 @@ public class PostRepository {
             }
 
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when findById, Class info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, rs);
@@ -140,15 +139,14 @@ public class PostRepository {
 
         } catch (SQLException exception) {
             exception.printStackTrace();
-            log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when findById, Class info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, rs);
         }
     }
 
-    public int update(PostRequestDto postDto) {
-        Post post = postDto.toEntity();
+    public int update(Post post) {
         var sql = "update post set post_title = ?, post_contents =?\n" +
                 "where id = ? and member_id = ?";
 
@@ -170,7 +168,7 @@ public class PostRepository {
 
             return result;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);
@@ -192,7 +190,7 @@ public class PostRepository {
 
             return result;
         } catch (SQLException exception) {
-            log.error("[SQLException] throw error when member save, Class Info = {}", MemberRepository.class);
+            log.error("[SQLException] throw error when member save, Class Info = {}", PostRepository.class);
             throw new RuntimeException(exception);
         } finally {
             close(con, ps, null);

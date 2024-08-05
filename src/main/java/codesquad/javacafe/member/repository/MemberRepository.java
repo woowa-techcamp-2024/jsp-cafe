@@ -1,7 +1,6 @@
 package codesquad.javacafe.member.repository;
 
 
-import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.entity.Member;
 import org.slf4j.Logger;
