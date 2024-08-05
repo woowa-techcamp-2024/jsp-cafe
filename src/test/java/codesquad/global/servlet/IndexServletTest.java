@@ -34,7 +34,7 @@ class IndexServletTest {
             HttpServletResponse response = new MockResponse();
 
             // when
-//            indexServlet.doGet(request, response);
+            indexServlet.service(request, response);
 
             // then
             Assertions.assertEquals(mockRequestDispatcher.getPath(), "/WEB-INF/views/index.jsp");

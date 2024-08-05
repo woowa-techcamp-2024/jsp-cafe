@@ -1,6 +1,8 @@
 package codesquad.global.servlet;
 
-import codesquad.global.dao.ArticleQuery;
+import codesquad.article.handler.dto.response.ArticleDetailResponse;
+import codesquad.article.handler.dto.response.ArticleResponse;
+import codesquad.article.handler.dao.ArticleQuery;
 
 import java.util.Collections;
 import java.util.List;

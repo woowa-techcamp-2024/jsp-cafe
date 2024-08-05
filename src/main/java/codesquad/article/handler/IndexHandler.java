@@ -1,10 +1,11 @@
 package codesquad.article.handler;
 
 import codesquad.article.domain.vo.Status;
+import codesquad.article.handler.dao.ArticleQuery;
+import codesquad.article.handler.dto.response.ArticleResponse;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.common.handler.annotation.Response;
-import codesquad.global.dao.ArticleQuery;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,8 +29,14 @@ public class IndexHandler extends HttpServletRequestHandler {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("IndexHandler doGet");
-        ArticleQuery.QueryRequest queryRequest = new ArticleQuery.QueryRequest(1, 10, Status.PUBLISHED);
-        List<ArticleQuery.ArticleResponse> articleResponses = articleQuery.findAll(queryRequest);
+        String pageNumber = req.getParameter("pageNumber");
+        String pageSize = req.getParameter("pageSize");
+        if (pageNumber == null || pageNumber.isEmpty() || pageSize == null || pageSize.isEmpty()) {
+            pageNumber = "1";
+            pageSize = "15";
+        }
+        ArticleQuery.QueryRequest queryRequest = new ArticleQuery.QueryRequest(Integer.parseInt(pageNumber), Integer.parseInt(pageSize), Status.PUBLISHED);
+        List<ArticleResponse> articleResponses = articleQuery.findAll(queryRequest);
         req.setAttribute("articleResponses", articleResponses);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }

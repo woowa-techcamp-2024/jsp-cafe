@@ -1,9 +1,10 @@
 package codesquad.user.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
-import codesquad.common.handler.annotation.Response;
-import codesquad.global.dao.UserQuery;
 import codesquad.common.handler.annotation.RequestMapping;
+import codesquad.common.handler.annotation.Response;
+import codesquad.user.handler.dao.UserQuery;
+import codesquad.user.handler.dto.response.UserResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +36,7 @@ public class UserUpdateFormHandler extends HttpServletRequestHandler {
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
             return;
         }
-        Optional<UserQuery.UserResponse> findUserResponse = userQuery.findById(id);
+        Optional<UserResponse> findUserResponse = userQuery.findById(id);
         if (findUserResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 유저입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);

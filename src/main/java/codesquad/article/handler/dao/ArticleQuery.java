@@ -1,6 +1,8 @@
-package codesquad.global.dao;
+package codesquad.article.handler.dao;
 
 import codesquad.article.domain.vo.Status;
+import codesquad.article.handler.dto.response.ArticleDetailResponse;
+import codesquad.article.handler.dto.response.ArticleResponse;
 import codesquad.common.http.request.PageRequest;
 
 import java.util.List;
@@ -28,28 +30,5 @@ public interface ArticleQuery {
         public Status getStatus() {
             return status;
         }
-    }
-
-    record ArticleResponse(
-            Long articleId,
-            String title,
-            String content,
-            Long writerId,
-            String writer
-    ) {
-    }
-
-    record ArticleDetailResponse(
-            ArticleResponse article,
-            List<CommentResponse> comments
-    ) {
-    }
-
-    record CommentResponse(
-            Long id,
-            Long commenterId,
-            String commenter,
-            String content
-    ) {
     }
 }

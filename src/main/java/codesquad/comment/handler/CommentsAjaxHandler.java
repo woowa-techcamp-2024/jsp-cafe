@@ -1,13 +1,13 @@
 package codesquad.comment.handler;
 
+import codesquad.article.handler.dto.response.CommentResponse;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.ReturnType;
+import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.common.handler.annotation.Response;
 import codesquad.common.http.response.ApiResponse;
-import codesquad.global.dao.ArticleQuery;
-import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -53,8 +53,8 @@ public class CommentsAjaxHandler extends HttpServletRequestHandler {
         }
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        ArticleQuery.CommentResponse data = new ArticleQuery.CommentResponse(registeredId, loginUser.getId(), loginUser.getUserId(), content);
-        ApiResponse<ArticleQuery.CommentResponse> response = new ApiResponse<>(200, "OK", data);
+        CommentResponse data = new CommentResponse(registeredId, loginUser.getId(), loginUser.getUserId(), content);
+        ApiResponse<CommentResponse> response = new ApiResponse<>(200, "OK", data);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         String responseStr = objectMapper.writeValueAsString(response);

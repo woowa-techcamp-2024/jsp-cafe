@@ -1,12 +1,12 @@
 package codesquad.global.container.initializer;
 
+import codesquad.article.infra.MySqlArticleQuery;
 import codesquad.article.infra.MySqlArticleRepository;
 import codesquad.comment.infra.MySqlCommentRepository;
 import codesquad.common.db.connection.ConnectionManager;
 import codesquad.common.db.connection.ServerConnectionManager;
 import codesquad.common.db.transaction.JdbcTransactionManager;
-import codesquad.global.dao.MySqlArticleQuery;
-import codesquad.global.dao.MySqlUserQuery;
+import codesquad.user.infra.MySqlUserQuery;
 import codesquad.user.infra.MySqlUserRepository;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;

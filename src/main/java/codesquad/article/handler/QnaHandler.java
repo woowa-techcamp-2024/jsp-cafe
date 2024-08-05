@@ -1,5 +1,7 @@
 package codesquad.article.handler;
 
+import codesquad.article.handler.dao.ArticleQuery;
+import codesquad.article.handler.dto.response.ArticleDetailResponse;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.UpdateArticleService;
 import codesquad.article.service.UpdateArticleService.Command;
@@ -8,10 +10,8 @@ import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.exception.UnauthorizedRequestException;
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
-import codesquad.common.handler.annotation.Response;
-import codesquad.global.dao.ArticleQuery;
-import codesquad.global.dao.ArticleQuery.ArticleDetailResponse;
 import codesquad.common.handler.annotation.RequestMapping;
+import codesquad.common.handler.annotation.Response;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

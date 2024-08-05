@@ -1,5 +1,9 @@
-package codesquad.global.dao;
+package codesquad.article.infra;
 
+import codesquad.article.handler.dao.ArticleQuery;
+import codesquad.article.handler.dto.response.ArticleDetailResponse;
+import codesquad.article.handler.dto.response.ArticleResponse;
+import codesquad.article.handler.dto.response.CommentResponse;
 import codesquad.comment.domain.vo.Status;
 import codesquad.common.db.connection.ConnectionManager;
 

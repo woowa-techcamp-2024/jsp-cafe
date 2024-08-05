@@ -1,9 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.StringTokenizer" %>
-<%@ page import="codesquad.global.dao.ArticleQuery.ArticleDetailResponse" %>
-<%@ page import="codesquad.global.dao.ArticleQuery.ArticleResponse" %>
 <%@ page import="java.util.List" %>
-<%@ page import="codesquad.global.dao.ArticleQuery.CommentResponse" %>
+<%@ page import="codesquad.article.handler.dto.response.ArticleDetailResponse" %>
+<%@ page import="codesquad.article.handler.dto.response.ArticleResponse" %>
+<%@ page import="codesquad.article.handler.dto.response.CommentResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>

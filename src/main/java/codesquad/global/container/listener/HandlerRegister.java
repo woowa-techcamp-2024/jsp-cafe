@@ -1,6 +1,7 @@
 package codesquad.global.container.listener;
 
 import codesquad.article.handler.*;
+import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
@@ -14,15 +15,14 @@ import codesquad.comment.service.DeleteCommentService;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
-import codesquad.common.handler.annotation.Response;
-import codesquad.global.dao.ArticleQuery;
-import codesquad.global.dao.UserQuery;
-import codesquad.global.filter.AuthenticationFilter;
 import codesquad.common.handler.annotation.RequestMapping;
+import codesquad.common.handler.annotation.Response;
+import codesquad.global.filter.AuthenticationFilter;
 import codesquad.user.handler.UserHandler;
 import codesquad.user.handler.UserRegisterFormHandler;
 import codesquad.user.handler.UserUpdateFormHandler;
 import codesquad.user.handler.UsersHandler;
+import codesquad.user.handler.dao.UserQuery;
 import codesquad.user.service.SignInService;
 import codesquad.user.service.SignUpService;
 import codesquad.user.service.UpdateUserService;
