@@ -158,6 +158,31 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
     }
 
     @Override
+    public List<CommentVO> findCommentsJoinUserByLastId(Long postId, long lastCommentId, int limit) {
+        String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
+                "FROM comments c " +
+                "JOIN users u ON c.user_id = u.user_id " +
+                "WHERE c.post_id = ? AND c.comment_id > ? AND c.deleted_at IS NULL " +
+                "ORDER BY c.created_at ASC " +
+                "LIMIT ?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, postId);
+            pstmt.setLong(2, lastCommentId);
+            pstmt.setInt(3, limit);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return mapResultSetToEntities(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Comment 조회 중 오류 발생", e);
+        }
+    }
+
+    @Override
     public List<CommentVO> findCommentsJoinUser(Long postId, int limit, int offset) {
         String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
                 "FROM comments c " +
