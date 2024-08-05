@@ -77,7 +77,7 @@ public class ReplyDataHandlerMySql implements ReplyDataHandler {
 
     @Override
     public List<Reply> findAllByArticleId(Long articleId) {
-        String sql = "SELECT * FROM replies where replies.alive_status = ? and replies.article_id = ?";
+        String sql = "SELECT * FROM replies where replies.alive_status = ? and replies.article_id = ? ORDER BY created_dt DESC";
         List<Reply> replies = new ArrayList<>();
         try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql)) {
