@@ -57,7 +57,7 @@ public class ServletContextInitializer implements ServletContextListener {
                     new QuestionJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
 
             setContext("PostCountCache", () ->
-                    new PostCountCache(getBean("QuestionRepository", QuestionRepository.class)));
+                    new QuestionCountCache(getBean("QuestionRepository", QuestionRepository.class)));
 
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));
@@ -86,6 +86,6 @@ public class ServletContextInitializer implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         getBean("DbConnector", DbConnector.class).close();
-        getBean("PostCountCache", PostCountCache.class).close();
+        getBean("PostCountCache", QuestionCountCache.class).close();
     }
 }
