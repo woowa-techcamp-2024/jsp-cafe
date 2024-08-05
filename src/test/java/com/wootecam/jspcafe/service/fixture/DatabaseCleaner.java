@@ -14,8 +14,10 @@ public class DatabaseCleaner {
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
         jdbcTemplate.execute("TRUNCATE TABLE users");
         jdbcTemplate.execute("TRUNCATE TABLE question");
+        jdbcTemplate.execute("TRUNCATE TABLE reply");
         jdbcTemplate.execute("ALTER TABLE users ALTER COLUMN id RESTART WITH 1");
         jdbcTemplate.execute("ALTER TABLE question ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.execute("ALTER TABLE reply ALTER COLUMN id RESTART WITH 1");
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
     }
 }

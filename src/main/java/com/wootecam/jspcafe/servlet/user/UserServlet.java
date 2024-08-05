@@ -9,11 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class UserHttpServlet extends AbstractHttpServlet {
+public class UserServlet extends AbstractHttpServlet {
 
     private final UserService userService;
 
-    public UserHttpServlet(final UserService userService) {
+    public UserServlet(final UserService userService) {
         this.userService = userService;
     }
 

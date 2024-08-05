@@ -1,4 +1,4 @@
-package com.wootecam.jspcafe.servlet;
+package com.wootecam.jspcafe.servlet.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

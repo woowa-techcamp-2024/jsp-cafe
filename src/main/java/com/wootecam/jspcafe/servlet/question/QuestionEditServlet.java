@@ -5,7 +5,7 @@ import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.exception.CommonException;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
-import com.wootecam.jspcafe.servlet.HttpBodyParser;
+import com.wootecam.jspcafe.servlet.util.HttpBodyParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
-public class QuestionEditHttpServlet extends AbstractHttpServlet {
+public class QuestionEditServlet extends AbstractHttpServlet {
 
     private final QuestionService questionService;
 
-    public QuestionEditHttpServlet(final QuestionService questionService) {
+    public QuestionEditServlet(final QuestionService questionService) {
         this.questionService = questionService;
     }
 

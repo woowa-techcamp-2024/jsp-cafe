@@ -8,9 +8,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SignupFormHttpServlet extends AbstractHttpServlet {
+public class SignupServlet extends AbstractHttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(SignupFormHttpServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(SignupServlet.class);
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)

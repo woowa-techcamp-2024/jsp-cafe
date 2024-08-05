@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
 
 <!DOCTYPE html>
 <html lang="kr">
@@ -33,7 +35,6 @@
                                 <i class="icon-link"></i>
                             </a>
                         </div>
-                        1
                     </div>
                     <div class="article-doc">
                         ${question.contents}
@@ -56,83 +57,57 @@
                     </div>
                 </article>
 
+                <c:set var="currentReplies" value="${requestScope.replies}"/>
+
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>${fn:length(currentReplies)}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-
-                            <article class="article" id="answer-1405">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                             class="article-author-thumb" alt="">
+                            <c:forEach var="reply" items="${currentReplies}" varStatus="status">
+                                <article class="article">
+                                    <div class="article-header">
+                                        <div class="article-header-thumb">
+                                            <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                                 class="article-author-thumb" alt="">
+                                        </div>
+                                        <div class="article-header-text">
+                                            <a href="#" class="article-author-name">${reply.writer}</a>
+                                            <div class="article-header-time">
+                                                <fmt:parseDate value="${reply.createdTime}" pattern="yyyy-MM-dd'T'HH:mm"
+                                                               var="createdTime" type="both" parseLocale="ko"/>
+                                                <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${createdTime}"/>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
+                                    <div class="article-doc comment-doc">
+                                            ${reply.contents}
                                     </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <article class="article" id="answer-1406">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                             class="article-author-thumb" alt="">
+                                    <div class="article-util">
+                                        <ul class="article-util-list">
+                                            <li>
+                                                <a class="link-modify-article" href="#none">수정</a>
+                                            </li>
+                                            <li>
+                                                <a href="/replies/delete/${reply.id}"
+                                                   class="delete-answer-button">삭제</a>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="form-delete" action="/questions/413/answers/1405"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <form class="submit-write">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
-                                <div class="clearfix"/>
-                            </form>
+                                </article>
+                            </c:forEach>
                         </div>
+                        <form class="submit-write">
+                            <input class="form-control" id="questionId" name="questionId" type="hidden"
+                                   value="${currentQuestion.id}"
+                                   readonly/>
+                            <div class="form-group" style="padding:14px;">
+                                <textarea class="form-control" name="contents"
+                                          placeholder="Update your status"></textarea>
+                            </div>
+                            <button id="comment-button" class="btn btn-success pull-right" type="submit">답변하기
+                            </button>
+                            <div class="clearfix"/>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -157,13 +132,10 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="#none">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
+                    <a href="/replies/delete/{3}" class="delete-answer-button">삭제</a>
                 </li>
             </ul>
         </div>
@@ -172,8 +144,13 @@
 
 <!-- script references -->
 <jsp:include page="../snippet/script.jsp"/>
+</body>
+</html>
+
 <script>
     $(document).ready(function () {
+
+        // 질문 삭제
         $('.form-delete').on('submit', function (e) {
             e.preventDefault();
 
@@ -187,11 +164,12 @@
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
-                    window.location.href = '/';
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
                 }
             });
         })
 
+        // 질문 수정
         $('#edit-form-link').on('click', function (e) {
             e.preventDefault();
 
@@ -205,11 +183,92 @@
                 error: function (xhr, status, error) {
                     let errorMessage = xhr.responseText
                     alert(status + ": " + errorMessage)
-                    window.location.href = '/';
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
                 }
             });
         })
+
+        // 댓글 작성
+        $('.submit-write').on('submit', function (e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let formData = form.serialize();
+
+            $.ajax({
+                url: "${pageContext.request.contextPath}/replies",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+
+                success: function (response) {
+                    console.log(response.writer);
+                    console.log(response.createdTime);
+                    console.log(response.contents);
+
+                    // 댓글 작성 성공 시 새로운 댓글 HTML 추가
+                    var newReplyHTML = createReplyHTML(response.writer, formatTime(response.createdTime), response.contents, response.id);
+                    $('.qna-comment-slipp-articles').append(newReplyHTML);
+
+                    // 댓글 작성 폼 초기화
+                    form.find('textarea').val('');
+
+                    // 댓글 수 증가 및 화면 업데이트
+                    var currentCount = parseInt($('.qna-comment-count strong').text());
+                    var newCount = currentCount + 1;
+                    $('.qna-comment-count').html('<strong>' + newCount + '</strong>개의 의견');
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText
+                    alert(status + ": " + errorMessage)
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
+                }
+            });
+        });
+
+        // 댓글 삭제
+        $(document).on('click', '.delete-answer-button', function (e) {
+            e.preventDefault();
+
+            var $this = $(this);
+            var clickedUrl = $this.attr('href');
+            var $article = $this.closest('article');
+
+            $.ajax({
+                url: clickedUrl,
+                type: 'POST',
+                success: function () {
+                    // 해당 댓글 요소 삭제
+                    $article.remove();
+
+                    // 댓글 수 감소
+                    var $commentCount = $('.qna-comment-count strong');
+                    var currentCount = parseInt($commentCount.text());
+                    var newCount = Math.max(currentCount - 1, 0);  // 음수가 되지 않도록 함
+                    $commentCount.text(newCount);
+
+                    // 댓글 갯수 업데이
+                    $('.qna-comment-count').html('<strong>' + newCount + '</strong>개의 의견');
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseText;
+                    alert(status + ": " + errorMessage);
+                    window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
+                }
+            });
+        });
     });
+
+    function createReplyHTML(writer, createdTime, contents, id) {
+        // HTML 템플릿 가져오기
+        var template = $('#answerTemplate').html();
+
+        // 템플릿에 데이터 치환
+        var html = template.replace('{0}', writer)
+            .replace('{1}', createdTime)
+            .replace('{2}', contents)
+            .replace('{3}', id);
+        return $(html).get(0);
+    }
 </script>
-</body>
-</html>
+

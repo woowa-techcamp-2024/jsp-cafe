@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.jspcafe.domain.Question;
+import com.wootecam.jspcafe.domain.Reply;
 import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.exception.BadRequestException;
 import com.wootecam.jspcafe.exception.NotFoundException;
@@ -28,7 +29,7 @@ class QuestionServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        questionService = new QuestionService(questionRepository);
+        questionService = new QuestionService(questionRepository, replyRepository);
     }
 
     @Nested
@@ -150,7 +151,6 @@ class QuestionServiceTest extends ServiceTest {
                         () -> assertThat(question.getContents()).isEqualTo("2내용입니다."),
                         () -> assertThat(question.getUserPrimaryId()).isEqualTo(1L)
                 );
-
             }
         }
 
@@ -265,6 +265,44 @@ class QuestionServiceTest extends ServiceTest {
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("삭제 할 질문을 찾을 수 없습니다.");
 
+            }
+        }
+
+        @Nested
+        class 만약_삭제하려는_질문에_작성자가_아닌_다른_사용자의_댓글이_있다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "email"));
+                userRepository.save(new User("otherUserId", "otherPassword", "otherName", "otherEmail"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+                replyRepository.save(new Reply("userId", "댓글1", LocalDateTime.now(), 2L, 1L));
+
+                // expect
+                assertThatThrownBy(() -> questionService.delete(1L, 1L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("다른 사용자가 댓글을 단 질문은 삭제할 수 없습니다.");
+            }
+        }
+
+        @Nested
+        class 만약_삭제하려는_질문에_작성자의_댓글만_존재하면 {
+
+            @Test
+            void 질문을_삭제한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "email"));
+                userRepository.save(new User("otherUserId", "otherPassword", "otherName", "otherEmail"));
+                questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
+                replyRepository.save(new Reply("userId", "댓글1", LocalDateTime.now(), 1L, 1L));
+
+                // when
+                questionService.delete(1L, 1L);
+                List<Reply> replies = replyRepository.findAllByQuestionPrimaryId(1L);
+
+                // then
+                assertThat(replies).isEmpty();
             }
         }
 

@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class SignOutHttpServlet extends AbstractHttpServlet {
+public class SignOutServlet extends AbstractHttpServlet {
 
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
