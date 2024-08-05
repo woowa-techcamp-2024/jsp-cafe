@@ -56,9 +56,11 @@
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>0</strong>개의 의견</p>
-                        <form class="submit-write answer-write" name="answer" method="POST" action="/qna/${article.id}/replies">
+                        <form class="submit-write answer-write" name="answer" method="POST"
+                              action="/qna/${article.id}/replies">
                             <div class="form-group" style="padding:14px;">
-                                <textarea name="contents" id="contents" class="form-control" placeholder="답변을 작성해보세요."></textarea>
+                                <textarea name="contents" id="contents" class="form-control"
+                                          placeholder="답변을 작성해보세요."></textarea>
                             </div>
                             <button class="btn btn-success pull-right" type="submit">답변하기</button>
                             <div class="clearfix"></div>
@@ -165,8 +167,7 @@
                     <a class="link-modify-article" href="/api/qna/updateAnswer/${article.id}">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/${article.id}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
+                    <form class="delete-answer-form" action="/api/questions/${article.id}/answers/{4}">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>
                 </li>
@@ -184,21 +185,21 @@
         var url = $(".answer-write").attr("action");
 
         var contents = $("#contents").val();
-        var data = JSON.stringify({ contents: contents });
+        var data = JSON.stringify({contents: contents});
 
         console.log(data)
         $.ajax({
-            type : 'POST',
-            url : url,
-            data : data,
+            type: 'POST',
+            url: url,
+            data: data,
             contentType: 'application/json; charset=utf-8',
-            dataType : 'json',
+            dataType: 'json',
             error: function () {
                 alert("error");
             },
-            success : function (data, status) {
+            success: function (data, status) {
                 var answerTemplate = $("#answerTemplate").html();
-                var template = answerTemplate.format(data.id, data.author.userId, data.createdAt, data.contents, data.id);
+                var template = answerTemplate.format(data.id, data.author.name, data.createdAt, data.contents, data.id);
                 console.log(template)
                 $(".qna-comment-slipp-articles").append(template);
                 $("textarea[name=contents]").val("");
@@ -218,6 +219,25 @@
 
     $(".delete-answer-form button[type='submit']").click(deleteAnswer);
 
+    function deleteAnswer(e) {
+        e.preventDefault();
+
+        var deleteBtn = $(this);
+        var url = $(".delete-answer-form").attr("action");
+
+        $.ajax({
+            type: 'DELETE',
+            url: url,
+            dataType: 'json',
+            error: function (xhr, status) {
+                console.log("error");
+            },
+            success: function (data, status) {
+                console.log('data:' + data);
+                deleteBtn.closest("article").remove();
+            }
+        });
+    }
 </script>
 
 </body>
