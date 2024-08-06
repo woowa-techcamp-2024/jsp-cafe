@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.dto.ReplyCreateDto;
+import org.example.cafe.application.dto.ReplyCreateResponse;
+import org.example.cafe.domain.Reply;
 import org.example.cafe.utils.JsonDataBinder;
 import org.example.cafe.utils.PathTokenExtractUtils;
 import org.slf4j.Logger;
@@ -36,9 +38,14 @@ public class ReplyServlet extends BaseServlet {
         assert request.getSession(false) != null;
         String userId = (String) request.getSession(false).getAttribute("userId");
 
-        replyService.createReply(replyCreateDto, userId);
+        Reply newReply = replyService.createReply(replyCreateDto, userId);
 
-        response.sendRedirect("/questions/" + replyCreateDto.questionId());
+        String jsonResult = objectMapper.writeValueAsString(new ReplyCreateResponse(newReply));
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(jsonResult);
     }
 
     @Override

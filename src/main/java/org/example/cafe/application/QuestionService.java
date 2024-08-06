@@ -3,9 +3,9 @@ package org.example.cafe.application;
 import java.util.List;
 import org.example.cafe.application.dto.QuestionCreateDto;
 import org.example.cafe.application.dto.QuestionUpdateDto;
-import org.example.cafe.common.error.BadAuthenticationException;
-import org.example.cafe.common.error.BadRequestException;
-import org.example.cafe.common.error.DataNotFoundException;
+import org.example.cafe.common.exception.BadAuthenticationException;
+import org.example.cafe.common.exception.BadRequestException;
+import org.example.cafe.common.exception.DataNotFoundException;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.Reply;
@@ -62,6 +62,7 @@ public class QuestionService {
         validNoOtherUserReplies(loginUserId, replies);
         deleteAllReplies(replies);
 
+        question.delete();
         questionRepository.update(question);
     }
 

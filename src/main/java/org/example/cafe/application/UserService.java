@@ -4,9 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.example.cafe.application.dto.UserCreateDto;
 import org.example.cafe.application.dto.UserUpdateDto;
-import org.example.cafe.common.error.BadAuthenticationException;
-import org.example.cafe.common.error.CafeException;
-import org.example.cafe.common.error.DataNotFoundException;
+import org.example.cafe.common.exception.BadAuthenticationException;
+import org.example.cafe.common.exception.CafeException;
+import org.example.cafe.common.exception.DataNotFoundException;
 import org.example.cafe.domain.User;
 import org.example.cafe.domain.UserRepository;
 

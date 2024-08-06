@@ -3,6 +3,7 @@ package org.example.cafe.context;
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -19,6 +20,7 @@ import org.example.cafe.infrastructure.QuestionJdbcRepository;
 import org.example.cafe.infrastructure.ReplyJdbcRepository;
 import org.example.cafe.infrastructure.UserJdbcRepository;
 import org.example.cafe.infrastructure.database.DbConnector;
+import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
 import org.slf4j.Logger;
 
 @WebListener
@@ -37,16 +39,22 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private void registerBean() {
         try {
-            setContext("ObjectMapper", ObjectMapper::new);
+            setContext("ObjectMapper", () -> {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                return mapper;
+            });
 
             setContext("DbConnector", () -> new DbConnector().init());
+            setContext("JdbcTemplate", () ->
+                    new JdbcTemplate(getBean("DbConnector", DbConnector.class).getDataSource()));
 
             setContext("UserRepository", () ->
-                    new UserJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new UserJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
             setContext("ReplyRepository", () ->
-                    new ReplyJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new ReplyJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
             setContext("QuestionRepository", () ->
-                    new QuestionJdbcRepository(getBean("DbConnector", DbConnector.class)));
+                    new QuestionJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
 
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));

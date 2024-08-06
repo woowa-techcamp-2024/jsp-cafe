@@ -59,7 +59,8 @@ public class LoginServlet extends BaseServlet {
             return;
         }
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
+        request.changeSessionId();
         session.setAttribute("userId", userId);
         Cookie cookie = new Cookie("SESSION", session.getId());
         response.addCookie(cookie);

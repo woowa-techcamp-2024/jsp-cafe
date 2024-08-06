@@ -136,8 +136,8 @@ class Step6 extends TomcatBaseTestEnvironment {
 
             //then
             assertAll(() -> {
-                assertThat(con.getResponseCode()).isEqualTo(302);
-                assertThat(con.getHeaderField("Location")).isEqualTo("/questions/" + savedQuestionId);
+                assertThat(con.getResponseCode()).isEqualTo(200);
+                assertThat(getResponse(con)).contains("newContent", "testUser1");
             });
         }
     }

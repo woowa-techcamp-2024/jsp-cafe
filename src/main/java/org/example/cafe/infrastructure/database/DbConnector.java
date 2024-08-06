@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
-import org.example.cafe.common.error.CafeException;
+import org.example.cafe.common.exception.CafeException;
 import org.slf4j.Logger;
 
 public class DbConnector {
@@ -53,6 +53,10 @@ public class DbConnector {
         } catch (SQLException e) {
             throw new CafeException("Cannot execute health check query", e);
         }
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
     public Connection getConnection() throws SQLException {

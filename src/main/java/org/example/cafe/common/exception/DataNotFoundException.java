@@ -1,4 +1,4 @@
-package org.example.cafe.common.error;
+package org.example.cafe.common.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
 
