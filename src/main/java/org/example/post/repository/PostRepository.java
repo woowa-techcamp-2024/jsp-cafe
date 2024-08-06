@@ -47,7 +47,8 @@ public class PostRepository {
 
     public PostDto findById(Long id) throws SQLException {
         String sql = "SELECT p.id, p.user_id, u.name as username, p.title, p.contents, p.status, p.created_at " +
-                "FROM posts p, users u " +
+                "FROM posts p " +
+                "INNER JOIN users u ON p.user_id = u.user_id " +
                 "WHERE p.id = ? AND p.status = ?";
 
         try (Connection conn = connectionPool.getConnection();
