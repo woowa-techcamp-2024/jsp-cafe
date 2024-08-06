@@ -97,7 +97,9 @@
                             </article>
                             <% } %>
                         </div>
+                        <% if (replies.size() > 5) { %>
                         <button id="load-more-comments" class="btn btn-primary">더보기</button>
+                        <% } %>
                         <form id="comment-form" class="submit-write">
                             <div class="form-group" style="padding:14px;">
                                 <textarea id="comment-content" class="form-control" placeholder="Update your status"></textarea>
@@ -141,7 +143,6 @@
     $(document).ready(function () {
         function updateCommentCount() {
             const count = document.getElementById('comment-count');
-            console.log(count);
             let currentCount = parseInt(count.textContent);
             if (!isNaN(currentCount)) {
                 currentCount += 1;
@@ -151,7 +152,11 @@
 
         function decreaseCommentCount() {
             const count = document.getElementById('comment-count');
-            count.value = count.value - 1;
+            let currentCount = parseInt(count.textContent);
+            if (!isNaN(currentCount)) {
+                currentCount -= 1;
+                count.textContent = currentCount;
+            }
         }
 
         function addComment(comment, appendToBottom = false) {
@@ -166,7 +171,6 @@
             } else {
                 $('#comment-list').prepend(template);
             }
-            // updateCommentCount();
         }
 
         function loadComments(lastCreatedAt, lastReplyId) {
