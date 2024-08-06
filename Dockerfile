@@ -11,6 +11,9 @@ ENV PATH $GRADLE_HOME/bin:$PATH
 
 # 애플리케이션 소스 복사
 COPY . /tmp/app
+# 필요한 JAR 파일을 Tomcat lib 디렉토리로 복사
+COPY --from=build /root/.gradle/caches/modules-2/files-2.1/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/3.0.0/*.jar /usr/local/tomcat/lib/
+COPY --from=build /root/.gradle/caches/modules-2/files-2.1/org.glassfish.web/jakarta.servlet.jsp.jstl/3.0.0/*.jar /usr/local/tomcat/lib/
 
 # Gradle을 사용하여 WAR 파일 빌드 및 JSP 프리컴파일
 WORKDIR /tmp/app
