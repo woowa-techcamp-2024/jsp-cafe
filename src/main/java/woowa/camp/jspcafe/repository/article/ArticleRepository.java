@@ -15,7 +15,7 @@ public interface ArticleRepository {
 
     Optional<Article> findNext(Long currentId);
 
-    List<Article> findByOffsetPagination(int offset, int limit);
+    List<Article> findByOffsetPagination(long offset, int limit);
 
     void update(Article article);
 
