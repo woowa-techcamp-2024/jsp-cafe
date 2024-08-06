@@ -1,6 +1,8 @@
 package camp.woowa.jspcafe.servlet;
 
 import camp.woowa.jspcafe.core.ServiceLocator;
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Reply;
@@ -16,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import static camp.woowa.jspcafe.utils.SessionUtils.getSessionUser;
@@ -24,6 +25,7 @@ import static camp.woowa.jspcafe.utils.SessionUtils.getSessionUser;
 @WebServlet("/replies/*")
 public class RepliesServlet extends HttpServlet {
     private final ReplyService replyService;
+    private final int PAGE_SIZE = 5;
 
     public RepliesServlet() {
         replyService = ServiceLocator.getService(ReplyService.class);
@@ -107,10 +109,11 @@ public class RepliesServlet extends HttpServlet {
             String content = (String) dataMap.get("content");
 
 
-            replyService.createReply(questionId, sessionUser.getId(), sessionUser.getName(), content);
+            Long savedId = replyService.createReply(questionId, sessionUser.getId(), sessionUser.getName(), content);
 
             resp.setContentType("application/json");
-            resp.getWriter().write("{\"result\":\"success\"}");
+            mapper.registerModule(new JavaTimeModule());
+            mapper.writeValue(resp.getWriter(), replyService.findById(savedId));
         } catch (IOException | NumberFormatException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -124,13 +127,21 @@ public class RepliesServlet extends HttpServlet {
                 return;
             }
 
-            Long questionId = Long.parseLong(req.getParameter("questionId"));
-            List<Reply> replies = replyService.findByQuestionId(questionId);
+            String page = req.getParameter("p");
+            if (page == null) { // page 가 Null 이면 1로 초기화
+                page = "1";
+            }
+            int p = Integer.parseInt(page);
+            if (p < 1) { // p 가 1보다 작으면 1로 초기화
+                p = 1;
+            }
 
+            Long questionId = Long.parseLong(req.getParameter("questionId"));
+            Page<Reply> replyPage = replyService.findByQuestionIdWithPage(questionId, new PageRequest(p, PAGE_SIZE));
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             resp.setContentType("application/json");
-            mapper.writeValue(resp.getWriter(), replies);
+            mapper.writeValue(resp.getWriter(), replyPage);
         } catch (IOException | NumberFormatException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
