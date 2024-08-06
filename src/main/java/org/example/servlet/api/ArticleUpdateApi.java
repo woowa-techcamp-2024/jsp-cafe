@@ -146,7 +146,10 @@ public class ArticleUpdateApi extends HttpServlet {
     }
 
     private boolean isCorrectAuthor(HttpServletRequest request, HttpServletResponse response, Article article) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return false;
+        }
         User user = (User) session.getAttribute(SessionName.USER.getName());
         if (!user.getUserId().equals(article.getUserId())) {
             return true;
