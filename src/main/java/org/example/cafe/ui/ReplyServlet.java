@@ -9,13 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.dto.ReplyCreateDto;
 import org.example.cafe.application.dto.ReplyCreateResponse;
 import org.example.cafe.application.dto.ReplyListResponse;
 import org.example.cafe.application.dto.ReplyPageParam;
 import org.example.cafe.common.exception.BadRequestException;
+import org.example.cafe.common.page.Page;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.utils.JsonDataBinder;
 import org.example.cafe.utils.PathTokenExtractUtils;
@@ -59,7 +59,7 @@ public class ReplyServlet extends BaseServlet {
 
         log.debug("lastReplyId: {}, createdAt: {}", lastReplyId, createdAt);
 
-        List<Reply> replies = replyService.findReplyPageByQuestionId(
+        Page<Reply> replies = replyService.findReplyPageByQuestionId(
                 new ReplyPageParam(questionId, lastReplyId, createdAt));
 
         String jsonResult = objectMapper.writeValueAsString(ReplyListResponse.create(replies));

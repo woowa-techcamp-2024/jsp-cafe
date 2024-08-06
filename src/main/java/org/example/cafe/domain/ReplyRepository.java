@@ -2,6 +2,7 @@ package org.example.cafe.domain;
 
 import java.util.List;
 import org.example.cafe.application.ReplyService.ReplyPageDto;
+import org.example.cafe.common.page.Page;
 
 public interface ReplyRepository {
 
@@ -11,7 +12,7 @@ public interface ReplyRepository {
 
     List<Reply> findByQuestionId(Long questionId);
 
-    List<Reply> findByQuestionId(ReplyPageDto replyPageDto);
+    Page<Reply> findByQuestionId(ReplyPageDto replyPageDto);
 
     void update(Reply reply);
 

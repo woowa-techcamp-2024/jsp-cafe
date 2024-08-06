@@ -6,6 +6,7 @@ import org.example.cafe.application.dto.ReplyCreateDto;
 import org.example.cafe.application.dto.ReplyPageParam;
 import org.example.cafe.common.exception.BadAuthenticationException;
 import org.example.cafe.common.exception.DataNotFoundException;
+import org.example.cafe.common.page.Page;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
@@ -34,7 +35,7 @@ public class ReplyService {
         return replyRepository.findByQuestionId(questionId);
     }
 
-    public List<Reply> findReplyPageByQuestionId(ReplyPageParam replyPageParam) {
+    public Page<Reply> findReplyPageByQuestionId(ReplyPageParam replyPageParam) {
         ReplyPageDto replyPageDto = new ReplyPageDto(replyPageParam.questionId(),
                 replyPageParam.lastReplyId(), replyPageParam.createdAt(), REPLY_PAGE_SIZE);
 

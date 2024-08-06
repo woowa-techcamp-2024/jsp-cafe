@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.cafe.application.ReplyService.ReplyPageDto;
+import org.example.cafe.common.page.CursorPage;
+import org.example.cafe.common.page.Page;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
@@ -59,15 +61,17 @@ public class ReplyJdbcRepository implements ReplyRepository {
     }
 
     @Override
-    public List<Reply> findByQuestionId(ReplyPageDto replyPageDto) {
+    public Page<Reply> findByQuestionId(ReplyPageDto replyPageDto) {
         if (replyPageDto.lastReplyId() == null || replyPageDto.createdAt() == null) {
-            return jdbcTemplate.query(SELECT_FIRST_PAGE_BY_QUESTION_ID, replyRowMapper,
-                    replyPageDto.questionId(), replyPageDto.pageSize());
+            List<Reply> result = jdbcTemplate.query(SELECT_FIRST_PAGE_BY_QUESTION_ID, replyRowMapper,
+                    replyPageDto.questionId(), replyPageDto.pageSize() + 1);
+            return new CursorPage<>(result, replyPageDto.pageSize());
         }
 
-        return jdbcTemplate.query(SELECT_NEXT_PAGE_BY_QUESTION_ID, replyRowMapper,
+        List<Reply> result = jdbcTemplate.query(SELECT_NEXT_PAGE_BY_QUESTION_ID, replyRowMapper,
                 replyPageDto.questionId(), replyPageDto.createdAt(), replyPageDto.createdAt(),
-                replyPageDto.lastReplyId(), replyPageDto.pageSize());
+                replyPageDto.lastReplyId(), replyPageDto.pageSize() + 1);
+        return new CursorPage<>(result, replyPageDto.pageSize());
     }
 
     @Override
