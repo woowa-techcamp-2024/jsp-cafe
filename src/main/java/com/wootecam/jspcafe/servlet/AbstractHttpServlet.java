@@ -21,6 +21,11 @@ public abstract class AbstractHttpServlet extends HttpServlet {
         } catch (CommonException e) {
             log.debug(e.getMessage(), e);
             responseError(req, resp, e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            responseError(req, resp,
+                    new CommonException("서버에서 에러가 발생했습니다.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR))
+            ;
         }
     }
 
