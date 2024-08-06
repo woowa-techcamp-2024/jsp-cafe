@@ -46,7 +46,7 @@ public class UserRouter {
         UserInfo user = userService.getProfile(userId);
 
         if (user == null) {
-            return "redirect:/error/404.html";
+            return "redirect:/template/error/404.jsp";
         } else {
             request.setAttribute("user", user);
             return "/template/user/profile.jsp";
@@ -70,12 +70,13 @@ public class UserRouter {
             return "redirect:/login";
         }
         UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-        if(userInfo == null) return "redirect:/login";
+        if (userInfo == null) return "redirect:/login";
         return "redirect:/user/" + userInfo.id() + "/form";
     }
 
     @HttpMapping(method = "POST", urlTemplate = "/user/{userId}/edit")
     public String editProfile(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
         String userId = request.getRequestURI().substring(6, request.getRequestURI().length() - 5);
         var req = new UpdateUserRequest(
                 userId,
@@ -84,12 +85,13 @@ public class UserRouter {
                 request.getParameter("email")
         );
 
-        if(request.getSession(false) == null) {
+        if (request.getSession(false) == null) {
             return "redirect:/login";
         }
 
         try {
-            userService.updateUser(req);
+            UserInfo userInfo = userService.updateUser(req);
+            session.setAttribute("userInfo", userInfo);
             return "redirect:/user/" + userId;
         } catch (RuntimeException ex) {
             return "/template/user/editProfile.jsp";

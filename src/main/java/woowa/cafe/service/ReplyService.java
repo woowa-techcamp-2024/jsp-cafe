@@ -31,8 +31,18 @@ public class ReplyService {
                 .toList();
     }
 
-    public void createReply(String questionId, String content, String userId, String authorName) {
-        replyRepository.save(new Reply(content, "ACTIVE", userId, authorName, questionId));
+    public ReplyInfo createReply(String questionId, String content, String userId, String authorName) {
+        Reply reply = new Reply(content, "ACTIVE", userId, authorName, questionId);
+        replyRepository.save(reply);
+        return new ReplyInfo(
+                reply.getId(),
+                reply.getContent(),
+                reply.getCreatedDate(),
+                reply.getStatus(),
+                reply.getUserId(),
+                reply.getAuthorName(),
+                reply.getQuestionId()
+        );
     }
 
     public boolean deleteReply(UserInfo userInfo, String questionId, String replyId) {

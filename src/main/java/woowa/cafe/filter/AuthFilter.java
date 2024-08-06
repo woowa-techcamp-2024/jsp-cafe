@@ -18,7 +18,7 @@ public class AuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (!(request instanceof HttpServletRequest)) {
-            request.getRequestDispatcher("/error/404.html").forward(request, response);
+            request.getRequestDispatcher("/template/error/404.jsp").forward(request, response);
             return;
         }
 

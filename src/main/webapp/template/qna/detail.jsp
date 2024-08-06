@@ -84,47 +84,51 @@
                 %>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong><%=replies.size()%>
+                        <p class="qna-comment-count"><strong id="reply-count"><%=replies.size()%>
                         </strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-
-                            <% for (ReplyInfo reply : replies) { %>
-                            <article class="article" id="answer-1405">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                             class="article-author-thumb" alt="">
+                            <div id="reply-box">
+                                <% for (ReplyInfo reply : replies) { %>
+                                <article id="reply-<%=reply.id()%>" class="article">
+                                    <div class="article-header">
+                                        <div class="article-header-thumb">
+                                            <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                                 class="article-author-thumb" alt="">
+                                        </div>
+                                        <div class="article-header-text">
+                                            <a href="#" class="article-author-name"><%=reply.authorName()%>
+                                            </a>
+                                            <a href="#" class="article-header-time" title="퍼머링크">
+                                                <%=reply.createdDate().toLocalDate().toString()%>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="article-header-text">
-                                        <a href="#" class="article-author-name"><%=reply.authorName()%>
-                                        </a>
-                                        <a href="#" class="article-header-time" title="퍼머링크">
-                                            <%=reply.createdDate().toLocalDate().toString()%>
-                                        </a>
+                                    <div class="article-doc comment-doc">
+                                        <% for (String s : reply.content().split("\n")) {%>
+                                        <p><%=s%>
+                                        </p>
+                                        <%}%>
                                     </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <% for (String s : reply.content().split("\n")) {%>
-                                    <p><%=s%>
-                                    </p>
-                                    <%}%>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article"
-                                               href="/question/<%=question.id()%>/reply/<%=reply.id()%>">수정</a>
-                                        </li>
-                                        <li>
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <button type="button" class="delete-answer-button"
-                                                    onclick="deleteReply('<%=reply.id()%>')">삭제
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <%}%>
+                                    <div class="article-util">
+                                        <ul class="article-util-list">
+                                            <li>
+                                                <a class="link-modify-article"
+                                                   href="/question/<%=question.id()%>/reply/<%=reply.id()%>">수정</a>
+                                            </li>
+                                            <li>
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="button" class="delete-answer-button"
+                                                        onclick="{
+                                                                incrementReplyCount(-1);
+                                                                deleteReply('<%=reply.id()%>');
+                                                                }">삭제
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </article>
+                                <%}%>
+                            </div>
                             <script>
                                 function deleteReply(replyId) {
                                     let url = "/question/<%=question.id()%>/reply/" + replyId;
@@ -134,7 +138,9 @@
                                         method: 'DELETE'
                                     }).then(response => {
                                         if (response.ok) {
-                                            window.location.reload();
+                                            response.json().then(data => {
+                                                deleteElementById("reply-" + data.data.replyId);
+                                            })
                                         } else {
                                             alert('삭제에 실패했습니다.');
                                         }
@@ -143,11 +149,13 @@
                             </script>
                             <form class="submit-write">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea id="replyContent" class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea id="replyContent" class="form-control"
+                                              placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button" onclick="createReply()">답변하기</button>
+                                <button class="btn btn-success pull-right" type="button" onclick="createReply()">답변하기
+                                </button>
                                 <script>
-                                    function createReply(){
+                                    function createReply() {
                                         let url = "/question/<%=question.id()%>/reply";
                                         let content = document.getElementById("replyContent").value;
 
@@ -163,7 +171,11 @@
                                             body: data
                                         }).then(response => {
                                             if (response.ok) {
-                                                window.location.reload();
+                                                response.json().then(data => {
+                                                    const replyInfo = data.data;
+                                                    incrementReplyCount(1);
+                                                    addElementById('reply-box', replyHtml(replyInfo));
+                                                })
                                             } else {
                                                 alert('답변에 실패했습니다.');
                                             }

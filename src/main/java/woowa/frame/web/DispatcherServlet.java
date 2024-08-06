@@ -1,5 +1,6 @@
 package woowa.frame.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -11,6 +12,8 @@ import woowa.frame.core.BeanContainer;
 import woowa.frame.core.annotation.Component;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -19,6 +22,7 @@ public class DispatcherServlet extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private BeanContainer beanContainer = BeanContainer.getInstance();
     private RouteTable table;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void init() {
@@ -32,6 +36,11 @@ public class DispatcherServlet extends HttpServlet {
 
         if (routeTableRow.isPresent()) {
             Object result = routeTableRow.get().handle(request, response);
+
+            if (result == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
 
             if (result instanceof String) {
                 String stringResult = (String) result;
@@ -50,9 +59,17 @@ public class DispatcherServlet extends HttpServlet {
                 return;
             }
 
-            forward(request, response, "/error/404.html");
+            if (result instanceof Map<?, ?>) {
+                String json = objectMapper.writeValueAsString(result);
+                response.setContentType("application/json");
+                PrintWriter writer = response.getWriter();
+                writer.print(json);
+                writer.close();
+            }
+
+            forward(request, response, "/template/error/404.jsp");
         } else {
-            forward(request, response, "/error/404.html");
+            forward(request, response, "/template/error/404.jsp");
         }
     }
 
@@ -63,9 +80,5 @@ public class DispatcherServlet extends HttpServlet {
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void destroy() {
     }
 }

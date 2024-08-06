@@ -39,21 +39,22 @@ public class UserService {
         return new UserInfo(user.getId(), user.getUserId(), user.getName(), user.getEmail());
     }
 
-    public void updateUser(UpdateUserRequest req) {
+    public UserInfo updateUser(UpdateUserRequest req) {
         User user = userRepository.findById(req.userId());
 
-        if(!req.password().equals(user.getPassword())) {
+        if (!req.password().equals(user.getPassword())) {
             throw new RuntimeException("Password is not correct");
         }
 
-        if(req.name() != null) {
+        if (req.name() != null) {
             user.setName(req.name());
         }
 
-        if(req.email() != null) {
+        if (req.email() != null) {
             user.setEmail(req.email());
         }
 
         userRepository.update(user);
+        return new UserInfo(user.getId(), user.getUserId(), user.getName(), user.getEmail());
     }
 }
