@@ -52,6 +52,47 @@ class ReplyServiceTest extends ServiceTest {
     }
 
     @Nested
+    class countAll_메소드는 {
+
+        @Nested
+        class 만약_특정_질문의_댓글이_없다면 {
+
+            @Test
+            void zero를_반환한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+
+                // when
+                int count = replyService.countAll(1L);
+
+                // then
+                assertThat(count).isZero();
+            }
+        }
+
+        @Nested
+        class 만약_특정_질문에_댓글이_N개라면 {
+
+            @Test
+            void N개를_반환한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+                replyRepository.save(new Reply("name", "contents", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents", LocalDateTime.now(), 1L, 1L));
+
+                // when
+                int count = replyService.countAll(1L);
+
+                // then
+                assertThat(count).isEqualTo(3);
+            }
+        }
+    }
+
+    @Nested
     class readAll_메소드는 {
 
         @Nested
