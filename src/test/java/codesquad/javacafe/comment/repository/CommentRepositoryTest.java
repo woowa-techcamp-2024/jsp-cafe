@@ -145,8 +145,10 @@ public class CommentRepositoryTest {
 		comment2.setComment("Second comment");
 		comment2.setCreatedAt(LocalDateTime.now());
 		commentRepository.save(comment2);
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
 
-		List<Comment> comments = commentRepository.findAll(postId);
+		List<Comment> comments = commentRepository.findAll(postId,lastCreated,lastCommentId);
 
 		assertNotNull(comments);
 		assertEquals(2, comments.size());
@@ -165,11 +167,13 @@ public class CommentRepositoryTest {
 		comment.setComment("Comment to delete");
 		comment.setCreatedAt(LocalDateTime.now());
 		Comment savedComment = commentRepository.save(comment);
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
 
 		int result = commentRepository.deleteOne(savedComment.getId());
 
 		assertEquals(1, result);
-		List<Comment> comments = commentRepository.findAll(postId);
+		List<Comment> comments = commentRepository.findAll(postId, lastCreated, lastCommentId);
 		assertNull(comments);
 	}
 
@@ -194,11 +198,13 @@ public class CommentRepositoryTest {
 		comment2.setComment("Second comment");
 		comment2.setCreatedAt(LocalDateTime.now());
 		commentRepository.save(comment2);
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
 
 		int result = commentRepository.deletePostComments(postId);
 
 		assertEquals(2, result);
-		List<Comment> comments = commentRepository.findAll(postId);
+		List<Comment> comments = commentRepository.findAll(postId, lastCreated, lastCommentId);
 		assertNull(comments);
 	}
 }

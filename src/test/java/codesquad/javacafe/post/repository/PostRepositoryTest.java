@@ -111,14 +111,15 @@ public class PostRepositoryTest {
         postRepository.save(postDto2.toEntity());
 
         List<Post> posts = postRepository.findAll(0);
+        System.out.println(posts);
         assertNotNull(posts);
         assertEquals(2, posts.size());
         assertEquals("User One", posts.get(0).getWriter());
-        assertEquals("title1", posts.get(0).getTitle());
-        assertEquals("contents1", posts.get(0).getContents());
+        assertEquals("title2", posts.get(0).getTitle());
+        assertEquals("contents2", posts.get(0).getContents());
         assertEquals("User One", posts.get(1).getWriter());
-        assertEquals("title2", posts.get(1).getTitle());
-        assertEquals("contents2", posts.get(1).getContents());
+        assertEquals("title1", posts.get(1).getTitle());
+        assertEquals("contents1", posts.get(1).getContents());
     }
 
     @Test

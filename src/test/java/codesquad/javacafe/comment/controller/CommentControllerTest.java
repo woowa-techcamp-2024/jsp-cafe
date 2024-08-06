@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,12 +138,17 @@ public class CommentControllerTest {
 		HttpServletResponse response = new CustomHttpServletResponse();
 		((CustomHttpServletRequest) request).setMethod("GET");
 		((CustomHttpServletRequest) request).addParameter("postId", postId+"");
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
+		((CustomHttpServletRequest) request).addParameter("lastCreated", lastCreated.toString());
+		((CustomHttpServletRequest) request).addParameter("lastCommentId", lastCommentId+"");
 		request.setAttribute("userId", "user1");
 		request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
 
 		commentController.doProcess(request, response);
 
-		List<Comment> comments = CommentRepository.getInstance().findAll(postId);
+		List<Comment> comments = CommentRepository.getInstance().findAll(postId, lastCreated, lastCommentId);
+
 		assertNotNull(comments);
 		assertFalse(comments.isEmpty());
 		assertEquals("This is a comment", comments.get(0).getComment());
@@ -156,11 +162,14 @@ public class CommentControllerTest {
 		((CustomHttpServletRequest) request).setMethod("POST");
 		((CustomHttpServletRequest) request).setBody("{\"postId\": 1, \"memberId\": " + memberId + ", \"comment\": \"This is a test comment\"}");
 		request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
-
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
+		((CustomHttpServletRequest) request).addParameter("lastCreated", lastCreated.toString());
+		((CustomHttpServletRequest) request).addParameter("lastCommentId", lastCommentId+"");
 		commentController.doProcess(request, response);
 
 		assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
-		CommentResponseDto comment = CommentService.getInstance().getCommentList(1L).get(0);
+		CommentResponseDto comment = CommentService.getInstance().getCommentList(1L, lastCreated, lastCommentId).get(0);
 		assertNotNull(comment);
 		assertEquals("This is a test comment", comment.getComment());
 	}
@@ -181,11 +190,15 @@ public class CommentControllerTest {
 		((CustomHttpServletRequest) request).setMethod("DELETE");
 		((CustomHttpServletRequest) request).setBody("{\"commentId\": " + savedComment.getId() + "}");
 		request.getSession().setAttribute("loginInfo", new MemberInfo(memberId, "user1", "User One"));
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
+		((CustomHttpServletRequest) request).addParameter("lastCreated", lastCreated.toString());
+		((CustomHttpServletRequest) request).addParameter("lastCommentId", lastCommentId+"");
 
 		commentController.doProcess(request, response);
 
 		assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
-		List<CommentResponseDto> comments = CommentService.getInstance().getCommentList(1L);
+		List<CommentResponseDto> comments = CommentService.getInstance().getCommentList(1L, lastCreated, lastCommentId);
 		assertNull(comments);
 	}
 

@@ -31,7 +31,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%= post.getCreatedAt() %></span>
-                                <a href="<%= request.getContextPath() %>/api/users/info" class="author"><%= post.getWriter() %></a>
+                                <a href="<%= request.getContextPath() %>/api/users/profile?userId=<%= post.getMemberId()%>" class="author"><%= post.getWriter()%></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>

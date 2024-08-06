@@ -40,3 +40,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/src/test/resources/comment.csv
+/src/test/resources/post.csv
+/src/test/resources/user.csv

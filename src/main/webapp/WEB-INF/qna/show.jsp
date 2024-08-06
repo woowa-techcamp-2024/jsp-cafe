@@ -28,7 +28,7 @@
                         </div>
 
                         <div class="article-header-text">
-                            <a href="#" class="article-author-name"><%=post.getWriter()%>
+                            <a href="<%= request.getContextPath() %>/api/users/profile?userId=<%= post.getMemberId()%>" class="article-author-name"><%=post.getWriter()%>
                             </a>
                             <a href="#" class="article-header-time" title="퍼머링크">
                                 <%=post.getCreatedAt()%>

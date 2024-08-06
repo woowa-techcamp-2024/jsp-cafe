@@ -141,8 +141,10 @@ public class CommentServiceTest {
 		data2.put("comment", "Second comment");
 		CommentRequestDto commentDto2 = new CommentRequestDto(data2);
 		commentService.save(commentDto2);
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
 
-		List<CommentResponseDto> comments = commentService.getCommentList(postId);
+		List<CommentResponseDto> comments = commentService.getCommentList(postId, lastCreated,lastCommentId);
 
 		assertNotNull(comments);
 		assertEquals(2, comments.size());
@@ -158,10 +160,12 @@ public class CommentServiceTest {
 		data.put("comment", "Comment to delete");
 		CommentRequestDto commentDto = new CommentRequestDto(data);
 		CommentResponseDto savedComment = commentService.save(commentDto);
+		var lastCreated = LocalDateTime.now().minusDays(1);
+		var lastCommentId = 0;
 
 		commentService.delete(savedComment.getId());
 
-		List<CommentResponseDto> comments = commentService.getCommentList(postId);
+		List<CommentResponseDto> comments = commentService.getCommentList(postId, lastCreated,lastCommentId);
 		assertNull(comments);
 	}
 
