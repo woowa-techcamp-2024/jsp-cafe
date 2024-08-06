@@ -1,10 +1,12 @@
 package com.hyeonuk.jspcafe.reply.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyeonuk.jspcafe.article.dao.ArticleDao;
 import com.hyeonuk.jspcafe.article.dao.MysqlArticleDao;
 import com.hyeonuk.jspcafe.article.domain.Article;
 import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
 import com.hyeonuk.jspcafe.global.db.DBManagerIml;
+import com.hyeonuk.jspcafe.global.domain.Page;
 import com.hyeonuk.jspcafe.member.dao.MemberDao;
 import com.hyeonuk.jspcafe.member.dao.MysqlMemberDao;
 import com.hyeonuk.jspcafe.member.domain.Member;
@@ -13,7 +15,6 @@ import com.hyeonuk.jspcafe.reply.dao.MysqlReplyDao;
 import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
 import com.hyeonuk.jspcafe.reply.domain.Reply;
 import com.hyeonuk.jspcafe.reply.dto.ReplyDto;
-import com.hyeonuk.jspcafe.utils.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -81,16 +82,17 @@ class ReplyControlServletTest {
             memberDao.save(replier2);
             memberDao.save(replier3);
             articleDao.save(article);
-            Reply reply1 = new Reply(1l,article,replier1,"reply1");
-            Reply reply2 = new Reply(2l,article,replier2,"reply2");
-            Reply reply3 = new Reply(3l,article,replier3,"reply3");
+            Reply reply1 = new Reply(article,replier1,"reply1");
+            Reply reply2 = new Reply(article,replier2,"reply2");
+            Reply reply3 = new Reply(article,replier3,"reply3");
             List<Reply> replies = List.of(reply1,reply2,reply3);
-            List<ReplyDto> expected = replies.stream()
-                    .map(ReplyDto::from)
-                    .collect(Collectors.toList());
             replyDao.save(reply1);
             replyDao.save(reply2);
             replyDao.save(reply3);
+            List<ReplyDto> expectedList = replies.stream()
+                    .map(ReplyDto::from)
+                    .collect(Collectors.toList());
+            Page<ReplyDto> expected = new Page(5,1,replies.size(),expectedList);
 
             req.setPathInfo("/"+article.getId());
 
@@ -99,7 +101,7 @@ class ReplyControlServletTest {
 
             //then
             String body = res.getBody();
-            assertEquals(objectMapper.toJson(expected),body);
+            assertEquals(objectMapper.writeValueAsString(expected),body);
         }
     }
 
@@ -128,7 +130,7 @@ class ReplyControlServletTest {
 
             //then
             String response = res.getBody();
-            ReplyDto responseReply = objectMapper.fromJson(response, ReplyDto.class);
+            ReplyDto responseReply = objectMapper.readValue(response, ReplyDto.class);
             assertEquals(contents,responseReply.getContents());
             assertEquals(article.getId(),responseReply.getArticleId());
             assertTrue(replyDao.findById(responseReply.getReplyId()).isPresent());
