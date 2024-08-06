@@ -5,6 +5,10 @@ RUN mv /usr/local/tomcat/lib /usr/local/tomcat/lib_backup
 
 # 프로젝트의 lib 디렉토리 복사
 COPY ./build/libs/*.jar /usr/local/tomcat/lib/
+COPY ./jakarta-servlet-api.jar /usr/local/tomcat/lib/
+COPY ./jakarta-el-api.jar /usr/local/tomcat/lib/
+COPY ./jakarta.servlet.jsp.jstl-api.jar /usr/local/tomcat/lib/
+COPY ./jakarta.servlet.jsp.jstl.jar /usr/local/tomcat/lib/
 
 # WAR 파일 복사
 COPY ./build/libs/*.war /usr/local/tomcat/webapps/ROOT.war
@@ -14,3 +18,4 @@ WORKDIR /usr/local/tomcat
 
 # Tomcat 실행
 CMD ["catalina.sh", "run"]
+
