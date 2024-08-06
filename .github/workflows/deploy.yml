@@ -22,10 +22,10 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
+          PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.AWS_EC2_HOST }}
+          USER: ${{ secrets.AWS_EC2_USERNAME }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no ./build/libs/*.war ${USER}@${HOST}:/path/to/tomcat/webapps/
+          scp -i private_key -o StrictHostKeyChecking=no ./build/libs/*.war ${USER}@${HOST}:/opt/tomcat/webapps/ROOT.war
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'sudo systemctl restart tomcat'
