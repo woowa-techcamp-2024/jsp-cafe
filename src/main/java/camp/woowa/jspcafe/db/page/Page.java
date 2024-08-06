@@ -9,7 +9,7 @@ public class Page<T> {
     private int totalPage;
     private List<T> contents;
 
-    public Page(List<T> contents, int totalPage, int currentPage) {
+    public Page(List<T> contents, int currentPage, int totalPage) {
         this.currentPage = currentPage;
         this.totalPage = totalPage;
         this.contents = contents;
