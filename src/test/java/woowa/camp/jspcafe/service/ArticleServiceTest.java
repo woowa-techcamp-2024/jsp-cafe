@@ -183,10 +183,10 @@ class ArticleServiceTest {
     class FindArticlesTest {
 
         @Test
-        @DisplayName("[Success] 페이지별로 게시글 목록을 조회할 수 있다")
+        @DisplayName("[Success] 페이지별로 게시글 목록을 15개씩 조회할 수 있다")
         void test1() {
             // given
-            int count = 15;
+            int count = 20;
             setupUsers(count);
             ArticleFixture.createMultipleArticleWriteRequests(count, fixedDateTime.getNow())
                     .forEach(articleWriteRequest -> articleService.writeArticle(articleWriteRequest));
@@ -194,7 +194,7 @@ class ArticleServiceTest {
             List<ArticlePreviewResponse> page1 = articleService.findArticleList(1);
             List<ArticlePreviewResponse> page2 = articleService.findArticleList(2);
             // then
-            assertThat(page1).hasSize(10);
+            assertThat(page1).hasSize(15);
             assertThat(page2).hasSize(5);
         }
 
