@@ -65,10 +65,13 @@
                         </div>
                         <form class="submit-write">
                             <div class="form-group" style="padding:14px;">
-                                <textarea class="form-control" id="replyContents" placeholder="댓글을 입력하세요" rows="4"></textarea>
+                                <textarea class="form-control" id="replyContents" placeholder="댓글을 입력하세요"
+                                          rows="4"></textarea>
                             </div>
-                            <button class="btn btn-success pull-right" type="button" onclick="addReply(${post.id})">댓글 쓰기</button>
-                            <div class="clearfix" />
+                            <button class="btn btn-success pull-right" type="button" onclick="addReply(${post.id})">댓글
+                                쓰기
+                            </button>
+                            <div class="clearfix"/>
                         </form>
                     </div>
                 </div>
@@ -77,60 +80,95 @@
     </div>
 </div>
 
-<!-- script references -->
 <script>
-    function deletePost(postId) {
-        if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('DELETE', '/questions/' + postId, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var redirectUrl = xhr.getResponseHeader('X-Redirect-Location');
-                    if (redirectUrl) {
-                        alert(xhr.responseText);
-                        window.location.href = redirectUrl;
-                    }
-                } else {
-                    alert('게시글 삭제에 실패했습니다: ' + xhr.responseText);
-                }
-            };
-            xhr.onerror = function() {
-                alert('네트워크 오류가 발생했습니다.');
-            };
-            xhr.send();
-        }
-    }
-</script>
-<script>
-    // 페이지 로드 시 댓글 목록 불러오기
-    window.onload = function() {
-        loadReplies();
+    var currentPage = 1;
+    var isLoading = false;
+    // postId를 전역 변수로 선언
+    var postId;
+    var PAGE_SIZE = 5;
+
+    window.onload = function () {
+        // postId 값을 설정
+        postId = ${post.id}
+        console.log('Post ID:', postId); // postId 값 확인
+        loadReplies(currentPage);
     }
 
-    function loadReplies() {
+    function loadReplies(page) {
+        if (isLoading) return;
+        isLoading = true;
+
+        var url = '/reply/' + postId + '?page=' + page;
+        console.log('Loading replies from: ' + url);
+
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/reply/${post.id}', true);
+        xhr.open('GET', url, true);
         xhr.onload = function() {
+            isLoading = false;
             if (xhr.status === 200) {
-                document.getElementById('replyList').innerHTML = xhr.responseText;
+                console.log('Received response for page ' + page);
+                var replyList = document.getElementById('replyList');
+
+                // 더보기 버튼 제거
+                removeLoadMoreButton();
+
+                // 새로운 댓글들 추가
+                var newContent = xhr.responseText;
+                var tempDiv = document.createElement('div');
+                tempDiv.innerHTML = newContent;
+                var newReplies = tempDiv.querySelectorAll('li');
+
+                if (page === 1) {
+                    replyList.innerHTML = '';
+                }
+
+                newReplies.forEach(function(reply) {
+                    replyList.appendChild(reply);
+                });
+
+                // 새로 받은 댓글 수가 PAGE_SIZE와 같으면 "더 보기" 버튼 추가
+                if (newReplies.length === PAGE_SIZE) {
+                    addLoadMoreButton(page + 1);
+                }
+
+                currentPage = page;
+                console.log('Current page updated to ' + currentPage);
             } else {
-                alert('댓글을 불러오는데 실패했습니다.');
+                console.error('댓글을 불러오는데 실패했습니다.');
             }
         };
         xhr.onerror = function() {
-            alert('네트워크 오류가 발생했습니다.');
+            isLoading = false;
+            console.error('네트워크 오류가 발생했습니다.');
         };
         xhr.send();
     }
 
-    function addReply(postId) {
-        const contents = document.getElementById('replyContents').value;
+    function removeLoadMoreButton() {
+        var existingLoadMoreBtn = document.getElementById('load-more-btn');
+        if (existingLoadMoreBtn) {
+            existingLoadMoreBtn.remove();
+        }
+    }
+
+    function addLoadMoreButton(nextPage) {
+        var loadMoreBtn = document.createElement('button');
+        loadMoreBtn.id = 'load-more-btn';
+        loadMoreBtn.textContent = '더 보기';
+        loadMoreBtn.onclick = function() {
+            loadReplies(nextPage);
+        };
+        document.getElementById('replyList').after(loadMoreBtn);
+    }
+
+    function addReply() {
+        var contents = document.getElementById('replyContents').value;
         if (!contents.trim()) {
             alert('댓글 내용을 입력해주세요.');
             return;
         }
 
-        const formData = new URLSearchParams();
+        var formData = new URLSearchParams();
         formData.append('contents', contents);
 
         fetch('/reply/' + postId, {
@@ -140,17 +178,20 @@
             },
             body: formData.toString()
         })
-            .then(response => {
+            .then(function(response) {
                 if (!response.ok) {
                     throw new Error('Server responded with ' + response.status);
                 }
                 return response.text();
             })
-            .then(html => {
-                document.getElementById('replyList').insertAdjacentHTML('beforeend', html);
+            .then(function(html) {
                 document.getElementById('replyContents').value = '';
+
+                // 새 댓글 추가 후 첫 페이지부터 다시 로드
+                currentPage = 1;
+                loadReplies(currentPage);
             })
-            .catch(error => {
+            .catch(function(error) {
                 console.error('Error:', error);
                 alert('댓글 추가에 실패했습니다: ' + error.message);
             });
@@ -162,14 +203,14 @@
             var xhr = new XMLHttpRequest();
             xhr.open('PUT', '/reply/' + replyId, true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onload = function() {
+            xhr.onload = function () {
                 if (xhr.status === 200) {
                     document.querySelector('#reply-' + replyId + ' p').textContent = xhr.responseText;
                 } else {
                     alert('댓글 수정에 실패했습니다');
                 }
             };
-            xhr.onerror = function() {
+            xhr.onerror = function () {
                 alert('네트워크 오류가 발생했습니다.');
             };
             xhr.send('contents=' + encodeURIComponent(newContents));
@@ -180,8 +221,7 @@
         if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
             var xhr = new XMLHttpRequest();
             xhr.open('DELETE', '/reply/' + replyId, true);
-            console.log()
-            xhr.onload = function() {
+            xhr.onload = function () {
                 if (xhr.status === 200) {
                     var replyElement = document.getElementById('reply-' + replyId);
                     replyElement.parentNode.removeChild(replyElement);
@@ -189,7 +229,7 @@
                     alert('댓글 삭제에 실패했습니다: ' + xhr.responseText);
                 }
             };
-            xhr.onerror = function() {
+            xhr.onerror = function () {
                 alert('네트워크 오류가 발생했습니다.');
             };
             xhr.send();

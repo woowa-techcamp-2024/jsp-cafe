@@ -36,15 +36,21 @@ public class ReplyController {
     }
 
     @RequestMapping(path = "/{postId}", method = HttpMethod.GET)
-    public void getAllReplyList(@PathVariable("postId") Long postId, HttpServletResponse response, HttpSession session)
-            throws SQLException, IOException {
-        List<ReplyDto> allReplies = replyService.getAllReplies(postId);
+    public void getAllReplyList(@PathVariable("postId") Long postId,
+                                @RequestParam(value = "page", defaultValue = "1") int page,
+                                HttpServletResponse response,
+                                HttpSession session) throws SQLException, IOException {
+        logger.info("getAllReplyList----------- postId={}, page={}", postId, page);
+        List<ReplyDto> replies = replyService.getAllReplies(postId, page);
+        boolean hasMore = replies.size() == ReplyService.PAGE_SIZE;
+
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        logger.info("all Replies : {}", allReplies.toString());
+
         StringBuilder htmlBuilder = new StringBuilder();
         UserDto currentUser = sessionManager.getUserDetails(session.getId());
-        for (ReplyDto reply : allReplies) {
+
+        for (ReplyDto reply : replies) {
             htmlBuilder.append(String.format(
                     "<li id='reply-%d'>" +
                             "<p>%s</p>" +
@@ -60,6 +66,13 @@ public class ReplyController {
 
             htmlBuilder.append("</li>");
         }
+
+        if (hasMore) {
+            htmlBuilder.append(String.format(
+                    "<button id='load-more-btn' onclick='loadReplies(%d)'>더 보기</button>",
+                    page + 1));
+        }
+
         response.getWriter().write(htmlBuilder.toString());
     }
 

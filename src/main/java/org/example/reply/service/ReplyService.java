@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 @Component
 public class ReplyService {
 
+    public static final int PAGE_SIZE = 5;
     private static final Logger logger = LoggerFactory.getLogger(ReplyService.class);
     private final ReplyRepository replyRepository;
 
@@ -24,6 +25,12 @@ public class ReplyService {
 
     public List<ReplyDto> getAllReplies(Long postId) throws SQLException {
         List<ReplyDto> replies = replyRepository.findAll(postId);
+        return replies;
+    }
+
+    public List<ReplyDto> getAllReplies(Long postId, int page) throws SQLException {
+        int offset = (page - 1) * PAGE_SIZE;
+        List<ReplyDto> replies = replyRepository.findAll(postId, PAGE_SIZE, offset);
         return replies;
     }
 

@@ -138,6 +138,48 @@ public class ReplyRepository {
         }
     }
 
+    public List<ReplyDto> findAll(Long postId, int limit, int offset) throws SQLException {
+        String sql = "SELECT r.id, r.user_id, u.name as writer, r.contents, r.status, r.created_at " +
+                "FROM replies r " +
+                "JOIN users u ON r.user_id = u.user_id " +
+                "WHERE r.post_id = ? AND r.status = ? " +
+                "ORDER BY r.created_at DESC " +
+                "LIMIT ? OFFSET ?";
+        List<ReplyDto> replies = new ArrayList<>();
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, postId);
+            ps.setString(2, ReplyStatus.AVAILABLE.name());
+            ps.setInt(3, limit);
+            ps.setInt(4, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Long id = rs.getLong("id");
+                    String userId = rs.getString("user_id");
+                    String writer = rs.getString("writer");
+                    String contents = rs.getString("contents");
+                    String status = rs.getString("status");
+                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
+
+                    ReplyDto reply = new ReplyDto.Builder()
+                            .id(id)
+                            .postId(postId)
+                            .userId(userId)
+                            .writer(writer)
+                            .contents(contents)
+                            .replyStatus(ReplyStatus.valueOf(status))
+                            .createdAt(createdAt)
+                            .build();
+                    replies.add(reply);
+                }
+            }
+            return replies;
+        } catch (SQLException e) {
+            logger.error("Error fetching replies with pagination", e);
+            throw new SerialException(e.getMessage());
+        }
+    }
+
     public ReplyDto update(ReplyDto reply) throws SQLException {
         String sql = "UPDATE replies SET contents = ? WHERE id = ?";
 

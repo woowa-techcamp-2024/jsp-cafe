@@ -55,7 +55,7 @@ public class ControllerMethodInvoker {
 
         logger.info("paramName: {}, paramValue: {}", paramName, paramValue);
 
-        if (paramValue == null) {
+        if (paramValue == null || paramValue.trim().isEmpty()) {
             if (!annotation.defaultValue().equals("\n\t\t\n\t\t\n\ue000\ue001\ue002\n\t\t\t\t\n")) {
                 paramValue = annotation.defaultValue();
             } else if (annotation.required()) {
@@ -64,7 +64,6 @@ public class ControllerMethodInvoker {
                 return null;
             }
         }
-
 
         paramValue = URLDecoder.decode(paramValue, StandardCharsets.UTF_8);
 
