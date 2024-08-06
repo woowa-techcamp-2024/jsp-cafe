@@ -11,6 +11,7 @@ import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostDto;
+import org.example.reply.model.ReplyStatus;
 import org.example.util.DatabaseConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,6 +136,59 @@ public class PostRepository {
         } catch (SQLException e) {
             logger.error("Error updating post", e);
             throw new SQLException(e);
+        }
+    }
+
+    public void softDeletePostAndReplies(Long postId) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = connectionPool.getConnection();
+            conn.setAutoCommit(false);
+
+            softDeletePost(conn, postId);
+            softDeleteReplies(conn, postId);
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackEx) {
+                    logger.error("Error rolling back transaction: " + rollbackEx.getMessage());
+                }
+            }
+            logger.error("Error soft deleting post and replies: " + e.getMessage());
+            throw new SQLException("Failed to soft delete post and replies", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.error("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void softDeletePost(Connection conn, Long postId) throws SQLException {
+        String sql = "UPDATE posts SET status = ? WHERE id = ?";
+        executeUpdate(conn, sql, PostStatus.DELETED.name(), postId);
+    }
+
+    private void softDeleteReplies(Connection conn, Long postId) throws SQLException {
+        String sql = "UPDATE replies SET status = ? WHERE post_id = ?";
+        executeUpdate(conn, sql, ReplyStatus.DELETED.name(), postId);
+    }
+
+    private void executeUpdate(Connection conn, String sql, String status, Long id) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setLong(2, id);
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating failed, no rows affected.");
+            }
         }
     }
 }

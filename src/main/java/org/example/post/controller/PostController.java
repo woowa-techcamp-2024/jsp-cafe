@@ -98,10 +98,15 @@ public class PostController {
         if (userDetails != null) {
             if (post.getUsername().equals(userDetails.getName())) {
                 // 삭제처리
-                postService.deleteById(id);
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.setHeader("X-Redirect-Location", "/");
-                response.getWriter().write("게시글이 성공적으로 삭제되었습니다.");
+                try {
+                    postService.deleteById(id);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setHeader("X-Redirect-Location", "/");
+                    response.getWriter().write("게시글이 성공적으로 삭제되었습니다.");
+                } catch (IllegalStateException e) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("다른 사람의 댓글이 존재해 삭제할 수 없습니다.");
+                }
             }
         }
     }

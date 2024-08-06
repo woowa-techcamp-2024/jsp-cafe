@@ -8,15 +8,19 @@ import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostDto;
 import org.example.post.repository.PostRepository;
+import org.example.reply.model.dto.ReplyDto;
+import org.example.reply.repository.ReplyRepository;
 
 @Component
 public class PostService {
 
     private PostRepository postRepository;
+    private ReplyRepository replyRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, ReplyRepository replyRepository) {
         this.postRepository = postRepository;
+        this.replyRepository = replyRepository;
     }
 
     public void create(Post post) throws SQLException {
@@ -42,7 +46,18 @@ public class PostService {
     }
 
     public void deleteById(Long id) throws SQLException {
-        // TODO: 댓글이 존재한다면 삭제 불가능 한 비즈니스 로직 추가 단 모든 댓글이 자신이 작성한것이라면 삭제 가능
-        postRepository.delete(id);
+        PostDto post = postRepository.findById(id);
+        validatePostDeletion(post);
+        postRepository.softDeletePostAndReplies(id);
+    }
+
+    private void validatePostDeletion(PostDto post) throws SQLException {
+        List<ReplyDto> replies = replyRepository.findAll(post.getId());
+        boolean hasForeignReplies = replies.stream()
+                .anyMatch(reply -> !reply.getWriter().equals(post.getUsername()));
+
+        if (hasForeignReplies) {
+            throw new IllegalStateException("다른 사용자의 댓글이 존재하여 게시글을 삭제할 수 업습니다.");
+        }
     }
 }
