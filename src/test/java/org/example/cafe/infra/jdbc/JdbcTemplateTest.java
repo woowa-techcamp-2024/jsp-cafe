@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure.jdbc;
+package org.example.cafe.infra.jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.example.cafe.common.exception.CafeException;
 import org.example.cafe.domain.Question;
-import org.example.cafe.infrastructure.database.DbConnector;
-import org.example.cafe.infrastructure.jdbc.exception.JdbcTemplateException;
+import org.example.cafe.infra.database.DbConnector;
+import org.example.cafe.infra.jdbc.exception.JdbcTemplateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;

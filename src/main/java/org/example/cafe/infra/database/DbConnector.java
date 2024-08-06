@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure.database;
+package org.example.cafe.infra.database;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 

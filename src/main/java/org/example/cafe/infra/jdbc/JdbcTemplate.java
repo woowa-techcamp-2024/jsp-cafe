@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure.jdbc;
+package org.example.cafe.infra.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.example.cafe.common.exception.CafeException;
-import org.example.cafe.infrastructure.jdbc.exception.JdbcTemplateException;
+import org.example.cafe.infra.jdbc.exception.JdbcTemplateException;
 
 public class JdbcTemplate {
 

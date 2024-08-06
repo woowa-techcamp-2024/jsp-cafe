@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure.jdbc;
+package org.example.cafe.infra.jdbc;
 
 public interface KeyHolder {
 

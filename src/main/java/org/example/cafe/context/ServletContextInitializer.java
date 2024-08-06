@@ -16,11 +16,11 @@ import org.example.cafe.application.UserService;
 import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.ReplyRepository;
 import org.example.cafe.domain.UserRepository;
-import org.example.cafe.infrastructure.QuestionJdbcRepository;
-import org.example.cafe.infrastructure.ReplyJdbcRepository;
-import org.example.cafe.infrastructure.UserJdbcRepository;
-import org.example.cafe.infrastructure.database.DbConnector;
-import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
+import org.example.cafe.infra.QuestionJdbcRepository;
+import org.example.cafe.infra.ReplyJdbcRepository;
+import org.example.cafe.infra.UserJdbcRepository;
+import org.example.cafe.infra.database.DbConnector;
+import org.example.cafe.infra.jdbc.JdbcTemplate;
 import org.slf4j.Logger;
 
 @WebListener

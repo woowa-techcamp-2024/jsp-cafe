@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure;
+package org.example.cafe.infra;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,9 +6,9 @@ import java.util.List;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
-import org.example.cafe.infrastructure.jdbc.GeneratedKeyHolder;
-import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
-import org.example.cafe.infrastructure.jdbc.RowMapper;
+import org.example.cafe.infra.jdbc.GeneratedKeyHolder;
+import org.example.cafe.infra.jdbc.JdbcTemplate;
+import org.example.cafe.infra.jdbc.RowMapper;
 
 public class ReplyJdbcRepository implements ReplyRepository {
 
