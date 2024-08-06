@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS articles (
     content TEXT NOT NULL,
     author VARCHAR(100) NOT NULL,
     alive_status VARCHAR(20) NOT NULL,
-    created_dt DATETIME NOT NULL
+    created_dt DATETIME NOT NULL,
+    INDEX idx_alive_status (alive_status)
 );
 
 -- User 테이블 생성
@@ -34,7 +35,9 @@ CREATE TABLE IF NOT EXISTS replies(
     author VARCHAR(100) NOT NULL,
     comment VARCHAR(255) NOT NULL,
     alive_status VARCHAR(20) NOT NULL,
-    created_dt DATETIME NOT NULL
+    created_dt DATETIME NOT NULL,
+    INDEX idx_article_id (article_id),
+    INDEX idx_alive_status_article_id (alive_status, article_id)
 );
 
 -- Load data from CSV file
