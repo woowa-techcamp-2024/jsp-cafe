@@ -51,10 +51,22 @@ public class ControllerMethodInvoker {
     private Object resolveRequestParam(Parameter parameter, HttpServletRequest request) {
         RequestParam annotation = parameter.getAnnotation(RequestParam.class);
         String paramName = annotation.value().isEmpty() ? parameter.getName() : annotation.value();
-        String paramValue = URLDecoder.decode(request.getParameter(paramName), StandardCharsets.UTF_8);
-        if (paramValue == null && annotation.required()) {
-            throw new IllegalArgumentException("Required parameter '" + paramName + "' is not present");
+        String paramValue = request.getParameter(paramName);
+
+        logger.info("paramName: {}, paramValue: {}", paramName, paramValue);
+
+        if (paramValue == null) {
+            if (!annotation.defaultValue().equals("\n\t\t\n\t\t\n\ue000\ue001\ue002\n\t\t\t\t\n")) {
+                paramValue = annotation.defaultValue();
+            } else if (annotation.required()) {
+                throw new IllegalArgumentException("Required parameter '" + paramName + "' is not present");
+            } else {
+                return null;
+            }
         }
+
+
+        paramValue = URLDecoder.decode(paramValue, StandardCharsets.UTF_8);
 
         return convertValueToType(paramValue, parameter.getType());
     }

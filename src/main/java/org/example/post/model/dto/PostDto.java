@@ -1,9 +1,13 @@
 package org.example.post.model.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.example.post.model.PostStatus;
 
 public class PostDto {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private Long id;
     private String userId;
     private String username;
@@ -12,8 +16,6 @@ public class PostDto {
     private PostStatus status;
     private LocalDateTime createdAt;
 
-    private Long cursorId;
-    private LocalDateTime cursorTimestamp;
 
     private PostDto(Builder builder) {
         this.id = builder.id;
@@ -23,8 +25,6 @@ public class PostDto {
         this.contents = builder.contents;
         this.status = builder.status;
         this.createdAt = builder.createdAt;
-        this.cursorId = builder.cursorId;
-        this.cursorTimestamp = builder.cursorTimestamp;
     }
 
     public static class Builder {
@@ -35,8 +35,6 @@ public class PostDto {
         private String contents;
         private PostStatus status;
         private LocalDateTime createdAt;
-        private Long cursorId;
-        private LocalDateTime cursorTimestamp;
 
         public Builder id(Long id) {
             this.id = id;
@@ -73,21 +71,14 @@ public class PostDto {
             return this;
         }
 
-        public Builder cursorId(Long cursorId) {
-            this.cursorId = cursorId;
-            return this;
-        }
-
-        public Builder cursorTimestamp(LocalDateTime cursorTimestamp) {
-            this.cursorTimestamp = cursorTimestamp;
-            return this;
-        }
-
         public PostDto build() {
             return new PostDto(this);
         }
     }
 
+    public String getFormattedCreatedAt() {
+        return createdAt.format(formatter);
+    }
 
     public Long getId() {
         return id;
@@ -117,13 +108,6 @@ public class PostDto {
         return createdAt;
     }
 
-    public Long getCursorId() {
-        return cursorId;
-    }
-
-    public LocalDateTime getCursorTimestamp() {
-        return cursorTimestamp;
-    }
 
     public PostDto updatePost(String title, String contents) {
         this.title = title;

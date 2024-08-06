@@ -1,7 +1,6 @@
 package org.example.post.service;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -9,6 +8,7 @@ import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
+import org.example.post.model.dto.PagedPostsResult;
 import org.example.post.model.dto.PostDto;
 import org.example.post.repository.PostRepository;
 import org.example.reply.model.dto.ReplyDto;
@@ -18,6 +18,7 @@ import org.example.reply.repository.ReplyRepository;
 public class PostService {
 
     private static final long CACHE_DURATION = 60000;
+    private static final int DEFAULT_PAGE_SIZE = 15;
 
     private PostRepository postRepository;
     private ReplyRepository replyRepository;
@@ -40,14 +41,46 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public List<PostDto> getPagedPosts(LocalDateTime cursorTimestamp, Long cursorId, int pageSize) throws SQLException {
-        if (cursorTimestamp == null) {
-            cursorTimestamp = LocalDateTime.now();
+    public PagedPostsResult getPagedPosts(int page, int pageSize) throws SQLException {
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
         }
-        if (cursorId == null) {
-            cursorId =Long.MAX_VALUE;
+        if (pageSize <= 0) {
+            pageSize = DEFAULT_PAGE_SIZE;
         }
-        return postRepository.findAllWithPagination(cursorTimestamp, cursorId, pageSize);
+
+        int offset = (page - 1) * pageSize;
+        List<PostDto> posts = postRepository.findAllWithPagination(offset, pageSize);
+
+        int totalPosts = getTotalPostCount();
+        int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+
+        return new PagedPostsResult(posts, page, totalPages, totalPosts);
+    }
+
+    public int getTotalPostCount() {
+        long currentTime = System.currentTimeMillis();
+        lock.readLock().lock();
+        try {
+            if (currentTime - lastCacheTime <= CACHE_DURATION) {
+                return cachedTotalPostCount;
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        lock.writeLock().lock();
+        try {
+            if (currentTime - lastCacheTime > CACHE_DURATION) {
+                cachedTotalPostCount = postRepository.getTotalPostCount();
+                lastCacheTime = currentTime;
+            }
+            return cachedTotalPostCount;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get total post count", e);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public PostDto getPostById(long id) throws SQLException {
@@ -77,31 +110,6 @@ public class PostService {
 
         if (hasForeignReplies) {
             throw new IllegalStateException("다른 사용자의 댓글이 존재하여 게시글을 삭제할 수 업습니다.");
-        }
-    }
-
-    public int getTotalPostCount() {
-        long currentTime = System.currentTimeMillis();
-        lock.readLock().lock();
-        try {
-            if (currentTime - lastCacheTime <= CACHE_DURATION) {
-                return cachedTotalPostCount;
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-
-        lock.writeLock().lock();
-        try {
-            if (currentTime - lastCacheTime > CACHE_DURATION) {
-                cachedTotalPostCount = postRepository.getTotalPostCount();
-                lastCacheTime = currentTime;
-            }
-            return cachedTotalPostCount;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            lock.writeLock().unlock();
         }
     }
 }

@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.example.config.annotation.Autowired;
@@ -101,23 +99,19 @@ public class PostRepository {
         }
     }
 
-    public List<PostDto> findAllWithPagination(LocalDateTime cursorTimestamp, Long cursorId, int limit)
-            throws SQLException {
+    public List<PostDto> findAllWithPagination(int offset, int limit) throws SQLException {
         String sql = "SELECT p.id, p.user_id, u.name as username, p.title, p.contents, p.status, p.created_at " +
-                "FROM posts p, users u " +
-                "WHERE p.status = ? AND p.user_id = u.user_id " +
-                "AND (p.created_at < ? OR (p.created_at = ? AND p.id < ?)) " +
+                "FROM posts p JOIN users u ON p.user_id = u.user_id " +
+                "WHERE p.status = ? " +
                 "ORDER BY p.created_at DESC, p.id DESC " +
-                "LIMIT ?";
+                "LIMIT ? OFFSET ?";
 
         List<PostDto> posts = new ArrayList<>();
         try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, PostStatus.AVAILABLE.name());
-            ps.setTimestamp(2, Timestamp.valueOf(cursorTimestamp));
-            ps.setTimestamp(3, Timestamp.valueOf(cursorTimestamp));
-            ps.setLong(4, cursorId);
-            ps.setInt(5, limit);
+            ps.setInt(2, limit);
+            ps.setInt(3, offset);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -129,15 +123,14 @@ public class PostRepository {
                             .contents(rs.getString("contents"))
                             .status(PostStatus.valueOf(rs.getString("status")))
                             .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-                            .cursorId(rs.getLong("id"))
-                            .cursorTimestamp(rs.getTimestamp("created_at").toLocalDateTime())
                             .build();
                     posts.add(post);
                 }
             }
             return posts;
         } catch (SQLException e) {
-            throw new SQLException("데이터베이스에서 게시물을 조회하는 중 오류가 발생했습니다.");
+            logger.error("Error fetching paginated posts", e);
+            throw new SQLException("데이터베이스에서 게시물을 조회하는 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -155,6 +148,7 @@ public class PostRepository {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Error getting total post count", e);
             throw new SQLException("게시물 총 개수를 조회하는 중 오류가 발생했습니다.", e);
         }
 

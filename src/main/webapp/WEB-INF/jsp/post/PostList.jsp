@@ -16,7 +16,7 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <c:forEach items="${posts}" var="post">
+                <c:forEach items="${pagedResult.posts}" var="post">
                     <li>
                         <div class="wrap">
                             <div class="main">
@@ -25,8 +25,10 @@
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
-                                    <span class="time">작성 시간 ${post.createdAt}</span>
-                                    <a class="author">${post.username}</a>
+                                    <span class="time">
+                                            ${post.formattedCreatedAt}
+                                    </span>
+                                    <a href="#" class="author">${post.username}</a>
                                 </div>
                                 <div class="reply" title="댓글">
                                     <i class="icon-reply"></i>
@@ -40,26 +42,31 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
-                    <!-- 페이지네이션 -->
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
-                            <c:if test="${currentPage > 1}">
+                            <c:if test="${pagedResult.hasPreviousPage()}">
                                 <li>
-                                    <a href="?page=${currentPage - 1}" aria-label="Previous">
+                                    <a href="?page=${pagedResult.currentPage - 1}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                             </c:if>
 
-                            <c:forEach begin="${Math.max(1, currentPage - 2)}" end="${Math.min(totalPages, currentPage + 2)}" var="i">
-                                <li class="${i == currentPage ? 'active' : ''}">
+                            <c:set var="beginPage" value="${pagedResult.currentPage - 2 > 1 ? pagedResult.currentPage - 2 : 1}" />
+                            <c:set var="endPage" value="${pagedResult.currentPage + 2}" />
+                            <c:if test="${endPage > pagedResult.totalPages}">
+                                <c:set var="endPage" value="${pagedResult.totalPages}" />
+                            </c:if>
+
+                            <c:forEach begin="${beginPage}" end="${endPage}" var="i">
+                                <li class="${i == pagedResult.currentPage ? 'active' : ''}">
                                     <a href="?page=${i}">${i}</a>
                                 </li>
                             </c:forEach>
 
-                            <c:if test="${currentPage < totalPages}">
+                            <c:if test="${pagedResult.hasNextPage()}">
                                 <li>
-                                    <a href="?page=${currentPage + 1}" aria-label="Next">
+                                    <a href="?page=${pagedResult.currentPage + 1}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

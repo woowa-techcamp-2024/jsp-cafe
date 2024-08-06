@@ -53,7 +53,8 @@ public class DatabaseInitServlet extends HttpServlet {
                 "contents TEXT NOT NULL," +
                 "status VARCHAR(50) NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
-                ")";
+                ");" +
+                "CREATE INDEX idx_posts_status_created_at_id ON posts(status, created_at DESC, id DESC);";
     }
 
     private String createReplyTable() {

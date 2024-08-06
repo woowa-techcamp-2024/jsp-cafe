@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.example.config.HttpMethod;
 import org.example.config.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
 import org.example.member.model.dto.UserDto;
 import org.example.post.model.dao.Post;
+import org.example.post.model.dto.PagedPostsResult;
 import org.example.post.model.dto.PostDto;
 import org.example.post.service.PostService;
 import org.example.util.session.SessionManager;
@@ -36,36 +36,15 @@ public class PostController {
     }
 
     @RequestMapping(path = "/", method = HttpMethod.GET)
-    public ModelAndView list() throws SQLException {
-        List<PostDto> postResponses = postService.getAll();
-        logger.info(postResponses.toString());
+    public ModelAndView list(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "15") int size
+    ) throws SQLException {
+        logger.info("page={}, size={}", page, size);
+        PagedPostsResult result = postService.getPagedPosts(page, size);
+
         ModelAndView mv = new ModelAndView("post/PostList");
-        mv.addAttribute("posts", postResponses);
-
-        return mv;
-    }
-
-    @RequestMapping(path = "/", method = HttpMethod.GET)
-    public ModelAndView list(@RequestParam(required = false) String cursorTimestamp,
-                             @RequestParam(required = false) Long cursorId,
-                             @RequestParam(defaultValue = "1") int page) throws SQLException {
-        int pageSize = 15;
-        LocalDateTime timestamp = cursorTimestamp != null ? LocalDateTime.parse(cursorTimestamp) : null;
-        List<PostDto> postResponses = postService.getPagedPosts(timestamp, cursorId, pageSize);
-        ModelAndView mv = new ModelAndView("post/PostList");
-        mv.addAttribute("posts", postResponses);
-
-        if (!postResponses.isEmpty()) {
-            PostDto lastPost = postResponses.get(postResponses.size() - 1);
-            mv.addAttribute("nextCursorTimestamp", lastPost.getCursorTimestamp());
-            mv.addAttribute("nextCursorId", lastPost.getCursorId());
-        }
-
-        int totalPosts = postService.getTotalPostCount();
-        int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
-        mv.addAttribute("currentPage", page);
-        mv.addAttribute("totalPages", totalPages);
-
+        mv.addAttribute("pagedResult", result);
         return mv;
     }
 
