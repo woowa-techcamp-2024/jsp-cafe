@@ -29,12 +29,19 @@ public class PostRepository {
                 "       cu.id AS comment_user_id, cu.user_id AS comment_user_userid, cu.name AS comment_user_name\n" +
                 "FROM posts p\n" +
                 "JOIN users pu ON p.writer_id = pu.id\n" +
-                "LEFT JOIN comments c ON p.id = c.post_id AND c.is_present = true\n" +
+                "LEFT JOIN (\n" +
+                "    SELECT *\n" +
+                "    FROM comments\n" +
+                "    WHERE post_id = ? AND is_present = true\n" +
+                "    ORDER BY created_at DESC\n" +
+                "    LIMIT 5\n" +
+                ") c ON p.id = c.post_id\n" +
                 "LEFT JOIN users cu ON c.writer_id = cu.id\n" +
                 "WHERE p.id = ?";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, postId);
+            pstmt.setLong(2, postId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return Optional.of(createPostWithCommentsFromResultSet(rs));

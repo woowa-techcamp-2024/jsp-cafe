@@ -8,6 +8,7 @@ import org.example.demo.domain.Post;
 import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.exception.UnauthorizedException;
 import org.example.demo.model.PostCreateDao;
+import org.example.demo.repository.CommentRepository;
 import org.example.demo.repository.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,11 @@ import static org.example.demo.validator.AuthValidator.isLoggedIn;
 public class PostHandler {
     private static final Logger logger = LoggerFactory.getLogger(PostHandler.class);
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
-    public PostHandler(PostRepository postRepository) {
+    public PostHandler(PostRepository postRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     private static boolean isIdentical(Comment comment, Long userId) {
@@ -38,7 +41,7 @@ public class PostHandler {
         }
 
         Long postId = Long.parseLong(pathVariables.get(0));
-        Post post = checkPostExistence(postId);
+        Post post = postRepository.getPost(postId).orElseThrow(() -> new NotFoundExceptoin("Post not found"));
 
         request.setAttribute("post", post);
         request.setAttribute("comments", post.getComments());

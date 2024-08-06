@@ -91,4 +91,18 @@ public class CommentHandler {
     private List<Comment> getUpdatedComments(Long postId, Long lastCommentId) {
         return commentRepository.getMoreComments(postId, lastCommentId);
     }
+
+    public void getComments(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) {
+        long postId = Long.parseLong(pathVariables.get(0));
+        long lastCommentId = Long.parseLong(request.getParameter("lastCommentId"));
+        int limit = Integer.parseInt(request.getParameter("limit"));
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(commentRepository.getPagedComments(postId, lastCommentId, limit)));
+        } catch (Exception e) {
+            logger.error("Error writing response", e);
+        }
+    }
 }

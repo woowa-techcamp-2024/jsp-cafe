@@ -146,4 +146,22 @@ public class CommentRepository {
         }
         return comments;
     }
+
+    public List<Comment> getPagedComments(long postId, long lastCommentId, int limit) {
+        List<Comment> comments = new ArrayList<>();
+        String sql = "SELECT c.*, u.user_id, u.name FROM comments c JOIN users u ON c.writer_id = u.id WHERE c.post_id = ? AND c.id > ? ORDER BY c.created_at desc LIMIT ?";
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, postId);
+            pstmt.setLong(2, lastCommentId);
+            pstmt.setLong(3, limit);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                comments.add(createCommentFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            logger.error("Error getting comments", e);
+        }
+        return comments;
+    }
 }

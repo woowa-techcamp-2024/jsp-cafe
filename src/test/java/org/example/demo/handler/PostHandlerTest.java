@@ -11,6 +11,7 @@ import org.example.demo.domain.User;
 import org.example.demo.exception.NotFoundExceptoin;
 import org.example.demo.exception.UnauthorizedException;
 import org.example.demo.model.PostCreateDao;
+import org.example.demo.repository.CommentRepository;
 import org.example.demo.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,8 @@ class PostHandlerTest {
     @Mock
     private PostRepository postRepository;
     @Mock
+    private CommentRepository commentRepository;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
@@ -44,7 +47,7 @@ class PostHandlerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        postHandler = new PostHandler(postRepository);
+        postHandler = new PostHandler(postRepository, commentRepository);
         when(request.getSession(false)).thenReturn(session);
     }
 
