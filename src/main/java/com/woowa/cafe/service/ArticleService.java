@@ -3,9 +3,7 @@ package com.woowa.cafe.service;
 import com.woowa.cafe.domain.Article;
 import com.woowa.cafe.domain.Member;
 import com.woowa.cafe.domain.Reply;
-import com.woowa.cafe.dto.article.ArticleDto;
-import com.woowa.cafe.dto.article.ArticleListDto;
-import com.woowa.cafe.dto.article.SaveArticleDto;
+import com.woowa.cafe.dto.article.*;
 import com.woowa.cafe.exception.HttpException;
 import com.woowa.cafe.repository.member.MemberRepository;
 import com.woowa.cafe.repository.qna.ArticleRepository;
@@ -42,6 +40,25 @@ public class ArticleService {
                 .toList());
 
         return ArticleListDto.mapToList(articles, members);
+    }
+
+    public ArticlePageDto findByPage(final int page, final int size) {
+        List<ArticleQueryDto> articles = articleRepository.findByPage(page, size);
+
+        List<Member> members = memberRepository.findMembersByIds(articles.stream()
+                .map(ArticleQueryDto::writerId)
+                .toList());
+
+        List<ArticleListDto> dtos = ArticleListDto.toDtos(articles, members);
+
+        int count = articleRepository.countByPage(page, size);
+
+        int pagesSize = size * 5 + 1;
+        if (count >= pagesSize) {
+            return ArticlePageDto.of(dtos, page, count, true);
+        }
+
+        return ArticlePageDto.of(dtos, page, count, false);
     }
 
     public ArticleDto findById(final Long articleId) {

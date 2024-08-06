@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
 <%@ page import="com.woowa.cafe.dto.article.ArticleListDto" %>
+<%@ page import="com.woowa.cafe.dto.article.ArticlePageDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -14,9 +15,9 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
-                    List<ArticleListDto> articleDtos = (List<ArticleListDto>) request.getAttribute("articleDtos");
+                    ArticlePageDto articleDtos = (ArticlePageDto) request.getAttribute("articleDtos");
                     if (articleDtos != null) {
-                        for (ArticleListDto article : articleDtos) {
+                        for (ArticleListDto article : articleDtos.articles()) {
                 %>
                 <li>
                     <div class="wrap">
@@ -46,13 +47,6 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
@@ -62,85 +56,46 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const pageSize = 15;
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = '';
 
-<!--login modal-->
-<!--
-<div id="loginModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-  <div class="modal-content">
-      <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h2 class="text-center"><img src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle"><br>Login</h2>
-      </div>
-      <div class="modal-body">
-          <form class="form col-md-12 center-block">
-              <div class="form-group">
-                  <label for="userId">사용자 아이디</label>
-                  <input class="form-control" name="userId" placeholder="User ID">
-              </div>
-              <div class="form-group">
-                  <label for="password">비밀번호</label>
-                  <input type="password" class="form-control" name="password" placeholder="Password">
-              </div>
-              <div class="form-group">
-                  <button class="btn btn-primary btn-lg btn-block">로그인</button>
-                  <span class="pull-right"><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></span>
-              </div>
-          </form>
-      </div>
-      <div class="modal-footer">
-          <div class="col-md-12">
-          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-      </div>
-      </div>
-  </div>
-  </div>
-</div>
--->
+        const page = <%= articleDtos.currentPage() %>;
+        const hasNextPages =
+        <%= articleDtos.nextPages() %>
+        const hasPreviousPages = <%= articleDtos.currentPage() %> / 5 > 1;
+        const totalCount = <%= articleDtos.totalCount() %>;
+        const lastPage = Math.ceil(totalCount / pageSize);
 
-<!--register modal-->
-<!--
-<div id="registerModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-  <div class="modal-content">
-      <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h2 class="text-center"><img src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle"><br>회원가입</h2>
-      </div>
-      <div class="modal-body">
-          <form class="form col-md-12 center-block">
-              <div class="form-group">
-                  <label for="userId">사용자 아이디</label>
-                  <input class="form-control" id="userId" name="userId" placeholder="User ID">
-              </div>
-              <div class="form-group">
-                  <label for="password">비밀번호</label>
-                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-              </div>
-              <div class="form-group">
-                  <label for="name">이름</label>
-                  <input class="form-control" id="name" name="name" placeholder="Name">
-              </div>
-              <div class="form-group">
-                  <label for="email">이메일</label>
-                  <input type="email" class="form-control" id="email" name="email" placeholder="Email">
-              </div>
-            <div class="form-group">
-              <button class="btn btn-primary btn-lg btn-block">회원가입</button>
-            </div>
-          </form>
-      </div>
-      <div class="modal-footer">
-          <div class="col-md-12">
-          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-      </div>
-      </div>
-  </div>
-  </div>
-</div>
--->
+        if (hasPreviousPages) {
+            paginationContainer.innerHTML += `<li><a href="/?page=` + (page - 5) + `&size=15">«</a></li>`;
+        }
 
-<!-- script references -->
+        if (hasNextPages) {
+            const startPage = Math.floor((page - 1) / 5) * 5 + 1;
+            const endPage = Math.min(startPage + 4, lastPage);
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationContainer.innerHTML += `<li><a href="/?page=` + i + `">` + i + `</a></li>`;
+            }
+
+            if (endPage < lastPage) {
+                paginationContainer.innerHTML += `<li><a href="/?page=` + (endPage + 1) + `">»</a></li>`;
+            }
+        } else {
+            console.log(lastPage);
+            const roundedLastPage = Math.ceil(lastPage * 10) / 10;
+            console.log(roundedLastPage);
+            for (let i = 0; i < roundedLastPage; i++) {
+                const currentPage = Math.floor((lastPage - 1) / 5) * 5 + i;
+                paginationContainer.innerHTML += `<li><a href="/?page=` + currentPage + `">` + currentPage + `</a></li>`;
+            }
+        }
+    });
+</script>
+
 <%@ include file="/WEB-INF/components/scirpt-refernces.html" %>
 </body>
 </html>

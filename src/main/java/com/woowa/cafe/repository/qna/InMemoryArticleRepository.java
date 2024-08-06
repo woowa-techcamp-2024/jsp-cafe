@@ -1,6 +1,7 @@
 package com.woowa.cafe.repository.qna;
 
 import com.woowa.cafe.domain.Article;
+import com.woowa.cafe.dto.article.ArticleQueryDto;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,18 @@ public class InMemoryArticleRepository implements ArticleRepository {
     }
 
     @Override
+    public List<ArticleQueryDto> findByPage(final int page, final int size) {
+        return questions.values()
+                .stream()
+                .skip((long) (page - 1) * size)
+                .limit(size)
+                .map(article -> new ArticleQueryDto(article.getId(), article.getTitle(),
+                        article.getFormattedUpdatedAt(), article.getWriterId(),
+                        article.getReplyCount()))
+                .toList();
+    }
+
+    @Override
     public List<Article> findAll() {
         return questions.values()
                 .stream()
@@ -42,5 +55,10 @@ public class InMemoryArticleRepository implements ArticleRepository {
     @Override
     public void delete(final Long questionId) {
         questions.remove(questionId);
+    }
+
+    @Override
+    public int countByPage() {
+        return questions.size();
     }
 }
