@@ -58,7 +58,7 @@ jobs:
           SCP_HOST: ${{ secrets.SCP_HOST }}
           SCP_PATH: ${{ secrets.SCP_PATH }}
         run: |
-          scp -v -o StrictHostKeyChecking=no -i scp_key.pem ./build/libs/*.war $SCP_USER@$SCP_HOST:/tmp/ROOT.war
+          scp -v -o StrictHostKeyChecking=no -i scp_key.pem ./build/libs/*.war $SCP_USER@$SCP_HOST:/home/kariskan/ROOT.war
 
       - name: Deploy to Tomcat on EC2
         env:
@@ -69,7 +69,7 @@ jobs:
           echo "${{ secrets.SCP_KEY }}" > ssh_key.pem
           chmod 600 ssh_key.pem
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem $SSH_USER@$SSH_HOST << EOF
-            sudo mv /tmp/ROOT.war $SCP_PATH/ROOT.war
+            sudo mv /home/kariskan/ROOT.war $SCP_PATH/ROOT.war
             sudo chmod +x /home/kariskan/stop.sh
             sudo chmod +x /home/kariskan/deploy.sh
             cd /home/kariskan
