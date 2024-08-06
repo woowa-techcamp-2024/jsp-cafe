@@ -44,9 +44,9 @@ public class WelcomeViewServlet extends HttpServlet {
                 int startPage = (questionPage.getCurrentPage() / PAGE_SIZE) * PAGE_SIZE + 1;
                 req.setAttribute("questions", questionPage.getContents());
                 req.setAttribute("startPage", startPage);
-                req.setAttribute("endPage", Math.min((int) (Math.floor(questionPage.getTotalPage() / PAGE_SIZE) + 1), startPage + PAGE_BLOCK_SIZE));
+                req.setAttribute("endPage", Math.min(questionPage.getTotalPage(), startPage + PAGE_BLOCK_SIZE));
                 req.setAttribute("currentPage", questionPage.getCurrentPage());
-                req.setAttribute("totalPage", (int) (Math.floor(questionPage.getTotalPage() / PAGE_SIZE) + 1));
+                req.setAttribute("totalPage", questionPage.getTotalPage());
                 req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
             } catch (ServletException | IOException e) {
                 log("Error", e);
