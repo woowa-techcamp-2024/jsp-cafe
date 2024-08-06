@@ -1,5 +1,6 @@
 package codesquad.comment.handler;
 
+import codesquad.comment.domain.vo.Status;
 import codesquad.comment.handler.dto.request.CommentQueryRequest;
 import codesquad.comment.handler.dto.response.CommentResponse;
 import codesquad.comment.handler.dto.response.PagedCommentResponse;
@@ -49,9 +50,9 @@ public class CommentsAjaxHandler extends HttpServletRequestHandler {
         String pageSize = req.getParameter("pageSize");
         if (pageNumber == null || pageNumber.isEmpty() || pageSize == null || pageSize.isEmpty()) {
             pageNumber = "1";
-            pageSize = "15";
+            pageSize = "5";
         }
-        CommentQueryRequest query = new CommentQueryRequest(Integer.parseInt(pageNumber), Integer.parseInt(pageSize), articleId);
+        CommentQueryRequest query = new CommentQueryRequest(Integer.parseInt(pageNumber), Integer.parseInt(pageSize), articleId, Status.COMMENTED);
         PagedCommentResponse<CommentResponse> data = queryCommentService.findByArticleId(query);
         ApiResponse<PagedCommentResponse<CommentResponse>> returnValue = new ApiResponse<>(200, "OK", data);
         JsonWriter.writeJson(resp, returnValue);
