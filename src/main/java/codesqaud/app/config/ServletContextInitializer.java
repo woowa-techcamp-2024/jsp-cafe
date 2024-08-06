@@ -60,13 +60,16 @@ public class ServletContextInitializer implements ServletContextListener {
         config.setPassword("semin");
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
-        // HikariCP 설정
+
         config.setMinimumIdle(5);
         config.setMaximumPoolSize(20);
-        config.setIdleTimeout(10000); // 10 seconds
-        config.setConnectionTimeout(30000); // 30 seconds
+        config.setIdleTimeout(10000);
+        config.setConnectionTimeout(30000);
 
-        return new HikariDataSource(config);
+
+        HikariDataSource dataSource = new HikariDataSource(config);
+        servletContext.setAttribute("dataSource", dataSource);
+        return dataSource;
     }
 
     private void initTable(ServletContext servletContext, JdbcTemplate jdbcTemplate) {
