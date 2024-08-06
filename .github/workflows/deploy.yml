@@ -70,8 +70,8 @@ jobs:
           chmod 600 ssh_key.pem
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem $SSH_USER@$SSH_HOST << EOF
             sudo mv /tmp/ROOT.war $SCP_PATH/ROOT.war
-            sudo chmod +x $SCP_PATH/stop.sh
-            sudo chmod +x $SCP_PATH/deploy.sh
-            $SCP_PATH/stop.sh
-            $SCP_PATH/deploy.sh
+            sudo chmod +x $WORKING_PATH/stop.sh
+            sudo chmod +x $WORKING_PATH/deploy.sh
+            $WORKING_PATH/stop.sh
+            $WORKING_PATH/deploy.sh
           EOF
