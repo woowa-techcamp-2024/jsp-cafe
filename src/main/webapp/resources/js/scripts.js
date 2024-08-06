@@ -38,6 +38,34 @@ function addReplyToDOM(reply) {
   $('#top_holder').prepend(replyHtml);
 }
 
+function applyQuestionToDOM(question) {
+  let questionHtml = `
+                <li>
+                    <div class="wrap">
+                        <div class="main">
+                            <strong class="subject">
+                                <a href="/questions/${question.id}">
+                                    ${question.title}
+                                </a>
+                            </strong>
+                            <div class="auth-info">
+                                <i class="icon-add-comment"></i>
+                                <span class="time">${question.createdAt}</span>
+                                <a href="/users/${question.writerUserId}"
+                                   class="author">${question.writerUsername}
+                                </a>
+
+                            </div>
+                            <div class="reply" title="댓글">
+                                <i class="icon-reply"></i>
+                                <span class="point">🔍</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>`;
+  $('#questions-top').append(questionHtml);
+}
+
 let lastReplyId = null;
 
 function loadReplies(number) {

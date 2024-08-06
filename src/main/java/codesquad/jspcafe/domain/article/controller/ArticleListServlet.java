@@ -42,11 +42,11 @@ public class ArticleListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        String parameter = req.getParameter("id");
+        String parameter = req.getParameter("page");
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         resp.getWriter().write(objectMapper.writeValueAsString(
-            parameter == null ? articleService.getArticleKeys()
-                : articleService.getArticlesById(Long.parseLong(parameter))));
+            parameter == null ? articleService.getTotalArticlesCount()
+                : articleService.getArticlesByPage(Integer.parseInt(parameter))));
     }
 }
