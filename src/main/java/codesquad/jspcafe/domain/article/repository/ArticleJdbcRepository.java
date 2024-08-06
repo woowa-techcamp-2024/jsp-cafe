@@ -26,8 +26,8 @@ public class ArticleJdbcRepository implements ArticleRepository {
             title     VARCHAR(255) NOT NULL,
             writer    BIGINT NOT NULL,
             contents  TEXT         NOT NULL,
-            createdAt DATETIME,
-            deletedAt DATETIME
+            created_at DATETIME,
+            deleted_at DATETIME
         );""";
 
     private final JDBCConnectionManager connectionManager;
@@ -39,7 +39,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public Article save(Article article) {
-        String insertQuery = "INSERT INTO articles (title, writer, contents, createdAt) VALUES ( ?, ?, ?, ? )";
+        String insertQuery = "INSERT INTO articles (title, writer, contents, created_at) VALUES ( ?, ?, ?, ? )";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery,
                 Statement.RETURN_GENERATED_KEYS)) {
@@ -61,7 +61,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public Article update(Article article) {
-        String updateQuery = "UPDATE articles SET title = ?, contents = ? WHERE id = ? AND deletedAt IS NULL";
+        String updateQuery = "UPDATE articles SET title = ?, contents = ? WHERE id = ? AND deleted_at IS NULL";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, article.getTitle());
@@ -76,7 +76,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public Long delete(Article article) {
-        String deleteQuery = "UPDATE articles SET deletedAt = NOW() WHERE id = ?";
+        String deleteQuery = "UPDATE articles SET deleted_at = NOW() WHERE id = ?";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
             preparedStatement.setLong(1, article.getId());
@@ -89,7 +89,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public Optional<Article> findById(Long id) {
-        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.id = ? AND a.writer = u.id AND a.deletedAt IS NULL";
+        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.created_at FROM articles a, users u WHERE a.id = ? AND a.writer = u.id AND a.deleted_at IS NULL";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
             preparedStatement.setLong(1, id);
@@ -106,7 +106,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
 
     @Override
     public long count() {
-        String findIdQuery = "SELECT count(id) FROM articles WHERE deletedAt IS NULL";
+        String findIdQuery = "SELECT count(id) FROM articles WHERE deleted_at IS NULL";
         try (Connection connection = connectionManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findIdQuery)) {
@@ -123,7 +123,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
     public List<Article> findByPage(int page, int limit) {
         long id = -1;
         List<Article> articles = new ArrayList<>();
-        String findIdQuery = "SELECT id from articles WHERE deletedAt IS NULL ORDER BY id DESC LIMIT 1 OFFSET ?";
+        String findIdQuery = "SELECT id from articles WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1 OFFSET ?";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findIdQuery)) {
             preparedStatement.setInt(1, (page - 1) * limit);
@@ -134,7 +134,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
-        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id AND a.id < ? AND a.deletedAt IS NULL ORDER BY a.id DESC LIMIT ?";
+        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.created_at FROM articles a, users u WHERE a.writer = u.id AND a.id < ? AND a.deleted_at IS NULL ORDER BY a.id DESC LIMIT ?";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
             preparedStatement.setLong(1, id);
@@ -171,7 +171,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
                 resultSet.getString("u.email")
             ),
             resultSet.getString("a.contents"),
-            resultSet.getTimestamp("a.createdAt").toLocalDateTime()
+            resultSet.getTimestamp("a.created_at").toLocalDateTime()
         );
     }
 }
