@@ -19,11 +19,25 @@ jobs:
         run: |
           docker build -t jsp-cafe-image:latest .
 
+      - name: Setup known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'  # Gradle 빌드에 필요한 Java 버전 설정
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Push Docker image to Docker Hub
         run: |
