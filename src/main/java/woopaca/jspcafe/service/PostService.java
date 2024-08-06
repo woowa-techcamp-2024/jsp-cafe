@@ -13,12 +13,10 @@ import woopaca.jspcafe.repository.ReplyRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.PostEditRequest;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
-import woopaca.jspcafe.servlet.dto.response.PageInfo;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
 import woopaca.jspcafe.servlet.dto.response.PostEditResponse;
 import woopaca.jspcafe.servlet.dto.response.PostsPageResponse;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,31 +50,14 @@ public class PostService {
         }
 
         updateViewCount(post);
-        PageInfo pageInfo = getPageInfo(post);
         User user = userRepository.findById(post.getWriterId())
                 .orElseThrow(() -> new NotFoundException("[ERROR] 작성자를 찾을 수 없습니다."));
-        return PostDetailsResponse.of(post, pageInfo, user);
+        return PostDetailsResponse.of(post, user);
     }
 
     private void updateViewCount(Post post) {
         post.increaseViewCount();
         postRepository.save(post);
-    }
-
-    private PageInfo getPageInfo(Post post) {
-        List<Post> posts = postRepository.findAll()
-                .stream()
-                .filter(Post::isPublished)
-                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
-                .toList();
-
-        int postsSize = posts.size();
-        int postIndex = posts.indexOf(post);
-        boolean hasNext = postIndex < postsSize - 1;
-        boolean hasPrevious = postIndex > 0;
-        Long previousPostId = hasPrevious ? posts.get(postIndex - 1).getId() : null;
-        Long nextPostId = hasNext ? posts.get(postIndex + 1).getId() : null;
-        return new PageInfo(hasNext, hasPrevious, nextPostId, previousPostId);
     }
 
     public PostEditResponse getPostTitleContent(Long postId) {
