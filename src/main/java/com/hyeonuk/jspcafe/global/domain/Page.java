@@ -19,7 +19,7 @@ public class Page<T> {
         this.size = size;
         this.page = page;
         this.totalSize = totalSize;
-        this.totalPage = totalSize/size;
+        this.totalPage = totalSize/size + (totalSize%size == 0 ? 0 : 1);
         this.previousPage = page > 1;
         this.nextPage = page < totalPage;
         this.contents = contents;
@@ -27,7 +27,7 @@ public class Page<T> {
     }
 
     public List<Long> pageList(){
-        long minPage = page /listSize*listSize;
+        long minPage = (page-1) /listSize*listSize;
         long maxPage = Math.min(minPage + listSize, totalPage);
         return LongStream.range(minPage, maxPage)
                 .map(p->p+1)
