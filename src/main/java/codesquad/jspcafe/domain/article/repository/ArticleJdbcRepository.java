@@ -27,8 +27,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
             writer    BIGINT NOT NULL,
             contents  TEXT         NOT NULL,
             createdAt DATETIME,
-            deletedAt DATETIME,
-            FOREIGN KEY(writer) REFERENCES users (id)
+            deletedAt DATETIME
         );""";
 
     private final JDBCConnectionManager connectionManager;

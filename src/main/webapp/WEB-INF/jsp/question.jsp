@@ -66,9 +66,7 @@
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count">의견</p>
                         <div class="qna-comment-slipp-articles">
-                            <div id="top_holder">
-
-                            </div>
+                            <div id="bottom_holder"></div>
                             <form id="replyCreate" name="replyCreate" class="submit-write"
                                   method="POST" action="<c:url value="/replies"/>">
                                 <input type="hidden" id="article" name="article"
@@ -98,7 +96,7 @@
 
     loadReplies(${articleCommonResponse.id});
 
-    $('#top_holder').after(
+    $('#bottom_holder').after(
         '<button id="loadMoreButton" class="btn btn-success" style="display: none;">더 보기</button>');
 
     $('#loadMoreButton').on('click', function () {
@@ -138,7 +136,7 @@
         type: 'POST',
         data: data,
         success: function (response) {
-          addReplyToDOM(response);
+          addReplyToDOMForNewReply(response);
           let textarea = document.querySelector('#replyCreate textarea');
           textarea.value = '';
         }

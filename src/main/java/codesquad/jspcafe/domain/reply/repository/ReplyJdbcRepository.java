@@ -93,7 +93,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
     @Override
     public List<Reply> findByArticleId(Long articleId) {
         List<Reply> results = new ArrayList<>();
-        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.deleted_at IS NULL ORDER BY r.id LIMIT 6";
+        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.deleted_at IS NULL ORDER BY r.id DESC LIMIT 6";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, articleId);
@@ -110,7 +110,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
     @Override
     public List<Reply> findByArticleId(Long articleId, Long replyId) {
         List<Reply> results = new ArrayList<>();
-        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.id > ? AND r.deleted_at IS NULL ORDER BY r.id LIMIT 6";
+        String selectQuery = "SELECT r.id, r.article, u.id, u.user_id, u.password, u.username, u.email, r.contents, r.created_at FROM replies r, users u WHERE r.user = u.id AND r.article = ? AND r.id < ? AND r.deleted_at IS NULL ORDER BY r.id DESC LIMIT 6";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, articleId);
