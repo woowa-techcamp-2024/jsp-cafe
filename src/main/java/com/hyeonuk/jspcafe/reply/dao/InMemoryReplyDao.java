@@ -44,6 +44,16 @@ public class InMemoryReplyDao implements ReplyDao {
     }
 
     @Override
+    public List<Reply> findAllByArticleId(Long articleId, int size, int page) {
+        return replies.values()
+                .stream()
+                .filter(reply->reply.getArticle().getId().equals(articleId) && reply.getDeletedAt() == null)
+                .skip((long)(page-1)*size)
+                .limit(size)
+                .toList();
+    }
+
+    @Override
     public long count() {
         return replies.values()
                 .size();

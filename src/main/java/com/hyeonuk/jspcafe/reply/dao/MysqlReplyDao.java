@@ -113,6 +113,28 @@ public class MysqlReplyDao implements ReplyDao{
     }
 
     @Override
+    public List<Reply> findAllByArticleId(Long articleId, int size, int page) {
+        try(Connection conn = manager.getConnection()){
+            String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\",  " +
+                    "m.id as \"m.id\", m.nickname as \"m.nickname\", m.email as \"m.email\", m.memberId as \"m.memberId\" " +
+                    "from reply r left join member m on r.memberId = m.id where r.articleId = ? and r.deletedAt is null " +
+                    "LIMIT ? OFFSET ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, articleId);
+            pstmt.setInt(2,size);
+            pstmt.setInt(3,page);
+            ResultSet rs = pstmt.executeQuery();
+            List<Reply> replies = new ArrayList<>();
+            while(rs.next()){
+                replies.add(mappingReply(rs));
+            }
+            return replies;
+        } catch (SQLException e) {
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
+    @Override
     public long count() {
         try(Connection conn = manager.getConnection()){
             String sql = "select count(*) from reply";
