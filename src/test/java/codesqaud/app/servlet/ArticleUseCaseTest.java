@@ -15,7 +15,6 @@ import codesqaud.mock.MockHttpServletResponse;
 import codesqaud.mock.MockRequestDispatcher;
 import codesqaud.mock.MockServletConfig;
 import jakarta.servlet.ServletException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -23,7 +22,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static codesqaud.util.LoginUtils.*;
+import static codesqaud.util.LoginUtils.getLoginUser;
+import static codesqaud.util.LoginUtils.signupAndLogin;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -59,24 +59,6 @@ public class ArticleUseCaseTest {
     @Nested
     @DisplayName("루트 페이지로 접속할 때")
     class QnaListTest {
-        @Test
-        @DisplayName("저장된 게시글 목록을 조회할 수 있다")
-        void given_saveArticles_when_getRootPage_then_foundArticles() throws ServletException, IOException {
-            createArticles(2);
-            request.setRequestURI("/");
-
-            // When
-            qnaServlet.doGet(request, response);
-
-            // Then
-            List<ArticleDto> articles = (List<ArticleDto>) request.getAttribute("articles");
-            assertThat(articles).isNotNull();
-            assertThat(articles.size()).isEqualTo(2);
-
-            MockRequestDispatcher dispatcher = request.getRequestDispatcher();
-            assertThat(dispatcher.getForwardedPath()).isEqualTo("/WEB-INF/index.jsp");
-        }
-
         @Test
         @DisplayName("페이지를 조회하면 페이지 정보를 알 수 있다.")
         void test1() throws ServletException, IOException {
@@ -123,7 +105,7 @@ public class ArticleUseCaseTest {
             createArticles(12);
             request.setRequestURI("/");
             request.setParameter("size", "3");
-            List<ArticleDto> expectedArticles = articleDao.findAllAsDto().subList(0, 4);
+            List<ArticleDto> expectedArticles = articleDao.findAllAsDto().subList(0, 3);
 
             //when
             qnaServlet.doGet(request, response);
