@@ -112,7 +112,7 @@ class QuestionServiceTest extends ServiceTest {
             questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
             // when
-            List<Question> questions = questionService.readAll(0, 15);
+            List<Question> questions = questionService.readAll(1, 15);
 
             // then
             assertThat(questions).size()
@@ -131,7 +131,7 @@ class QuestionServiceTest extends ServiceTest {
                 questionRepository.save(new Question("작성자", "제목입니다.", "내용입니다.", LocalDateTime.now(), 1L));
 
                 // when
-                List<Question> questions = questionService.readAll(0, 2);
+                List<Question> questions = questionService.readAll(1, 2);
 
                 // then
                 assertAll(
@@ -341,7 +341,7 @@ class QuestionServiceTest extends ServiceTest {
 
                 // when
                 questionService.delete(1L, 1L);
-                List<Reply> replies = replyRepository.findAllByQuestionPrimaryId(1L);
+                List<Reply> replies = replyRepository.findAllByQuestionPrimaryIdLimit(1L, 5);
 
                 // then
                 assertThat(replies).isEmpty();
