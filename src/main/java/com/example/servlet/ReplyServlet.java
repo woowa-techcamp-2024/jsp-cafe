@@ -85,7 +85,8 @@ public class ReplyServlet extends HttpServlet {
 
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
-		String jsonResponse = String.format("{\"id\": %d, \"userName\": \"%s\", \"createdAt\": \"%s\", \"contents\": \"%s\"}",
+		String jsonResponse = String.format(
+			"{\"id\": %d, \"userName\": \"%s\", \"createdAt\": \"%s\", \"contents\": \"%s\"}",
 			replyId, reply.getUserName(), reply.getCreatedAt().toString(), reply.getContents());
 		resp.getWriter().write(jsonResponse);
 	}
