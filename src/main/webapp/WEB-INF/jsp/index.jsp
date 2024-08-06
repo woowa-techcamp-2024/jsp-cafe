@@ -31,13 +31,15 @@
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
-                      <li><a href="#">«</a></li>
-                      <li><a href="#">1</a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">3</a></li>
-                      <li><a href="#">4</a></li>
-                      <li><a href="#">5</a></li>
-                      <li><a href="#">»</a></li>
+                      <c:if test="${startPage > 1}">
+                        <li><a href="/?p=<c:out value="${startPage} - 1"/>">«</a></li>
+                      </c:if>
+                      <c:forEach var="i" begin="${startPage}" end="${endPage}">
+                          <li><a href="/?p=${i}">${i}</a></li>
+                      </c:forEach>
+                      <c:if test="${endPage < totalPage}">
+                        <li><a href="/?p=<c:out value="${endPage + 1}" />">»</a></li>
+                      </c:if>
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
