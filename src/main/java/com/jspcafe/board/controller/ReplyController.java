@@ -38,7 +38,8 @@ public class ReplyController extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     String articleId = req.getParameter("articleId");
-    List<Reply> replies = replyService.findByArticleId(articleId);
+    int page = Integer.parseInt(req.getParameter("page"));
+    List<Reply> replies = replyService.findByArticleId(articleId, page);
     sendJsonResponse(resp, replies);
   }
 

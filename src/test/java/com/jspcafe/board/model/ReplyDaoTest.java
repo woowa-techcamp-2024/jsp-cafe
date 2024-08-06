@@ -52,7 +52,7 @@ class ReplyDaoTest {
     replyDao.save(reply2);
 
     // Then
-    List<Reply> replies = replyDao.findByArticleId(article.id());
+    List<Reply> replies = replyDao.findByArticleId(article.id(), 1, 5);
     assertEquals(2, replies.size());
     assertTrue(replies.contains(reply1));
     assertTrue(replies.contains(reply2));
@@ -91,6 +91,6 @@ class ReplyDaoTest {
 
     // Then
     assertTrue(replyDao.findById(reply.id()).isEmpty());
-    assertTrue(replyDao.findByArticleId(article.id()).isEmpty());
+    assertTrue(replyDao.findByArticleId(article.id(), 1, 5).isEmpty());
   }
 }
