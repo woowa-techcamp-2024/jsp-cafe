@@ -48,7 +48,6 @@ public class ArticleDetailView extends HttpServlet {
         }
         List<Reply> replies = replyDataHandler.findAllByArticleId(articleId);
         request.setAttribute("article", article);
-        request.setAttribute("replies", replies);
         request.getRequestDispatcher("/article/detail.jsp").forward(request, response);
     }
 }

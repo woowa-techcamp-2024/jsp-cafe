@@ -19,7 +19,6 @@
 <body>
 <%
     Article article = (Article) request.getAttribute("article");
-    List<Reply> replies = (List<Reply>) request.getAttribute("replies");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
      User currentUser = (User)session.getAttribute(SessionName.USER.getName());
 %>
@@ -47,20 +46,7 @@
             <!-- 댓글 들 -->
             <h3>댓글</h3>
             <div class="reply-list">
-                <% for(Reply reply : replies) { %>
-                <div class="reply">
-                    <div class="reply-header">
-                        <span class="reply-author"><%= reply.getAuthor() %></span>
-                        <span class="reply-date"><%= reply.getCreatedDt().format(formatter) %></span>
-                    </div>
-                    <div class="reply-comment"><%= reply.getComment() %></div>
-                    <% if (currentUser != null && currentUser.getUserId().equals(reply.getUserId())) {%>
-                        <button class="btn delete-reply" data-reply-id="<%= reply.getReplyId() %>">삭제</button>
-                    <% } %>
-                </div>
-                <% } %>
             </div>
-
             <button id="loadMoreReplies" class="btn" style="display: none;">더보기</button>
 
             <!-- 댓글 작성 폼 -->
