@@ -109,6 +109,9 @@
                           </article>
                           </c:forEach>
                           <div id="article-prepend"></div>
+                          <div id="get-next-commet" class="text-center">
+                              <button id="next-comment" class="btn" type="submit">더보기</button>
+                          </div>
                           <form class="submit-write" action="/questions/${question.questionId}/replies" method="post">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" name="content" placeholder="Update your status"></textarea>
@@ -218,6 +221,45 @@
             });
         });
     });
+
+    let page = 1;
+    const size = 5;
+    $(document).ready(function () {
+        $(document).on('click', '#next-comment', function (e) {
+            e.preventDefault();
+
+            const url = "/questions/${question.questionId}/replies";
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    page: page,
+                    size: size
+                },
+                dataType: 'json',
+                success: function(data, status) {
+                    const content = data.content;
+                    for (const reply of content) {
+                        const createdAt = dayjs(reply.createdAt).format('YYYY-MM-DD hh:mm');
+                        const answerTemplate = $("#answerTemplate").html();
+                        const template = answerTemplate.format(reply.author.nickname, createdAt, reply.content, reply.questionInfo.questionId, reply.replyId);
+                        $("#article-prepend").append(template);
+                    }
+                    if(data.hasNext) {
+                        page++;
+                    } else {
+                        $('#next-comment').hide();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // 오류 처리
+                    console.error('Error:', error);
+                    alert('댓글 등록 중 오류가 발생했습니다.');
+                }
+            })
+        })
+    })
 </script>
 	</body>
 </html>
