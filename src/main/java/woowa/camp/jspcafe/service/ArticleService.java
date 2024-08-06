@@ -58,10 +58,9 @@ public class ArticleService {
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
 
-    public List<ArticlePreviewResponse> findArticleList(int page) {
-        int pageSize = 15;
-        int offset = (page - 1) * pageSize;
-        List<Article> articles = articleRepository.findByOffsetPagination(offset, pageSize);
+    public List<ArticlePreviewResponse> findArticleList(long page) {
+        long offset = (page - 1) * PageVO.MAX_ROW_COUNT_PER_PAGE;
+        List<Article> articles = articleRepository.findByOffsetPagination(offset, PageVO.MAX_ROW_COUNT_PER_PAGE);
 
         List<ArticlePreviewResponse> articlePreviewRespons = new ArrayList<>();
         for (Article article : articles) {
