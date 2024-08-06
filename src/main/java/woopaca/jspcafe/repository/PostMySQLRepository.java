@@ -35,12 +35,6 @@ public class PostMySQLRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        String sql = "SELECT * FROM post";
-        return jdbcTemplate.queryForList(sql, Post.class);
-    }
-
-    @Override
     public Optional<Post> findById(Long id) {
         String sql = "SELECT * FROM post WHERE id = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Post.class, id));
@@ -61,9 +55,15 @@ public class PostMySQLRepository implements PostRepository {
                 """;
         List<Post> posts = jdbcTemplate.queryForList(sql, Post.class, (page - 1) * limit, limit);
 
-        String countSql = "SELECT COUNT(*) AS count FROM post WHERE status = 'PUBLISHED'";
-        Count totalCount = jdbcTemplate.queryForObject(countSql, Count.class);
-        int totalPage = (int) Math.ceil((double) totalCount.count() / limit);
-        return new Page<>(posts, totalPage, page, totalCount.count());
+        int totalCount = countPublishedPosts();
+        int totalPage = (int) Math.ceil((double) totalCount / limit);
+        return new Page<>(posts, totalPage, page, totalCount);
+    }
+
+    @Override
+    public int countPublishedPosts() {
+        String sql = "SELECT COUNT(*) AS count FROM post WHERE status = 'PUBLISHED'";
+        Count count = jdbcTemplate.queryForObject(sql, Count.class);
+        return count.count();
     }
 }
