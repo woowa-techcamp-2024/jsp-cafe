@@ -67,10 +67,11 @@ public class PostRepository {
 
     public List<Post> findAll(int offset) {
         var sql = " select p.id, p.post_title, p.post_contents,p.post_create, m.member_name, p.member_id" +
-                " from post p inner join member m " +
-                "on m.id = p.member_id " +
-                " order by post_create desc" +
-                " limit ?, 15";
+                " from post p inner join " +
+                " (select id from post order by id desc limit ?, 15) as cp" +
+                " on cp.id = p.id" +
+                " join member m" +
+                " on m.id = p.member_id ";
 
         Connection con = null;
         PreparedStatement ps = null;
