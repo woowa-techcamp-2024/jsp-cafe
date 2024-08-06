@@ -30,4 +30,14 @@ public class MemoryQuestionRepository implements QuestionRepository{
     public Optional<Question> findById(Long id) {
         return Optional.of(questions.get(id));
     }
+
+    @Override
+    public boolean update(Question question) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        return false;
+    }
 }

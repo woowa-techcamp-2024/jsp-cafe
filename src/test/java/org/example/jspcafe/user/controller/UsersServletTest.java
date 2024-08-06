@@ -55,9 +55,19 @@ class UsersServletTest {
     void testDoGet() throws ServletException, IOException {
         // Given
         List<User> users = Arrays.asList(
-                new User("user1", "pass1", "Nick1", "user1@example.com"),
-                new User("user2", "pass2", "Nick2", "user2@example.com")
-        );
+                User.builder()
+                        .id(1L)
+                        .userId("user1")
+                        .email("user1@example.com")
+                        .nickname("Nick1")
+                        .build(),
+                User.builder()
+                        .id(2L)
+                        .userId("user2")
+                        .email("user1@example.com")
+                        .nickname("Nick1")
+                        .build());
+
         when(userRepository.getAll()).thenReturn(users);
         when(request.getRequestDispatcher("/user/list.jsp")).thenReturn(requestDispatcher);
 
@@ -86,7 +96,12 @@ class UsersServletTest {
         usersServlet.doPost(request, response);
 
         // Then
-        User expectedUser = new User(userId, password, nickname, email);
+        User expectedUser = User.builder()
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .userId(userId)
+                .build();
         verify(userService).register(expectedUser);
         verify(response).sendRedirect("users");
     }

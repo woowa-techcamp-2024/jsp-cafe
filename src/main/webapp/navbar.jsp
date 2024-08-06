@@ -1,11 +1,11 @@
 <%@ page import="org.example.jspcafe.user.User" %>
-<%@ page import="static org.example.jspcafe.common.RequestUtil.getUserFromSession" %>
+<%@ page import="static org.example.jspcafe.common.RequestUtil.getUserFromReqSession" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 
 <%
     // 세션에서 사용자 정보 가져오기
-    User loginUser = getUserFromSession(request);
+    User loginUser = getUserFromReqSession(request);
 %>
 
 <nav class="navbar navbar-fixed-top header">

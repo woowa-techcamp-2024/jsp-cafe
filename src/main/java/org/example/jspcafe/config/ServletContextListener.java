@@ -4,11 +4,11 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.annotation.WebListener;
 import org.example.jspcafe.question.repository.JdbcQuestionRepository;
-import org.example.jspcafe.question.repository.MemoryQuestionRepository;
 import org.example.jspcafe.question.repository.QuestionRepository;
 import org.example.jspcafe.question.service.QuestionService;
+import org.example.jspcafe.reply.repository.JdbcReplyRepository;
+import org.example.jspcafe.reply.repository.ReplyRepository;
 import org.example.jspcafe.user.repository.JdbcUserRepository;
-import org.example.jspcafe.user.repository.MemoryUserRepository;
 import org.example.jspcafe.user.repository.UserRepository;
 import org.example.jspcafe.user.service.UserService;
 
@@ -21,16 +21,16 @@ public class ServletContextListener implements jakarta.servlet.ServletContextLis
 
         UserRepository userRepository = new JdbcUserRepository();
         UserService userService = new UserService(userRepository);
+        context.setAttribute("UserRepository", userRepository);
+        context.setAttribute("UserService", userService);
 
         QuestionRepository questionRepository = new JdbcQuestionRepository();
         QuestionService questionService = new QuestionService(questionRepository);
+        context.setAttribute("QuestionRepository", questionRepository);
+        context.setAttribute("QuestionService", questionService);
 
-        context.setAttribute("UserRepository", userRepository);
-        context.setAttribute("UserService",userService);
-
-        context.setAttribute("QuestionRepository",questionRepository);
-        context.setAttribute("QuestionService",questionService);
-
+        ReplyRepository repository = new JdbcReplyRepository();
+        context.setAttribute("ReplyRepository", repository);
     }
 
     @Override

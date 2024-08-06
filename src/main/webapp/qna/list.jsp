@@ -13,12 +13,12 @@
                         <div class="wrap">
                             <div class="main">
                                 <strong class="subject">
-                                    <a href="qna/show.jsp">${question.title}</a>
+                                    <a href="questions/${question.id}">${question.title}</a>
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
                                     <span class="time">${question.lastModifiedDate}</span>
-                                    <a href="user/profile.jsp" class="author">${question.userId}</a>
+                                    <a href="user/profile.jsp" class="author">${question.user.nickname}</a>
                                 </div>
                             </div>
                         </div>

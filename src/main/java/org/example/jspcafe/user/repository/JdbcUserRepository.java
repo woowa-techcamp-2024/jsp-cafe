@@ -12,8 +12,8 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public Long save(User user) {
         String sql = "INSERT INTO Users (user_id, password, nickname, email) VALUES (?, ?, ?, ?)";
-        try (Connection conn = SimpleConnectionPool.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, user.getUserId());
             pstmt.setString(2, user.getPassword());
@@ -36,14 +36,16 @@ public class JdbcUserRepository implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }finally {
+            SimpleConnectionPool.releaseConnection(conn);
         }
     }
 
     @Override
     public void update(User user) {
         String sql = "UPDATE Users SET password = ?, nickname = ?, email = ? WHERE id = ?";
-        try (Connection conn = SimpleConnectionPool.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, user.getPassword());
             pstmt.setString(2, user.getNickname());
@@ -57,6 +59,8 @@ public class JdbcUserRepository implements UserRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            SimpleConnectionPool.releaseConnection(conn);
         }
     }
 
@@ -64,8 +68,8 @@ public class JdbcUserRepository implements UserRepository {
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM Users";
-        try (Connection conn = SimpleConnectionPool.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
@@ -80,6 +84,8 @@ public class JdbcUserRepository implements UserRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            SimpleConnectionPool.releaseConnection(conn);
         }
         return users;
     }
@@ -87,8 +93,9 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public Optional<User> findById(Long id) {
         String sql = "SELECT * FROM Users WHERE id = ?";
-        try (Connection conn = SimpleConnectionPool.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setLong(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -105,6 +112,8 @@ public class JdbcUserRepository implements UserRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            SimpleConnectionPool.releaseConnection(conn);
         }
         return Optional.empty();
     }
@@ -112,8 +121,8 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public Optional<User> findByUserId(String userId) {
         String sql = "SELECT * FROM Users WHERE user_id = ?";
-        try (Connection conn = SimpleConnectionPool.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -130,6 +139,8 @@ public class JdbcUserRepository implements UserRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            SimpleConnectionPool.releaseConnection(conn);
         }
         return Optional.empty();
     }
