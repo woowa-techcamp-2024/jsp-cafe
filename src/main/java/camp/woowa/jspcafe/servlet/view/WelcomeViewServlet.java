@@ -32,19 +32,21 @@ public class WelcomeViewServlet extends HttpServlet {
         if (("".equalsIgnoreCase(pathInfo) || "/".equalsIgnoreCase(pathInfo))) {
             try {
                 String page = req.getParameter("p");
-                if (page == null) { // page 가 null 일 경우 1로 초기화
-                    page = "1";
+                if (page == null) { // page 가 null 일 경우 1로 리다이렉트
+                    resp.sendRedirect("/?p=1");
+                    return;
                 }
                 Integer p = Integer.parseInt(page);
-                if (p < 1) { // p가 1보다 작을 경우 1로 초기화
-                    p = 1;
+                if (p < 1) { // p가 1보다 작을 경우 1로 리다이렉트
+                    resp.sendRedirect("/?p=1");
+                    return;
                 }
 
                 Page<Question> questionPage = questionService.findAllWithPage(new PageRequest(p, PAGE_SIZE));
-                int startPage = (questionPage.getCurrentPage() / PAGE_SIZE) * PAGE_SIZE + 1;
+                int startPage = ((questionPage.getCurrentPage() - 1) / PAGE_BLOCK_SIZE) * PAGE_BLOCK_SIZE + 1; // 페이지 블록의 시작 페이지
                 req.setAttribute("questions", questionPage.getContents());
                 req.setAttribute("startPage", startPage);
-                req.setAttribute("endPage", Math.min(questionPage.getTotalPage(), startPage + PAGE_BLOCK_SIZE));
+                req.setAttribute("endPage", Math.min(questionPage.getTotalPage(), startPage + PAGE_BLOCK_SIZE - 1));
                 req.setAttribute("currentPage", questionPage.getCurrentPage());
                 req.setAttribute("totalPage", questionPage.getTotalPage());
                 req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
