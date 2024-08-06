@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class DBConnectionUtils {
 
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/cafe";
+    private static final String JDBC_URL = "jdbc:mysql://host.docker.internal:3306/cafe";
     private static final String USER = "foxrain";
     private static final String PASSWORD = "test1234";
     private static final Logger log = LoggerFactory.getLogger(DBConnectionUtils.class);
