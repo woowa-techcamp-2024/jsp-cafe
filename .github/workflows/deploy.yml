@@ -42,25 +42,33 @@ jobs:
           name: application-war
           path: ./build/libs
 
-      - name: Copy WAR to EC2
+      - name: Create SSH key file
         env:
           SCP_KEY: ${{ secrets.SCP_KEY }}
-          SCP_USER: ubuntu
+        run: |
+          echo "$SCP_KEY" > scp_key.pem
+          chmod 600 scp_key.pem
+
+      - name: Copy WAR to EC2
+        env:
+          SCP_USER: ${{ secrets.SCP_USER }}
           SCP_HOST: ${{ secrets.SCP_HOST }}
           SCP_PATH: ${{ secrets.SCP_PATH }}
         run: |
-          scp -o StrictHostKeyChecking=no -i $SCP_KEY ./build/libs/*.war ubuntu@$SCP_HOST:$SCP_PATH
+          scp -o StrictHostKeyChecking=no -i scp_key.pem ./build/libs/*.war $SCP_USER@$SCP_HOST:$SCP_PATH
 
-      - name: Deploy to Tomcat on EC2
-        env:
-          SSH_KEY: ${{ secrets.SCP_KEY }}
-          SSH_USER: ubuntu
-          SSH_HOST: ${{ secrets.SCP_HOST }}
-          SCP_PATH: ${{ secrets.SCP_PATH }}
-          TOMCAT_PATH: /opt/tomcat
-        run: |
-          ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@$SSH_HOST << EOF
-#            cd /home/kariskan
-#            ./stop.sh
-#            ./deploy.sh
+#      - name: Deploy to Tomcat on EC2
+#        env:
+#          SSH_KEY: ${{ secrets.SCP_KEY }}
+#          SSH_USER: ${{ secrets.SCP_USER }}
+#          SSH_HOST: ${{ secrets.SCP_HOST }}
+#          SCP_PATH: ${{ secrets.SCP_PATH }}
+#          TOMCAT_PATH: /opt/tomcat
+#        run: |
+#          echo "$SSH_KEY" > ssh_key.pem
+#          chmod 600 ssh_key.pem
+#          ssh -o StrictHostKeyChecking=no -i ssh_key.pem $SSH_USER@$SSH_HOST << EOF
+#            sudo systemctl stop tomcat
+#            sudo cp $SCP_PATH/*.war $TOMCAT_PATH/webapps/
+#            sudo systemctl start tomcat
 #          EOF
