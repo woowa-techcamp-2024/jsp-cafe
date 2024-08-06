@@ -1,12 +1,16 @@
 package com.woowa.cafe.service;
 
 import com.woowa.cafe.domain.Article;
+import com.woowa.cafe.domain.Member;
 import com.woowa.cafe.domain.Reply;
 import com.woowa.cafe.dto.article.ReplyDto;
 import com.woowa.cafe.dto.article.SaveReplyDto;
 import com.woowa.cafe.exception.HttpException;
+import com.woowa.cafe.repository.member.MemberRepository;
 import com.woowa.cafe.repository.qna.ArticleRepository;
 import com.woowa.cafe.repository.qna.ReplyRepository;
+
+import java.util.List;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -15,10 +19,12 @@ public class ReplyService {
 
     private final ArticleRepository articleRepository;
     private final ReplyRepository replyRepository;
+    private final MemberRepository memberRepository;
 
-    public ReplyService(final ArticleRepository articleRepository, final ReplyRepository replyRepository) {
+    public ReplyService(final ArticleRepository articleRepository, final ReplyRepository replyRepository, final MemberRepository memberRepository) {
         this.articleRepository = articleRepository;
         this.replyRepository = replyRepository;
+        this.memberRepository = memberRepository;
     }
 
     public ReplyDto save(final SaveReplyDto replyDto, final String writerId) {
@@ -32,6 +38,15 @@ public class ReplyService {
         articleRepository.update(article);
 
         return ReplyDto.of(reply, writerId);
+    }
+
+    public List<ReplyDto> findByArticleIdWithPage(final Long articleId, final int index, final int size) {
+        List<Reply> replies = replyRepository.findByPage(articleId, index, size);
+        List<Member> members = memberRepository.findMembersByIds(replies.stream()
+                .map(Reply::getWriterId)
+                .toList());
+
+        return ReplyDto.mapToList(replies, members);
     }
 
     public void delete(final Long replyId, final String memberId) {

@@ -45,7 +45,6 @@ public class HomeServlet extends HttpServlet {
             }
         }
         ArticlePageDto articleDtos = articleService.findByPage(page, size);
-        log.info("articleDtos: {}", articleDtos);
         req.setAttribute("articleDtos", articleDtos);
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
     }

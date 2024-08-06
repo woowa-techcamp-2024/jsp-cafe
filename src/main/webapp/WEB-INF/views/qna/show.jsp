@@ -1,6 +1,7 @@
 <%@ page import="com.woowa.cafe.dto.article.ArticleDto" %>
 <%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="com.woowa.cafe.dto.article.ReplyDto" %>
+<%@ page import="java.util.Comparator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="kr">
@@ -54,10 +55,20 @@
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong><%=article.replies().size()%>
+                        <form class="submit-write">
+                            <input type="hidden" id="articleId" name="articleId" value="<%=article.articleId()%>">
+                            <div class="form-group" style="padding:14px;">
+                                    <textarea class="form-control" id="contents" name="contents" rows="3"
+                                              placeholder="Update your status"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="button" id="submit-reply">답변하기
+                            </button>
+                            <div class="clearfix"/>
+                        </form>
+                        <p class="qna-comment-count"><strong><%=article.replyCount()%>
                         </strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-                            <%for (ReplyDto reply : article.replies()) { %>
+                            <% for (ReplyDto reply : article.replies()) { %>
                             <article class="article" id="reply-<%=reply.replyId()%>">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -81,8 +92,6 @@
                                     <ul class="article-util-list">
                                         <%--                                        ---%>
                                         <li>
-                                            <input type="hidden" name="replyArticleId" id="replyArticleId"
-                                                   value="<%=article.articleId()%>">
                                             <button type="submit" class="delete-answer-button"
                                                     data-reply-id="<%=reply.replyId()%>">삭제
                                             </button>
@@ -91,18 +100,14 @@
                                 </div>
                             </article>
                             <% }%>
-
                         </div>
-                        <form class="submit-write">
-                            <input type="hidden" id="articleId" name="articleId" value="<%=article.articleId()%>">
-                            <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" id="contents" name="contents" rows="3"
-                                              placeholder="Update your status"></textarea>
-                            </div>
-                            <button class="btn btn-success pull-right" type="button" id="submit-reply">답변하기
-                            </button>
-                            <div class="clearfix"/>
-                        </form>
+                        <% if (article.replyCount() >= 6) { %>
+                        <%Long replyMaxId = article.replies().stream().map(ReplyDto::replyId).max(Long::compareTo).orElse(0L);%>
+                        <div>
+                            <a href="/reply?articleId=<%=article.articleId()%>&index=<%=replyMaxId%>&size=5"
+                               class="more-comment">더보기</a>
+                        </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -112,6 +117,68 @@
 
 <script>
     var articleId = <%=article.articleId()%>;
+    <% Long replyCount = 0L;
+    if(article.replyCount() < 5) {
+        replyCount = article.replyCount();
+    } else {
+        replyCount = 5L;
+    }%>;
+    var replyCount = <%=replyCount%>;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('.qna-comment-slipp-articles').addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('more-comment')) {
+                e.preventDefault();
+                const moreCommentLink = e.target;
+                const url = moreCommentLink.href;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const commentSection = document.querySelector('.qna-comment-slipp-articles');
+                        data.forEach(reply => {
+                            const replyTemplate = `
+                    <article class="article" id="reply-` + reply.replyId + `">
+                        <div class="article-header">
+                            <div class="article-header-thumb">
+                                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                            </div>
+                            <div class="article-header-text">
+                                <a href="/user/` + reply.writerId + `" class="article-author-name">` + reply.writerName + `</a>
+                                <a href="#answer-` + reply.replyId + `" class="article-header-time" title="퍼머링크">` + reply.updatedAt + `</a>
+                            </div>
+                        </div>
+                        <div class="article-doc comment-doc" style="white-space: pre-wrap;">
+                            <p>` + reply.contents.trim() + `</p>
+                        </div>
+                        <div class="article-util">
+                            <ul class="article-util-list">
+                                <li>
+                                    <button type="button" class="delete-answer-button" data-reply-id="` + reply.replyId + `">삭제</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </article>`;
+                            commentSection.insertAdjacentHTML('beforeend', replyTemplate);
+                        });
+
+                        replyCount += data.length;
+
+                        if (data.length < 5) {
+                            moreCommentLink.remove();
+                        } else {
+                            const lastReplyId = data[data.length - 1].replyId;
+                            moreCommentLink.href = `/reply?articleId=` + articleId + `&index=` + lastReplyId + `&size=5`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching more comments:", error);
+                        alert("Error fetching more comments: " + error);
+                    });
+            }
+        });
+    });
+
 
     function deleteArticle() {
 
@@ -157,8 +224,9 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.contents = data.contents.replace(/\n/g, "<br>");
-                    var replyTemplate = `
+                        data.contents = data.contents.replace(/\n/g, "<br>");
+                        var replyMore = `<a href="`
+                        var replyTemplate = `
                 <article class="article" id="reply-` + data.replyId + `">
                     <div class="article-header">
                         <div class="article-header-thumb">
@@ -180,13 +248,26 @@
                         </ul>
                     </div>
                 </article>`;
-                    document.querySelector(".qna-comment-slipp-articles").insertAdjacentHTML('beforeend', replyTemplate);
-                    document.getElementById("contents").value = "";
+                        var replyMore = `<div>
+                        <a href="/reply?articleId=` + <%=article.articleId()%> +`&index=` + (data.replyId - 1) + `&size=5" class="more-comment">더보기</a>
+                        </div>`;
+                        var commentCount = document.querySelector(".qna-comment-count strong");
 
-                    // 댓글 수 업데이트
-                    var commentCount = document.querySelector(".qna-comment-count strong");
-                    commentCount.textContent = parseInt(commentCount.textContent) + 1;
-                })
+                        commentCount.textContent = parseInt(commentCount.textContent) + 1;
+                        console.log("replyCount: ", replyCount);
+                        if (replyCount % 5 !== 0 || replyCount === 0) {
+                            document.querySelector(".qna-comment-slipp-articles").insertAdjacentHTML('beforeend', replyTemplate);
+                        } else {
+                            var moreComment = document.querySelector(".more-comment");
+                            if (moreComment) {
+                                moreComment.remove();
+                            }
+                            document.querySelector(".qna-comment-slipp-articles").insertAdjacentHTML('beforeend', replyMore);
+                        }
+                        replyCount++;
+                        document.getElementById("contents").value = "";
+                    }
+                )
                 .catch(error => {
                     console.error("Error adding reply:", error);
                     alert("Error adding reply: " + error);

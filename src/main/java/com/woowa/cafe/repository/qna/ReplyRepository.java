@@ -13,6 +13,8 @@ public interface ReplyRepository {
 
     List<Reply> findByArticleId(final Long articleId);
 
+    List<Reply> findByPage(final Long articleId, final int index, final int size);
+
     List<Reply> findAll();
 
     Optional<Reply> update(final Reply reply);

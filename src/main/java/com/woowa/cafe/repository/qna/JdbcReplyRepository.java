@@ -92,6 +92,32 @@ public class JdbcReplyRepository implements ReplyRepository {
     }
 
     @Override
+    public List<Reply> findByPage(final Long articleId, final int index, final int size) {
+        List<Reply> replies = new ArrayList<>();
+        String sql = "SELECT * FROM replies WHERE article_id = ? AND reply_id > ? AND is_deleted = false ORDER BY created_at asc LIMIT ?";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, articleId);
+            pstmt.setInt(2, index);
+            pstmt.setInt(3, size);
+
+            try (var resultSet = pstmt.executeQuery()) {
+                while (resultSet.next()) {
+                    replies.add(new Reply(resultSet.getLong("reply_id"),
+                            resultSet.getLong("article_id"),
+                            resultSet.getString("writer_id"),
+                            resultSet.getString("contents"),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
+                            resultSet.getTimestamp("modified_at").toLocalDateTime()));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return replies;
+    }
+
+    @Override
     public List<Reply> findAll() {
         List<Reply> replies = new ArrayList<>();
         String sql = "SELECT * FROM replies";

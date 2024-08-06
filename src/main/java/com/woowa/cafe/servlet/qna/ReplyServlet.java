@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static com.woowa.cafe.config.GsonConfig.gson;
@@ -30,6 +31,28 @@ public class ReplyServlet extends HttpServlet {
         this.replyService = (ReplyService) getServletContext().getAttribute("replyService");
 
         log.info("ReplyServlet init");
+    }
+
+    @Override
+    public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("ReplyServlet doGet");
+        String queryString = req.getQueryString();
+        String[] split = queryString.split("&");
+        if (split.length == 1) {
+            throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, "잘못된 요청입니다.");
+        }
+        Long articleId = Long.parseLong(split[0].split("=")[1]);
+        if (split.length != 3) {
+            List<ReplyDto> byArticleIdWithPage = replyService.findByArticleIdWithPage(articleId, 1, 5);
+            return;
+        }
+        int index = Integer.parseInt(split[1].split("=")[1]);
+        int size = Integer.parseInt(split[2].split("=")[1]);
+        List<ReplyDto> byArticleIdWithPage = replyService.findByArticleIdWithPage(articleId, index, size);
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(gson.toJson(byArticleIdWithPage));
     }
 
     @Override

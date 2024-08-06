@@ -35,7 +35,7 @@ class ReplyServiceTest {
         replyRepository = new InMemoryReplyRepository();
 
         articleService = new ArticleService(articleRepository, memberRepository, replyRepository);
-        replyService = new ReplyService(articleRepository, replyRepository);
+        replyService = new ReplyService(articleRepository, replyRepository, memberRepository);
     }
 
     @Test
@@ -132,6 +132,100 @@ class ReplyServiceTest {
         List<ArticleListDto> articles = articleService.findAll();
 
         assertThrows(IllegalArgumentException.class, () -> replyService.delete(save.replyId(), "otherId"));
+    }
+
+    @Test
+    @DisplayName("게시글 댓글 조회 테스트 페이지")
+    void findByArticleIdWithPage() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        String replyContent = "replyContent";
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+
+        List<ReplyDto> replies = replyService.findByArticleIdWithPage(articleId, 1, 5);
+        List<ArticleListDto> articles = articleService.findAll();
+
+        assertAll(
+                () -> assertEquals(5, replies.size()),
+                () -> assertEquals(5, articles.get(0).replyCount())
+        );
+    }
+
+    @Test
+    @DisplayName("게시글 댓글 조회 테스트 페이지 - 댓글이 없는 경우")
+    void findByArticleIdWithPage_nothing() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        List<ReplyDto> replies = replyService.findByArticleIdWithPage(articleId, 1, 5);
+        List<ArticleListDto> articles = articleService.findAll();
+
+        assertAll(
+                () -> assertEquals(0, replies.size()),
+                () -> assertEquals(0, articles.get(0).replyCount())
+        );
+    }
+
+    @Test
+    @DisplayName("게시글 댓글 조회 테스트 페이지 - 댓글이 5개 미만인 경우")
+    void findByArticleIdWithPage2() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        String replyContent = "replyContent";
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+
+        List<ReplyDto> replies = replyService.findByArticleIdWithPage(articleId, 1, 5);
+        List<ArticleListDto> articles = articleService.findAll();
+
+        assertAll(
+                () -> assertEquals(4, replies.size()),
+                () -> assertEquals(4, articles.get(0).replyCount())
+        );
+    }
+
+    @Test
+    @DisplayName("게시글 댓글 조회 테스트 페이지 - 페이지가 2개 이상인 경우")
+    void findByArticleIdWithPage3() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        Long articleId = articleService.save(new SaveArticleDto(title, content), writerId);
+
+        String replyContent = "replyContent";
+        for (int i = 0; i < 12; i++) {
+            replyService.save(new SaveReplyDto(articleId, replyContent), writerId);
+        }
+
+        List<ReplyDto> replies = replyService.findByArticleIdWithPage(articleId, 2, 5);
+        List<ArticleListDto> articles = articleService.findAll();
+
+        assertAll(
+                () -> assertEquals(5, replies.size()),
+                () -> assertEquals(12, articles.get(0).replyCount())
+        );
     }
 
 }
