@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  let currentOffset = 0;
+  let lastReplyId = -1;
   const replyCount = 5;
 
   // 메인 글 삭제 버튼
@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
         body: JSON.stringify({ content: content, articleId: articleId })
       });
       if (response.ok) {
-        currentOffset = 0; // Reset offset after posting a new reply
-        fetchReplies(currentOffset, replyCount, true); // 기존 댓글을 지우고 새로 불러옴
+        lastReplyId = -1; // Reset lastReplyId after posting a new reply
+        fetchReplies(lastReplyId, replyCount, true); // 기존 댓글을 지우고 새로 불러옴
       } else {
         alert('댓글 작성에 실패했습니다.');
       }
@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
       try {
         const response = await fetch(`/reply/${replyId}`, { method: 'DELETE' });
         if (response.ok) {
-          currentOffset = 0; // Reset offset after deleting a reply
-          fetchReplies(currentOffset, replyCount, true); // 기존 댓글을 지우고 새로 불러옴
+          lastReplyId = -1; // Reset lastReplyId after deleting a reply
+          fetchReplies(lastReplyId, replyCount, true); // 기존 댓글을 지우고 새로 불러옴
         } else {
           alert('댓글 삭제에 실패했습니다.');
         }
@@ -57,20 +57,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 더보기 버튼 클릭 이벤트
   document.getElementById('loadMoreReplies').addEventListener('click', function() {
-    currentOffset += replyCount; // 오프셋 증가
-    fetchReplies(currentOffset, replyCount, false);
+    fetchReplies(lastReplyId, replyCount, false);
   });
 
   // 댓글 목록 갱신 함수
-  async function fetchReplies(start = 0, count = 5, clearExisting = false) {
+  async function fetchReplies(start = -1, count = 5, clearExisting = false) {
     try {
       const response = await fetch(`/question/${articleId}/replies?start=${start}&count=${count}`);
       if (response.ok) {
         const responseJson = await response.json();
         const replies = responseJson.replies;
         const totalCount = responseJson.totalCount;
+
+        if (replies.length > 0) {
+          lastReplyId = replies[replies.length - 1].replyId; // 마지막 댓글의 ID를 저장
+        }
+
         updateReplies(replies, clearExisting);
-        if (start + replies.length >= totalCount) {
+        if (replies.length < count) {
           document.getElementById('loadMoreReplies').style.display = 'none';
         } else {
           document.getElementById('loadMoreReplies').style.display = 'block';
@@ -100,5 +104,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // 초기 댓글 목록 로드
-  fetchReplies(0, replyCount, true).then(() => console.log('Initial replies loaded'));
+  fetchReplies(-1, replyCount, true).then(() => console.log('Initial replies loaded'));
 });

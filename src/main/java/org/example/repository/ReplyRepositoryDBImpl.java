@@ -45,15 +45,24 @@ public class ReplyRepositoryDBImpl implements ReplyRepository {
     }
 
     @Override
-    public List<Reply> findAllByArticleId(int articleId, int offset, int count) {
+    public List<Reply> findAllByArticleId(int articleId, int lastReplyId, int count) {
         List<Reply> replies = new ArrayList<>();
-        String query = "SELECT * FROM replies WHERE article_id = ? AND deleted = FALSE ORDER BY reply_id DESC LIMIT ? OFFSET ?";
+        String query;
+        if (lastReplyId == -1) {
+            query = "SELECT * FROM replies WHERE article_id = ? AND deleted = FALSE ORDER BY reply_id DESC LIMIT ?";
+        } else {
+            query = "SELECT * FROM replies WHERE article_id = ? AND deleted = FALSE AND reply_id < ? ORDER BY reply_id DESC LIMIT ?";
+        }
 
         try (Connection conn = DatabaseManager.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, articleId);
-            pstmt.setInt(2, count);
-            pstmt.setInt(3, offset);
+            if (lastReplyId == -1) {
+                pstmt.setInt(2, count);
+            } else {
+                pstmt.setInt(2, lastReplyId);
+                pstmt.setInt(3, count);
+            }
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -72,6 +81,7 @@ public class ReplyRepositoryDBImpl implements ReplyRepository {
         }
         return replies;
     }
+
 
     @Override
     public void deleteAllByArticleId(int articleId) {
