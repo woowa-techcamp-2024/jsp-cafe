@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.service;
 
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Reply;
@@ -24,6 +26,10 @@ public class ReplyService {
 
     public List<Reply> findByQuestionId(Long questionId) {
         return replyRepository.findByQuestionId(questionId);
+    }
+
+    public Page<Reply> findByQuestionIdWithPage(Long questionId, PageRequest pageRequest) {
+        return replyRepository.findByQuestionIdWithPage(questionId, pageRequest);
     }
 
     public void deleteById(Long id, long writerId) {
