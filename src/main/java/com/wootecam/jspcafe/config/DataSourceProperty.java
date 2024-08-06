@@ -20,10 +20,9 @@ public class DataSourceProperty {
             String profile = System.getenv("PROFILE");
             if (profile == null) {
                 properties.load(getClass().getClassLoader().getResourceAsStream("config/datasource.properties"));
-                properties.load(
-                        getClass().getClassLoader().getResourceAsStream("config/" + properties.getProperty("profile")));
-                return;
+                profile = properties.getProperty("profile");
             }
+            log.info("PROFILE='{}' is Loading", profile);
             properties.load(getClass().getClassLoader().getResourceAsStream("config/" + profile));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
