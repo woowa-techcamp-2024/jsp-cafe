@@ -19,11 +19,6 @@
     int startPage = Math.max(currentPage, 1);
     int endPage = Math.min(startPage + 4, totalPages);
 
-    // 시작 페이지가 1보다 크면 endPage를 조정합니다.
-    if (startPage > 1) {
-        endPage = Math.min(currentPage + 2, totalPages);
-    }
-
     // 계산된 값들을 request 속성으로 설정합니다.
     request.setAttribute("startPage", startPage);
     request.setAttribute("endPage", endPage);
