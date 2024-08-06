@@ -43,4 +43,4 @@ bin/
 /src/test/resources/comment.csv
 /src/test/resources/post.csv
 /src/test/resources/user.csv
-/src/test/java/codesquad/javacafe/util/CSV.java
+#/src/test/java/codesquad/javacafe/util/CSV.java
