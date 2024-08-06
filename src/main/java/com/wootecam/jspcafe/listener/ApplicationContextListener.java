@@ -3,6 +3,7 @@ package com.wootecam.jspcafe.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wootecam.jspcafe.config.DataSourceManager;
+import com.wootecam.jspcafe.config.DataSourceProperty;
 import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
 import com.wootecam.jspcafe.domain.ReplyRepository;
@@ -37,7 +38,8 @@ public class ApplicationContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
-        DataSourceManager dataSourceManager = new DataSourceManager();
+        DataSourceProperty dataSourceProperty = new DataSourceProperty();
+        DataSourceManager dataSourceManager = new DataSourceManager(dataSourceProperty);
         servletContext.setAttribute("dataSourceManager", dataSourceManager);
 
         ObjectMapper objectMapper = new ObjectMapper();
