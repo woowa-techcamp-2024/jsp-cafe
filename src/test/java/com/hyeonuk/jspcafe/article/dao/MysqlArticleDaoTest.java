@@ -152,9 +152,6 @@ class MysqlArticleDaoTest {
             }
 
             //when
-            articleDao.findAll()
-                    .stream()
-                    .forEach(a->System.out.println(a.getId()));
             List<Article> articles = articleDao.findAll(size, page);
 
             //then
