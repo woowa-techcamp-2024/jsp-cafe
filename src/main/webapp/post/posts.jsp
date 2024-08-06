@@ -17,6 +17,10 @@
     int currentPage = request.getAttribute("currentPage") != null ? (int) request.getAttribute("currentPage") : 1;
     int totalPages = request.getAttribute("totalPages") != null ? (int) request.getAttribute("totalPages") : 1;
     int pageSize = request.getAttribute("pageSize") != null ? (int) request.getAttribute("pageSize") : 10;
+
+    // 페이지 네이션 범위 설정
+    int startPage = Math.max(1, currentPage - 2);
+    int endPage = Math.min(totalPages, currentPage + 2);
 %>
 <div class="post-list">
     <div class="post-count">전체 글 <%= postCount %>개</div>
@@ -53,7 +57,15 @@
 %>
 <div class="pagination">
     <%
-        for (int i = 1; i <= totalPages; i++) {
+        if (startPage > 1) {
+    %>
+    <a href="?page=1&size=<%= pageSize %>">1</a>
+    <% if (startPage > 2) { %>
+    <span>...</span>
+    <% } %>
+    <%
+        }
+        for (int i = startPage; i <= endPage; i++) {
             if (i == currentPage) {
     %>
     <span><strong><%= i %></strong></span>
@@ -63,6 +75,14 @@
     <a href="?page=<%= i %>&size=<%= pageSize %>"><%= i %></a>
     <%
             }
+        }
+        if (endPage < totalPages) {
+    %>
+    <% if (endPage < totalPages - 1) { %>
+    <span>...</span>
+    <% } %>
+    <a href="?page=<%= totalPages %>&size=<%= pageSize %>"><%= totalPages %></a>
+    <%
         }
     %>
 </div>

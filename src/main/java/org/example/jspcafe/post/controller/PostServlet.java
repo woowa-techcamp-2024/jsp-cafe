@@ -1,4 +1,4 @@
-package org.example.jspcafe;
+package org.example.jspcafe.post.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
