@@ -61,7 +61,7 @@ public class PostMySQLRepository implements PostRepository {
                 """;
         List<Post> posts = jdbcTemplate.queryForList(sql, Post.class, (page - 1) * limit, limit);
 
-        String countSql = "SELECT COUNT(*) AS count FROM post";
+        String countSql = "SELECT COUNT(*) AS count FROM post WHERE status = 'PUBLISHED'";
         Count totalCount = jdbcTemplate.queryForObject(countSql, Count.class);
         int totalPage = (int) Math.ceil((double) totalCount.count() / limit);
         return new Page<>(posts, totalPage, page, totalCount.count());
