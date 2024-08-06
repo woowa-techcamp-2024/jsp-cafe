@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -32,6 +33,23 @@ public final class JdbcTemplate {
         execute(statement -> {
             try {
                 return statement.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }, sql, arguments);
+    }
+
+    public long updateAndReturnKey(String sql, Object... arguments) {
+        return execute(statement -> {
+            try {
+                statement.executeUpdate();
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getLong(1);
+                    } else {
+                        throw new SQLException("[ERROR] Auto-generated key를 가져오지 못했습니다.");
+                    }
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -67,7 +85,7 @@ public final class JdbcTemplate {
         }
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < arguments.length; i++) {
                 preparedStatement.setObject(i + 1, arguments[i]);
             }

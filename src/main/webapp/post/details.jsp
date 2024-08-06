@@ -45,7 +45,7 @@
     <div id="comments-count">댓글 <c:out value="${replies.size()}" />개</div>
     <div id="comments-container">
       <c:forEach var="reply" items="${replies}">
-        <div class="comment">
+        <div class="comment" id="<c:out value="comment-${reply.id()}"/>">
           <div class="comment-writer"><c:out value="${reply.writer()}" /></div>
           <p class="comment-content"><c:out value="${reply.content()}" /></p>
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -59,7 +59,7 @@
         </div>
       </c:forEach>
     </div>
-    <form style="margin-bottom: 20px" method="post" action="${pageContext.request.contextPath}/replies">
+    <div style="margin-bottom: 20px">
       <div class="form-element">
         <div class="form-label"><c:out value="${user.nickname()}" /></div>
         <textarea name="content" required maxlength="200" id="content" placeholder="악플은 싫어요"></textarea>
@@ -68,7 +68,7 @@
           <button id="comment-submit" type="submit" disabled>댓글 작성</button>
         </div>
       </div>
-    </form>
+    </div>
     <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
       <a class="<c:out value='${post.pageInfo().hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
          href="<c:url value='/posts/${post.pageInfo().previousPostId()}'/>"
@@ -81,7 +81,7 @@
   </div>
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.getElementById('content');
     const submitButton = document.getElementById('comment-submit');
 
@@ -95,6 +95,41 @@
           event.preventDefault();
         });
       });
+
+    submitButton.addEventListener('click', function () {
+      const content = textarea.value.trim();
+      const postId = parseInt(document.querySelector('input[name="postId"]').value, 10);
+
+      fetch('${pageContext.request.contextPath}/replies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: content,
+          postId: postId
+        })
+      }).then(response => {
+        if (response.ok) {
+          response.json()
+            .then(reply => {
+              const commentsContainer = document.getElementById('comments-container');
+              const comment = document.createElement('div');
+              comment.className = 'comment';
+              comment.id = 'comment-' + reply.id;
+              comment.innerHTML = '<div class="comment-writer">' + reply.writer + '</div>' +
+                '<p class="comment-content">' + reply.content + '</p>' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                '<div class="comment-date">' + reply.writtenAt + '</div>' +
+                '<div class="comment-delete-button" onclick="handleReplyDelete(' + reply.id + ')">삭제</div>' +
+                '</div>';
+              commentsContainer.appendChild(comment);
+              textarea.value = '';
+              submitButton.disabled = true;
+            });
+        }
+      });
+    });
   });
 
   const handleDeleteSubmit = () => {
@@ -121,13 +156,14 @@
         method: 'DELETE',
       }).then(response => {
         if (response.ok) {
-          window.location.reload();
+          document.getElementById('comment-' + replyId).remove();
         } else {
-          response.text().then(body => {
-            document.open();
-            document.write(body);
-            document.close();
-          });
+          response.text()
+            .then(body => {
+              document.open();
+              document.write(body);
+              document.close();
+            });
         }
       });
     }

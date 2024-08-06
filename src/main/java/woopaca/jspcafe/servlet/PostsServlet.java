@@ -15,7 +15,7 @@ import woopaca.jspcafe.service.PostService;
 import woopaca.jspcafe.service.ReplyService;
 import woopaca.jspcafe.servlet.dto.request.PostEditRequest;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
-import woopaca.jspcafe.servlet.dto.response.RepliesResponse;
+import woopaca.jspcafe.servlet.dto.response.ReplyResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,7 +48,7 @@ public class PostsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long postId = (Long) request.getAttribute("postId");
         PostDetailsResponse post = postService.getPostDetails(postId);
-        List<RepliesResponse> replies = replyService.getReplies(postId);
+        List<ReplyResponse> replies = replyService.getReplies(postId);
         request.setAttribute("post", post);
         request.setAttribute("separator", '\n');
         request.setAttribute("replies", replies);
