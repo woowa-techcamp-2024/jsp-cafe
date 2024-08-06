@@ -34,7 +34,7 @@ CREATE TABLE Reply (
                        FOREIGN KEY (question_id) REFERENCES Question(id)
 );
 
--- 예제 데이터 삽입
+-- -- 예제 데이터 삽입
 -- Users 데이터
 INSERT INTO Users (user_id, password, nickname, email)
 VALUES ('test1', 'test', '닉네임1', 'user1@example.com'),
