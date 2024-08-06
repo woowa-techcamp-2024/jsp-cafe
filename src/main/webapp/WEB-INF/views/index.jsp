@@ -10,7 +10,7 @@
         <H2>김준기 카페입니다 !</H2>
     </div>
 
-<%--    <p style="color: #888888;">전체 글 N개</p>--%>
+    <p style="color: #888888;">전체 글 ${totalArticleCounts}개</p>
 
     <table>
         <thead>
@@ -33,14 +33,14 @@
         </tbody>
     </table>
 
-    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-top: 20px; margin-bottom: 150px">
         <div class="pagination">
-            <c:if test="${currentPage > 1}">
-                <a href="${pageContext.request.contextPath}/articles?page=${currentPage - 1}">&lt;</a>
+            <c:if test="${page.currentPage > 1}">
+                <a href="${pageContext.request.contextPath}/articles?page=${page.currentPage - 1}">&lt;</a>
             </c:if>
-            <c:forEach begin="1" end="${totalPages}" var="i">
+            <c:forEach begin="${page.firstPage}" end="${page.lastPage}" var="i">
                 <c:choose>
-                    <c:when test="${i == currentPage}">
+                    <c:when test="${i == page.currentPage}">
                         <a href="#" class="active">${i}</a>
                     </c:when>
                     <c:otherwise>
@@ -48,8 +48,8 @@
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
-            <c:if test="${currentPage < totalPages}">
-                <a href="${pageContext.request.contextPath}/articles?page=${currentPage + 1}">&gt;</a>
+            <c:if test="${page.currentPage < totalPages}">
+                <a href="${pageContext.request.contextPath}/articles?page=${page.currentPage + 1}">&gt;</a>
             </c:if>
         </div>
 
@@ -63,4 +63,4 @@
 </div>
 </body>
 
-<jsp:include page="common/footer.jsp"/>
+<%--<jsp:include page="common/footer.jsp"/>--%>
