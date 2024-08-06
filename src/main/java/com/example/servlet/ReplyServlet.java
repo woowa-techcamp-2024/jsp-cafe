@@ -2,11 +2,17 @@ package com.example.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import com.example.annotation.Login;
 import com.example.entity.Reply;
 import com.example.service.ReplyService;
+import com.example.utils.LocalDateTimeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -24,6 +30,26 @@ public class ReplyServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		replyService = (ReplyService)config.getServletContext().getAttribute("replyService");
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		LocalDateTime lastCreatedAt = LocalDateTime.parse(req.getParameter("lastCreatedAt"), formatter);
+
+		List<Reply> replies = replyService.findAll(
+			Long.parseLong(req.getParameter("articleId")),
+			Long.parseLong(req.getParameter("lastReplyId")),
+			lastCreatedAt);
+		Gson gson = new GsonBuilder()
+			.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+			.create();
+		String json = gson.toJson(replies);
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
+		PrintWriter out = resp.getWriter();
+		out.print(json);
+		out.flush();
 	}
 
 	@Login
@@ -59,7 +85,7 @@ public class ReplyServlet extends HttpServlet {
 
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
-		String jsonResponse = String.format("{\"id\": %d, \"author\": \"%s\", \"time\": \"%s\", \"content\": \"%s\"}",
+		String jsonResponse = String.format("{\"id\": %d, \"userName\": \"%s\", \"createdAt\": \"%s\", \"contents\": \"%s\"}",
 			replyId, reply.getUserName(), reply.getCreatedAt().toString(), reply.getContents());
 		resp.getWriter().write(jsonResponse);
 	}

@@ -36,6 +36,10 @@ public class ArticleService {
 		return articleOptional.get();
 	}
 
+	public List<Article> getArticleByPage(Long pageNumber) {
+		return articleDatabase.findAllWithPagination(pageNumber);
+	}
+
 	public void updateArticle(String userId, String userName, Long articleId, UpdateArticleRequest request) {
 		checkValidation(userId, articleId);
 		articleDatabase.update(articleId,
@@ -71,5 +75,9 @@ public class ArticleService {
 		if (!article.getUserId().equals(userId)) {
 			throw BaseException.exception(403, "not enough permissions");
 		}
+	}
+
+	public long getTotalPages() {
+		return articleDatabase.getCount();
 	}
 }

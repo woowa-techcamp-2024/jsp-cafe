@@ -23,6 +23,11 @@ public class ArticleMemoryDatabase implements ArticleDatabase {
 	}
 
 	@Override
+	public long getCount() {
+		return 0;
+	}
+
+	@Override
 	public Optional<Article> findById(Long id) {
 		return Optional.ofNullable(articles.get(id));
 	}
@@ -39,6 +44,11 @@ public class ArticleMemoryDatabase implements ArticleDatabase {
 	@Override
 	public void update(Long aLong, Article article) {
 		articles.put(aLong, article);
+	}
+
+	@Override
+	public List<Article> findAllWithPagination(Long pageNumber) {
+		return List.of();
 	}
 
 	@Override

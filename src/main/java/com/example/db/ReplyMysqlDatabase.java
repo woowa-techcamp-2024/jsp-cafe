@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import com.example.entity.Reply;
 import com.example.exception.BaseException;
@@ -139,6 +140,41 @@ public class ReplyMysqlDatabase implements ReplyDatabase {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 		) {
 			pstmt.setLong(1, articleId);
+			ResultSet rs = pstmt.executeQuery();
+			List<Reply> replies = new ArrayList<>();
+			while (rs.next()) {
+				Long id = rs.getLong("id");
+				String contents = rs.getString("contents");
+				LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
+				boolean deleted = rs.getBoolean("deleted");
+				String userId = rs.getString("userId");
+				String userName = rs.getString("userName");
+				replies.add(new Reply(id, contents, createdAt, deleted, articleId, userId, userName));
+			}
+			return replies;
+		} catch (SQLException e) {
+			throw BaseException.serverException();
+		}
+	}
+
+	@Override
+	public List<Reply> findByArticleIdWithPagination(Long articleId, Long lastReplyId, LocalDateTime lastCreatedAt) {
+		String sql = """
+				select * from reply 
+			        where articleId = ? and deleted=false
+					and createdAt >= ?
+					and (createdAt > ? or id > ?)
+				order by createdAt
+				limit 6
+			""";
+		try (
+			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+		) {
+			pstmt.setLong(1, articleId);
+			pstmt.setTimestamp(2, Timestamp.valueOf(lastCreatedAt));
+			pstmt.setTimestamp(3, Timestamp.valueOf(lastCreatedAt));
+			pstmt.setLong(4, lastReplyId);
 			ResultSet rs = pstmt.executeQuery();
 			List<Reply> replies = new ArrayList<>();
 			while (rs.next()) {
