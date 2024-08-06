@@ -1,5 +1,6 @@
 package woopaca.jspcafe.repository;
 
+import woopaca.jspcafe.model.Page;
 import woopaca.jspcafe.model.Post;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface PostRepository {
     List<Post> findAll();
 
     Optional<Post> findById(Long id);
+
+    Page<Post> findToPage(int page, int limit);
 }

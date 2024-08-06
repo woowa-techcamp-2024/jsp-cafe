@@ -1,6 +1,8 @@
 package woopaca.jspcafe.repository;
 
 import woopaca.jspcafe.database.JdbcTemplate;
+import woopaca.jspcafe.model.Count;
+import woopaca.jspcafe.model.Page;
 import woopaca.jspcafe.model.Post;
 
 import java.util.List;
@@ -42,5 +44,26 @@ public class PostMySQLRepository implements PostRepository {
     public Optional<Post> findById(Long id) {
         String sql = "SELECT * FROM post WHERE id = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Post.class, id));
+    }
+
+    @Override
+    public Page<Post> findToPage(int page, int limit) {
+        String sql = """
+                SELECT * 
+                FROM post JOIN (
+                        SELECT id 
+                        FROM post 
+                        WHERE status = 'PUBLISHED' 
+                        ORDER BY written_at DESC 
+                        LIMIT ?, ?
+                ) AS p ON post.id = p.id 
+                ORDER BY written_at DESC;
+                """;
+        List<Post> posts = jdbcTemplate.queryForList(sql, Post.class, (page - 1) * limit, limit);
+
+        String countSql = "SELECT COUNT(*) AS count FROM post";
+        Count totalCount = jdbcTemplate.queryForObject(countSql, Count.class);
+        int totalPage = (int) Math.ceil((double) totalCount.count() / limit);
+        return new Page<>(posts, totalPage, page, totalCount.count());
     }
 }
