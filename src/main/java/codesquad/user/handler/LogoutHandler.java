@@ -1,4 +1,4 @@
-package codesquad.auth.handler;
+package codesquad.user.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.RequestMapping;
