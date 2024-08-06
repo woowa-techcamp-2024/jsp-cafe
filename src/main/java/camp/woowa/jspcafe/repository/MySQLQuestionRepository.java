@@ -76,7 +76,7 @@ public class MySQLQuestionRepository implements QuestionRepository {
         try (var conn = ds.getConnection()){
             conn.setAutoCommit(false);
 
-            var pstmt = conn.prepareStatement("SELECT q.id AS id, q.title AS title, q.content AS content, u.user_id AS writer, q.writer_id AS writer_id, q.created_at AS created_at FROM question q LEFT JOIN user u ON q.writer_id = u.id WHERE q.is_deleted = FALSE ORDER BY q.id DESC LIMIT ? OFFSET ?");
+            var pstmt = conn.prepareStatement("SELECT q.id AS id,        q.title AS title,        q.content AS content,        u.user_id AS writer,        q.writer_id AS writer_id,        q.created_at AS created_at FROM ( SELECT id FROM question WHERE is_deleted = FALSE ORDER BY id DESC LIMIT ? OFFSET ?) sub JOIN question q ON sub.id = q.id LEFT JOIN user u ON q.writer_id = u.id;");
             pstmt.setInt(1, pageRequest.getSize());
             pstmt.setInt(2, pageRequest.getOffset());
             var rs = pstmt.executeQuery();
