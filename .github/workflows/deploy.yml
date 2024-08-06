@@ -1,13 +1,11 @@
-name: Gradle CI/CD
+name: Deploy to EC2
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,32 +17,15 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Copy files to EC2
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-          source: "build/libs/ROOT.war,Dockerfile"
-          target: "~/app"
-          strip_components: 2
-
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-          script: |
-            cd ~/app
-            docker build -t myapp:${{ github.sha }} .
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d --name myapp -p 8080:8080 myapp:${{ github.sha }}
-            docker image prune -f
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          scp -i private_key -o StrictHostKeyChecking=no ./build/libs/*.war ${USER}@${HOST}:/path/to/tomcat/webapps/
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'sudo systemctl restart tomcat'
