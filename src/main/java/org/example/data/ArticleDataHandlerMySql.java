@@ -112,7 +112,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
 
     @Override
     public List<Article> findByPage(int pageNumber) {
-        String sql = "SELECT * FROM articles WHERE alive_status = ? ORDER BY created_dt DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM articles WHERE alive_status = ? ORDER BY created_dt DESC, title DESC LIMIT ? OFFSET ?";
         List<Article> articles = new ArrayList<>();
         try (Connection con = DatabaseConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
