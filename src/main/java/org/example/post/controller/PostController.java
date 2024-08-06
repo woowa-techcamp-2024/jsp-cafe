@@ -47,9 +47,11 @@ public class PostController {
 
     @RequestMapping(path = "/", method = HttpMethod.GET)
     public ModelAndView list(@RequestParam(required = false) String cursorTimestamp,
-                             @RequestParam(required = false) Long cursorId) throws SQLException {
+                             @RequestParam(required = false) Long cursorId,
+                             @RequestParam(defaultValue = "1") int page) throws SQLException {
+        int pageSize = 15;
         LocalDateTime timestamp = cursorTimestamp != null ? LocalDateTime.parse(cursorTimestamp) : null;
-        List<PostDto> postResponses = postService.getPagedPosts(timestamp, cursorId, 15);
+        List<PostDto> postResponses = postService.getPagedPosts(timestamp, cursorId, pageSize);
         ModelAndView mv = new ModelAndView("post/PostList");
         mv.addAttribute("posts", postResponses);
 
@@ -58,6 +60,11 @@ public class PostController {
             mv.addAttribute("nextCursorTimestamp", lastPost.getCursorTimestamp());
             mv.addAttribute("nextCursorId", lastPost.getCursorId());
         }
+
+        int totalPosts = postService.getTotalPostCount();
+        int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+        mv.addAttribute("currentPage", page);
+        mv.addAttribute("totalPages", totalPages);
 
         return mv;
     }

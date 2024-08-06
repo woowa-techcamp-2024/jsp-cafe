@@ -41,6 +41,31 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <!-- 페이지네이션 -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <c:if test="${currentPage > 1}">
+                                <li>
+                                    <a href="?page=${currentPage - 1}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            </c:if>
+
+                            <c:forEach begin="${Math.max(1, currentPage - 2)}" end="${Math.min(totalPages, currentPage + 2)}" var="i">
+                                <li class="${i == currentPage ? 'active' : ''}">
+                                    <a href="?page=${i}">${i}</a>
+                                </li>
+                            </c:forEach>
+
+                            <c:if test="${currentPage < totalPages}">
+                                <li>
+                                    <a href="?page=${currentPage + 1}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </c:if>
+                        </ul>
+                    </nav>
                 </div>
                 <div class="col-md-3 qna-write">
                     <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>

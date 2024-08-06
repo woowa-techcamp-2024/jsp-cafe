@@ -141,6 +141,26 @@ public class PostRepository {
         }
     }
 
+    public int getTotalPostCount() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM posts WHERE status = ?";
+
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, PostStatus.AVAILABLE.name());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("게시물 총 개수를 조회하는 중 오류가 발생했습니다.", e);
+        }
+
+        return 0;
+    }
+
     public Post update(Post post) throws SQLException {
         logger.info("Updating post: {}", post);
         String sql = "UPDATE posts SET title = ?, contents = ? WHERE id = ?";
