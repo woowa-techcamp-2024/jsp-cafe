@@ -32,7 +32,7 @@ public class JdbcTemplate {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         String mysqlUrl = System.getenv("MYSQL_URL");
-        URL = mysqlUrl != null ? mysqlUrl : "jdbc:mysql://localhost:3306/jsp-cafe?allowMultiQueries=true";
+        URL = mysqlUrl != null ? mysqlUrl : "jdbc:mysql://host.docker.internal:3306/jsp-cafe?allowMultiQueries=true";
 
         String mysqlUsername = System.getenv("MYSQL_USERNAME");
         MYSQL_USERNAME = mysqlUsername != null ? mysqlUsername : "root";
