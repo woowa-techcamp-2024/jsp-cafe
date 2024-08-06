@@ -2,6 +2,8 @@ package camp.woowa.jspcafe.service;
 
 import camp.woowa.jspcafe.db.DatabaseManager;
 import camp.woowa.jspcafe.db.MySQLDatabaseManager;
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.model.Reply;
@@ -88,6 +90,22 @@ class ReplyServiceTest {
 
         // then
         assertEquals(iteration, size);
+    }
+
+    @Test
+    void testFindByQuestionIdWithPage() {
+        // given
+        int iteration = 10;
+        String content = "content";
+        for (int i = 0; i < iteration; i++)
+            replyService.createReply(questionId.get(0), writerId.get(0), "writer" + i, content);
+
+        // when
+        Page<Reply> replyPage = replyService.findByQuestionIdWithPage(questionId.get(0), new PageRequest(1, 5));
+
+        // then
+        assertEquals(5, replyPage.getContents().size());
+        assertEquals(3, replyPage.getTotalPage());
     }
 
     @Test
