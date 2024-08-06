@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.repository;
 
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.model.Question;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,11 @@ public class InMemQuestionRepository implements QuestionRepository {
     @Override
     public Question findById(Long id) {
         return questions.get(id);
+    }
+
+    @Override
+    public Page<Question> findAllWithPage(PageRequest pageRequest) {
+        return null;
     }
 
     @Override
