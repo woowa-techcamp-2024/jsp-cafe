@@ -15,7 +15,7 @@ import org.example.post.model.PostStatus;
 import org.example.reply.model.ReplyStatus;
 import org.example.reply.model.dao.Reply;
 import org.example.reply.model.dto.ReplyDto;
-import org.example.util.DataUtil;
+import org.example.util.DatabaseConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,18 +23,18 @@ import org.slf4j.LoggerFactory;
 public class ReplyRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(ReplyRepository.class);
-    private DataUtil dataUtil;
+    private DatabaseConnectionPool connectionPool;
 
     @Autowired
-    public ReplyRepository(DataUtil dataUtil) {
-        this.dataUtil = dataUtil;
+    public ReplyRepository(DatabaseConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     public Reply save(Reply reply) throws SQLException {
         logger.info("Saving reply: {}", reply);
         String sql = "insert into replies (post_id, user_id, contents, status, created_at) values (?, ?, ?, ?, ?)";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             long id;
             ps.setLong(1, reply.getPostId());
@@ -57,7 +57,8 @@ public class ReplyRepository {
                 }
             }
 
-            return Reply.createWithAll(id, reply.getPostId(), reply.getUserId(), reply.getContents(), reply.getReplyStatus(), reply.getCreatedAt());
+            return Reply.createWithAll(id, reply.getPostId(), reply.getUserId(), reply.getContents(),
+                    reply.getReplyStatus(), reply.getCreatedAt());
         } catch (SQLException e) {
             logger.error("Error saving reply", e);
             throw new SQLException(e);
@@ -69,7 +70,7 @@ public class ReplyRepository {
                 "FROM replies r " +
                 "JOIN users u ON r.user_id = u.user_id " +
                 "WHERE r.id = ? AND r.status = ?";
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, id);
@@ -105,7 +106,7 @@ public class ReplyRepository {
                 "JOIN users u ON r.user_id = u.user_id " +
                 "WHERE r.post_id = ? AND r.status = ?";
         List<ReplyDto> replies = new ArrayList<>();
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
         ) {
             ps.setLong(1, postId);
@@ -140,7 +141,7 @@ public class ReplyRepository {
     public ReplyDto update(ReplyDto reply) throws SQLException {
         String sql = "UPDATE replies SET contents = ? WHERE id = ?";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, reply.getContents());
             ps.setLong(2, reply.getId());
@@ -160,7 +161,7 @@ public class ReplyRepository {
     public void delete(Long id) throws SQLException {
         String sql = "UPDATE replies SET status = ? WHERE id = ?";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, ReplyStatus.DELETED.name());
             ps.setLong(2, id);

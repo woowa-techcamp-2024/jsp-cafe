@@ -18,5 +18,4 @@ public class DataUtil {
     public Connection getConnection() throws SQLException {
         return connectionPool.getConnection();
     }
-
 }

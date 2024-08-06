@@ -4,16 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sql.rowset.serial.SerialException;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.post.model.PostStatus;
 import org.example.post.model.dao.Post;
 import org.example.post.model.dto.PostDto;
-import org.example.util.DataUtil;
+import org.example.util.DatabaseConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,18 +19,18 @@ import org.slf4j.LoggerFactory;
 public class PostRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
-    private DataUtil dataUtil;
+    private DatabaseConnectionPool connectionPool;
 
     @Autowired
-    public PostRepository(DataUtil dataUtil) {
-        this.dataUtil = dataUtil;
+    public PostRepository(DatabaseConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     public void save(Post post) throws SQLException {
         logger.info("Saving post: {}", post);
         String sql = "insert into posts (user_id, title, contents, status, created_at) values (?, ?, ?, ?, ?)";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, post.getUserId());
             ps.setString(2, post.getTitle());
@@ -51,7 +49,7 @@ public class PostRepository {
                 "FROM posts p, users u " +
                 "WHERE p.id = ? AND p.status = ?";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, id);
@@ -77,7 +75,7 @@ public class PostRepository {
     public List<PostDto> findAll() throws SQLException {
         String sql = "SELECT p.id, p.user_id, u.name as username, p.title, p.contents, p.status, p.created_at FROM posts p, users u WHERE status = ? AND p.user_id = u.user_id";
         List<PostDto> posts = new ArrayList<>();
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, PostStatus.AVAILABLE.name());
             try (ResultSet rs = ps.executeQuery()) {
@@ -104,7 +102,7 @@ public class PostRepository {
         logger.info("Updating post: {}", post);
         String sql = "UPDATE posts SET title = ?, contents = ? WHERE id = ?";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, post.getTitle());
             ps.setString(2, post.getContents());
@@ -125,7 +123,7 @@ public class PostRepository {
     public void delete(Long id) throws SQLException {
         String sql = "UPDATE posts SET status = ? WHERE id = ?";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, PostStatus.DELETED.name());
             ps.setLong(2, id);
