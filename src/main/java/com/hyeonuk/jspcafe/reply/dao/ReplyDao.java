@@ -13,4 +13,5 @@ public interface ReplyDao {
     List<Reply> findAllByArticleId(Long articleId);
     List<Reply> findAllByArticleId(Long articleId,int size,int page);
     long count();
+    long countByArticleId(Long articleId);
 }

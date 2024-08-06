@@ -60,6 +60,13 @@ public class InMemoryReplyDao implements ReplyDao {
     }
 
     @Override
+    public long countByArticleId(Long articleId) {
+        return replies.values().stream()
+                .filter(reply -> reply.getArticle().getId().equals(articleId) && reply.getDeletedAt() == null)
+                .count();
+    }
+
+    @Override
     public Optional<Reply> findById(Long id) {
         Reply reply = replies.get(id);
         if (reply != null && reply.getDeletedAt() == null) {

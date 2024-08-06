@@ -122,7 +122,7 @@ public class MysqlReplyDao implements ReplyDao{
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, articleId);
             pstmt.setInt(2,size);
-            pstmt.setInt(3,page);
+            pstmt.setInt(3,(page-1)*size);
             ResultSet rs = pstmt.executeQuery();
             List<Reply> replies = new ArrayList<>();
             while(rs.next()){
@@ -138,7 +138,23 @@ public class MysqlReplyDao implements ReplyDao{
     public long count() {
         try(Connection conn = manager.getConnection()){
             String sql = "select count(*) from reply";
-            PreparedStatement pstmt = conn.prepareStatement("sql");
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return rs.getLong(1);
+            }
+            return 0;
+        }catch(SQLException e){
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
+    @Override
+    public long countByArticleId(Long articleId) {
+        try(Connection conn = manager.getConnection()){
+            String sql = "select count(*) from reply where articleId = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1,articleId);
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()) {
                 return rs.getLong(1);
