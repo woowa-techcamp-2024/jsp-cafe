@@ -38,7 +38,7 @@ public class ApplicationContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
-        DataSourceProperty dataSourceProperty = new DataSourceProperty();
+        DataSourceProperty dataSourceProperty = new DataSourceProperty("PROFILE");
         DataSourceManager dataSourceManager = new DataSourceManager(dataSourceProperty);
         servletContext.setAttribute("dataSourceManager", dataSourceManager);
 

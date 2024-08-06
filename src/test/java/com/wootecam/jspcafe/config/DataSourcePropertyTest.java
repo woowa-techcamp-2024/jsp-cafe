@@ -10,7 +10,7 @@ class DataSourcePropertyTest {
     @Test
     void 테스트_데이터_소스를_불러올_수_있다() {
         // when
-        DataSourceProperty dataSourceProperty = new DataSourceProperty();
+        DataSourceProperty dataSourceProperty = new DataSourceProperty("TEST");
 
         // then
         assertAll(

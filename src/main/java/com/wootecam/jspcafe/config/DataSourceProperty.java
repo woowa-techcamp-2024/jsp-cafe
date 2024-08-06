@@ -11,13 +11,10 @@ public class DataSourceProperty {
 
     private final Properties properties = new Properties();
 
-    public DataSourceProperty() {
-        loadProperties();
-    }
+    public DataSourceProperty(final String profileKey) {
+        String profile = System.getenv(profileKey);
 
-    private void loadProperties() {
         try {
-            String profile = System.getenv("PROFILE");
             if (profile == null) {
                 properties.load(getClass().getClassLoader().getResourceAsStream("config/datasource.properties"));
                 profile = properties.getProperty("profile");

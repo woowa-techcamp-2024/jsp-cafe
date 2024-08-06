@@ -31,7 +31,7 @@ public class ServiceTest {
 
     @BeforeEach
     void setUpTest() {
-        dataSourceManager = new DataSourceManager(new DataSourceProperty());
+        dataSourceManager = new DataSourceManager(new DataSourceProperty("TEST"));
         jdbcTemplate = new JdbcTemplate(dataSourceManager);
         databaseCleaner = new DatabaseCleaner(jdbcTemplate);
         userRepository = new JdbcUserRepository(jdbcTemplate);
