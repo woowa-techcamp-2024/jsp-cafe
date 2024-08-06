@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DisplayName("UserService 단위 테스트")
+@DisplayName("UserService 테스트")
 class UserServiceTest {
 
     DbConnector dbConnector = new DbConnector().init();
