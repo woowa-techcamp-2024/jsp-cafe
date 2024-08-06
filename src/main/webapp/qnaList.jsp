@@ -1,5 +1,6 @@
 <%@ page import="com.hyeonuk.jspcafe.article.domain.Article" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.hyeonuk.jspcafe.global.domain.Page" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/templates/component/header.jsp"%>
 <!DOCTYPE html>
@@ -10,7 +11,13 @@
       <div class="panel panel-default qna-list">
           <ul class="list">
               <%
-                  List<Article> articles = (List<Article>) request.getAttribute("articles");
+                  Page pageContents = (Page)request.getAttribute("articles");
+                  List<Article> articles = pageContents.getContents();
+                  boolean isPreviousPage = pageContents.isPreviousPage();
+                  boolean isNextPage = pageContents.isNextPage();
+                  List<Integer> pageList = pageContents.pageList();
+                  int now = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
+
                   for(Article article : articles){
               %>
               <li>
@@ -38,13 +45,28 @@
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
-                      <li><a href="#">«</a></li>
-                      <li><a href="#">1</a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">3</a></li>
-                      <li><a href="#">4</a></li>
-                      <li><a href="#">5</a></li>
-                      <li><a href="#">»</a></li>
+                      <% if(isPreviousPage){
+
+                      %>
+                      <li><a href="${pageContext.request.contextPath}/?page=<%=now-1%>">«</a></li>
+                      <%
+                          }
+                      %>
+
+                      <%
+                          for(int p : pageList){
+                      %>
+                      <li><a href="${pageContext.request.contextPath}/?page=<%=p%>"><%=p%></a></li>
+                      <%
+                          }
+                      %>
+                      <% if(isNextPage){
+
+                      %>
+                      <li><a href="${pageContext.request.contextPath}/?page=<%=now+1%>">»</a></li>
+                      <%
+                          }
+                      %>
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
