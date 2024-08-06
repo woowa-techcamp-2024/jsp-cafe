@@ -33,6 +33,11 @@ jobs:
           echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
         fi
 
+    - name: Add SSH key to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
     - name: run deploy script
       env:
         SSH_SERVER_INFO: ${{ secrets.SSH_SERVER_INFO }}
