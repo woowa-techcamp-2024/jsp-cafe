@@ -3,6 +3,7 @@ package org.example.cafe.infra;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import org.example.cafe.application.ReplyService.ReplyPageDto;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
@@ -13,6 +14,19 @@ import org.example.cafe.infra.jdbc.RowMapper;
 public class ReplyJdbcRepository implements ReplyRepository {
 
     private static final String INSERT = "INSERT INTO REPLY (content, writer, question_id) VALUES (?, ?, ?)";
+    private static final String SELECT_FIRST_PAGE_BY_QUESTION_ID = """
+            SELECT * FROM REPLY
+                     WHERE question_id = ? and is_deleted = false
+            ORDER BY created_at, reply_id
+            limit ?;
+            """;
+    private static final String SELECT_NEXT_PAGE_BY_QUESTION_ID = """
+            SELECT * FROM REPLY
+                     WHERE question_id = ? and is_deleted = false
+                     and (created_at > ? or (created_at = ? and reply_id > ?))
+            ORDER BY created_at, reply_id
+            limit ?;
+            """;
     private static final String SELECT_BY_QUESTION_ID = "SELECT * FROM REPLY WHERE question_id = ? and is_deleted = false";
     private static final String SELECT_BY_ID = "SELECT * FROM REPLY WHERE reply_id = ? and is_deleted = false";
     private static final String DELETE = "DELETE FROM REPLY";
@@ -42,6 +56,18 @@ public class ReplyJdbcRepository implements ReplyRepository {
     @Override
     public List<Reply> findByQuestionId(Long questionId) {
         return jdbcTemplate.query(SELECT_BY_QUESTION_ID, replyRowMapper, questionId);
+    }
+
+    @Override
+    public List<Reply> findByQuestionId(ReplyPageDto replyPageDto) {
+        if (replyPageDto.lastReplyId() == null || replyPageDto.createdAt() == null) {
+            return jdbcTemplate.query(SELECT_FIRST_PAGE_BY_QUESTION_ID, replyRowMapper,
+                    replyPageDto.questionId(), replyPageDto.pageSize());
+        }
+
+        return jdbcTemplate.query(SELECT_NEXT_PAGE_BY_QUESTION_ID, replyRowMapper,
+                replyPageDto.questionId(), replyPageDto.createdAt(), replyPageDto.createdAt(),
+                replyPageDto.lastReplyId(), replyPageDto.pageSize());
     }
 
     @Override

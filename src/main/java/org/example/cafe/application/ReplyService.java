@@ -1,7 +1,9 @@
 package org.example.cafe.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.example.cafe.application.dto.ReplyCreateDto;
+import org.example.cafe.application.dto.ReplyPageParam;
 import org.example.cafe.common.exception.BadAuthenticationException;
 import org.example.cafe.common.exception.DataNotFoundException;
 import org.example.cafe.domain.Reply;
@@ -9,6 +11,8 @@ import org.example.cafe.domain.Reply.ReplyBuilder;
 import org.example.cafe.domain.ReplyRepository;
 
 public class ReplyService {
+
+    public static final int PAGE_SIZE = 5;
 
     private final ReplyRepository replyRepository;
 
@@ -26,8 +30,15 @@ public class ReplyService {
                 .build();
     }
 
-    public List<Reply> findRepliesByQuestionId(Long questionId) {
+    public List<Reply> findAll(Long questionId) {
         return replyRepository.findByQuestionId(questionId);
+    }
+
+    public List<Reply> findReplyPageByQuestionId(ReplyPageParam replyPageParam) {
+        ReplyPageDto replyPageDto = new ReplyPageDto(replyPageParam.questionId(),
+                replyPageParam.lastReplyId(), replyPageParam.createdAt(), PAGE_SIZE);
+
+        return replyRepository.findByQuestionId(replyPageDto);
     }
 
     public void deleteReply(Long replyId, String userId) {
@@ -46,5 +57,11 @@ public class ReplyService {
         if (!reply.hasWriter(loginUserId)) {
             throw new BadAuthenticationException("작성자만 수정, 삭제할 수 있습니다.");
         }
+    }
+
+    public record ReplyPageDto(Long questionId,
+                               Long lastReplyId,
+                               LocalDateTime createdAt,
+                               int pageSize) {
     }
 }
