@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,13 +27,13 @@ class PageTest {
             //given
             int page = 2;
             PageTest.this.page = new Page<>(size,page, totalSize,List.of());
-            List<Integer> expected = IntStream
+            List<Long> expected = LongStream
                     .rangeClosed(1,10)
                     .boxed()
                     .toList();
 
             //when
-            List<Integer> list = PageTest.this.page.pageList();
+            List<Long> list = PageTest.this.page.pageList();
 
             //then
             assertEquals(expected,list);
@@ -44,13 +45,13 @@ class PageTest {
             //given
             int page = 11;
             PageTest.this.page = new Page<>(size,page, totalSize,List.of());
-            List<Integer> expected = IntStream
+            List<Long> expected = LongStream
                     .rangeClosed(11,15)
                     .boxed()
                     .toList();
 
             //when
-            List<Integer> list = PageTest.this.page.pageList();
+            List<Long> list = PageTest.this.page.pageList();
 
             //then
             assertEquals(expected,list);

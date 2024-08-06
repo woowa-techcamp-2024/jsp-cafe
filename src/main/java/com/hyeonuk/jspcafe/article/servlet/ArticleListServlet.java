@@ -27,7 +27,7 @@ public class ArticleListServlet extends HttpServlet {
         String sizeString = req.getParameter("size");
         int page =  pageString == null || pageString.isBlank()  ? 1 : Integer.parseInt(req.getParameter("page"));
         int size =  sizeString == null || sizeString.isBlank() ? 15 : Integer.parseInt(req.getParameter("size"));
-        int totalSize = articleDao.findAll().size();
+        long totalSize = articleDao.count();
         List<Article> contents = articleDao.findAll(size,page);
         req.setAttribute("articles",new Page<>(size,page,totalSize,contents));
 

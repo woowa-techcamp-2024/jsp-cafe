@@ -3,18 +3,19 @@ package com.hyeonuk.jspcafe.global.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 public class Page<T> {
     private final int size;
     private final int page;
-    private final int totalSize;
+    private final long totalSize;
     private final boolean previousPage;
     private final boolean nextPage;
     private final List<T> contents;
-    private final int totalPage;
+    private final long totalPage;
     private final int listSize;
 
-    public Page(int size, int page, int totalSize, List<T> contents) {
+    public Page(int size, int page, long totalSize, List<T> contents) {
         this.size = size;
         this.page = page;
         this.totalSize = totalSize;
@@ -25,10 +26,10 @@ public class Page<T> {
         this.listSize = 10;
     }
 
-    public List<Integer> pageList(){
-        int minPage = page /listSize*listSize;
-        int maxPage = Math.min(minPage + listSize, totalPage);
-        return IntStream.range(minPage, maxPage)
+    public List<Long> pageList(){
+        long minPage = page /listSize*listSize;
+        long maxPage = Math.min(minPage + listSize, totalPage);
+        return LongStream.range(minPage, maxPage)
                 .map(p->p+1)
                 .boxed()
                 .collect(Collectors.toList());
@@ -46,7 +47,7 @@ public class Page<T> {
         return page;
     }
 
-    public int getTotalSize() {
+    public long getTotalSize() {
         return totalSize;
     }
 
