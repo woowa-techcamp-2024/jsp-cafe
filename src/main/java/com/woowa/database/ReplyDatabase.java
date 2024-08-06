@@ -12,4 +12,6 @@ public interface ReplyDatabase {
     Optional<Reply> findById(String replyId);
 
     void delete(Reply reply);
+
+    Page<Reply> findAllByQuestionId(String questionId, int page, int size);
 }

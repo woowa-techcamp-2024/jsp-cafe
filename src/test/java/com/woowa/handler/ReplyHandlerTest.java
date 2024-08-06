@@ -3,6 +3,7 @@ package com.woowa.handler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
+import com.woowa.database.Page;
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
 import com.woowa.database.ReplyDatabase;
@@ -147,6 +148,41 @@ class ReplyHandlerTest {
 
             //then
             assertThat(exception).isInstanceOf(AuthorizationException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findReplies 호출 시")
+    class FindRepliesTest {
+
+        @Test
+        @DisplayName("게시글의 댓글 목록을 조회한다.")
+        void findReplies() {
+            //given
+            User user = UserFixture.user();
+            Question question = QuestionFixture.question(user);
+            List<Reply> replies = ReplyFixture.replies(user, question, 5);
+
+            Question anotherQuestion = QuestionFixture.question(user);
+            List<Reply> otherReplies = ReplyFixture.replies(user, anotherQuestion, 3);
+
+            userDatabase.save(user);
+            questionDatabase.save(question);
+            for (Reply reply : replies) {
+                replyDatabase.save(reply);
+            }
+            questionDatabase.save(anotherQuestion);
+            for (Reply otherReply : otherReplies) {
+                replyDatabase.save(otherReply);
+            }
+
+            //when
+            ResponseEntity response = replyHandler.findReplies(question.getQuestionId(), 0, 5);
+
+            //then
+            Page<Reply> result = (Page<Reply>) response.getModel().get("replies");
+            assertThat(result.getContent()).hasSize(5)
+                    .containsAnyElementsOf(replies);
         }
     }
 }
