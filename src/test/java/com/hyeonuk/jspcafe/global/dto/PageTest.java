@@ -17,7 +17,7 @@ class PageTest {
     @Nested
     @DisplayName("pageList 메서드는")
     class PageListTest {
-        int totalPage = 96;
+        int totalSize = 156;
         int size = 10;
 
         @Test
@@ -25,9 +25,9 @@ class PageTest {
         void requestWithinPageSize(){
             //given
             int page = 2;
-            PageTest.this.page = new Page<>(size,page,totalPage,List.of());
+            PageTest.this.page = new Page<>(size,page, totalSize,List.of());
             List<Integer> expected = IntStream
-                    .rangeClosed(page*size+1,(page+1)*size)
+                    .rangeClosed(1,10)
                     .boxed()
                     .toList();
 
@@ -42,10 +42,10 @@ class PageTest {
         @DisplayName("요청한 페이지의 범위가 size개수 미만일 경우에는 남은 개수만큼만 나온다.")
         void requestRemainPage(){
             //given
-            int page = 9;
-            PageTest.this.page = new Page<>(size,page,totalPage,List.of());
+            int page = 11;
+            PageTest.this.page = new Page<>(size,page, totalSize,List.of());
             List<Integer> expected = IntStream
-                    .rangeClosed(page*size+1,totalPage)
+                    .rangeClosed(11,15)
                     .boxed()
                     .toList();
 
@@ -60,14 +60,14 @@ class PageTest {
     @Nested
     @DisplayName("hasNextPage 메서드는")
     class HasNextPageTest {
-        int totalPage = 96;
+        int totalSize = 96;
         int size = 10;
         @Test
         @DisplayName("다음 페이지가 존재하면 true다")
         void hasNextPageTrue(){
             //given
-            int page = totalPage - 1;
-            PageTest.this.page = new Page<>(size,page,totalPage,List.of());
+            int page = totalSize/10 - 1;
+            PageTest.this.page = new Page<>(size,page, totalSize,List.of());
 
             //when & then
             assertTrue(PageTest.this.page.isNextPage());
@@ -77,8 +77,8 @@ class PageTest {
         @DisplayName("다음 페이지가 존재하지 않는다면 false다")
         void hasNextPageFalse(){
             //given
-            int page = totalPage;
-            PageTest.this.page = new Page<>(size,page,totalPage,List.of());
+            int page = totalSize;
+            PageTest.this.page = new Page<>(size,page, totalSize,List.of());
 
             //when & then
             assertFalse(PageTest.this.page.isNextPage());
@@ -88,14 +88,14 @@ class PageTest {
     @Nested
     @DisplayName("hasNextPage 메서드는")
     class HasPreviousPageTest {
-        int totalPage = 96;
+        int totalSize = 96;
         int size = 10;
         @Test
         @DisplayName("이전 페이지가 존재하면 true다")
         void hasNextPageTrue(){
             //given
-            int page = totalPage - 1;
-            PageTest.this.page = new Page<>(size,page,totalPage,List.of());
+            int page = totalSize - 1;
+            PageTest.this.page = new Page<>(size,page, totalSize,List.of());
 
             //when & then
             assertTrue(PageTest.this.page.isPreviousPage());
@@ -106,7 +106,7 @@ class PageTest {
         void hasNextPageFalse(){
             //given
             int page = 0;
-            PageTest.this.page = new Page<>(size,page,totalPage,List.of());
+            PageTest.this.page = new Page<>(size,page, totalSize,List.of());
 
             //when & then
             assertFalse(PageTest.this.page.isPreviousPage());
