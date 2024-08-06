@@ -2,6 +2,7 @@ package org.example.jspcafe.question.repository;
 
 import org.example.jspcafe.database.SimpleConnectionPool;
 import org.example.jspcafe.question.Question;
+import org.example.jspcafe.question.QuestionPagination;
 import org.example.jspcafe.user.User;
 
 import java.sql.*;
@@ -160,4 +161,57 @@ public class JdbcQuestionRepository implements QuestionRepository {
             SimpleConnectionPool.releaseConnection(conn);
         }
     }
+
+    public QuestionPagination getAllWithPagination(int page, int pageSize) {
+        List<Question> questions = new ArrayList<>();
+        String sql = "SELECT q.*, u.id as user_id, u.nickname, u.email " +
+                "FROM Question q " +
+                "JOIN Users u ON q.user_id = u.id " +
+                "WHERE q.status = true " +
+                "ORDER BY q.date DESC " +
+                "LIMIT ? OFFSET ?";
+
+        Connection conn = SimpleConnectionPool.getInstance().getConnection();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, pageSize);
+            pstmt.setInt(2, (page - 1) * pageSize);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = User.builder()
+                            .id(rs.getLong("user_id"))
+                            .nickname(rs.getString("nickname"))
+                            .email(rs.getString("email"))
+                            .build();
+
+                    Question question = Question.builder()
+                            .id(rs.getLong("id"))
+                            .userId(rs.getLong("user_id"))
+                            .user(user)
+                            .title(rs.getString("title"))
+                            .contents(rs.getString("contents"))
+                            .lastModifiedDate(rs.getTimestamp("date").toLocalDateTime())
+                            .build();
+                    questions.add(question);
+                }
+            }
+
+            // 전체 질문 수를 계산하기 위한 쿼리
+            String countSql = "SELECT COUNT(*) FROM Question WHERE status = true";
+            try (PreparedStatement countStmt = conn.prepareStatement(countSql);
+                 ResultSet countRs = countStmt.executeQuery()) {
+                if (countRs.next()) {
+                    long totalItems = countRs.getLong(1);
+                    return new QuestionPagination(questions, page, pageSize, totalItems);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            SimpleConnectionPool.releaseConnection(conn);
+        }
+        return new QuestionPagination(questions, page, pageSize, 0);
+    }
+
 }
