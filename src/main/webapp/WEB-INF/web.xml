@@ -5,7 +5,7 @@
          version="6.0">
     <context-param>
         <param-name>ddl-auto</param-name>
-        <param-value>CREATE</param-value>
+        <param-value>CREATE_DROP</param-value>
     </context-param>
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>

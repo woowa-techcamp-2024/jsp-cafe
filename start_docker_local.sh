@@ -12,7 +12,7 @@ docker rm $CONTAINER_NAME || true
 docker rmi $IMAGE_NAME || true
 
 # 도커 이미지 빌드
-docker build -t $IMAGE_NAME --no-cache .
+docker build -t choicco89/$IMAGE_NAME --no-cache .
 
 
 # 도커 컨테이너를 실행합니다.
