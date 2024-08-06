@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface ArticleDao {
     Article save(Article article);
     List<Article> findAll();
+    List<Article> findAll(int size,int page);
     Optional<Article> findById(Long id);
     void deleteById(Long id);
 }
