@@ -34,6 +34,7 @@ class MySQLQuestionRepositoryTest {
 
     @AfterAll
     static void tearDownAll() {
+        questionRepository.deleteAll();
         userRepository.deleteAll();
     }
 
