@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnectionManager implements ConnectionProvider {
 
-    private static String url = "jdbc:mysql://localhost:3306/mydb";
+    private static String url = "jdbc:mysql://mysql_container:3306/mydb";
     private static String user = "user";
     private static String password = "userpassword";
 

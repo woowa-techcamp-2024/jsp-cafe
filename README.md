@@ -2,6 +2,12 @@
 
 - http://3.38.95.195:8080/
 
+# 로컬 실행
+
+- docker-compose up -d
+- localhost:8080 접속
+- 톰캣과 mysql을 container로 띄워 실행
+
 # 1 회원 가입 및 목록 조회
 
 - 라이브러리
