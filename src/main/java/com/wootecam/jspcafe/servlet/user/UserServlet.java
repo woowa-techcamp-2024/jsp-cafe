@@ -38,6 +38,6 @@ public class UserServlet extends AbstractHttpServlet {
                 req.getParameter("email")
         );
 
-        resp.sendRedirect("/users");
+        resp.sendRedirect("/");
     }
 }
