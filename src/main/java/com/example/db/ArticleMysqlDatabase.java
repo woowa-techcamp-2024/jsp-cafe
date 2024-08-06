@@ -94,9 +94,10 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 	@Override
 	public List<Article> findAllWithPagination(Long pageNumber) {
 		String sql = """
-			select * from article where deleted=false
-			order by createdAt desc, id asc
-			limit ?,15
+			select *
+				from article as a
+				join (select id from article where deleted = false order by createdAt desc, id limit ?,15) as temp
+			on temp.id = a.id
 			""";
 		try (
 			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
