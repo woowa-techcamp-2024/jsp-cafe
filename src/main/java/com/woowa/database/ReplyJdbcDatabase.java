@@ -129,8 +129,8 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
 
     private List<Reply> findAllByQuestionIdOrderByCreatedAt(String questionId, int page, int size) {
         String sql = "select * from reply r join user u on r.user_id=u.user_id"
-                + " where r.question_id=?"
-                + " order by created_at desc"
+                + " where r.question_id=? and r.deleted is false"
+                + " order by created_at"
                 + " limit ? offset ?";
 
         Connection con = null;
@@ -140,8 +140,8 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
             con = DBConnectionUtils.getConnection();
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, questionId);
-            pstmt.setLong(2, page);
-            pstmt.setLong(3, size);
+            pstmt.setLong(2, size);
+            pstmt.setLong(3, (long) page * size);
             rs = pstmt.executeQuery();
             List<Reply> replies = new ArrayList<>();
             while (rs.next()) {
@@ -156,7 +156,7 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
     }
 
     private Long countRepliesByQuestionId(String questionId) {
-        String sql = "select coalesce(*, 0) as reply_count from reply r where r.question_id=?";
+        String sql = "select coalesce(count(*), 0) as reply_count from reply r where r.question_id=? and r.deleted is false";
 
         Connection con = null;
         PreparedStatement pstmt = null;
