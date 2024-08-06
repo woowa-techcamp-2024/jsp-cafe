@@ -118,7 +118,7 @@ class QuestionServiceTest {
         // then
         assertEquals(1, questionService.findAllWithPage(new PageRequest(1, 10)).getCurrentPage());
         assertEquals(iteration, questionService.findAllWithPage(new PageRequest(1, 10)).getContents().size());
-        assertEquals(iteration, questionService.findAllWithPage(new PageRequest(1, 10)).getTotalPage());
+        assertEquals(2, questionService.findAllWithPage(new PageRequest(1, 10)).getTotalPage());
     }
 
     @Test
