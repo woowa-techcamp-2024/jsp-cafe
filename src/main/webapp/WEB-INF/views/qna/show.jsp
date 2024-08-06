@@ -1,9 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.StringTokenizer" %>
-<%@ page import="java.util.List" %>
-<%@ page import="codesquad.article.handler.dto.response.ArticleDetailResponse" %>
 <%@ page import="codesquad.article.handler.dto.response.ArticleResponse" %>
-<%@ page import="codesquad.comment.handler.dto.response.CommentResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -24,8 +21,7 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <%
-            ArticleDetailResponse detailArticle = (ArticleDetailResponse) request.getAttribute("articleDetailResponse");
-            ArticleResponse article = detailArticle.article();
+            ArticleResponse article = (ArticleResponse) request.getAttribute("articleResponse");
             StringTokenizer st = new StringTokenizer(article.content(), "\n");
         %>
         <div class="panel panel-default">

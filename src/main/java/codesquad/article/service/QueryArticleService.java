@@ -2,7 +2,6 @@ package codesquad.article.service;
 
 import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.handler.dto.request.ArticleQueryRequest;
-import codesquad.article.handler.dto.response.ArticleDetailResponse;
 import codesquad.article.handler.dto.response.ArticleResponse;
 import codesquad.article.handler.dto.response.PagedArticleResponse;
 import codesquad.common.http.response.PageInfo;
@@ -20,10 +19,6 @@ public class QueryArticleService {
 
     public Optional<ArticleResponse> findById(Long id) {
         return articleQuery.findById(id);
-    }
-
-    public Optional<ArticleDetailResponse> findDetailById(Long id) {
-        return articleQuery.findDetailById(id);
     }
 
     public PagedArticleResponse<ArticleResponse> findAll(ArticleQueryRequest queryRequest) {
