@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseConnectionManager {
+public class DatabaseConnectionManager implements ConnectionProvider {
 
     private static String url = "jdbc:mysql://localhost:3306/mydb";
     private static String user = "user";
@@ -19,7 +19,7 @@ public class DatabaseConnectionManager {
         }
     }
 
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
 }

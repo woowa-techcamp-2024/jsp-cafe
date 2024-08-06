@@ -12,10 +12,16 @@ import org.example.constance.AliveStatus;
 import org.example.domain.Reply;
 
 public class ReplyDataHandlerMySql implements ReplyDataHandler {
+    private final ConnectionProvider connectionProvider;
+
+    public ReplyDataHandlerMySql(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
+
     @Override
     public Reply insert(Reply reply) {
         String sql = "INSERT INTO replies (user_id, article_id, author, comment, alive_status, created_dt) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+        try (Connection con = connectionProvider.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setLong(1, reply.getUserId());
             pstmt.setLong(2, reply.getArticleId());
@@ -42,7 +48,7 @@ public class ReplyDataHandlerMySql implements ReplyDataHandler {
     @Override
     public Reply update(Reply reply) {
         String sql = "UPDATE replies SET comment = ?, alive_status = ? where replies.reply_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+        try (Connection con = connectionProvider.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql)) {
             pstmt.setString(1, reply.getComment());
             pstmt.setString(2, reply.getAliveStatus().name());
@@ -57,7 +63,7 @@ public class ReplyDataHandlerMySql implements ReplyDataHandler {
     @Override
     public Reply findByReplyId(Long replyId) {
         String sql = "SELECT * FROM replies WHERE reply_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setLong(1, replyId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -79,7 +85,7 @@ public class ReplyDataHandlerMySql implements ReplyDataHandler {
     public List<Reply> findAllByArticleId(Long articleId) {
         String sql = "SELECT * FROM replies where replies.alive_status = ? and replies.article_id = ? ORDER BY created_dt DESC";
         List<Reply> replies = new ArrayList<>();
-        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+        try (Connection con = connectionProvider.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql)) {
             pstmt.setString(1, AliveStatus.ALIVE.name());
             pstmt.setLong(2, articleId);
@@ -101,7 +107,7 @@ public class ReplyDataHandlerMySql implements ReplyDataHandler {
     @Override
     public void deleteAllByArticleId(Long articleId) {
         String sql = "UPDATE replies SET alive_status = ? where replies.article_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+        try (Connection con = connectionProvider.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql)) {
             pstmt.setString(1, AliveStatus.DELETED.name());
             pstmt.setLong(2, articleId);

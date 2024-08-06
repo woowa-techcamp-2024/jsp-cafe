@@ -13,10 +13,15 @@ import org.example.domain.Article;
 
 public class ArticleDataHandlerMySql implements ArticleDataHandler {
     private final int PAGE_SIZE = 15;
+    private final ConnectionProvider connectionProvider;
+
+    public ArticleDataHandlerMySql(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
 
     public Article insert(Article article) {
         String sql = "INSERT INTO articles (title, content, author, created_dt, alive_status, user_id) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+        try (Connection con = connectionProvider.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, article.getTitle());
             pstmt.setString(2, article.getContent());
@@ -43,7 +48,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
 
     public Article update(Article article) {
         String sql = "UPDATE articles SET title = ?, content = ?, author = ?, created_dt = ?, alive_status = ?, user_id = ? WHERE article_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(
+        try (Connection con = connectionProvider.getConnection(); PreparedStatement pstmt = con.prepareStatement(
                 sql)) {
             pstmt.setString(1, article.getTitle());
             pstmt.setString(2, article.getContent());
@@ -62,7 +67,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
     @Override
     public Article findByArticleId(Long articleId) {
         String sql = "SELECT * FROM articles WHERE article_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setLong(1, articleId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -88,7 +93,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
     public List<Article> findAll() {
         String sql = "SELECT * FROM articles where articles.alive_status = ?";
         List<Article> articles = new ArrayList<>();
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql);
         ) {
             pstmt.setString(1, AliveStatus.ALIVE.name());
@@ -114,7 +119,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
     public List<Article> findByPage(int pageNumber) {
         String sql = "SELECT * FROM articles WHERE alive_status = ? ORDER BY created_dt DESC, title DESC LIMIT ? OFFSET ?";
         List<Article> articles = new ArrayList<>();
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, AliveStatus.ALIVE.name());
             pstmt.setInt(2, PAGE_SIZE);
@@ -142,7 +147,7 @@ public class ArticleDataHandlerMySql implements ArticleDataHandler {
 
     public int getTotalPageNumber() {
         String sql = "SELECT COUNT(*) as total FROM articles WHERE alive_status = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, AliveStatus.ALIVE.name());
             try (ResultSet rs = pstmt.executeQuery()) {
