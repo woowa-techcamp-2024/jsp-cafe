@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.service.ArticleService;
+import woowa.camp.jspcafe.service.PageVO;
 import woowa.camp.jspcafe.service.ReplyService;
 import woowa.camp.jspcafe.service.dto.response.ArticleDetailsResponse;
 import woowa.camp.jspcafe.service.dto.response.ArticlePreviewResponse;
@@ -59,22 +60,27 @@ public class ArticleServlet extends HttpServlet {
     }
 
     private void handleArticles(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int currentPage = 1;
-        int totalPage = 10;
-        String pageParam = req.getParameter("page");
-
-        if (pageParam != null && !pageParam.isEmpty()) {
-            currentPage = Integer.parseInt(pageParam);
-        }
+        long currentPage = getCurrentPage(req);
         List<ArticlePreviewResponse> articles = articleService.findArticleList(currentPage);
+        Long totalArticleCounts = articleService.findTotalArticleCounts();
+        PageVO page = new PageVO(currentPage, totalArticleCounts);
+        log.info("page - {}", page);
 
-        req.setAttribute("currentPage", currentPage);
-        req.setAttribute("totalPages", totalPage);
         req.setAttribute("articles", articles);
+        req.setAttribute("totalArticleCounts", totalArticleCounts);
+        req.setAttribute("page", page);
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/index.jsp");
         requestDispatcher.forward(req, resp);
         log.debug("ArticleServlet doGet end");
+    }
+
+    private long getCurrentPage(HttpServletRequest req) {
+        String pageParam = req.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            return Long.parseLong(pageParam);
+        }
+        return 1;
     }
 
     private void handleDetailArticle(HttpServletRequest req, HttpServletResponse resp,
