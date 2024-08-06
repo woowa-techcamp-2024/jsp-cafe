@@ -1,6 +1,9 @@
 package codesquad.comment.handler;
 
-import codesquad.article.handler.dto.response.CommentResponse;
+import codesquad.comment.handler.dto.request.CommentQueryRequest;
+import codesquad.comment.handler.dto.response.CommentResponse;
+import codesquad.comment.handler.dto.response.PagedCommentResponse;
+import codesquad.comment.service.QueryCommentService;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.exception.NoSuchElementException;
 import codesquad.common.handler.HttpServletRequestHandler;
@@ -8,10 +11,8 @@ import codesquad.common.handler.ReturnType;
 import codesquad.common.handler.annotation.RequestMapping;
 import codesquad.common.handler.annotation.Response;
 import codesquad.common.http.response.ApiResponse;
+import codesquad.common.http.response.JsonWriter;
 import codesquad.user.domain.User;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,10 +26,35 @@ import java.io.IOException;
 public class CommentsAjaxHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(CommentsAjaxHandler.class);
 
+    private final QueryCommentService queryCommentService;
     private final RegisterCommentService registerCommentService;
 
-    public CommentsAjaxHandler(RegisterCommentService registerCommentService) {
+    public CommentsAjaxHandler(QueryCommentService queryCommentService, RegisterCommentService registerCommentService) {
+        this.queryCommentService = queryCommentService;
         this.registerCommentService = registerCommentService;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("requesting comment list");
+        long articleId;
+        try {
+            articleId = extractIdFromPath(req);
+        } catch (NumberFormatException e) {
+            req.setAttribute("errorMsg", "올바르지 않은 요청입니다.");
+            req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);
+            return;
+        }
+        String pageNumber = req.getParameter("pageNumber");
+        String pageSize = req.getParameter("pageSize");
+        if (pageNumber == null || pageNumber.isEmpty() || pageSize == null || pageSize.isEmpty()) {
+            pageNumber = "1";
+            pageSize = "15";
+        }
+        CommentQueryRequest query = new CommentQueryRequest(Integer.parseInt(pageNumber), Integer.parseInt(pageSize), articleId);
+        PagedCommentResponse<CommentResponse> data = queryCommentService.findByArticleId(query);
+        ApiResponse<PagedCommentResponse<CommentResponse>> returnValue = new ApiResponse<>(200, "OK", data);
+        JsonWriter.writeJson(resp, returnValue);
     }
 
     @Override
@@ -51,14 +77,9 @@ public class CommentsAjaxHandler extends HttpServletRequestHandler {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         CommentResponse data = new CommentResponse(registeredId, loginUser.getId(), loginUser.getUserId(), content);
-        ApiResponse<CommentResponse> response = new ApiResponse<>(200, "OK", data);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        String responseStr = objectMapper.writeValueAsString(response);
-        objectMapper.writeValue(resp.getWriter(), responseStr);
+        ApiResponse<CommentResponse> returnValue = new ApiResponse<>(200, "OK", data);
+        JsonWriter.writeJson(resp, returnValue);
     }
 
     private long extractIdFromPath(HttpServletRequest req) {

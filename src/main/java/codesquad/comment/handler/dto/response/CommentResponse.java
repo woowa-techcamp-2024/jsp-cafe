@@ -1,4 +1,4 @@
-package codesquad.article.handler.dto.response;
+package codesquad.comment.handler.dto.response;
 
 public record CommentResponse(
         Long id,

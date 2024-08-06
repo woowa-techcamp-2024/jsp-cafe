@@ -4,8 +4,8 @@ import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.handler.dto.request.ArticleQueryRequest;
 import codesquad.article.handler.dto.response.ArticleDetailResponse;
 import codesquad.article.handler.dto.response.ArticleResponse;
-import codesquad.article.handler.dto.response.CommentResponse;
 import codesquad.comment.domain.vo.Status;
+import codesquad.comment.handler.dto.response.CommentResponse;
 import codesquad.common.db.connection.ConnectionManager;
 
 import java.sql.Connection;

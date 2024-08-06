@@ -1,7 +1,6 @@
 package codesquad.global.container.listener;
 
 import codesquad.article.handler.*;
-import codesquad.article.handler.dao.ArticleQuery;
 import codesquad.article.service.DeleteArticleService;
 import codesquad.article.service.QueryArticleService;
 import codesquad.article.service.RegisterArticleService;
@@ -13,6 +12,7 @@ import codesquad.comment.handler.CommentHandler;
 import codesquad.comment.handler.CommentsAjaxHandler;
 import codesquad.comment.handler.CommentsHandler;
 import codesquad.comment.service.DeleteCommentService;
+import codesquad.comment.service.QueryCommentService;
 import codesquad.comment.service.RegisterCommentService;
 import codesquad.common.handler.HandlerMapping;
 import codesquad.common.handler.RequestHandler;
@@ -44,7 +44,6 @@ public class HandlerRegister implements ServletContextListener {
         ServletContext servletContext = sce.getServletContext();
         // Repository 조회
         UserQuery userQuery = (UserQuery) servletContext.getAttribute("UserQuery");
-        ArticleQuery articleQuery = (ArticleQuery) servletContext.getAttribute("ArticleQuery");
         // Service 조회
         SignInService signInService = (SignInService) servletContext.getAttribute("SignInService");
         SignUpService signUpService = (SignUpService) servletContext.getAttribute("SignUpService");
@@ -55,6 +54,7 @@ public class HandlerRegister implements ServletContextListener {
         RegisterCommentService registerCommentService = (RegisterCommentService) servletContext.getAttribute("RegisterCommentService");
         DeleteCommentService deleteCommentService = (DeleteCommentService) servletContext.getAttribute("DeleteCommentService");
         QueryArticleService queryArticleService = (QueryArticleService) servletContext.getAttribute("QueryArticleService");
+        QueryCommentService queryCommentService = (QueryCommentService) servletContext.getAttribute("QueryCommentService");
         // Handler 등록
         List<HandlerMapping> handlerMappings = new ArrayList<>();
         registerHandlerMapping(handlerMappings, new QnaHandler(queryArticleService, updateArticleService, deleteArticleService));
@@ -68,7 +68,7 @@ public class HandlerRegister implements ServletContextListener {
         registerHandlerMapping(handlerMappings, new CommentsHandler(registerCommentService));
         registerHandlerMapping(handlerMappings, new CommentHandler(deleteCommentService));
         registerHandlerMapping(handlerMappings, new CommentAjaxHandler(deleteCommentService));
-        registerHandlerMapping(handlerMappings, new CommentsAjaxHandler(registerCommentService));
+        registerHandlerMapping(handlerMappings, new CommentsAjaxHandler(queryCommentService, registerCommentService));
         registerHandlerMapping(handlerMappings, new LoginHandler(signInService));
         registerHandlerMapping(handlerMappings, new LogoutHandler());
         registerHandlerMapping(handlerMappings, new IndexHandler(queryArticleService));

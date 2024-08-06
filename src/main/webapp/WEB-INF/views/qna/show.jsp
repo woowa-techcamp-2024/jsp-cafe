@@ -3,7 +3,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="codesquad.article.handler.dto.response.ArticleDetailResponse" %>
 <%@ page import="codesquad.article.handler.dto.response.ArticleResponse" %>
-<%@ page import="codesquad.article.handler.dto.response.CommentResponse" %>
+<%@ page import="codesquad.comment.handler.dto.response.CommentResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>

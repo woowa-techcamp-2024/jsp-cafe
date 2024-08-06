@@ -2,6 +2,7 @@ package codesquad.global.container.initializer;
 
 import codesquad.article.infra.MySqlArticleQuery;
 import codesquad.article.infra.MySqlArticleRepository;
+import codesquad.comment.infra.MySqlCommentQuery;
 import codesquad.comment.infra.MySqlCommentRepository;
 import codesquad.common.db.connection.ConnectionManager;
 import codesquad.common.db.connection.ServerConnectionManager;
@@ -38,6 +39,7 @@ public class RepositoryRegister implements AppInit {
         servletContext.setAttribute("ArticleRepository", new MySqlArticleRepository(jdbcTransactionManager));
         servletContext.setAttribute("ArticleQuery", new MySqlArticleQuery(jdbcTransactionManager));
         servletContext.setAttribute("CommentRepository", new MySqlCommentRepository(jdbcTransactionManager));
+        servletContext.setAttribute("CommentQuery", new MySqlCommentQuery(jdbcTransactionManager));
         logger.info("Repository registered on context");
     }
 

@@ -6,8 +6,10 @@ import codesquad.article.service.DeleteArticleServiceImpl;
 import codesquad.article.service.QueryArticleService;
 import codesquad.article.service.RegisterArticleService;
 import codesquad.article.service.UpdateArticleService;
+import codesquad.comment.handler.dao.CommentQuery;
 import codesquad.comment.repository.CommentRepository;
 import codesquad.comment.service.DeleteCommentService;
+import codesquad.comment.service.QueryCommentService;
 import codesquad.comment.service.RegisterCommentServiceImpl;
 import codesquad.user.repository.UserRepository;
 import codesquad.user.service.SignInService;
@@ -27,6 +29,7 @@ public class ServiceRegister implements AppInit {
         ArticleRepository articleRepository = (ArticleRepository) servletContext.getAttribute("ArticleRepository");
         CommentRepository commentRepository = (CommentRepository) servletContext.getAttribute("CommentRepository");
         ArticleQuery articleQuery = (ArticleQuery) servletContext.getAttribute("ArticleQuery");
+        CommentQuery commentQuery = (CommentQuery) servletContext.getAttribute("CommentQuery");
         // user 관련 서비스
         servletContext.setAttribute("SignInService", new SignInService(userRepository));
         servletContext.setAttribute("SignUpService", new SignUpService(userRepository));
@@ -39,6 +42,7 @@ public class ServiceRegister implements AppInit {
         // comment 관련 서비스
         servletContext.setAttribute("RegisterCommentService", new RegisterCommentServiceImpl(articleRepository, commentRepository));
         servletContext.setAttribute("DeleteCommentService", new DeleteCommentService(commentRepository));
+        servletContext.setAttribute("QueryCommentService", new QueryCommentService(commentQuery));
         logger.info("Service registered on context");
     }
 
