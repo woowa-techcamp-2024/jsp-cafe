@@ -35,7 +35,7 @@
 
     <div style="display: flex; justify-content: space-between; margin-top: 20px; margin-bottom: 150px">
         <div class="pagination">
-            <c:if test="${page.currentPage > 1}">
+            <c:if test="${page.previousPageExist}">
                 <a href="${pageContext.request.contextPath}/articles?page=${page.currentPage - 1}">&lt;</a>
             </c:if>
             <c:forEach begin="${page.firstPage}" end="${page.lastPage}" var="i">
@@ -48,7 +48,7 @@
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
-            <c:if test="${page.currentPage < totalPages}">
+            <c:if test="${page.nextPageExist}">
                 <a href="${pageContext.request.contextPath}/articles?page=${page.currentPage + 1}">&gt;</a>
             </c:if>
         </div>
