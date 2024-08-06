@@ -1,6 +1,7 @@
 package com.woowa.hyeonsik.application.dao;
 
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.util.LocalDateTimeUtil;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
 
@@ -62,7 +63,13 @@ public class JdbcArticleDao implements ArticleDao {
     }
 
     @Override
-    public List<Article> findAll() {
+    public Page<Article> findAll(long page) {
+        final int AMOUNT = 15;
+
+        if (page <= 0) {
+            throw new IllegalArgumentException("페이지 값은 양수여야합니다. 현재값: " + page);
+        }
+
         String sql = """
             SELECT 
                 article_id,
@@ -77,9 +84,12 @@ public class JdbcArticleDao implements ArticleDao {
                 is_deleted = 0
             ORDER BY 
                 article_id DESC
+            LIMIT ? OFFSET ? 
             """;
 
-        return databaseConnector.executeQuery(sql,
+        long offset = (page - 1) * AMOUNT;
+
+        List<Article> articles = databaseConnector.executeQuery(sql, List.of(AMOUNT, offset),
                 resultSet -> {
                     try {
                         List<Article> list = new ArrayList<>();
@@ -96,6 +106,27 @@ public class JdbcArticleDao implements ArticleDao {
                         throw new JdbcException(e);
                     }
                 }
+        );
+
+        // 마지막 페이지 넘버 구하기
+        String sql2 = """
+                SELECT count(*) as c FROM article
+                """;
+        Long numberOfEnd = databaseConnector.executeQuery(sql2,
+                resultSet -> {
+                    try {
+                        if (!resultSet.next()) {
+                            return 0L;
+                        }
+                        return resultSet.getLong("c");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+        return new Page<>(page,
+                numberOfEnd / AMOUNT + 1,
+                articles
         );
     }
 

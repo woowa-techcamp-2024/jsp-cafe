@@ -4,6 +4,7 @@ import com.woowa.hyeonsik.application.application.MemoryDbTest;
 import com.woowa.hyeonsik.application.dao.JdbcArticleDao;
 import com.woowa.hyeonsik.application.dao.JdbcCommentDao;
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
 import com.woowa.hyeonsik.application.service.ArticleService;
@@ -13,10 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArticleServiceTest extends MemoryDbTest {
@@ -58,9 +56,9 @@ class ArticleServiceTest extends MemoryDbTest {
         articleService.write(article);
         articleService.write(article);
         articleService.write(article);
-        List<Article> list = articleService.list();
+        Page<Article> list = articleService.list();
 
-        assertThat(list).hasSize(3);
+        assertThat(list.getContent()).hasSize(3);
     }
 
     @Test
@@ -105,8 +103,8 @@ class ArticleServiceTest extends MemoryDbTest {
 
         articleService.remove(1L, "TEST_USER");
 
-        List<Article> all = articleDao.findAll();
-        assertThat(all).isEmpty();
+        Page<Article> all = articleDao.findAll(1);
+        assertThat(all.getContent()).isEmpty();
     }
 
     @Test
@@ -133,7 +131,7 @@ class ArticleServiceTest extends MemoryDbTest {
         commentDao.save(reply);
 
         articleService.remove(1L, "TEST_USER");
-        assertThat(articleDao.findAll()).isEmpty();
+        assertThat(articleDao.findAll(1).getContent()).isEmpty();
     }
 
     @Test
@@ -157,6 +155,6 @@ class ArticleServiceTest extends MemoryDbTest {
         commentDao.removeByReplyId(1L);
 
         articleService.remove(1L, "TEST_USER");
-        assertThat(articleDao.findAll()).isEmpty();
+        assertThat(articleDao.findAll(1).getContent()).isEmpty();
     }
 }

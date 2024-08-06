@@ -1,5 +1,6 @@
 package com.woowa.hyeonsik.application.servlet;
 
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.User;
 import com.woowa.hyeonsik.application.exception.LoginRequiredException;
 import com.woowa.hyeonsik.application.service.ArticleService;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public class QnaServlet extends HttpServlet {
@@ -25,9 +25,16 @@ public class QnaServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Article> list = articleService.list();
+        String pageParam = request.getParameter("page");
+        long page = 1;
+        if (!(pageParam == null || pageParam.isEmpty())) {
+            page = Long.parseLong(pageParam);
+        }
+        logger.debug("질문 목록을 조회합니다. page: {}", page);
+
+        Page<Article> list = articleService.list(page);
+        logger.debug("페이지: {}, 끝페이지: {}, 글목록 {}", list.getNumberOfPage(), list.getNumberOfEnd(), list.getContent());
         request.setAttribute("questions", list);
-        logger.debug("전체 질문 목록을 조회합니다. size: {}", list.size());
 
         SendPageUtil.forward("/template/index.jsp", getServletContext(), request, response);
     }
@@ -53,7 +60,5 @@ public class QnaServlet extends HttpServlet {
         // 게시글 작성
         Article article = new Article(null, writer, title, contents);
         articleService.write(article);
-
-//        SendPageUtil.redirect("/", getServletContext(), response);
     }
 }

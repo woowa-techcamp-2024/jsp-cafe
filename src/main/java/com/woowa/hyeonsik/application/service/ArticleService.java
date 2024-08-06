@@ -3,6 +3,7 @@ package com.woowa.hyeonsik.application.service;
 import com.woowa.hyeonsik.application.dao.ArticleDao;
 import com.woowa.hyeonsik.application.dao.CommentDao;
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
 
@@ -22,8 +23,12 @@ public class ArticleService {
         articleDao.save(article);
     }
 
-    public List<Article> list() {
-        return articleDao.findAll();
+    public Page<Article> list() {
+        return list(1);
+    }
+
+    public Page<Article> list(long page) {
+        return articleDao.findAll(page);
     }
 
     public Article findById(long articleId) {
