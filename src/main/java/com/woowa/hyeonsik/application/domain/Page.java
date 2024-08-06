@@ -31,6 +31,10 @@ public final class Page<T> {
         return content;
     }
 
+    public long getTotalCount() {
+        return totalCount;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
