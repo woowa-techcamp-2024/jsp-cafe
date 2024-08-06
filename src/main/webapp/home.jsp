@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,6 +43,28 @@
           </div>
         </a>
       </c:forEach>
+    </div>
+
+    <div id="pagination">
+      <fmt:parseNumber var="pageGroup" value="${(page.currentPage() - 1) / 5}" integerOnly="true" />
+      <fmt:parseNumber var="startPage" value="${pageGroup * 5 + 1}" integerOnly="true" />
+      <fmt:parseNumber var="endPage" value="${startPage + 4 < page.totalPage() ? startPage + 4 : page.totalPage()}"
+                       integerOnly="true" />
+
+      <c:if test="${startPage > 1}">
+        <a href="${pageContext.request.contextPath}/?page=${startPage - 1}" class="pagination-link">&lt;</a>
+      </c:if>
+
+      <c:forEach var="i" begin="${startPage}" end="${endPage}">
+        <a href="${pageContext.request.contextPath}/?page=${i}"
+           class="pagination-link <c:if test="${i == page.currentPage()}">active</c:if>">
+          <c:out value="${i}" />
+        </a>
+      </c:forEach>
+
+      <c:if test="${endPage < page.totalPage()}">
+        <a href="${pageContext.request.contextPath}/?page=${endPage + 1}" class="pagination-link">&gt;</a>
+      </c:if>
     </div>
   </div>
 </div>
