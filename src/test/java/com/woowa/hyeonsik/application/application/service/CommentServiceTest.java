@@ -6,6 +6,7 @@ import com.woowa.hyeonsik.application.dao.CommentDao;
 import com.woowa.hyeonsik.application.dao.JdbcArticleDao;
 import com.woowa.hyeonsik.application.dao.JdbcCommentDao;
 import com.woowa.hyeonsik.application.domain.Article;
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.exception.AuthenticationException;
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
@@ -38,7 +39,7 @@ class CommentServiceTest extends MemoryDbTest {
 
         commentService.addComment(reply);
 
-        Reply foundReply = commentService.findAllByArticleId(1L).get(0);
+        Reply foundReply = commentService.findAllByArticleId(1L, 1L).getContent().stream().toList().get(0);
         assertThat(foundReply.getArticleId()).isEqualTo(1L);
         assertThat(foundReply.getWriter()).isEqualTo("TEST_USER");
         assertThat(foundReply.getContents()).isEqualTo("COMMENT");
@@ -60,15 +61,15 @@ class CommentServiceTest extends MemoryDbTest {
         commentService.addComment(reply);
         commentService.addComment(reply2);
 
-        List<Reply> all = commentService.findAllByArticleId(1L);
+        Page<Reply> all = commentService.findAllByArticleId(1L, 1L);
 
-        assertThat(all).hasSize(2);
+        assertThat(all.getContent()).hasSize(2);
     }
 
     @Test
     @DisplayName("존재하지 않는 게시글에 댓글목록을 불러오면 예외가 난다.")
     void findAllByArticleId_emptyArticle() {
-        assertThrows(IllegalArgumentException.class, () -> commentService.findAllByArticleId(2L));
+        assertThrows(IllegalArgumentException.class, () -> commentService.findAllByArticleId(2L, 0));
     }
 
     @Test
@@ -80,7 +81,7 @@ class CommentServiceTest extends MemoryDbTest {
         Reply newReply = new Reply(1L, 1L, "TEST_USER", "CHANGED");
         commentService.updateComment(newReply, "TEST_USER");
 
-        Reply foundReply = commentService.findAllByArticleId(1L).get(0);
+        Reply foundReply = commentService.findAllByArticleId(1L, 1L).getContent().stream().toList().get(0);
         assertThat(foundReply.getArticleId()).isEqualTo(1L);
         assertThat(foundReply.getWriter()).isEqualTo("TEST_USER");
         assertThat(foundReply.getContents()).isEqualTo("CHANGED");

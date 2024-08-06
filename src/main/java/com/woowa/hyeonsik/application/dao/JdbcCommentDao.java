@@ -1,5 +1,6 @@
 package com.woowa.hyeonsik.application.dao;
 
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.util.LocalDateTimeUtil;
 import com.woowa.hyeonsik.server.database.DatabaseConnector;
@@ -61,14 +62,46 @@ public class JdbcCommentDao implements CommentDao {
     }
 
     @Override
-    public List<Reply> findAllByArticleId(long articleId) {
+    public boolean existsAnotherUser(long articleId, String userId) {
+        String sql = """
+                SELECT count(*) as c 
+                FROM comment
+                WHERE article_id = ? AND is_deleted = 0 AND writer_id NOT LIKE ?
+                """;
+
+        Long countArticles = databaseConnector.executeQuery(sql, List.of(articleId, userId),
+                resultSet -> {
+                    try {
+                        if (!resultSet.next()) {
+                            return 0L;
+                        }
+                        return resultSet.getLong("c");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+        return countArticles > 0;
+    }
+
+    @Override
+    public Page<Reply> findAllByArticleId(long articleId, long page) {
+        final int AMOUNT = 5;
+
+        if (page <= 0) {
+            throw new IllegalArgumentException("페이지 값은 양수여야합니다. 현재값: " + page);
+        }
+
         String sql = """
                 SELECT id, article_id, writer_id, contents, created_at
                 FROM comment
                 WHERE article_id = ? AND is_deleted = 0
+                LIMIT ? OFFSET ? 
                 """;
 
-        return databaseConnector.executeQuery(sql, List.of(String.valueOf(articleId)),
+        long offset = (page - 1) * AMOUNT;
+
+        List<Reply> replies = databaseConnector.executeQuery(sql, List.of(articleId, AMOUNT, offset),
                 resultSet -> {
                     try {
                         List<Reply> list = new ArrayList<>();
@@ -86,6 +119,27 @@ public class JdbcCommentDao implements CommentDao {
                         throw new JdbcException(e);
                     }
                 });
+
+        String sql2 = """
+                SELECT count(*) as c FROM comment WHERE article_id = ? AND is_deleted = 0
+                """;
+        Long totalCount = databaseConnector.executeQuery(sql2, List.of(articleId),
+                resultSet -> {
+                    try {
+                        if (!resultSet.next()) {
+                            return 0L;
+                        }
+                        return resultSet.getLong("c");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+        return new Page<>(page,
+                totalCount / AMOUNT + 1,
+                replies,
+                totalCount
+        );
     }
 
     @Override

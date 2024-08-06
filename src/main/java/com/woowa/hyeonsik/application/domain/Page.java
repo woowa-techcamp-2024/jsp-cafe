@@ -7,14 +7,16 @@ public final class Page<T> {
     private final long numberOfPage;
     private final long numberOfEnd;
     private final Collection<T> content;
+    private final long totalCount;
 
     public Page(
             long numberOfPage,
             long numberOfEnd,
-            Collection<T> content) {
+            Collection<T> content, long totalCount) {
         this.numberOfPage = numberOfPage;
         this.numberOfEnd = numberOfEnd;
         this.content = content;
+        this.totalCount = totalCount;
     }
 
     public long getNumberOfPage() {

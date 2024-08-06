@@ -63,13 +63,7 @@ public class ArticleService {
     }
 
     private void validateComments(final long articleId, final String userId) {
-        final List<Reply> comments = commentDao.findAllByArticleId(articleId);
-
-        // 다른 사람의 댓글이 잇는지 확인
-        final long count = comments.stream()
-            .filter(comment -> !comment.getWriter().equals(userId))
-            .count();
-        if (count == 0) {
+        if (!commentDao.existsAnotherUser(articleId, userId)) {
             return;
         }
         throw new IllegalStateException("다른 사람의 댓글이 있는 경우 삭제할 수 없습니다.");

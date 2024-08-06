@@ -110,9 +110,9 @@ public class JdbcArticleDao implements ArticleDao {
 
         // 마지막 페이지 넘버 구하기
         String sql2 = """
-                SELECT count(*) as c FROM article
+                SELECT count(*) as c FROM article WHERE is_deleted = 0
                 """;
-        Long numberOfEnd = databaseConnector.executeQuery(sql2,
+        Long totalCount = databaseConnector.executeQuery(sql2,
                 resultSet -> {
                     try {
                         if (!resultSet.next()) {
@@ -125,8 +125,9 @@ public class JdbcArticleDao implements ArticleDao {
                 });
 
         return new Page<>(page,
-                numberOfEnd / AMOUNT + 1,
-                articles
+                totalCount / AMOUNT + 1,
+                articles,
+                totalCount
         );
     }
 
