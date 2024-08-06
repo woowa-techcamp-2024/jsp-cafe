@@ -71,6 +71,10 @@ public class ArticleService {
         return articlePreviewRespons;
     }
 
+    public Long findTotalArticleCounts() {
+        return articleRepository.findAllArticleCounts();
+    }
+
     private Article findArticle(Long id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new ArticleException("Article not found : " + id));
