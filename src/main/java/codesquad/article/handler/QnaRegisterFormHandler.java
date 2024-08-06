@@ -2,8 +2,8 @@ package codesquad.article.handler;
 
 import codesquad.common.handler.HttpServletRequestHandler;
 import codesquad.common.handler.annotation.Authorized;
-import codesquad.common.handler.annotation.Response;
 import codesquad.common.handler.annotation.RequestMapping;
+import codesquad.common.handler.annotation.Response;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

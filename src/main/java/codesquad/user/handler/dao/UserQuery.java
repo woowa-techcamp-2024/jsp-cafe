@@ -1,6 +1,7 @@
-package codesquad.global.dao;
+package codesquad.user.handler.dao;
 
 import codesquad.common.http.request.PageRequest;
+import codesquad.user.handler.dto.response.UserResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,13 +15,5 @@ public interface UserQuery {
         public QueryRequest(Integer pageNumber, Integer pageSize) {
             super(pageNumber, pageSize);
         }
-    }
-
-    record UserResponse(
-            Long id,
-            String userId,
-            String name,
-            String email
-    ) {
     }
 }

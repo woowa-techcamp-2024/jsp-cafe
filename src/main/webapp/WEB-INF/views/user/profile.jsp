@@ -1,5 +1,5 @@
+<%@ page import="codesquad.user.handler.dto.response.UserResponse" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="codesquad.global.dao.UserQuery.UserResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
