@@ -73,7 +73,7 @@ class ArticleServiceTest {
     articleDao.save(article3);
 
     // When
-    List<Article> articles = articleService.findAll();
+    List<Article> articles = articleService.findAll(1);
 
     // Then
     assertEquals(3, articles.size());

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ArticleService {
 
+  private static final int PAGE_SIZE = 15;
   private final ArticleDao articleDao;
 
   public ArticleService(final ArticleDao articleDao) {
@@ -25,8 +26,16 @@ public class ArticleService {
         .orElseThrow(() -> new ArticleNotFoundException("Article id not found, id: " + id));
   }
 
-  public List<Article> findAll() {
-    return articleDao.findAll();
+  public int getTotalArticleCount() {
+    return articleDao.getTotalArticleCount();
+  }
+
+  public int getTotalPages() {
+    return (int) Math.ceil(getTotalArticleCount() * 1.0 / PAGE_SIZE);
+  }
+
+  public List<Article> findAll(final int page) {
+    return articleDao.findAll(page, PAGE_SIZE);
   }
 
   public void update(final String id, final String title, final String content) {

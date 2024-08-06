@@ -54,7 +54,7 @@ class ArticleDaoTest {
     articleDao.save(article2);
 
     // Then
-    assertEquals(2, articleDao.findAll().size());
+    assertEquals(2, articleDao.findAll(1, 15).size());
   }
 
   @Test
@@ -172,7 +172,7 @@ class ArticleDaoTest {
     // Then
     assertFalse(result);
     assertTrue(articleDao.findById(article.id()).isPresent());
-    assertFalse(replyDao.findByArticleId(article.id()).isEmpty());
+    assertFalse(replyDao.findByArticleId(article.id(), 1, 5).isEmpty());
   }
 
   @Test
@@ -193,6 +193,6 @@ class ArticleDaoTest {
     // Then
     assertTrue(result);
     assertTrue(articleDao.findById(article.id()).isEmpty());
-    assertTrue(replyDao.findByArticleId(article.id()).isEmpty());
+    assertTrue(replyDao.findByArticleId(article.id(), 1, 5).isEmpty());
   }
 }
