@@ -124,6 +124,9 @@
                               <div class="clearfix" />
                           </form>
                       </div>
+                      <button id="moreBtn">
+                          더보기
+                      </button>
                   </div>
               </div>
           </div>
@@ -131,9 +134,30 @@
     </div>
 </div>
 <script>
-    get(`/replies/<%=article.getId()%>`)
-        .then(replies => {
+    let nowPage = 1;
+    const moreBtn = document.querySelector("#moreBtn");
+    moreBtn.addEventListener('click',e=>{
+        get(`/replies/<%=article.getId()%>?page=`+(nowPage++))
+            .then(result => {
+                console.log(result);
+                const replies = result.contents;
+                replies.forEach(reply=>appendReplyDocument(reply));
+                if(!result.nextPage){
+                    moreBtn.style.display = 'none';
+                }
+            })
+            .catch(error=>{
+                console.error("error : ",error);
+            });
+    })
+    get(`/replies/<%=article.getId()%>?page=`+(nowPage++))
+        .then(result => {
+            console.log(result);
+            const replies = result.contents;
             replies.forEach(reply=>appendReplyDocument(reply));
+            if(!result.nextPage){
+                moreBtn.style.display = 'none';
+            }
         })
         .catch(error=>{
             console.error("error : ",error);
