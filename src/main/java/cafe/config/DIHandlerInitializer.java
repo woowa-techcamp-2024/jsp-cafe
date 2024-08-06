@@ -2,6 +2,9 @@ package cafe.config;
 
 import cafe.controller.handler.articles.*;
 import cafe.controller.handler.DefaultHandler;
+import cafe.controller.handler.comments.CommentCreateHandler;
+import cafe.controller.handler.comments.CommentDeleteHandler;
+import cafe.controller.handler.comments.CommentListHandler;
 import cafe.controller.handler.users.UserInfoEditHandler;
 import cafe.controller.handler.users.UserInfoHandler;
 import cafe.controller.handler.users.UserInfoListHandler;
@@ -19,9 +22,10 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("defaultHandler", new DefaultHandler(servletContext));
         userHandlerInit(servletContext);
         articleHandlerInit(servletContext);
+        commentHandlerInit(servletContext);
     }
 
-    private void userHandlerInit(ServletContext servletContext) {
+    public void userHandlerInit(ServletContext servletContext) {
         servletContext.setAttribute("userInfoHandler", new UserInfoHandler(servletContext));
         servletContext.setAttribute("userInfoListHandler", new UserInfoListHandler(servletContext));
         servletContext.setAttribute("userSignUpHandler", new UserSignUpHandler(servletContext));
@@ -30,11 +34,17 @@ public class DIHandlerInitializer implements ServletContextListener {
         servletContext.setAttribute("userSignOutHandler", new UserSignOutHandler(servletContext));
     }
 
-    private void articleHandlerInit(ServletContext servletContext) {
+    public void articleHandlerInit(ServletContext servletContext) {
         servletContext.setAttribute("articleHandler", new ArticleHandler(servletContext));
         servletContext.setAttribute("articleListHandler", new ArticleListHandler(servletContext));
         servletContext.setAttribute("articleCreateHandler", new ArticleCreateHandler(servletContext));
         servletContext.setAttribute("articleUpdateHandler", new ArticleUpdateHandler(servletContext));
         servletContext.setAttribute("articleDeleteHandler", new ArticleDeleteHandler(servletContext));
+    }
+
+    public void commentHandlerInit(ServletContext servletContext) {
+        servletContext.setAttribute("commentListHandler", new CommentListHandler(servletContext));
+        servletContext.setAttribute("commentCreateHandler", new CommentCreateHandler(servletContext));
+        servletContext.setAttribute("commentDeleteHandler", new CommentDeleteHandler(servletContext));
     }
 }

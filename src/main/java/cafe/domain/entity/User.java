@@ -1,21 +1,25 @@
 package cafe.domain.entity;
 
+import java.time.LocalDateTime;
+
 public class User {
     private final String userId;
     private final String name;
     private final String password;
     private final String email;
+    private final String created;
 
     public static User of(String id, String name, String password, String email) {
-        return new User(id, name, password, email);
+        return new User(id, name, password, email, LocalDateTime.now().toString());
     }
 
-    private User(String id, String name, String password, String email) {
+    private User(String id, String name, String password, String email, String created) {
         validate(id, password, name, email);
         this.userId = id;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.created = created;
     }
 
     public String getUserId() {
@@ -32,6 +36,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getCreated() {
+        return created;
     }
 
     public void validateId(String id) {

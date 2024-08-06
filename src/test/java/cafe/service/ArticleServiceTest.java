@@ -1,6 +1,7 @@
 package cafe.service;
 
 import cafe.domain.db.ArticleDatabase;
+import cafe.domain.db.UserDatabase;
 import cafe.domain.entity.Article;
 import cafe.domain.entity.User;
 import cafe.domain.util.DatabaseConnector;
@@ -13,18 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ArticleServiceTest {
     private static ArticleDatabase articleDatabase;
+    private static UserDatabase userDatabase;
     private static ArticleService articleService;
 
     @BeforeAll
     static void setUp() {
         DatabaseConnector databaseConnector = new H2Connector();
         articleDatabase = new ArticleDatabase(databaseConnector);
+        userDatabase = new UserDatabase(databaseConnector);
         articleService = new ArticleService(articleDatabase);
     }
 
     @AfterEach
     void tearDown() {
-        articleDatabase.deleteAll();
+        articleDatabase.deleteHardAll();
+        userDatabase.deleteHardAll();
     }
 
     @Test
@@ -36,6 +40,7 @@ class ArticleServiceTest {
         String contents = "contents";
 
         // when
+        userDatabase.insert(User.of(writer, "name", "password", "email@email"));
         articleService.save(articleId, writer, title, contents);
 
         // then
@@ -52,6 +57,7 @@ class ArticleServiceTest {
         String writer = "writer";
         String title = "title";
         String contents = "contents";
+        userDatabase.insert(User.of(writer, "name", "password", "email@email"));
         articleService.save(articleId, writer, title, contents);
 
         // when
@@ -77,11 +83,13 @@ class ArticleServiceTest {
         String writer1 = "writer1";
         String title1 = "title1";
         String contents1 = "contents1";
+        userDatabase.insert(User.of(writer1, "name", "password", "email@email"));
         articleService.save(writer1, title1, contents1);
 
         String writer2 = "writer2";
         String title2 = "title2";
         String contents2 = "contents2";
+        userDatabase.insert(User.of(writer2, "name", "password", "email@email"));
         articleService.save(writer2, title2, contents2);
 
         // when
@@ -98,6 +106,7 @@ class ArticleServiceTest {
         String writer = "writer";
         String title = "title";
         String contents = "contents";
+        userDatabase.insert(User.of(writer, "name", "password", "email@email"));
         articleService.save(articleId, writer, title, contents);
 
         // when, then

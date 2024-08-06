@@ -16,7 +16,8 @@ public class AuthenticationFilter extends HttpFilter {
     private final Pattern[] authenticatedPatterns = {
             Pattern.compile("/users/.*/edit"),
             Pattern.compile("/users/sign-out"),
-            Pattern.compile("/articles/.*")
+            Pattern.compile("/articles/.*"),
+            Pattern.compile("/comments/*")
     };
 
     @Override
