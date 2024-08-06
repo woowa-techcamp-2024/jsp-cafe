@@ -36,13 +36,13 @@
             <h2 class="panel-title">댓글</h2>
         </div>
         <div class="panel-body replies">
-            <c:forEach var="reply" items="${replies}">
-                <div class="reply">
-                    <p><strong>${reply.authorId}:</strong> ${reply.content}
-                        <button class="btn btn-danger btn-sm delete-reply-button" data-reply-id="${reply.replyId}" style="margin-left: 10px;">Delete</button>
-                    </p>
-                </div>
-            </c:forEach>
+<%--            <c:forEach var="reply" items="${replies}">--%>
+<%--                <div class="reply">--%>
+<%--                    <p><strong>${reply.authorId}:</strong> ${reply.content}--%>
+<%--                        <button class="btn btn-danger btn-sm delete-reply-button" data-reply-id="${reply.replyId}" style="margin-left: 10px;">Delete</button>--%>
+<%--                    </p>--%>
+<%--                </div>--%>
+<%--            </c:forEach>--%>
         </div>
         <button id="loadMoreReplies" class="btn btn-primary" style="display: none;">댓글 더보기</button>
     </div>

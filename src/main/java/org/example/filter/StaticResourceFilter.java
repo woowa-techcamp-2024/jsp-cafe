@@ -44,7 +44,7 @@ public class StaticResourceFilter implements Filter {
         else if (req.getRequestURI().equals("/")) {
             ArticleService articleService = new ArticleService();
             int page = req.getParameter("page") == null ? 1 : Integer.parseInt(req.getParameter("page"));
-            int pageSize = req.getParameter("pageSize") == null ? 5 : Integer.parseInt(req.getParameter("pageSize"));
+            int pageSize = req.getParameter("pageSize") == null ? 15 : Integer.parseInt(req.getParameter("pageSize"));
             req.setAttribute("articles", articleService.findAll(page, pageSize));
             req.setAttribute("page", page);
             req.setAttribute("size", pageSize);

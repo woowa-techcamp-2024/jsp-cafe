@@ -17,8 +17,6 @@ public class UserRepositoryDBImpl implements UserRepository {
     public static UserRepository getInstance() {
         if (instance == null) {
             instance = new UserRepositoryDBImpl();
-            instance.save(new User("test", "test", "test@naver.com", "test"));
-            instance.save(new User("test2", "test2", "test2@naver.com", "test2"));
         }
         return instance;
     }
@@ -50,9 +48,9 @@ public class UserRepositoryDBImpl implements UserRepository {
                 if (rs.next()) {
                     user = new User(
                         rs.getString("user_id"),
-                        rs.getString("nickname"),
+                        rs.getString("password"),
                         rs.getString("email"),
-                        rs.getString("password")
+                        rs.getString("nickname")
                     );
                 }
             }

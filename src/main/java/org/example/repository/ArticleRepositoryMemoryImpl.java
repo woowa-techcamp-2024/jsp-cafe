@@ -58,4 +58,9 @@ public class ArticleRepositoryMemoryImpl implements ArticleRepository {
     public int getTotalPage(int pageSize) {
         return 0;
     }
+
+    @Override
+    public boolean hasNext(int pageSize) {
+        return false;
+    }
 }

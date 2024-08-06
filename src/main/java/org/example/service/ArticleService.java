@@ -81,4 +81,8 @@ public class ArticleService {
         // 총 페이지 수 계산
         return articleRepository.getTotalPage(pageSize);
     }
+
+    public boolean hasNext(int pageSize) {
+        return articleRepository.hasNext(pageSize);
+    }
 }

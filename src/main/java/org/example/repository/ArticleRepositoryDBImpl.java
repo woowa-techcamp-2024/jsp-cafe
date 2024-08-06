@@ -21,17 +21,6 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
     public static ArticleRepository getInstance() {
         if (instance == null) {
             instance = new ArticleRepositoryDBImpl();
-            instance.save(new Article("title1", "content1", "test"));
-            instance.save(new Article("title2", "content2", "test2"));
-            instance.save(new Article("title3", "content1", "test"));
-            instance.save(new Article("title4", "content2", "test"));
-            instance.save(new Article("title5", "content1", "test"));
-            instance.save(new Article("title6", "content2", "test"));
-            instance.save(new Article("title7", "content1", "test"));
-            instance.save(new Article("title8", "content2", "test"));
-            instance.save(new Article("title9", "content1", "test"));
-            instance.save(new Article("title10", "content2", "test"));
-            instance.save(new Article("title11", "content1", "test"));
         }
         return instance;
     }
@@ -151,5 +140,10 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
             logger.error("Failed to get total page", e);
         }
         return totalPage;
+    }
+
+    @Override
+    public boolean hasNext(int pageSize) {
+        return true;
     }
 }

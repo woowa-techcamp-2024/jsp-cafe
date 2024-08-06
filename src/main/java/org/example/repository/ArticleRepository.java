@@ -12,4 +12,6 @@ public interface ArticleRepository {
     void deleteById(int i);
 
     int getTotalPage(int pageSize);
+
+    boolean hasNext(int pageSize);
 }

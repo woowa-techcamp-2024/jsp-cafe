@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('deleteButton').addEventListener('click', async function() {
     try {
       const response = await fetch(`/question/${articleId}`, { method: 'DELETE' });
-      if (response.status === 200 || response.status === 204) {
+      if (response.ok) {
         window.location.href = '/';
       } else {
         window.location.href = '/error/not-same-author.html';
@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: content, articleId: articleId })
       });
-      if (response.status === 201 || response.status === 200) {
+      if (response.ok) {
         currentOffset = 0; // Reset offset after posting a new reply
-        fetchReplies(currentOffset, replyCount, true);
+        fetchReplies(currentOffset, replyCount, true); // 기존 댓글을 지우고 새로 불러옴
       } else {
         alert('댓글 작성에 실패했습니다.');
       }
@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const replyId = event.target.getAttribute('data-reply-id');
       try {
         const response = await fetch(`/reply/${replyId}`, { method: 'DELETE' });
-        if (response.status === 200) {
+        if (response.ok) {
           currentOffset = 0; // Reset offset after deleting a reply
-          fetchReplies(currentOffset, replyCount, true);
+          fetchReplies(currentOffset, replyCount, true); // 기존 댓글을 지우고 새로 불러옴
         } else {
           alert('댓글 삭제에 실패했습니다.');
         }
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // 더보기 버튼 클릭 이벤트
   document.getElementById('loadMoreReplies').addEventListener('click', function() {
     currentOffset += replyCount; // 오프셋 증가
     fetchReplies(currentOffset, replyCount, false);
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
   async function fetchReplies(start = 0, count = 5, clearExisting = false) {
     try {
       const response = await fetch(`/question/${articleId}/replies?start=${start}&count=${count}`);
-      if (response.status === 200) {
+      if (response.ok) {
         const responseJson = await response.json();
         const replies = responseJson.replies;
         const totalCount = responseJson.totalCount;
@@ -95,9 +96,9 @@ document.addEventListener('DOMContentLoaded', function() {
         </p>
       </div>
     `).join('');
-    repliesContainer.innerHTML += repliesHtml; // 기존 댓글에 추가
+    repliesContainer.innerHTML += repliesHtml; // 새로운 댓글 추가
   }
 
   // 초기 댓글 목록 로드
-  fetchReplies().then(r => console.log('Initial replies loaded'));
+  fetchReplies(0, replyCount, true).then(() => console.log('Initial replies loaded'));
 });

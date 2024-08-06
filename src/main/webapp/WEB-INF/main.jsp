@@ -1,5 +1,3 @@
-<%@ page import="org.example.entity.Article" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -36,11 +34,6 @@
           </a>
         </li>
       </c:if>
-      <c:forEach begin="1" end="${totalPage}" var="i">
-        <li class="${page == i ? 'active' : ''}">
-          <a href="?page=${i}&size=${size}">${i}</a>
-        </li>
-      </c:forEach>
       <c:if test="${page < totalPage}">
         <li>
           <a href="?page=${page + 1}&size=${size}" aria-label="Next">
