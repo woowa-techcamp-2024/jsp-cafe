@@ -33,22 +33,22 @@ public final class Article {
 
     private void validate() {
         if (writer == null || writer.trim().isEmpty()) {
-            throw new IllegalArgumentException("작성자는 필수 입력 항목입니다.");
+            throw new IllegalArgumentException("작성자는 필수 입력 항목입니다. id: " + id);
         }
         if (writer.length() > WRITER_MAX_LENGTH) {
-            throw new IllegalArgumentException("작성자 이름은 " + WRITER_MAX_LENGTH + "자를 초과할 수 없습니다.");
+            throw new IllegalArgumentException("작성자 이름은 " + WRITER_MAX_LENGTH + "자를 초과할 수 없습니다. id: " + id);
         }
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("제목은 필수 입력 항목입니다.");
+            throw new IllegalArgumentException("제목은 필수 입력 항목입니다. title: " + title + ", id: " + id);
         }
         if (title.length() > TITLE_MAX_LENGTH) {
-            throw new IllegalArgumentException("제목은 " + TITLE_MAX_LENGTH + "자를 초과할 수 없습니다.");
+            throw new IllegalArgumentException("제목은 " + TITLE_MAX_LENGTH + "자를 초과할 수 없습니다. id: " + id);
         }
         if (contents == null || contents.trim().isEmpty()) {
-            throw new IllegalArgumentException("내용은 필수 입력 항목입니다.");
+            throw new IllegalArgumentException("내용은 필수 입력 항목입니다. id: " + id);
         }
         if (contents.length() > CONTENT_MAX_LENGTH) {
-            throw new IllegalArgumentException("내용은 " + CONTENT_MAX_LENGTH + "자를 초과할 수 없습니다.");
+            throw new IllegalArgumentException("내용은 " + CONTENT_MAX_LENGTH + "자를 초과할 수 없습니다. id: " + id);
         }
     }
 
