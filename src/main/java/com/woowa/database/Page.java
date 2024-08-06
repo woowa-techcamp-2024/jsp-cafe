@@ -22,7 +22,7 @@ public class Page<T> {
 
     public static <T> Page<T> of(List<T> content, Long count, int page, int size) {
         int totalPages = (int) Math.ceil((double) count / size);
-        boolean hasNext = (long) page *size < count;
+        boolean hasNext = (long) page * size + size < count;
         return new Page<>(content, count, totalPages, hasNext, page, size);
     }
 
