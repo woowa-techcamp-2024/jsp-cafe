@@ -70,9 +70,9 @@ jobs:
           chmod 600 ssh_key.pem
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem $SSH_USER@$SSH_HOST << EOF
             sudo mv /tmp/ROOT.war $SCP_PATH/ROOT.war
-            sudo chmod +x /home/kariskan/stop.sh
-            sudo chmod +x /home/kariskan/deploy.sh
-            cd /home/kariskan
+            sudo chmod +x ${{ secrets.WORKING_PATH }}/stop.sh
+            sudo chmod +x ${{ secrets.WORKING_PATH }}/deploy.sh
+            cd ${{ secrets.WORKING_PATH }}
             sudo ./stop.sh
             sudo ./deploy.sh
           EOF
