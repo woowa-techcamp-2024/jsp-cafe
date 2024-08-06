@@ -1,0 +1,66 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Archive WAR file
+        uses: actions/upload-artifact@v2
+        with:
+          name: application-war
+          path: build/libs/*.war
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: application-war
+          path: ./build/libs
+
+      - name: Copy WAR to EC2
+        env:
+          SCP_KEY: ${{ secrets.SCP_KEY }}
+          SCP_USER: ubuntu
+          SCP_HOST: ${{ secrets.SCP_HOST }}
+          SCP_PATH: ${{ secrets.SCP_PATH }}
+        run: |
+          scp -o StrictHostKeyChecking=no -i $SCP_KEY ./build/libs/*.war $SCP_USER@$SCP_HOST:$SCP_PATH
+
+      - name: Deploy to Tomcat on EC2
+        env:
+          SSH_KEY: ${{ secrets.SCP_KEY }}
+          SSH_USER: ubuntu
+          SSH_HOST: ${{ secrets.SCP_HOST }}
+          SCP_PATH: ${{ secrets.SCP_PATH }}
+          TOMCAT_PATH: /opt/tomcat
+        run: |
+          ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@$SSH_HOST << EOF
+#            cd /home/kariskan
+#            ./stop.sh
+#            ./deploy.sh
+#          EOF
