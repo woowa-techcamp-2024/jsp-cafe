@@ -62,7 +62,7 @@ public class QuestionService {
 
         List<Reply> replies = replyRepository.findByQuestionId(questionId);
         validNoOtherUserReplies(loginUserId, replies);
-        deleteAllReplies(replies);
+        replyRepository.deleteByQuestionId(questionId);
 
         question.delete();
         questionRepository.update(question);
@@ -72,13 +72,6 @@ public class QuestionService {
         boolean otherUserReplyExists = replies.stream().anyMatch(reply -> !reply.hasWriter(loginUserId));
         if (otherUserReplyExists) {
             throw new BadRequestException("다른 사용자의 댓글이 존재하는 게시글은 삭제할 수 없습니다.");
-        }
-    }
-
-    private void deleteAllReplies(List<Reply> replies) {
-        for (Reply reply : replies) {
-            reply.delete();
-            replyRepository.update(reply);
         }
     }
 

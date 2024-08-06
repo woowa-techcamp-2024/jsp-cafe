@@ -12,5 +12,7 @@ public interface ReplyRepository {
 
     void update(Reply reply);
 
+    void deleteByQuestionId(Long questionId);
+
     void deleteAll();
 }

@@ -17,6 +17,7 @@ public class ReplyJdbcRepository implements ReplyRepository {
     private static final String SELECT_BY_ID = "SELECT * FROM REPLY WHERE reply_id = ? and is_deleted = false";
     private static final String DELETE = "DELETE FROM REPLY";
     private static final String UPDATE_BY_ID = "UPDATE REPLY SET content = ?, writer = ?, question_id = ?, is_deleted = ? WHERE reply_id = ?";
+    private static final String UPDATE_IS_DELETED_TRUE_BY_QUESION_ID = "UPDATE REPLY SET is_deleted = true WHERE question_id = ?";
 
     private static final ReplyRowMapper replyRowMapper = new ReplyRowMapper();
     private final JdbcTemplate jdbcTemplate;
@@ -47,6 +48,11 @@ public class ReplyJdbcRepository implements ReplyRepository {
     public void update(Reply reply) {
         jdbcTemplate.update(UPDATE_BY_ID, null,
                 reply.getContent(), reply.getWriter(), reply.getQuestionId(), reply.getIsDeleted(), reply.getReplyId());
+    }
+
+    @Override
+    public void deleteByQuestionId(Long questionId) {
+        jdbcTemplate.update(UPDATE_IS_DELETED_TRUE_BY_QUESION_ID, null, questionId);
     }
 
     public void deleteAll() {
