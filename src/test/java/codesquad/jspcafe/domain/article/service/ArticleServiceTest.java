@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.article.domain.Article;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
+import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
 import codesquad.jspcafe.domain.reply.domain.Reply;
@@ -128,6 +130,40 @@ class ArticleServiceTest {
                     DateTimeFormatExecutor.execute(expectedCreatedAt));
         }
 
+    }
+
+    @Nested
+    @DisplayName("아티클 리스트를 조회할 때")
+    class whenGetArticles {
+
+        @Test
+        @DisplayName("페이지네이션된 아티클 리스트를 조회할 수 있다.")
+        void getArticlesByPage() {
+            // Arrange
+            articleRepository.save(expectedArticle);
+            // Act
+            CursorPaginationResult<ArticleContentResponse> actualResult = articleService.getArticlesByPage(
+                1);
+            // Assert
+            assertAll(
+                () -> assertThat(actualResult)
+                    .extracting("hasNext", "numberOfElements")
+                    .containsExactly(false, 1),
+                () -> assertThat(actualResult.getData()).hasSize(1)
+            );
+        }
+
+    }
+
+    @Test
+    @DisplayName("아티클 갯수를 조회할 수 있다.")
+    void getTotalArticlesCount() {
+        // Arrange
+        articleRepository.save(expectedArticle);
+        // Act
+        Long actualResult = articleService.getTotalArticlesCount();
+        // Assert
+        assertThat(actualResult).isEqualTo(1);
     }
 
     @Nested

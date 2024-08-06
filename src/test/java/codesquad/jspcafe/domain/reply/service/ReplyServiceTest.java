@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.reply.domain.Reply;
 import codesquad.jspcafe.domain.reply.payload.request.ReplyCreateRequest;
@@ -81,7 +82,6 @@ class ReplyServiceTest {
             () -> assertThat(actualResult.getId()).isNotNull(),
             () -> assertThat(actualResult.getCreatedAt()).isNotNull()
         );
-        ;
     }
 
     @Nested
@@ -94,7 +94,7 @@ class ReplyServiceTest {
             // Arrange
             replyRepository.save(expectedReply);
             // Act
-            var actualResult = replyService.getRepliesByArticleId(
+            CursorPaginationResult<ReplyCommonResponse> actualResult = replyService.getRepliesByArticleId(
                 expectedArticleId);
             // Assert
             assertAll(
@@ -105,6 +105,18 @@ class ReplyServiceTest {
                         expectedWriter.getUsername(), expectedContents,
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
+        }
+
+        @Test
+        @DisplayName("해당 게시글의 댓글을 페이징하여 조회할 수 있다.")
+        void getRepliesByArticleIdWithPaging() {
+            // Arrange
+            replyRepository.save(expectedReply);
+            // Act
+            CursorPaginationResult<ReplyCommonResponse> actualResult = replyService.getRepliesByArticleId(
+                expectedArticleId, expectedId + 1);
+            // Assert
+            assertThat(actualResult.getData()).isEmpty();
         }
     }
 
