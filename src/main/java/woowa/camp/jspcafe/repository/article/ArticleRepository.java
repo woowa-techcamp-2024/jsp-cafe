@@ -21,4 +21,6 @@ public interface ArticleRepository {
 
     void softDeleteById(Long id, LocalDate deletedTime);
 
+    Long findAllArticleCounts();
+
 }

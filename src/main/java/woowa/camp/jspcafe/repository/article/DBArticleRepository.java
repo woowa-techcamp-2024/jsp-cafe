@@ -108,7 +108,6 @@ public class DBArticleRepository implements ArticleRepository {
         return Optional.empty();
     }
 
-
     @Override
     public Optional<Article> findNext(Long currentId) {
         String sql = "SELECT * FROM articles WHERE id > ? ORDER BY id ASC LIMIT 1";
@@ -196,6 +195,24 @@ public class DBArticleRepository implements ArticleRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete article", e);
+        }
+    }
+
+    @Override
+    public Long findAllArticleCounts() {
+        String sql = "SELECT count(a.id) FROM articles a";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                }
+                return 0L;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
