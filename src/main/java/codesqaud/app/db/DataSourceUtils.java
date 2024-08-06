@@ -11,6 +11,13 @@ import java.sql.SQLException;
 public class DataSourceUtils {
     private static final Logger log = LoggerFactory.getLogger(DataSourceUtils.class);
 
+    /**
+     * Transcation이 진행중인 Connection이 있다면 해당 Connection을 반환합니다.
+     * 그렇지 않다면 DataSource 에서 새로운 Connection을 받아와서 반환합니다.
+     *
+     * @param dataSource
+     * @return
+     */
     public static Connection getConnection(DataSource dataSource) {
         try {
             return doGetConnection(dataSource);
@@ -29,6 +36,12 @@ public class DataSourceUtils {
         return connection;
     }
 
+    /**
+     * 반환하려는 Connection이 Transaction 진행 중이라면 아무런 작업을 하지 않습니다.
+     * Transcation 이 진행중이지 않다면 Connection을 close 합니다.
+     *
+     * @param connection
+     */
     public static void releaseConnection(Connection connection) {
         try {
             doReleaseConnection(connection);

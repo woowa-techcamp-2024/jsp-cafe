@@ -53,10 +53,18 @@
                         </div>
                     </c:if>
                 </article>
-
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>0</strong>개의 의견</p>
+                        <form class="submit-write answer-write" name="answer" method="POST"
+                              action="/qna/${article.id}/replies">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea name="contents" id="contents" class="form-control"
+                                          placeholder="답변을 작성해보세요."></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                            <div class="clearfix"></div>
+                        </form>
                         <div class="qna-comment-slipp-articles">
                             <c:forEach var="reply" items="${replies}" varStatus="status">
                                 <article class="article" id="answer-1405">
@@ -128,14 +136,6 @@
                             <%--                                    </ul>--%>
                             <%--                                </div>--%>
                             <%--                            </article>--%>
-                            <form class="submit-write" method="POST" action="/qna/${article.id}/replies">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea name="contents" class="form-control"
-                                              placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                                <div class="clearfix"/>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -144,28 +144,30 @@
     </div>
 </div>
 
+<%@include file="/WEB-INF/share/footer.jsp" %>
+
+
 <script type="text/template" id="answerTemplate">
-    <article class="article">
+    <article id="reply-{0}" class="article">
         <div class="article-header">
             <div class="article-header-thumb">
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
+                <a href="#" class="article-author-name">{1}</a>
+                <div class="article-header-time">{2}</div>
             </div>
         </div>
         <div class="article-doc comment-doc">
-            {2}
+            {3}
         </div>
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/qna/updateAnswer/${article.id}">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
+                    <form class="delete-answer-form" action="/api/questions/${article.id}/answers/{4}">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>
                 </li>
@@ -174,6 +176,69 @@
     </article>
 </script>
 
-<%@include file="/WEB-INF/share/footer.jsp" %>
+<script>
+    $(".submit-write button[type=submit]").click(addAnswer);
+
+    function addAnswer(e) {
+        e.preventDefault();
+
+        var url = $(".answer-write").attr("action");
+
+        var contents = $("#contents").val();
+        var data = JSON.stringify({contents: contents});
+
+        console.log(data)
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            error: function () {
+                alert("error");
+            },
+            success: function (data, status) {
+                var answerTemplate = $("#answerTemplate").html();
+                var template = answerTemplate.format(data.id, data.author.name, data.createdAt, data.contents, data.id);
+                console.log(template)
+                $(".qna-comment-slipp-articles").append(template);
+                $("textarea[name=contents]").val("");
+
+                var tagId = "reply-" + data.id;
+                window.location.hash = tagId;
+
+                $("#" + tagId).css("background-color", "yellow");
+                setTimeout(function () {
+                    $("#" + tagId).css("background-color", "");
+                }, 2000); // 2초 후 원래 배경색으로 돌아옴
+                // 해당 댓글로 이동
+            }
+        });
+
+    }
+
+    $(".delete-answer-form button[type='submit']").click(deleteAnswer);
+
+    function deleteAnswer(e) {
+        e.preventDefault();
+
+        var deleteBtn = $(this);
+        var url = $(".delete-answer-form").attr("action");
+
+        $.ajax({
+            type: 'DELETE',
+            url: url,
+            dataType: 'json',
+            error: function (xhr, status) {
+                console.log("error");
+            },
+            success: function (data, status) {
+                console.log('data:' + data);
+                deleteBtn.closest("article").remove();
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
