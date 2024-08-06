@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ArticleMemoryRepository implements ArticleRepository {
@@ -38,6 +39,29 @@ public class ArticleMemoryRepository implements ArticleRepository {
     @Override
     public Optional<Article> findById(Long id) {
         return Optional.ofNullable(map.get(id));
+    }
+
+    @Override
+    public List<Long> findKeys(int limit) {
+        AtomicInteger counter = new AtomicInteger(0);
+        return map.keySet().stream()
+            .sorted()
+            .filter(rowKey -> {
+                int count = counter.getAndIncrement();
+                return count % limit == 0;
+            })
+            .limit(limit)
+            .toList();
+    }
+
+    @Override
+    public List<Article> findByIdLimitAt(Long id, int limit) {
+        return map.entrySet()
+            .stream()
+            .filter(entry -> entry.getKey() < id)
+            .limit(limit)
+            .map(Map.Entry::getValue)
+            .toList();
     }
 
     @Override

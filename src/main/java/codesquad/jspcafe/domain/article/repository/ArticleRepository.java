@@ -14,5 +14,10 @@ public interface ArticleRepository {
 
     Optional<Article> findById(Long id);
 
+    List<Long> findKeys(int limit);
+
+    List<Article> findByIdLimitAt(Long id, int limit);
+
+    @Deprecated(forRemoval = true)
     List<Article> findAll();
 }

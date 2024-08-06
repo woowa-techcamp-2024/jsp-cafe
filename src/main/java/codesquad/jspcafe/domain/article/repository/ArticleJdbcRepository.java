@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,19 +97,7 @@ public class ArticleJdbcRepository implements ArticleRepository {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Article article = new Article(
-                    resultSet.getLong("a.id"),
-                    resultSet.getString("a.title"),
-                    new User(
-                        resultSet.getLong("u.id"),
-                        resultSet.getString("u.user_id"),
-                        resultSet.getString("u.password"),
-                        resultSet.getString("u.username"),
-                        resultSet.getString("u.email")
-                    ),
-                    resultSet.getString("a.contents"),
-                    resultSet.getTimestamp("a.createdAt").toLocalDateTime()
-                );
+                Article article = getArticle(resultSet);
                 return Optional.of(article);
             }
         } catch (SQLException e) {
@@ -125,19 +114,45 @@ public class ArticleJdbcRepository implements ArticleRepository {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findAllQuery)) {
             while (resultSet.next()) {
-                Article article = new Article(
-                    resultSet.getLong("a.id"),
-                    resultSet.getString("a.title"),
-                    new User(
-                        resultSet.getLong("u.id"),
-                        resultSet.getString("u.user_id"),
-                        resultSet.getString("u.password"),
-                        resultSet.getString("u.username"),
-                        resultSet.getString("u.email")
-                    ),
-                    resultSet.getString("a.contents"),
-                    resultSet.getTimestamp("a.createdAt").toLocalDateTime()
-                );
+                Article article = getArticle(resultSet);
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return Collections.unmodifiableList(articles);
+    }
+
+    @Override
+    public List<Long> findKeys(int limit) {
+        List<Long> keys = new ArrayList<>();
+        AtomicInteger counter = new AtomicInteger(0);
+        String findIdQuery = "SELECT id FROM articles WHERE deletedAt IS NULL ORDER BY id DESC";
+        try (Connection connection = connectionManager.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(findIdQuery)) {
+            while (resultSet.next()) {
+                if (counter.getAndIncrement() % limit == 0) {
+                    keys.add(resultSet.getLong(1));
+                }
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return Collections.unmodifiableList(keys);
+    }
+
+    @Override
+    public List<Article> findByIdLimitAt(Long id, int limit) {
+        List<Article> articles = new ArrayList<>();
+        String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id AND a.id < ? AND a.deletedAt IS NULL ORDER BY a.id DESC LIMIT ?";
+        try (Connection connection = connectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.setInt(2, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Article article = getArticle(resultSet);
                 articles.add(article);
             }
         } catch (SQLException e) {
@@ -153,5 +168,21 @@ public class ArticleJdbcRepository implements ArticleRepository {
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private Article getArticle(ResultSet resultSet) throws SQLException {
+        return new Article(
+            resultSet.getLong("a.id"),
+            resultSet.getString("a.title"),
+            new User(
+                resultSet.getLong("u.id"),
+                resultSet.getString("u.user_id"),
+                resultSet.getString("u.password"),
+                resultSet.getString("u.username"),
+                resultSet.getString("u.email")
+            ),
+            resultSet.getString("a.contents"),
+            resultSet.getTimestamp("a.createdAt").toLocalDateTime()
+        );
     }
 }
