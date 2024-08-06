@@ -122,6 +122,52 @@ public class CommentRepositoryDBImpl implements CommentRepository {
 		return comments;
 	}
 
+	@Override
+	public List<Comment> findRangeByQuestionSeq(long questionSeq, long startCommentSeq, int count) {
+		String sql = "SELECT * FROM comments WHERE questionSeq = ? AND commentSeq < ? AND useYn = 'Y' ORDER BY commentSeq DESC LIMIT ?";
+		List<Comment> comments = new ArrayList<>();
+
+		try (Connection conn = Database.getConnection();
+			 PreparedStatement ps = conn.prepareStatement(sql)) {
+
+			ps.setLong(1, questionSeq);
+			ps.setLong(2, startCommentSeq);
+			ps.setInt(3, count);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					comments.add(mapRow(rs));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return comments;
+	}
+
+	@Override
+	public long countByQuestionSeq(long questionSeq) {
+		String query = "SELECT COUNT(*) FROM comments WHERE questionSeq = ? and useYn = 'Y'";
+		long count = 0;
+
+		try (Connection connection = Database.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(query);) {
+
+			ps.setLong(1, questionSeq);
+			ResultSet resultSet = ps.executeQuery();
+
+			if (resultSet.next()) {
+				count = resultSet.getLong(1);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return count;
+	}
+
 	private Comment mapRow(ResultSet rs) throws SQLException {
 		Comment comment = new Comment();
 		comment.setCommentSeq(rs.getLong("commentSeq"));

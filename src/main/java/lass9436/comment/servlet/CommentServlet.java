@@ -1,6 +1,7 @@
 package lass9436.comment.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletConfig;
@@ -21,6 +22,23 @@ public class CommentServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		commentRepository = (CommentRepository)config.getServletContext().getAttribute("commentRepository");
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		long questionSeq = Long.parseLong(req.getParameter("questionSeq"));
+		long startCommentSeq = Long.parseLong(req.getParameter("startCommentSeq"));
+		int count = 5; // 또는 req.getParameter("count")로 받아올 수 있습니다.
+
+		List<Comment> comments = commentRepository.findRangeByQuestionSeq(questionSeq, startCommentSeq, count);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonResponse = objectMapper.writeValueAsString(comments);
+
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
+		resp.getWriter().write(jsonResponse);
+		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 public class Database {
 
-	private static final String url = "jdbc:mysql://localhost:3306/jsp_cafe";
+	private static final String url = "jdbc:mysql://host.docker.internal:3306/jsp_cafe";
 	private static final String user = "user";
 	private static final String password = "1234";
 	private static final MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();

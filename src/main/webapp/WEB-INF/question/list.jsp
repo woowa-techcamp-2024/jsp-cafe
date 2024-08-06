@@ -41,13 +41,26 @@
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
-                      <li><a href="#">«</a></li>
-                      <li><a href="#">1</a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">3</a></li>
-                      <li><a href="#">4</a></li>
-                      <li><a href="#">5</a></li>
-                      <li><a href="#">»</a></li>
+                      <c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+                      <c:set var="startPage" value="${(currentPage - 1) - ((currentPage - 1) % 5) + 1}" />
+                      <c:set var="endPage" value="${startPage + 4}" />
+                      <c:set var="endPage" value="${endPage > maxPage ? maxPage : endPage}" />
+
+                      <ul class="pagination">
+                          <c:if test="${startPage > 5}">
+                              <li><a href="/questionPage?action=list&page=${startPage - 1}">«</a></li>
+                          </c:if>
+
+                          <c:forEach begin="${startPage}" end="${endPage}" var="pageNum">
+                              <li class="${pageNum == currentPage ? 'active' : ''}">
+                                  <a href="/questionPage?action=list&page=${pageNum}">${pageNum}</a>
+                              </li>
+                          </c:forEach>
+
+                          <c:if test="${endPage < maxPage}">
+                              <li><a href="/questionPage?action=list&page=${endPage + 1}">»</a></li>
+                          </c:if>
+                      </ul>
                 </ul>
               </div>
               <%

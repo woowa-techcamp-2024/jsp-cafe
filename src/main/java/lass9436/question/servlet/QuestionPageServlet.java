@@ -62,16 +62,35 @@ public class QuestionPageServlet extends HttpServlet {
 	}
 
 	private String handleList(HttpServletRequest req, HttpServletResponse resp) {
-		req.setAttribute("questions", questionRepository.findAll());
+		long page = getPageParameter(req.getParameter("page"));
+		long pageSize = 15;
+		req.setAttribute("questions", questionRepository.findAllPageable(page, pageSize));
+		req.setAttribute("maxPage", (long) Math.ceil((double) questionRepository.count() / pageSize));
 		return "/list.jsp";
+	}
+
+	private long getPageParameter(String pageParam) {
+		if (pageParam == null || pageParam.trim().isEmpty()) {
+			return 1;
+		}
+		try {
+			long page = Long.parseLong(pageParam);
+			return page > 0 ? page : 1;
+		} catch (NumberFormatException e) {
+			return 1;
+		}
 	}
 
 	private String handleDetail(HttpServletRequest req, HttpServletResponse resp) {
 		long seq = Long.parseLong(req.getParameter("seq"));
 		Question question = questionRepository.findByQuestionSeq(seq);
-		List<Comment> comments = commentRepository.findByQuestionSeq(seq);
+		List<Comment> comments = commentRepository.findRangeByQuestionSeq(seq, Long.MAX_VALUE, 5);
+		long lastCommentSeq = !comments.isEmpty() ? comments.get(comments.size() - 1).getCommentSeq() : 0;
+		long count =  commentRepository.countByQuestionSeq(seq);
 		req.setAttribute("question", question);
 		req.setAttribute("comments", comments);
+		req.setAttribute("count", count);
+		req.setAttribute("lastCommentSeq", lastCommentSeq);
 		return "/detail.jsp";
 	}
 
