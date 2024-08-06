@@ -148,7 +148,7 @@ public class MysqlArticleDao implements ArticleDao{
     public long count() {
         try(Connection conn = manager.getConnection()){
             String sql = "select count(*) from article";
-            PreparedStatement pstmt = conn.prepareStatement("sql");
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()) {
                 return rs.getLong(1);
