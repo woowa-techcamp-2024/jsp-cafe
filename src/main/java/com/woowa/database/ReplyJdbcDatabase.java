@@ -1,6 +1,5 @@
 package com.woowa.database;
 
-import com.mysql.cj.protocol.Resultset;
 import com.woowa.model.Author;
 import com.woowa.model.QuestionInfo;
 import com.woowa.model.Reply;
@@ -118,6 +117,63 @@ public class ReplyJdbcDatabase implements ReplyDatabase {
             throw new IllegalArgumentException("SQL 예외 발생", e);
         } finally {
             DBConnectionUtils.closeConnection(con, pstmt, null);
+        }
+    }
+
+    @Override
+    public Page<Reply> findAllByQuestionId(String questionId, int page, int size) {
+        List<Reply> replyPage = findAllByQuestionIdOrderByCreatedAt(questionId, page, size);
+        Long totalElements = countRepliesByQuestionId(questionId);
+        return Page.of(replyPage, totalElements, page, size);
+    }
+
+    private List<Reply> findAllByQuestionIdOrderByCreatedAt(String questionId, int page, int size) {
+        String sql = "select * from reply r join user u on r.user_id=u.user_id"
+                + " where r.question_id=?"
+                + " order by created_at desc"
+                + " limit ? offset ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, questionId);
+            pstmt.setLong(2, page);
+            pstmt.setLong(3, size);
+            rs = pstmt.executeQuery();
+            List<Reply> replies = new ArrayList<>();
+            while (rs.next()) {
+                replies.add(mapToReply(rs));
+            }
+            return replies;
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외 발생", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
+        }
+    }
+
+    private Long countRepliesByQuestionId(String questionId) {
+        String sql = "select coalesce(*, 0) as reply_count from reply r where r.question_id=?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            con = DBConnectionUtils.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, questionId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getLong("reply_count");
+            }
+            return 0L;
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("SQL 예외 발생", e);
+        } finally {
+            DBConnectionUtils.closeConnection(con, pstmt, rs);
         }
     }
 }
