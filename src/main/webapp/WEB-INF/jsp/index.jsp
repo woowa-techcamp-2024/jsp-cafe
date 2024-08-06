@@ -32,7 +32,7 @@
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
                       <c:if test="${startPage > 1}">
-                        <li><a href="/?p=<c:out value="${startPage} - 1"/>">«</a></li>
+                        <li><a href="/?p=<c:out value="${startPage - 1}"/>">«</a></li>
                       </c:if>
                       <c:forEach var="i" begin="${startPage}" end="${endPage}">
                           <li><a href="/?p=${i}">${i}</a></li>
