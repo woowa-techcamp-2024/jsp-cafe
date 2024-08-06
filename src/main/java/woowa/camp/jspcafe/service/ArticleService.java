@@ -62,13 +62,13 @@ public class ArticleService {
         long offset = (page - 1) * PageVO.MAX_ROW_COUNT_PER_PAGE;
         List<Article> articles = articleRepository.findByOffsetPagination(offset, PageVO.MAX_ROW_COUNT_PER_PAGE);
 
-        List<ArticlePreviewResponse> articlePreviewRespons = new ArrayList<>();
+        List<ArticlePreviewResponse> articlePreviewResponse = new ArrayList<>();
         for (Article article : articles) {
             User author = findAuthor(article.getAuthorId());
-            articlePreviewRespons.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
+            articlePreviewResponse.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
         }
 
-        return articlePreviewRespons;
+        return articlePreviewResponse;
     }
 
     public Long findTotalArticleCounts() {
