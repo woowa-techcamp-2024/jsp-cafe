@@ -11,4 +11,5 @@ public interface ReplyDao {
     void deleteAllByArticleId(Long articleId);
     Optional<Reply> findById(Long id);
     List<Reply> findAllByArticleId(Long articleId);
+    long count();
 }

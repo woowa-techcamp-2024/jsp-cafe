@@ -113,6 +113,21 @@ public class MysqlReplyDao implements ReplyDao{
     }
 
     @Override
+    public long count() {
+        try(Connection conn = manager.getConnection()){
+            String sql = "select count(*) from reply";
+            PreparedStatement pstmt = conn.prepareStatement("sql");
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return rs.getLong(1);
+            }
+            return 0;
+        }catch(SQLException e){
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
+    @Override
     public Optional<Reply> findById(Long id) {
         try(Connection conn = manager.getConnection()){
             String sql = "select r.id as \"r.id\",r.articleId as \"r.articleId\",r.contents as \"r.contents\"," +

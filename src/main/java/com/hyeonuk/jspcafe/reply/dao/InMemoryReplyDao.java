@@ -44,6 +44,12 @@ public class InMemoryReplyDao implements ReplyDao {
     }
 
     @Override
+    public long count() {
+        return replies.values()
+                .size();
+    }
+
+    @Override
     public Optional<Reply> findById(Long id) {
         Reply reply = replies.get(id);
         if (reply != null && reply.getDeletedAt() == null) {
