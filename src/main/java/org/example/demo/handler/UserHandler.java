@@ -35,7 +35,7 @@ public class UserHandler {
         }
 
         request.setAttribute("user", user.get());
-        request.getRequestDispatcher("/user/updateForm.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/user/updateForm.jsp").forward(request, response);
     }
 
     public void handleUserProfile(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
