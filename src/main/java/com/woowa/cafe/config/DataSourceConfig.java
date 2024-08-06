@@ -59,11 +59,11 @@ public class DataSourceConfig {
                     "index idx_reply_is_deleted (is_deleted))";
 
             try (var connection = dataSource.getConnection()) {
-                connection.prepareStatement(dropMemberTable).execute();
+//                connection.prepareStatement(dropMemberTable).execute();
                 connection.prepareStatement(createMemberTable).execute();
-                connection.prepareStatement(dropArticleTable).execute();
+//                connection.prepareStatement(dropArticleTable).execute();
                 connection.prepareStatement(createArticleTable).execute();
-                connection.prepareStatement(dropReplyTable).execute();
+//                connection.prepareStatement(dropReplyTable).execute();
                 connection.prepareStatement(createReplyTable).execute();
             } catch (final Exception e) {
                 throw new RuntimeException(e);
