@@ -41,8 +41,6 @@ public class WasInitializeListener implements ServletContextListener {
         PostRepository postRepository = new PostRepository(dbConfig);
         CommentRepository commentRepository = new CommentRepository(dbConfig);
 
-        AuthValidator authValidator = new AuthValidator();
-
         HomeHandler homeHandler = new HomeHandler(postRepository);
         UserHandler userHandler = new UserHandler(userRepository);
         PostHandler postHandler = new PostHandler(postRepository);
