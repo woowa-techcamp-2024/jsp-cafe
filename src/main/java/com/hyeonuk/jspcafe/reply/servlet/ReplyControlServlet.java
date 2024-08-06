@@ -45,14 +45,15 @@ public class ReplyControlServlet extends HttpServlet {
             if(pathParts.length < 2){
                 throw new HttpBadRequestException("잘못된 요청입니다.");
             }
-            Long articleId = Long.parseLong(pathParts[1]);
+            String articleIdString = pathParts[1].indexOf('?') != -1 ? pathParts[1].substring(0,pathParts[1].indexOf('?')) : pathParts[1];
+            Long articleId = Long.parseLong(articleIdString);
             Article article = articleDao.findById(articleId)
                     .orElseThrow(() -> new HttpNotFoundException("게시글을 찾을 수 없습니다."));
 
             String pageString = req.getParameter("page");
             String sizeString = req.getParameter("size");
-            int page =  pageString == null || pageString.isBlank()  ? 1 : Integer.parseInt(req.getParameter(pageString));
-            int size =  sizeString == null || sizeString.isBlank() ? 5 : Integer.parseInt(req.getParameter(sizeString));
+            int page =  pageString == null || pageString.isBlank()  ? 1 : Integer.parseInt(pageString);
+            int size =  sizeString == null || sizeString.isBlank() ? 5 : Integer.parseInt(sizeString);
 
             long count = replyDao.countByArticleId(articleId);
             List<ReplyDto> replies = replyDao.findAllByArticleId(article.getId(),size,page)
@@ -67,6 +68,7 @@ public class ReplyControlServlet extends HttpServlet {
             resp.getWriter().write(objectMapper.writeValueAsString(result));
             resp.getWriter().flush();
         }catch(NumberFormatException e){
+            e.printStackTrace();
             throw new HttpBadRequestException("잘못된 요청입니다.");
         }
     }

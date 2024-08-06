@@ -101,6 +101,7 @@ class ReplyControlServletTest {
 
             //then
             String body = res.getBody();
+            System.out.println("body = " + body);
             assertEquals(objectMapper.writeValueAsString(expected),body);
         }
     }

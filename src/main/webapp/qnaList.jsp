@@ -15,8 +15,8 @@
                   List<Article> articles = pageContents.getContents();
                   boolean isPreviousPage = pageContents.isPreviousPage();
                   boolean isNextPage = pageContents.isNextPage();
-                  List<Integer> pageList = pageContents.pageList();
-                  int now = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
+                  List<Long> pageList = pageContents.pageList();
+                  int now = request.getParameter("page") == null || request.getParameter("page").isBlank() ? 1 : Integer.parseInt(request.getParameter("page"));
 
                   for(Article article : articles){
               %>
@@ -45,7 +45,7 @@
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
-                      <% if(isPreviousPage){
+                      <%  if(isPreviousPage){
 
                       %>
                       <li><a href="${pageContext.request.contextPath}/?page=<%=now-1%>">«</a></li>
@@ -54,7 +54,7 @@
                       %>
 
                       <%
-                          for(int p : pageList){
+                          for(long p : pageList){
                       %>
                       <li><a href="${pageContext.request.contextPath}/?page=<%=p%>"><%=p%></a></li>
                       <%

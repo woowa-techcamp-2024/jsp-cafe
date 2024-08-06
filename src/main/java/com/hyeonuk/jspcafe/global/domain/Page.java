@@ -21,7 +21,7 @@ public class Page<T> {
         this.totalSize = totalSize;
         this.totalPage = totalSize/size;
         this.previousPage = page > 1;
-        this.nextPage = page < totalSize/size;
+        this.nextPage = page < totalPage;
         this.contents = contents;
         this.listSize = 10;
     }
