@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/step-8
 
 jobs:
   build:
@@ -45,23 +46,23 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/jsp-cafe-image:latest
 
       - name: Deploy to EC2
-        uses: appleboy/drone-ssh-action@v0.8.5
+        uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/jsp-cafe-image:latest
-            HOST_IP=$(hostname -I | awk '{print $1}')
+        script: |
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/jsp-cafe-image:latest
+          HOST_IP=$(hostname -I | awk '{print $1}')
           
-            IMAGE_NAME="jsp-cafe-image"
-            CONTAINER_NAME="jsp-cafe-image-container"
-            
-            docker stop $CONTAINER_NAME || true
-            docker rm $CONTAINER_NAME || true
-            
-            docker run -d \
-            --name $CONTAINER_NAME \
-            -e HOST_IP=$HOST_IP \
-            -p 8080:8080 \
-            $IMAGE_NAME
+          IMAGE_NAME="jsp-cafe-image"
+          CONTAINER_NAME="jsp-cafe-image-container"
+          
+          docker stop $CONTAINER_NAME || true
+          docker rm $CONTAINER_NAME || true
+          
+          docker run -d \
+          --name $CONTAINER_NAME \
+          -e HOST_IP=$HOST_IP \
+          -p 8080:8080 \
+          $IMAGE_NAME
