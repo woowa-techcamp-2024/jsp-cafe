@@ -91,4 +91,41 @@ class PostRepositoryTest extends RepositoryTestSupport {
         List<Post> posts = postRepository.getPosts();
         assertFalse(posts.stream().anyMatch(post -> post.getId().equals(1L)));//isPresent
     }
+
+    @Test
+    void testGetNextPostPaged() {
+        // 게시물 추가
+        User user = userRepository.getUserByUserId("testUser").get();
+        PostCreateDao dao1 = new PostCreateDao(user.getId(), "Test Title 1", "Test Contents 1");
+        PostCreateDao dao2 = new PostCreateDao(user.getId(), "Test Title 2", "Test Contents 2");
+        PostCreateDao dao3 = new PostCreateDao(user.getId(), "Test Title 3", "Test Contents 3");
+        postRepository.addPost(dao1);
+        postRepository.addPost(dao2);
+        postRepository.addPost(dao3);
+
+        // 첫 페이지 조회
+        List<Post> posts = postRepository.getPostsPaged(1, 2);
+        assertEquals(2, posts.size());
+        assertEquals("Test Title 3", posts.get(0).getTitle());
+        assertEquals("Test Title 2", posts.get(1).getTitle());
+
+        // 두 번째 페이지 조회
+        posts = postRepository.getPostsPaged(2, 2);
+        assertEquals(1, posts.size());
+        assertEquals("Test Title 1", posts.get(0).getTitle());
+    }
+
+    @Test
+    void testGetPostsCount() {
+        // 게시물 추가
+        User user = userRepository.getUserByUserId("testUser").get();
+        PostCreateDao dao1 = new PostCreateDao(user.getId(), "Test Title 1", "Test Contents 1");
+        PostCreateDao dao2 = new PostCreateDao(user.getId(), "Test Title 2", "Test Contents 2");
+        PostCreateDao dao3 = new PostCreateDao(user.getId(), "Test Title 3", "Test Contents 3");
+        postRepository.addPost(dao1);
+        postRepository.addPost(dao2);
+        postRepository.addPost(dao3);
+
+        assertEquals(3, postRepository.getTotalPostCount());
+    }
 }

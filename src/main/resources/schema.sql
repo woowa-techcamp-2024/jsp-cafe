@@ -28,14 +28,14 @@ CREATE TABLE IF NOT EXISTS posts
                VARCHAR(255) NOT NULL,
     contents   TEXT         NOT NULL,
     is_present BOOLEAN      NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP    NOT NULL,
-    FOREIGN KEY
-        (
-         writer_id
-            ) REFERENCES `users`
-        (
-         id
-            )
+    created_at TIMESTAMP    NOT NULL
+#     FOREIGN KEY
+#         (
+#          writer_id
+#             ) REFERENCES `users`
+#         (
+#          id
+#             )
 );
 
 CREATE TABLE IF NOT EXISTS comments
@@ -66,20 +66,20 @@ CREATE TABLE IF NOT EXISTS comments
     created_at
         TIMESTAMP
         NOT
-            NULL,
-    FOREIGN
-        KEY
-        (
-         post_id
-            ) REFERENCES `posts`
-        (
-         id
-            ),
-    FOREIGN KEY
-        (
-         writer_id
-            ) REFERENCES `users`
-        (
-         id
-            )
+            NULL
+#     FOREIGN
+#         KEY
+#         (
+#          post_id
+#             ) REFERENCES `posts`
+#         (
+#          id
+#             ),
+#     FOREIGN KEY
+#         (
+#          writer_id
+#             ) REFERENCES `users`
+#         (
+#          id
+#             )
 );

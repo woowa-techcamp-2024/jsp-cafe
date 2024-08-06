@@ -62,7 +62,7 @@
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <%--                        <p class="qna-comment-count"><strong><%=comments.size()%></strong>개의 의견</p>--%>
-                        <div class="qna-comment-slipp-articles">
+                            <div class="qna-comment-slipp-articles" id="commentList">
                             <%
                                 for (Comment comment : comments) {
                             %>
@@ -107,6 +107,7 @@
                             </form>
                         </div>
                     </div>
+                    <button id="loadMoreComments" class="btn btn-default">더보기</button>
                 </div>
             </div>
         </div>

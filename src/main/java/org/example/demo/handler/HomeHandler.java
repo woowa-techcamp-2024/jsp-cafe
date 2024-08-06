@@ -19,7 +19,17 @@ public class HomeHandler {
     }
 
     public void handleGetPosts(HttpServletRequest request, HttpServletResponse response, List<String> pathVariables) throws ServletException, IOException {
-        request.setAttribute("posts", postRepository.getPosts());
+        logger.info("handleGetPosts");
+        long page = Long.parseLong(request.getParameter("page") == null ? "1" : request.getParameter("page"));
+        int limit = Integer.parseInt(request.getParameter("limit") == null ? "15" : request.getParameter("limit"));
+
+        long totalPages = (long) Math.ceil(postRepository.getTotalPostCount() / (double) limit);
+        logger.info("page: {}, limit: {}", page, limit);
+        logger.info("totalPages: {}", totalPages);
+
+        request.setAttribute("posts", postRepository.getPostsPaged(page, limit));
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     }
 }

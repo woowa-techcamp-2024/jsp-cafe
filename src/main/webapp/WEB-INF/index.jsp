@@ -1,6 +1,7 @@
 <%@ page import="org.example.demo.domain.Post" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="kr" xmlns:jsp="http://java.sun.com/JSP/Page">
 
@@ -46,13 +47,39 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                        <li<c:if test="${currentPage == 1}"> class="disabled"</c:if>>
+                            <a href="<c:if test="${currentPage > 1}">${pageContext.request.contextPath}?page=${currentPage - 1}</c:if>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <c:choose>
+                            <c:when test="${totalPages <= 5}">
+                                <c:set var="startPage" value="1" />
+                                <c:set var="endPage" value="${totalPages}" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="startPage" value="${Math.max(1, Math.min(currentPage - 2, totalPages - 4))}" />
+                                <c:set var="endPage" value="${Math.min(totalPages, startPage + 4)}" />
+                            </c:otherwise>
+                        </c:choose>
+
+                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                            <li<c:if test="${currentPage == i}"> class="active"</c:if>>
+                                <a href="${pageContext.request.contextPath}?page=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+
+                        <c:if test="${endPage < totalPages}">
+                            <li class="disabled"><span>...</span></li>
+                            <li><a href="${pageContext.request.contextPath}?page=${totalPages}">${totalPages}</a></li>
+                        </c:if>
+
+                        <li<c:if test="${currentPage == totalPages}"> class="disabled"</c:if>>
+                            <a href="<c:if test="${currentPage < totalPages}">${pageContext.request.contextPath}?page=${currentPage + 1}</c:if>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
