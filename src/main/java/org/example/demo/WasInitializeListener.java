@@ -43,7 +43,7 @@ public class WasInitializeListener implements ServletContextListener {
 
         HomeHandler homeHandler = new HomeHandler(postRepository);
         UserHandler userHandler = new UserHandler(userRepository);
-        PostHandler postHandler = new PostHandler(postRepository);
+        PostHandler postHandler = new PostHandler(postRepository, commentRepository);
         CommentHandler commentHandler = new CommentHandler(commentRepository);
 
         sce.getServletContext().setAttribute("homeHandler", homeHandler);
