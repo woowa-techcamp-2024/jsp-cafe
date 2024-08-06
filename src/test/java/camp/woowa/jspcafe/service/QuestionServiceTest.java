@@ -1,5 +1,6 @@
 package camp.woowa.jspcafe.service;
 
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.repository.InMemQuestionRepository;
@@ -74,6 +75,23 @@ class QuestionServiceTest {
 
         // then
         assertEquals(title, foundTitle);
+    }
+
+    @Test
+    void testFindAllWithPage() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+
+        // when
+        int iteration = 10;
+        for (int i = 0; i < iteration; i++) {
+            questionService.save(title, content, writer, 1L);
+        }
+
+        // then
+        assertEquals(iteration, questionService.findAllWithPage(new PageRequest(1, 10)).size());
     }
 
     @Test
