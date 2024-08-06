@@ -105,7 +105,7 @@ class ReplyServiceTest {
 
         // then
         assertEquals(5, replyPage.getContents().size());
-        assertEquals(3, replyPage.getTotalPage());
+        assertEquals(2, replyPage.getTotalPage());
     }
 
     @Test

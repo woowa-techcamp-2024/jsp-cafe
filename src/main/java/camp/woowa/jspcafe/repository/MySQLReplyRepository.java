@@ -104,7 +104,7 @@ public class MySQLReplyRepository implements ReplyRepository {
             while(rs.next()) {
                 replies.add(new Reply(rs.getLong("id"), rs.getString("content"), rs.getLong("question_id"), rs.getString("writer"), rs.getLong("writer_id"), rs.getTimestamp("created_at").toLocalDateTime()));
             }
-            return new Page<>(replies, pageRequest.getPage() , (int) (Math.floor(total / pageRequest.getSize())) + 1);
+            return new Page<>(replies, pageRequest.getPage() , (int) (Math.floor((total - 1) / pageRequest.getSize())) + 1);
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

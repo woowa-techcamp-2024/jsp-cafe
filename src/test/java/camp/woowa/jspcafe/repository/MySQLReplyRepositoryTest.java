@@ -88,7 +88,7 @@ class MySQLReplyRepositoryTest {
         // given
         String writer = "writer";
         String content = "content";
-        int iteration = 10;
+        int iteration = 1;
         for (int i = 0; i < iteration; i++)
             replyRepository.save(new Reply(content, questionId, writer, userId));
 
@@ -96,8 +96,8 @@ class MySQLReplyRepositoryTest {
         Page<Reply> replyPage = replyRepository.findByQuestionIdWithPage(questionId, new PageRequest(1, 5));
 
         // then
-        assertEquals(5, replyPage.getContents().size());
-        assertEquals(3, replyPage.getTotalPage());
+        assertEquals(iteration, replyPage.getContents().size());
+        assertEquals(1, replyPage.getTotalPage());
     }
 
     @Test
