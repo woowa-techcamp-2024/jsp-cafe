@@ -44,18 +44,4 @@ public class ArticleRepliesGetApi extends HttpServlet {
         out.print(jsonReplies);
         out.flush();
     }
-
-    private int getPageNumber(HttpServletRequest request) {
-        String pageParam = request.getParameter("page");
-        if (pageParam != null && !pageParam.isEmpty()) {
-            try {
-                int page = Integer.parseInt(pageParam);
-                if (page > 0) {
-                    return page;
-                }
-            } catch (NumberFormatException e) {
-            }
-        }
-        return 1; // 기본값은 1페이지
-    }
 }
