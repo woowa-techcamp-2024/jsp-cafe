@@ -24,6 +24,7 @@ public class MainController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.info("[MainController] GET request");
         var postList = PostService.getInstance().getAllPosts(1);
+        log.debug("[MainController] postList: {}", postList);
         req.setAttribute("postList",postList);
         var pageCount = PostService.getInstance().getAllPostCount();
         var startPage = 1;

@@ -66,7 +66,7 @@ public class PostRepository {
     }
 
     public List<Post> findAll(int offset) {
-        var sql = " select p.id, p.post_title, p.post_contents,p.post_create, m.member_name" +
+        var sql = " select p.id, p.post_title, p.post_contents,p.post_create, m.member_name, p.member_id" +
                 " from post p inner join member m " +
                 "on m.id = p.member_id " +
                 " order by post_create desc" +
@@ -92,6 +92,7 @@ public class PostRepository {
                     post.setTitle(rs.getString("post_title"));
                     post.setContents(rs.getString("post_contents"));
                     post.setCreatedAt(rs.getTimestamp("post_create").toLocalDateTime());
+                    post.setMemberId(rs.getLong("member_id"));
                     postList.add(post);
                 } while (rs.next());
 

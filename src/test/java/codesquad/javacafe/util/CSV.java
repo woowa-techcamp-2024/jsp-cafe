@@ -87,10 +87,10 @@ public class CSV {
             int commentMax = 10;
             int commentId = 10000;
             for (int i = 10000; i < 510000; i++) {
-                int memberRandom = random.nextInt((memberMax - memberMin)+1) + memberMin;
 
                 int commentRandom = random.nextInt((commentMax - commentMin)+1) + commentMin;
                 for (int j = 0; j < commentRandom; j++) {
+                    int memberRandom = random.nextInt((memberMax - memberMin)+1) + memberMin;
                     String data = (commentId++) + "," + i + ", " + memberRandom + ",comment " + i + "," + Timestamp.valueOf(LocalDateTime.now().plusSeconds(i-10000));
                     bw.write(data);
                     bw.newLine();

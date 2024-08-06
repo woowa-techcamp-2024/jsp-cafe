@@ -37,6 +37,8 @@ public class PostPagingController implements SubController {
                     req.setAttribute("isEnd",true);
                 }
 
+                log.debug("[PostPagingController] postList = {}", postList);
+
                 req.setAttribute("postList", postList);
                 req.setAttribute("startPage", startPage);
                 req.setAttribute("endPage", endPage);

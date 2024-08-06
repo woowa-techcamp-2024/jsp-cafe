@@ -31,21 +31,26 @@ public class CommentController implements SubController {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
                 .create();
 
-        switch (method){
-            case "GET":{
+        switch (method) {
+            case "GET": {
                 var postId = Long.parseLong(req.getParameter("postId"));
-                var commentList = CommentService.getInstance().getCommentList(postId);
+                var lastCreated = LocalDateTime.parse(req.getParameter("lastCreated").replace(" ","T"));
+                var lastCommentId = Long.parseLong(req.getParameter("lastCommentId"));
+                log.debug("[CommentController] Query parameter Info : postId = {}, lastCreated = {}, lastCommentId = {}", postId, lastCreated, lastCommentId);
+                var commentList = CommentService.getInstance().getCommentList(postId, lastCreated, lastCommentId);
+                log.debug("[CommentController] Comment List: {}", commentList);
 
                 if (Objects.isNull(commentList)) {
                     res.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 } else {
                     var jsonResponse = gson.toJson(commentList);
+                    log.debug("[CommentController] jsonResponse : {}", jsonResponse);
                     JsonUtils.sendResponse(res, jsonResponse);
                 }
 
                 break;
             }
-            case "POST":{
+            case "POST": {
                 var body = JsonUtils.getBody(req);
                 log.debug("data get");
                 // Extract data from JSON object
@@ -59,7 +64,7 @@ public class CommentController implements SubController {
                 data.put("memberId", memberId);
                 data.put("comment", comment);
 
-                log.debug("data = {}",data);
+                log.debug("data = {}", data);
                 var commentRequestDto = new CommentRequestDto(data);
                 log.debug("[CommentController Save] commentRequestDto: {}", commentRequestDto);
                 var commentResponseDto = CommentService.getInstance().save(commentRequestDto);
@@ -71,7 +76,7 @@ public class CommentController implements SubController {
                 JsonUtils.sendResponse(res, jsonResponse);
                 break;
             }
-            case "DELETE":{
+            case "DELETE": {
                 var body = JsonUtils.getBody(req);
                 try {
                     var commentId = body.get("commentId").getAsLong();
@@ -83,7 +88,8 @@ public class CommentController implements SubController {
                 }
                 break;
             }
-            default: throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("request uri = "+ req.getRequestURI() + ", request method = "+method);
+            default:
+                throw ClientErrorCode.METHOD_NOT_ALLOWED.customException("request uri = " + req.getRequestURI() + ", request method = " + method);
         }
     }
 

@@ -10,7 +10,7 @@ public class CommentResponseDto {
     private long id;
     private long postId;
     private String comment;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private Member member;
 
     public CommentResponseDto(Comment comment) {
@@ -18,7 +18,7 @@ public class CommentResponseDto {
         this.postId = comment.getPostId();
         this.member = comment.getMember();
         this.comment = comment.getComment();
-        this.createdAt = comment.getCreatedAt();
+        this.createdAt = comment.getCreatedAt().toString().replace("T"," ");
     }
 
     public long getId() {
@@ -37,9 +37,6 @@ public class CommentResponseDto {
         return comment;
     }
 
-    public String getCreatedAt() {
-        return createdAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-    }
 
     @Override
     public String toString() {
