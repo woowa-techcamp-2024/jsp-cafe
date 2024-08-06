@@ -93,7 +93,9 @@ public class ServletContextInitializer implements ServletContextListener {
                     contents TEXT NOT NULL,
                     activate BOOLEAN NOT NULL,
                     author_id BIGINT REFERENCES users(id),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                
+                    INDEX idx_id_activate (id DESC, activate)
                 );
                 """);
 
@@ -104,13 +106,10 @@ public class ServletContextInitializer implements ServletContextListener {
                     activate BOOLEAN NOT NULL,
                     article_id BIGINT REFERENCES articles(id),
                     author_id BIGINT REFERENCES users(id),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 
+                    INDEX idx_article_id_activate_id (article_id, id DESC, activate DESC)
                 );
-                """);
-
-        jdbcTemplate.execute("""
-                CREATE INDEX idx_article_id_activate_id ON replies (article_id, id DESC, activate DESC)
                 """);
     }
 

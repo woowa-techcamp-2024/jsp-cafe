@@ -11,4 +11,7 @@ public interface ArticleDao extends CommonDao<Article, Long> {
     Optional<Article> findByIdForUpdate(Long id);
     Optional<ArticleDto> findByIdAsDto(Long id);
     List<ArticleDto> findAllAsDto();
+
+    long count();
+    List<ArticleDto> findPage(int page, int size);
 }

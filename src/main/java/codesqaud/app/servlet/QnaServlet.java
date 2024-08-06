@@ -1,6 +1,5 @@
 package codesqaud.app.servlet;
 
-import codesqaud.app.AuthenticationManager;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.service.ArticleService;
 import codesqaud.app.service.ReplyService;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 @WebServlet(urlPatterns = {"/qna/*", ""})

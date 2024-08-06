@@ -48,13 +48,17 @@ public class ReplyService {
 
         List<ReplyDto> replies = replyDao.findPageWithPointer(articleId, pointer, fetchSize);
         boolean hasNext = false;
-        if(replies.size() == fetchSize) {
+        if (replies.size() == fetchSize) {
             replies.remove(size);
             hasNext = true;
         }
         replies.forEach(replyDto -> replyDto.setMine(loginUser.getId()));
         long totalRepliesCount = replyDao.count(articleId);
-        PageDto<ReplyDto> page = new PageDto<>(replies, hasNext, totalRepliesCount);
+        PageDto<ReplyDto> page = PageDto.<ReplyDto>builder()
+                .elements(replies)
+                .hasNext(hasNext)
+                .totalElementsCount(totalRepliesCount)
+                .build();
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
