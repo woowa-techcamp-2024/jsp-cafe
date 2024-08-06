@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -31,6 +33,8 @@ public class JdbcTemplate {
                 preparedStatement.setLong(i + 1, largs);
             } else if (args[i] instanceof Boolean bargs) {
                 preparedStatement.setBoolean(i + 1, bargs);
+            } else if (args[i] instanceof LocalDateTime largs) {
+                preparedStatement.setTimestamp(i + 1, Timestamp.valueOf(largs));
             } else {
                 throw new JdbcTemplateException("Unsupported type " + args[i].getClass());
             }

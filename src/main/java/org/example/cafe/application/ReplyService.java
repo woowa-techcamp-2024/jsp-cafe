@@ -12,7 +12,7 @@ import org.example.cafe.domain.ReplyRepository;
 
 public class ReplyService {
 
-    public static final int PAGE_SIZE = 5;
+    public static final int REPLY_PAGE_SIZE = 5;
 
     private final ReplyRepository replyRepository;
 
@@ -36,7 +36,7 @@ public class ReplyService {
 
     public List<Reply> findReplyPageByQuestionId(ReplyPageParam replyPageParam) {
         ReplyPageDto replyPageDto = new ReplyPageDto(replyPageParam.questionId(),
-                replyPageParam.lastReplyId(), replyPageParam.createdAt(), PAGE_SIZE);
+                replyPageParam.lastReplyId(), replyPageParam.createdAt(), REPLY_PAGE_SIZE);
 
         return replyRepository.findByQuestionId(replyPageDto);
     }
