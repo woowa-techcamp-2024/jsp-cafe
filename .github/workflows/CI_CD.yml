@@ -34,15 +34,16 @@ jobs:
       run: mv target/*.war target/ROOT.war
 
     - name: Deploy to EC2
-      env:
-        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        HOST: ${{ secrets.EC2_HOST }}
-        USER: ${{ secrets.EC2_USER }}
-      run: |
-        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} 'rm -f /opt/tomcat/webapps/ROOT.war'
-        scp -o StrictHostKeyChecking=no -i private_key target/ROOT.war ${USER}@${HOST}:/opt/tomcat/webapps/
-        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} 'rm -rf /opt/tomcat/webapps/ROOT'
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        key_passphrase: ${{ secrets.EC2_SSH_PASSPHRASE }}  # 만약 키에 암호가 있다면
+        script: |
+          rm -f /opt/tomcat/webapps/ROOT.war
+          scp -o StrictHostKeyChecking=no target/ROOT.war ${USER}@${HOST}:/opt/tomcat/webapps/
+          rm -rf /opt/tomcat/webapps/ROOT
 
     - name: Clean up
       run: rm -f src/main/resources/config.properties
