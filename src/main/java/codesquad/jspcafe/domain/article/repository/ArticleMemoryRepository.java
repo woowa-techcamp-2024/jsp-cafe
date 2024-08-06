@@ -3,9 +3,9 @@ package codesquad.jspcafe.domain.article.repository;
 import codesquad.jspcafe.domain.article.domain.Article;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ArticleMemoryRepository implements ArticleRepository {
@@ -42,30 +42,18 @@ public class ArticleMemoryRepository implements ArticleRepository {
     }
 
     @Override
-    public List<Long> findKeys(int limit) {
-        AtomicInteger counter = new AtomicInteger(0);
-        return map.keySet().stream()
-            .sorted()
-            .filter(rowKey -> {
-                int count = counter.getAndIncrement();
-                return count % limit == 0;
-            })
-            .limit(limit)
-            .toList();
+    public long count() {
+        return map.size();
     }
 
     @Override
-    public List<Article> findByIdLimitAt(Long id, int limit) {
+    public List<Article> findByPage(int page, int limit) {
         return map.entrySet()
             .stream()
-            .filter(entry -> entry.getKey() < id)
+            .sorted((a, b) -> b.getKey().compareTo(a.getKey()))
+            .skip((long) (page - 1) * limit)
             .limit(limit)
-            .map(Map.Entry::getValue)
+            .map(Entry::getValue)
             .toList();
-    }
-
-    @Override
-    public List<Article> findAll() {
-        return map.values().stream().toList();
     }
 }

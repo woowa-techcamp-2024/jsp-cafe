@@ -14,10 +14,8 @@ public interface ArticleRepository {
 
     Optional<Article> findById(Long id);
 
-    List<Long> findKeys(int limit);
+    long count();
 
-    List<Article> findByIdLimitAt(Long id, int limit);
+    List<Article> findByPage(int page, int limit);
 
-    @Deprecated(forRemoval = true)
-    List<Article> findAll();
 }

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,49 +106,40 @@ public class ArticleJdbcRepository implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAll() {
-        List<Article> articles = new ArrayList<>();
-        String findAllQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id AND a.deletedAt IS NULL ORDER BY a.id DESC";
-        try (Connection connection = connectionManager.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(findAllQuery)) {
-            while (resultSet.next()) {
-                Article article = getArticle(resultSet);
-                articles.add(article);
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
-        return Collections.unmodifiableList(articles);
-    }
-
-    @Override
-    public List<Long> findKeys(int limit) {
-        List<Long> keys = new ArrayList<>();
-        AtomicInteger counter = new AtomicInteger(0);
-        String findIdQuery = "SELECT id FROM articles WHERE deletedAt IS NULL ORDER BY id DESC";
+    public long count() {
+        String findIdQuery = "SELECT count(id) FROM articles WHERE deletedAt IS NULL";
         try (Connection connection = connectionManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(findIdQuery)) {
             while (resultSet.next()) {
-                if (counter.getAndIncrement() % limit == 0) {
-                    keys.add(resultSet.getLong(1));
-                }
+                return resultSet.getLong(1);
             }
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
-        return Collections.unmodifiableList(keys);
+        return 0L;
     }
 
     @Override
-    public List<Article> findByIdLimitAt(Long id, int limit) {
+    public List<Article> findByPage(int page, int limit) {
+        long id = -1;
         List<Article> articles = new ArrayList<>();
+        String findIdQuery = "SELECT id from articles WHERE deletedAt IS NULL ORDER BY id DESC LIMIT 1 OFFSET ?";
+        try (Connection connection = connectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(findIdQuery)) {
+            preparedStatement.setInt(1, (page - 1) * limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                id = resultSet.getLong(1) + 1L;
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
         String findByIdQuery = "SELECT a.id, a.title, u.id, u.user_id, u.password, u.username, u.email, a.contents, a.createdAt FROM articles a, users u WHERE a.writer = u.id AND a.id < ? AND a.deletedAt IS NULL ORDER BY a.id DESC LIMIT ?";
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
             preparedStatement.setLong(1, id);
-            preparedStatement.setInt(2, limit);
+            preparedStatement.setInt(2, limit + 1);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Article article = getArticle(resultSet);

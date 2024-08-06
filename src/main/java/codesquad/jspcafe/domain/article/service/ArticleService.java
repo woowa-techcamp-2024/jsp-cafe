@@ -44,14 +44,14 @@ public class ArticleService {
         return ArticleCommonResponse.from(article);
     }
 
-    public CursorPaginationResult<ArticleContentResponse> getArticlesById(Long id) {
-        List<ArticleContentResponse> result = articleRepository.findByIdLimitAt(id, 15)
+    public CursorPaginationResult<ArticleContentResponse> getArticlesByPage(int page) {
+        List<ArticleContentResponse> result = articleRepository.findByPage(page, 15)
             .stream().map(ArticleContentResponse::from).toList();
         return CursorPaginationResult.of(result, 15);
     }
 
-    public List<Long> getArticleKeys() {
-        return articleRepository.findKeys(15);
+    public Long getTotalArticlesCount() {
+        return articleRepository.count();
     }
 
     public ArticleCommonResponse updateArticle(ArticleUpdateRequest request)
