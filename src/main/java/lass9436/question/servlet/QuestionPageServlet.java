@@ -85,7 +85,7 @@ public class QuestionPageServlet extends HttpServlet {
 		long seq = Long.parseLong(req.getParameter("seq"));
 		Question question = questionRepository.findByQuestionSeq(seq);
 		List<Comment> comments = commentRepository.findRangeByQuestionSeq(seq, Long.MAX_VALUE, 5);
-		long lastCommentSeq = comments.get(comments.size() - 1).getCommentSeq();
+		long lastCommentSeq = !comments.isEmpty() ? comments.get(comments.size() - 1).getCommentSeq() : 0;
 		long count =  commentRepository.countByQuestionSeq(seq);
 		req.setAttribute("question", question);
 		req.setAttribute("comments", comments);
