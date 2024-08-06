@@ -72,6 +72,7 @@ jobs:
             sudo mv /tmp/ROOT.war $SCP_PATH/ROOT.war
             sudo chmod +x $WORKING_PATH/stop.sh
             sudo chmod +x $WORKING_PATH/deploy.sh
-            $WORKING_PATH/stop.sh
-            $WORKING_PATH/deploy.sh
+            cd $WORKING_PATH
+            ./stop.sh
+            ./deploy.sh
           EOF
