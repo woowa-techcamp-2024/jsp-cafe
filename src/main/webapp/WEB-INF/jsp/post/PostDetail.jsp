@@ -79,7 +79,29 @@
         </div>
     </div>
 </div>
-
+<script>
+    function deletePost(postId) {
+        if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('DELETE', '/questions/' + postId, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var redirectUrl = xhr.getResponseHeader('X-Redirect-Location');
+                    if (redirectUrl) {
+                        alert(xhr.responseText);
+                        window.location.href = redirectUrl;
+                    }
+                } else {
+                    alert('게시글 삭제에 실패했습니다: ' + xhr.responseText);
+                }
+            };
+            xhr.onerror = function() {
+                alert('네트워크 오류가 발생했습니다.');
+            };
+            xhr.send();
+        }
+    }
+</script>
 <script>
     var currentPage = 1;
     var isLoading = false;
