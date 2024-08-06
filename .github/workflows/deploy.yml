@@ -73,6 +73,6 @@ jobs:
             sudo chmod +x $WORKING_PATH/stop.sh
             sudo chmod +x $WORKING_PATH/deploy.sh
             cd $WORKING_PATH
-            ./stop.sh
-            ./deploy.sh
+            sudo ./stop.sh
+            sudo ./deploy.sh
           EOF
