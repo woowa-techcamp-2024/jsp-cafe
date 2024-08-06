@@ -1,15 +1,5 @@
 package com.example.context;
 
-import static com.example.utils.Constant.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Scanner;
-
 import com.example.db.ArticleDatabase;
 import com.example.db.ArticleMysqlDatabase;
 import com.example.db.ReplyDatabase;
@@ -44,26 +34,6 @@ public class ApplicationInitializer implements ServletContextListener {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			throw BaseException.serverException();
-		}
-
-		try (
-			Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-			Statement statement = connection.createStatement();
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("schema.sql")) {
-			if (inputStream == null) {
-				throw BaseException.serverException();
-			}
-			Scanner scanner = new Scanner(inputStream);
-			scanner.useDelimiter(";");
-			while (scanner.hasNext()) {
-				String sql = scanner.next().trim();
-				if (!sql.isEmpty()) {
-					statement.execute(sql);
-				}
-			}
-			scanner.close();
-		} catch (SQLException | IOException e) {
 			throw BaseException.serverException();
 		}
 	}
