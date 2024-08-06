@@ -1,6 +1,7 @@
 package org.example.reply.model.dao;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.example.reply.model.ReplyStatus;
 
 public class Reply {
@@ -18,7 +19,7 @@ public class Reply {
         reply.postId = postId;
         reply.contents = contents;
         reply.replyStatus = ReplyStatus.AVAILABLE;
-        reply.createdAt = LocalDateTime.now();
+        reply.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         reply.validate();
         return reply;
     }

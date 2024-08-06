@@ -1,6 +1,7 @@
 package org.example.post.model.dao;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.example.post.model.PostStatus;
 
 public class Post {
@@ -19,7 +20,7 @@ public class Post {
         post.title = title;
         post.contents = contents;
         post.postStatus = PostStatus.AVAILABLE;
-        post.createdAt = LocalDateTime.now();
+        post.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         post.validate();
         return post;
     }
