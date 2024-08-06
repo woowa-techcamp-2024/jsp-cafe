@@ -32,7 +32,7 @@ public class InMemoryReplyDao implements ReplyDao {
     @Override
     public void deleteAllByArticleId(Long articleId) {
         replies.values().stream()
-                .filter(reply -> reply.getArticle().getId().equals(articleId))
+                .filter(reply -> articleId.equals(reply.getArticle().getId()))
                 .forEach(reply -> reply.setDeletedAt(new Date())); // 삭제된 날짜 설정
     }
 

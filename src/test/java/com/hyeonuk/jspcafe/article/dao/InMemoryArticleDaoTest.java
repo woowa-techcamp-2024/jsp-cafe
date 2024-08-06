@@ -141,7 +141,7 @@ class InMemoryArticleDaoTest {
             Member member = new Member(1l, "id1", "pw1", "nick1", "email1");
             List<Article> expected = new LinkedList<>();
             for(int i=1;i<=total;i++){
-                Article article = new Article(member,"title"+i,"contents"+i);
+                Article article = new Article(Long.valueOf(i),member,"title"+i,"contents"+i);
                 article = articleDao.save(article);
                 if((page-1)*size <= i && i<page*size) {
                     expected.add(article);
