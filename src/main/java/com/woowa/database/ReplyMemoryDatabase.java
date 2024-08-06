@@ -34,6 +34,13 @@ public class ReplyMemoryDatabase implements ReplyDatabase {
     public Page<Reply> findAllByQuestionId(String questionId, int page, int size) {
         List<Reply> replyList = replies.values().stream()
                 .filter(r -> r.getQuestionInfo().getQuestionId().equals(questionId))
+                .sorted((a,b) -> {
+                    if(a.getCreatedAt().isAfter(b.getCreatedAt())) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                })
                 .toList();
         List<Reply> content = replyList.subList(page * size, page * size + size);
         return Page.of(content, (long) replyList.size(), page, size);

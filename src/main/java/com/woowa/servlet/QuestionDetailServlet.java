@@ -38,11 +38,26 @@ public class QuestionDetailServlet extends HttpServlet {
         if (questionId.endsWith(UPDATE_SUFFIX)) {  // 게시글 업데이트 폼 조회
             questionId = questionId.replace(UPDATE_SUFFIX, "");
             response = questionHandler.updateQuestionForm(userId, questionId);
+            req.setAttribute("question", response.getModel().get("question"));
+            req.getRequestDispatcher(response.getViewName() + ".jsp").forward(req, resp);
+        } else if(questionId.endsWith(REPLY_SUFFIX)) {  // 게시글 댓글 목록 조회
+            questionId = questionId.replace(REPLY_SUFFIX, "");
+            String page = req.getParameter("page");
+            String size = req.getParameter("size");
+            if(page == null) {
+                page = "0";
+            }
+            if(size == null) {
+                size = "5";
+            }
+            response =  replyHandler.findReplies(questionId, Integer.parseInt(page), Integer.parseInt(size));
+            Object content = response.getModel().put("replies", response.getModel().get("replies"));
+            responseJsonContent(resp, content);
         } else {  // 게시글 상세 조회
             response = questionHandler.findQuestion(questionId);
+            req.setAttribute("question", response.getModel().get("question"));
+            req.getRequestDispatcher(response.getViewName() + ".jsp").forward(req, resp);
         }
-        req.setAttribute("question", response.getModel().get("question"));
-        req.getRequestDispatcher(response.getViewName() + ".jsp").forward(req, resp);
     }
 
     @Override
@@ -55,15 +70,19 @@ public class QuestionDetailServlet extends HttpServlet {
 
             ResponseEntity response = replyHandler.createReply(userId, questionId, content);
             Reply reply = (Reply) response.getModel().get("reply");
-            String result = objectMapper.writeValueAsString(reply);
-            PrintWriter writer = resp.getWriter();
-            writer.print(result);
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setContentType("application/json; charset=utf-8");
-            resp.setContentLength(result.getBytes().length);
-            writer.flush();
-            writer.close();
+            responseJsonContent(resp, reply);
         }
+    }
+
+    private void responseJsonContent(HttpServletResponse resp, Object content) throws IOException {
+        String result = objectMapper.writeValueAsString(content);
+        PrintWriter writer = resp.getWriter();
+        writer.print(result);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("application/json; charset=utf-8");
+        resp.setContentLength(result.getBytes().length);
+        writer.flush();
+        writer.close();
     }
 
     @Override

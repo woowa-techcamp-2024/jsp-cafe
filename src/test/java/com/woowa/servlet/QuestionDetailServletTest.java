@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.catchException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.woowa.database.Page;
 import com.woowa.database.QuestionDatabase;
 import com.woowa.database.QuestionMemoryDatabase;
 import com.woowa.database.ReplyDatabase;
@@ -27,6 +28,7 @@ import com.woowa.support.StubPrintWriter;
 import com.woowa.support.UserFixture;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -129,6 +131,38 @@ class QuestionDetailServletTest {
 
                 //then
                 assertThat(request.getRequestDispatcher().getPath()).isEqualTo("/qna/update.jsp");
+            }
+        }
+
+        @Nested
+        @DisplayName("/replies 이면")
+        class FindRepliesTest {
+
+            @Test
+            @DisplayName("게시글 댓글 목록을 json으로 응답한다.")
+            void returnToJson() throws ServletException, IOException {
+                //given
+                User user = UserFixture.user();
+                Question question = QuestionFixture.question(user);
+                List<Reply> replies = ReplyFixture.replies(user, question, 5);
+
+                userDatabase.save(user);
+                questionDatabase.save(question);
+                for (Reply reply : replies) {
+                    replyDatabase.save(reply);
+                }
+                StubHttpSession session = new StubHttpSession();
+                session.setAttribute("userId", user.getUserId());
+                request.setSession(session);
+                request.setRequestUri("/questions/" + question.getQuestionId() + "/replies");
+
+                //when
+                questionDetailServlet.doGet(request, response);
+
+                //then
+                String result = ((StubPrintWriter) response.getWriter()).getPrintedValue();
+                Page<Reply> replyPage = Page.of(replies, 5L, 0, 5);
+                assertThat(result).isEqualTo(objectMapper.writeValueAsString(replyPage));
             }
         }
     }
