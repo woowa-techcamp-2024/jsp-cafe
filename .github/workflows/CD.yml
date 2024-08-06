@@ -1,0 +1,57 @@
+name: CD
+
+on:
+  push:
+    branches: [ "hseong3243", "feat/pagination" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.ACTION_TOKEN}}
+          submodules: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+        with:
+          arguments: build
+
+      - name: Build and save Docker image
+        run: |
+          docker build -t jsp-cafe:${{ github.sha }} .
+          docker save jsp-cafe:${{ github.sha }} jsp-cafe.tar
+
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USERNAME }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          source: "jsp-cafe.tar"
+          target: "/home/ubuntu"
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          username: ${{ secrets.AWS_USERNAME }}
+          host: ${{ secrets.AWS_HOST }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            docker load -i jsp-cafe.tar
+            docker stop $(docker ps -a -q) || true
+            docker run -d -p 8080:8080 --add-host=host.docker.internal:host-gateway jsp-cafe:${{ github.sha }}
+            rm jsp-cafe.tar
