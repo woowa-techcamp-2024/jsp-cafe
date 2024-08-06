@@ -144,6 +144,21 @@ public class MysqlArticleDao implements ArticleDao{
         }
     }
 
+    @Override
+    public long count() {
+        try(Connection conn = manager.getConnection()){
+            String sql = "select count(*) from article";
+            PreparedStatement pstmt = conn.prepareStatement("sql");
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return rs.getLong(1);
+            }
+            return 0;
+        }catch(SQLException e){
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
     private Article mappingArticle(ResultSet rs) throws SQLException {
         Long id = rs.getLong("a.id");
         String title = rs.getString("a.title");

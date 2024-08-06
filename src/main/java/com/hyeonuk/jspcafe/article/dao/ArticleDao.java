@@ -11,4 +11,5 @@ public interface ArticleDao {
     List<Article> findAll(int size,int page);
     Optional<Article> findById(Long id);
     void deleteById(Long id);
+    long count();
 }

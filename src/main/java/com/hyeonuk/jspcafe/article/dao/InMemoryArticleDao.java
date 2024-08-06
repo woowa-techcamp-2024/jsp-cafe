@@ -57,4 +57,9 @@ public class InMemoryArticleDao implements ArticleDao{
         store.get(id)
                 .setDeletedAt(new Date());
     }
+
+    @Override
+    public long count() {
+        return store.values().size();
+    }
 }
