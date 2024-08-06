@@ -49,7 +49,7 @@ jobs:
           SCP_HOST: ${{ secrets.SCP_HOST }}
           SCP_PATH: ${{ secrets.SCP_PATH }}
         run: |
-          scp -o StrictHostKeyChecking=no -i $SCP_KEY ./build/libs/*.war $SCP_USER@$SCP_HOST:$SCP_PATH
+          scp -o StrictHostKeyChecking=no -i $SCP_KEY ./build/libs/*.war ubuntu@$SCP_HOST:$SCP_PATH
 
       - name: Deploy to Tomcat on EC2
         env:
@@ -59,7 +59,7 @@ jobs:
           SCP_PATH: ${{ secrets.SCP_PATH }}
           TOMCAT_PATH: /opt/tomcat
         run: |
-          ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@$SSH_HOST << EOF
+          ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@$SSH_HOST << EOF
 #            cd /home/kariskan
 #            ./stop.sh
 #            ./deploy.sh
