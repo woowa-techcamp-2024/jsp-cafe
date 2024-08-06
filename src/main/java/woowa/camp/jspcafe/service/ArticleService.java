@@ -59,7 +59,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewResponse> findArticleList(int page) {
-        int pageSize = 10;
+        int pageSize = 15;
         int offset = (page - 1) * pageSize;
         List<Article> articles = articleRepository.findByOffsetPagination(offset, pageSize);
 
