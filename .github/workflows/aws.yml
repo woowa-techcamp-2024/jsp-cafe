@@ -52,5 +52,5 @@ jobs:
             docker load < /tmp/jsp-cafe.tar.gz
             docker stop jsp-cafe || true
             docker rm jsp-cafe || true
-            docker run -d --name jsp-cafe -p 8080:8080 jsp-cafe:latest
+            docker run -d -p 8080:8080 --add-host=host.docker.internal:host-gateway --name jsp-cafe jsp-cafe:latest
           EOF
