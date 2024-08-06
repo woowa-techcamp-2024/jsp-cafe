@@ -42,10 +42,12 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a id="editPostLink" class="link-modify-article" href="/posts/<%=post.getId()%>/edit">수정</a>
+                                <a id="editPostLink" class="link-modify-article"
+                                   href="/posts/<%=post.getId()%>/edit">수정</a>
                             </li>
                             <li>
-                                <form id="deletePostForm" class="form-delete" action="/posts/<%=post.getId()%>" method="POST">
+                                <form id="deletePostForm" class="form-delete" action="/posts/<%=post.getId()%>"
+                                      method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -57,12 +59,12 @@
                     </div>
                 </article>
                 <%
-                    List<Comment> comments = post.getComments();
+                    List<Comment> comments = (List<Comment>) request.getAttribute("comments");
                 %>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <%--                        <p class="qna-comment-count"><strong><%=comments.size()%></strong>개의 의견</p>--%>
-                            <div class="qna-comment-slipp-articles" id="commentList">
+                        <div class="qna-comment-slipp-articles" id="commentList">
                             <%
                                 for (Comment comment : comments) {
                             %>
@@ -97,17 +99,17 @@
                             <%
                                 }
                             %>
-                            <form class="submit-write" action="/posts/<%=post.getId()%>/comments" method="post">
-                                <div class="form-group" style="padding:14px;">
+                        </div>
+                        <button id="loadMoreComments" class="btn btn-default">더보기</button>
+                        <form class="submit-write" action="/posts/<%=post.getId()%>/comments" method="post">
+                            <div class="form-group" style="padding:14px;">
                                 <textarea class="form-control" name="contents"
                                           placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                                <div class="clearfix"/>
-                            </form>
-                        </div>
+                            </div>
+                            <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                            <div class="clearfix"/>
+                        </form>
                     </div>
-                    <button id="loadMoreComments" class="btn btn-default">더보기</button>
                 </div>
             </div>
         </div>

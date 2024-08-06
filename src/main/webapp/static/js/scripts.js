@@ -161,6 +161,73 @@ function loadComments() {
     });
 }
 
+let lastCommentId = 0;
+const limit = 5;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const commentList = document.querySelectorAll('#commentList .article');
+    if (commentList.length > 0) {
+        lastCommentId = commentList[commentList.length - 1].id;
+    }
+
+    const loadMoreButton = document.getElementById('loadMoreComments');
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', loadMoreComments);
+    }
+});
+
+function loadMoreComments() {
+    const postId = document.querySelector('form.submit-write').action.split('/').slice(-2)[0];
+
+    console.log(lastCommentId)
+
+    fetch(`/posts/${postId}/comments?lastCommentId=${lastCommentId}&limit=${limit}`)
+        .then(response => response.json())
+        .then(comments => {
+            if (comments.length > 0) {
+                const commentList = document.getElementById('commentList');
+                comments.forEach(comment => {
+                    const commentHtml = createCommentHtml(comment, postId);
+                    commentList.insertAdjacentHTML('beforeend', commentHtml);
+                });
+                lastCommentId = comments[comments.length - 1].id;
+            } else {
+                const loadMoreButton = document.getElementById('loadMoreComments');
+                if (loadMoreButton) {
+                    loadMoreButton.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function createCommentHtml(comment, postId) {
+    return `
+        <article class="article" id="${comment.id}">
+            <div class="article-header">
+                <div class="article-header-thumb">
+                    <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                </div>
+                <div class="article-header-text">
+                    <a href="#" class="article-author-name">${comment.writer.name}</a>
+                    <div class="article-header-time">${comment.createdAt}</div>
+                </div>
+            </div>
+            <div class="article-doc comment-doc">
+                <p>${comment.contents}</p>
+            </div>
+            <ul class="article-util-list">
+                <li>
+                    <form class="delete-answer-form" action="/posts/${postId}/comments/${comment.id}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="delete-answer-button">삭제</button>
+                    </form>
+                </li>
+            </ul>
+        </article>
+    `;
+}
+
 // Event delegation for dynamically added elements
 $(document).ready(function () {
     $(".submit-write button[type='submit']").on("click", addAnswer); // Bind addAnswer function to submit button
