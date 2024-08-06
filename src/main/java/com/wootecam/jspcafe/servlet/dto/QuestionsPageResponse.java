@@ -9,13 +9,15 @@ public class QuestionsPageResponse {
     private final int currentPage;
     private final List<QuestionResponse> questionResponses;
 
-    public QuestionsPageResponse(final int questionCount, final int currentPage, final List<QuestionResponse> questionResponses) {
+    public QuestionsPageResponse(final int questionCount, final int currentPage,
+                                 final List<QuestionResponse> questionResponses) {
         this.questionCount = questionCount;
         this.currentPage = currentPage;
         this.questionResponses = questionResponses;
     }
 
-    public static QuestionsPageResponse of(final int questionCount, final int currentPage, final List<Question> questions) {
+    public static QuestionsPageResponse of(final int questionCount, final int currentPage,
+                                           final List<Question> questions) {
         List<QuestionResponse> questionResponses = questions.stream()
                 .map(QuestionResponse::from)
                 .toList();

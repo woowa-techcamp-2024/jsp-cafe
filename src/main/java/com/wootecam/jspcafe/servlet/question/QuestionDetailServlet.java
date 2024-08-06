@@ -6,6 +6,7 @@ import com.wootecam.jspcafe.domain.User;
 import com.wootecam.jspcafe.service.QuestionService;
 import com.wootecam.jspcafe.service.ReplyService;
 import com.wootecam.jspcafe.servlet.AbstractHttpServlet;
+import com.wootecam.jspcafe.servlet.dto.RepliesPageResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,12 +41,15 @@ public class QuestionDetailServlet extends AbstractHttpServlet {
         Long id = parseSuffixPathVariable(req.getPathInfo());
 
         Question question = questionService.read(id);
-        List<Reply> replies = replyService.readAll(question.getId());
+        int replyCount = replyService.countAll(question.getId());
+        List<Reply> replies = replyService.readAll(question.getId(), 5);
+
+        RepliesPageResponse response = RepliesPageResponse.of(replyCount, replies);
 
         log.info(question.toString());
 
         req.setAttribute("question", question);
-        req.setAttribute("replies", replies);
+        req.setAttribute("replyPageResponse", response);
 
         req.getRequestDispatcher("/WEB-INF/views/qna/show.jsp")
                 .forward(req, resp);
