@@ -136,7 +136,7 @@ public class DBArticleRepository implements ArticleRepository {
     public List<Article> findByOffsetPagination(int offset, int limit) {
         String sql = "SELECT * FROM articles a "
                 + "WHERE deleted_at IS NULL "
-                + "ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?";
+                + "ORDER BY id DESC LIMIT ? OFFSET ?";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
