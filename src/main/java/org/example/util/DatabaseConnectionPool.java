@@ -33,8 +33,6 @@ public class DatabaseConnectionPool implements AutoCloseable {
         hikariConfig.setUsername(DB_USER);
         hikariConfig.setPassword(DB_PASSWORD);
         hikariConfig.setMaximumPoolSize(MAX_POOL_SIZE);
-        hikariConfig.setLeakDetectionThreshold(60000); // 60 seconds
-        hikariConfig.setConnectionTimeout(30000); // 30 seconds
         this.dataSource = new HikariDataSource(hikariConfig);
     }
 

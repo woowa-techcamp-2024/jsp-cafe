@@ -44,29 +44,23 @@
                 <div class="col-md-6 text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
-                            <c:if test="${pagedResult.hasPreviousPage()}">
+                            <c:if test="${hasPreviousGroup}">
                                 <li>
-                                    <a href="?page=${pagedResult.currentPage - 1}" aria-label="Previous">
+                                    <a href="?page=${startPage - 1}" aria-label="Previous Group">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                             </c:if>
 
-                            <c:set var="beginPage" value="${pagedResult.currentPage - 2 > 1 ? pagedResult.currentPage - 2 : 1}" />
-                            <c:set var="endPage" value="${pagedResult.currentPage + 2}" />
-                            <c:if test="${endPage > pagedResult.totalPages}">
-                                <c:set var="endPage" value="${pagedResult.totalPages}" />
-                            </c:if>
-
-                            <c:forEach begin="${beginPage}" end="${endPage}" var="i">
+                            <c:forEach begin="${startPage}" end="${endPage}" var="i">
                                 <li class="${i == pagedResult.currentPage ? 'active' : ''}">
                                     <a href="?page=${i}">${i}</a>
                                 </li>
                             </c:forEach>
 
-                            <c:if test="${pagedResult.hasNextPage()}">
+                            <c:if test="${hasNextGroup}">
                                 <li>
-                                    <a href="?page=${pagedResult.currentPage + 1}" aria-label="Next">
+                                    <a href="?page=${endPage + 1}" aria-label="Next Group">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

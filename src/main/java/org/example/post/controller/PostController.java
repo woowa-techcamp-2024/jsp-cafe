@@ -40,11 +40,24 @@ public class PostController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "15") int size
     ) throws SQLException {
-        logger.info("page={}, size={}", page, size);
         PagedPostsResult result = postService.getPagedPosts(page, size);
+
+        int totalPages = result.getTotalPages();
+        int currentPage = result.getCurrentPage();
+        int pageGroupSize = 5;
+
+        int startPage = ((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
+        int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+        boolean hasPreviousGroup = startPage > 1;
+        boolean hasNextGroup = endPage < totalPages;
 
         ModelAndView mv = new ModelAndView("post/PostList");
         mv.addAttribute("pagedResult", result);
+        mv.addAttribute("startPage", startPage);
+        mv.addAttribute("endPage", endPage);
+        mv.addAttribute("hasPreviousGroup", hasPreviousGroup);
+        mv.addAttribute("hasNextGroup", hasNextGroup);
         return mv;
     }
 
