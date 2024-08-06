@@ -9,6 +9,8 @@ import codesqaud.app.dao.user.UserDao;
 import codesqaud.app.db.JdbcTemplate;
 import codesqaud.app.service.ArticleService;
 import codesqaud.app.service.ReplyService;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -41,12 +43,25 @@ public class ServletContextInitializer implements ServletContextListener {
     }
 
     private DataSource initDataSource(ServletContext servletContext) throws NamingException {
-        Context initContext = new InitialContext();
-        Context envContext = (Context) initContext.lookup("java:/comp/env");
-        DataSource datasource = (DataSource) envContext.lookup("jdbc/cafeDB");
+        HikariConfig config = new HikariConfig();
 
-        servletContext.setAttribute("dataSource", datasource);
-        return datasource;
+        String hostIp = System.getenv("HOST_IP");
+
+        if(hostIp == null) {
+            hostIp = "localhost";
+        }
+        config.setJdbcUrl("jdbc:mysql://" + hostIp + ":3306/java_cafe");
+        config.setUsername("semin");
+        config.setPassword("semin");
+        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+        // HikariCP 설정
+        config.setMinimumIdle(5);
+        config.setMaximumPoolSize(20);
+        config.setIdleTimeout(10000); // 10 seconds
+        config.setConnectionTimeout(30000); // 30 seconds
+
+        return new HikariDataSource(config);
     }
 
     private void initTable(ServletContext servletContext, JdbcTemplate jdbcTemplate) {
