@@ -12,6 +12,9 @@ public class PostDto {
     private PostStatus status;
     private LocalDateTime createdAt;
 
+    private Long cursorId;
+    private LocalDateTime cursorTimestamp;
+
     private PostDto(Builder builder) {
         this.id = builder.id;
         this.userId = builder.userId;
@@ -20,6 +23,8 @@ public class PostDto {
         this.contents = builder.contents;
         this.status = builder.status;
         this.createdAt = builder.createdAt;
+        this.cursorId = builder.cursorId;
+        this.cursorTimestamp = builder.cursorTimestamp;
     }
 
     public static class Builder {
@@ -30,6 +35,8 @@ public class PostDto {
         private String contents;
         private PostStatus status;
         private LocalDateTime createdAt;
+        private Long cursorId;
+        private LocalDateTime cursorTimestamp;
 
         public Builder id(Long id) {
             this.id = id;
@@ -66,6 +73,16 @@ public class PostDto {
             return this;
         }
 
+        public Builder cursorId(Long cursorId) {
+            this.cursorId = cursorId;
+            return this;
+        }
+
+        public Builder cursorTimestamp(LocalDateTime cursorTimestamp) {
+            this.cursorTimestamp = cursorTimestamp;
+            return this;
+        }
+
         public PostDto build() {
             return new PostDto(this);
         }
@@ -98,6 +115,14 @@ public class PostDto {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Long getCursorId() {
+        return cursorId;
+    }
+
+    public LocalDateTime getCursorTimestamp() {
+        return cursorTimestamp;
     }
 
     public PostDto updatePost(String title, String contents) {

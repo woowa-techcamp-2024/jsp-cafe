@@ -1,6 +1,7 @@
 package org.example.post.service;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
@@ -29,6 +30,16 @@ public class PostService {
 
     public List<PostDto> getAll() throws SQLException {
         return postRepository.findAll();
+    }
+
+    public List<PostDto> getPagedPosts(LocalDateTime cursorTimestamp, Long cursorId, int pageSize) throws SQLException {
+        if (cursorTimestamp == null) {
+            cursorTimestamp = LocalDateTime.now();
+        }
+        if (cursorId == null) {
+            cursorId =Long.MAX_VALUE;
+        }
+        return postRepository.findAllWithPagination(cursorTimestamp, cursorId, pageSize);
     }
 
     public PostDto getPostById(long id) throws SQLException {

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.example.config.HttpMethod;
 import org.example.config.annotation.Autowired;
@@ -40,6 +41,23 @@ public class PostController {
         logger.info(postResponses.toString());
         ModelAndView mv = new ModelAndView("post/PostList");
         mv.addAttribute("posts", postResponses);
+
+        return mv;
+    }
+
+    @RequestMapping(path = "/", method = HttpMethod.GET)
+    public ModelAndView list(@RequestParam(required = false) String cursorTimestamp,
+                             @RequestParam(required = false) Long cursorId) throws SQLException {
+        LocalDateTime timestamp = cursorTimestamp != null ? LocalDateTime.parse(cursorTimestamp) : null;
+        List<PostDto> postResponses = postService.getPagedPosts(timestamp, cursorId, 15);
+        ModelAndView mv = new ModelAndView("post/PostList");
+        mv.addAttribute("posts", postResponses);
+
+        if (!postResponses.isEmpty()) {
+            PostDto lastPost = postResponses.get(postResponses.size() - 1);
+            mv.addAttribute("nextCursorTimestamp", lastPost.getCursorTimestamp());
+            mv.addAttribute("nextCursorId", lastPost.getCursorId());
+        }
 
         return mv;
     }
