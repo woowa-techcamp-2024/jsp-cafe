@@ -2,6 +2,8 @@ package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.db.DatabaseManager;
 import camp.woowa.jspcafe.db.MySQLDatabaseManager;
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.model.Reply;
 import camp.woowa.jspcafe.model.User;
@@ -79,6 +81,23 @@ class MySQLReplyRepositoryTest {
 
         // then
         assertEquals(iteration, reply.size());
+    }
+
+    @Test
+    void testFindByQuestionIdWithPage() {
+        // given
+        String writer = "writer";
+        String content = "content";
+        int iteration = 10;
+        for (int i = 0; i < iteration; i++)
+            replyRepository.save(new Reply(content, questionId, writer, userId));
+
+        // when
+        Page<Reply> replyPage = replyRepository.findByQuestionIdWithPage(questionId, new PageRequest(1, 5));
+
+        // then
+        assertEquals(5, replyPage.getContents().size());
+        assertEquals(3, replyPage.getTotalPage());
     }
 
     @Test
