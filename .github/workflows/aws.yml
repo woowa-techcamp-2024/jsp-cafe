@@ -28,6 +28,12 @@ jobs:
           name: docker-image
           path: jsp-cafe.tar.gz
 
+      - name: Setup known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_HOST_KEY }}" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
       - name: Deploy to EC2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
