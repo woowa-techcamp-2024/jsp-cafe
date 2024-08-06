@@ -59,19 +59,8 @@ jobs:
           SCP_PATH: ${{ secrets.SCP_PATH }}
         run: |
           scp -v -o StrictHostKeyChecking=no -i scp_key.pem ./build/libs/*.war $SCP_USER@$SCP_HOST:$SCP_PATH
-#
-#      - name: Deploy to Tomcat on EC2
-#        env:
-#          SSH_KEY: ${{ secrets.SCP_KEY }}
-#          SSH_USER: ${{ secrets.SCP_USER }}
-#          SSH_HOST: ${{ secrets.SCP_HOST }}
-#          SCP_PATH: ${{ secrets.SCP_PATH }}
-#          TOMCAT_PATH: /opt/tomcat
-#        run: |
-#          echo "${{ env.SSH_KEY }}" > ssh_key.pem
-#          chmod 600 ssh_key.pem
-#          ssh -v -o StrictHostKeyChecking=no -i ssh_key.pem $SSH_USER@$SSH_HOST << EOF
-#            sudo systemctl stop tomcat
-#            sudo cp $SCP_PATH/*.war $TOMCAT_PATH/webapps/
-#            sudo systemctl start tomcat
-#          EOF
+          ssh -v -o StrictHostKeyChecking=no -i scp_key.pem $SCP_USER@SCP_HOST << EOF
+            sudo su
+            cd /home/kariskan
+            ./stop.sh
+            ./deploy.sh
