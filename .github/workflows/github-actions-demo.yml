@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no target/*.jar $SERVER_USER@$SERVER_IP:/home/ubuntu/java-cafe
+          scp -i private_key -o StrictHostKeyChecking=no build/libs/*.jar $SERVER_USER@$SERVER_IP:/home/ubuntu/java-cafe
 
       - name: Execute script on remote server
         env:
