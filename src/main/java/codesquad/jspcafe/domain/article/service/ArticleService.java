@@ -1,5 +1,6 @@
 package codesquad.jspcafe.domain.article.service;
 
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.domain.article.domain.Article;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
@@ -43,8 +44,14 @@ public class ArticleService {
         return ArticleCommonResponse.from(article);
     }
 
-    public List<ArticleContentResponse> findAllArticle() {
-        return articleRepository.findAll().stream().map(ArticleContentResponse::from).toList();
+    public CursorPaginationResult<ArticleContentResponse> getArticlesById(Long id) {
+        List<ArticleContentResponse> result = articleRepository.findByIdLimitAt(id, 15)
+            .stream().map(ArticleContentResponse::from).toList();
+        return CursorPaginationResult.of(result, 15);
+    }
+
+    public List<Long> getArticleKeys() {
+        return articleRepository.findKeys(15);
     }
 
     public ArticleCommonResponse updateArticle(ArticleUpdateRequest request)

@@ -8,7 +8,6 @@ import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.article.domain.Article;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
-import codesquad.jspcafe.domain.article.payload.response.ArticleContentResponse;
 import codesquad.jspcafe.domain.article.repository.ArticleMemoryRepository;
 import codesquad.jspcafe.domain.article.repository.ArticleRepository;
 import codesquad.jspcafe.domain.reply.domain.Reply;
@@ -20,7 +19,6 @@ import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -130,31 +128,11 @@ class ArticleServiceTest {
                     DateTimeFormatExecutor.execute(expectedCreatedAt));
         }
 
-        @Test
-        @DisplayName("모든 아티클을 조회할 수 있다.")
-        void findAllArticle() {
-            // Arrange
-            articleRepository.save(expectedArticle);
-            // Act
-            List<ArticleContentResponse> actualResult = articleService.findAllArticle();
-            // Assert
-            assertAll(
-                () -> assertThat(actualResult).hasSize(1),
-                () -> assertThat(actualResult.get(0))
-                    .extracting("id", "title", "writerUserId", "writerUsername", "createdAt")
-                    .containsExactly(expectedId, expectedTitle, expectedWriter1.getUserId(),
-                        expectedWriter1.getUsername(),
-                        DateTimeFormatExecutor.execute(expectedCreatedAt))
-            );
-        }
     }
 
     @Nested
     @DisplayName("아티클을 수정할 때")
     class whenUpdateArticle {
-
-        private final String expectedUpdateTitle = "updateTitle";
-        private final String expectedUpdateContents = "updateContents";
 
         private final Map<String, String> expectedValues = Map.of(
             "id", String.valueOf(expectedId),
