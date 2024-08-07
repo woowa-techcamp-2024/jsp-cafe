@@ -9,6 +9,7 @@ import java.util.Objects;
 import codesquad.javacafe.common.exception.HttpStatus;
 import codesquad.javacafe.common.exception.ServerErrorCode;
 import codesquad.javacafe.post.controller.PostCreatePageController;
+import codesquad.javacafe.post.controller.PostPagingController;
 import codesquad.javacafe.post.controller.PostUpdatePageController;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ public class FrontController extends HttpServlet {
 		subControllers.put("/auth", new AuthController());
 		subControllers.put("/post/page", new PostCreatePageController());
 		subControllers.put("/post/update", new PostUpdatePageController());
+		subControllers.put("/post/paging", new PostPagingController());
 	}
 
 	@Override

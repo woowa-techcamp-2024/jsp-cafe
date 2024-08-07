@@ -44,6 +44,10 @@ public class MemberService {
         return new MemberResponseDto(MemberRepository.getInstance().findByUserId(userId));
     }
 
+    public MemberResponseDto getMemberById(long id) {
+        return new MemberResponseDto(MemberRepository.getInstance().findById(id));
+    }
+
     public void updateMember(MemberUpdateRequestDto memberDto) {
         int result = MemberRepository.getInstance().update(memberDto);
         if (result == 0) {

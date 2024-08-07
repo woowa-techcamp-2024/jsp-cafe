@@ -41,6 +41,7 @@ public class AjaxController extends HttpServlet {
             // TODO error response
             log.error("[Ajax Controller CustomException] message = {}" , exception.getMessage());
         } catch (Exception exception) {
+            exception.printStackTrace();
             log.error("[AJAX CONTROLLER Exception] message = {}" , exception.getMessage());
         }
     }

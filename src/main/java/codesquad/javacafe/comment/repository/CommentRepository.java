@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,11 +62,15 @@ public class CommentRepository {
         }
     }
 
-    public List<Comment> findAll(long postId) {
+    public List<Comment> findAll(long postId, LocalDateTime lastCreated, long lastCommentId) {
         log.debug("[Comment Repository] post id = {}", postId);
         var sql = "select c.id as commentPk, c.post_id, c.comment_contents, c.comment_create, m.id as memberPk, m.member_name" +
                 " from comment c inner join member m" +
-                " on c.member_id = m.id where c.post_id = ?";
+                " on c.member_id = m.id where c.post_id = ?" +
+                " and c.comment_create >= ? and" +
+                " (c.comment_create > ? or c.id > ?)" +
+                " order by c.comment_create asc, c.id asc" +
+                " limit 0,5";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -75,6 +80,9 @@ public class CommentRepository {
             con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setLong(1, postId);
+            ps.setTimestamp(2, Timestamp.valueOf(lastCreated));
+            ps.setTimestamp(3, Timestamp.valueOf(lastCreated));
+            ps.setLong(4, lastCommentId);
 
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -95,7 +103,6 @@ public class CommentRepository {
                     commentList.add(comment);
                 } while (rs.next());
 
-                System.out.println(commentList);
                 return commentList;
             } else {
                 log.info("[Comment Repository] 댓글 정보가 없습니다.");

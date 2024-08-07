@@ -28,7 +28,7 @@
                         </div>
 
                         <div class="article-header-text">
-                            <a href="#" class="article-author-name"><%=post.getWriter()%>
+                            <a href="<%= request.getContextPath() %>/api/users/profile?userId=<%= post.getMemberId()%>" class="article-author-name"><%=post.getWriter()%>
                             </a>
                             <a href="#" class="article-header-time" title="퍼머링크">
                                 <%=post.getCreatedAt()%>
@@ -58,6 +58,7 @@
                                     <input type="hidden" name="method" value="DELETE">
                                     <input type="hidden" name="postId" id="postId" value="<%=post.getId()%>">
                                     <input type="hidden" name="memberId" id="memberId" value="<%=post.getMemberId()%>">
+                                    <input type="hidden" name="memberId" id="lastCreated" value="<%=post.getCreatedAt()%>">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
@@ -74,6 +75,9 @@
                         <div class="qna-comment-slipp-articles">
 
 
+
+                        </div>
+                        <div id = "more">
 
                         </div>
                         <form class="submit-write">
@@ -96,6 +100,7 @@
 
 <%--게시글 생성 스크립트--%>
 <script>
+
     function postComment() {
         console.log("create comment called");
         $.ajax({
@@ -111,7 +116,7 @@
             timeout: 1500,
             success: function (data) {
                 console.log(data);
-                loadCommentList();
+                // loadCommentList(lastCreated, lastCommentId);
             },
             error: function (request, status, error) {
 
@@ -124,14 +129,14 @@
 
     function addCommentToPage(commentData) {
         const container = document.querySelector('.qna-comment-slipp-articles');
-        container.innerHTML = '';
+        // container.innerHTML = '';
 
-
-
+        var moreDiv = document.querySelector('#more');
+        moreDiv.innerHTML = '';
         var template = '';
-        if(commentData != null){
+        if (commentData != null) {
 
-            commentData.forEach(comment=> {
+            commentData.forEach(comment => {
                 console.log(comment);
                 var addTemplate = $('#answerTemplate').html();
                 var formattedComment = addTemplate
@@ -144,19 +149,41 @@
             });
 
             $('.qna-comment-slipp-articles').append(template);
+
+            const lastComment = commentData[commentData.length - 1];
+            console.log(commentData.length);
+            console.log(commentData[0]);
+            console.log(commentData[commentData.length - 1]);
+            console.log(lastComment);
+            lastCreated = lastComment.createdAt;
+            lastCommentId = lastComment.id;
+
+            var button = document.createElement('button');
+            button.innerText = '더보기';
+            button.className = 'btn btn-primary pull-right';
+            button.addEventListener('click', function(){
+                loadCommentList(lastCreated, lastCommentId);
+            })
+            moreDiv.appendChild(button);
         }
     }
+
 </script>
 
 <%-- 댓글 요청 스크립트--%>
 <script>
+    // var lastCreated= $('#lastCreated').val();
+    // var lastCommentId = 0;
+    var lastCreated = "1000-07-19T01:46:09"
+    var lastCommentId = 0;
+
     window.onload = function () {
-        loadCommentList();
+        loadCommentList(lastCreated, lastCommentId);
     }
 
-    function loadCommentList(){
+    function loadCommentList(lastCreated, lastCommentId){
         $.ajax({
-            url: '/ajax/comment?postId='+$('#postId').val(),
+            url: '/ajax/comment?postId='+$('#postId').val()+'&lastCreated='+lastCreated + '&lastCommentId='+lastCommentId,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json',

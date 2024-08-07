@@ -60,7 +60,7 @@ public class AuthController implements SubController {
 	}
 
 	public void redirectMainPage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		var postList = PostService.getInstance().getAllPosts();
+		var postList = PostService.getInstance().getAllPosts(1);
 		req.setAttribute("postList", postList);
 		var dispatcher = req.getRequestDispatcher("/WEB-INF/index.jsp");
 		dispatcher.forward(req, res);

@@ -6,6 +6,7 @@ import codesquad.javacafe.comment.entity.Comment;
 import codesquad.javacafe.comment.repository.CommentRepository;
 import codesquad.javacafe.common.exception.ClientErrorCode;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -23,8 +24,8 @@ public class CommentService {
         return new CommentResponseDto(savedComment);
     }
 
-    public List<CommentResponseDto> getCommentList(long postId) {
-        var commentList = CommentRepository.getInstance().findAll(postId);
+    public List<CommentResponseDto> getCommentList(long postId, LocalDateTime lastCreated, long lastCommentId) {
+        var commentList = CommentRepository.getInstance().findAll(postId, lastCreated, lastCommentId);
         if (Objects.isNull(commentList)) {
             return null;
         }
