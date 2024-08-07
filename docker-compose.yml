@@ -1,0 +1,39 @@
+version: '2.27.1'
+services:
+  app:
+    build: .
+    environment:
+      TZ: "Asia/Seoul"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+  db:
+    image: mysql:8.4.2-oraclelinux9
+    build: ./mysql
+    environment:
+      MYSQL_DATABASE: woowa
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      TZ: "Asia/Seoul"
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  db-data:
+
+networks:
+  default:
+    name: my-network
