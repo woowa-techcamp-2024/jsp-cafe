@@ -32,7 +32,7 @@ public class InMemoryReplyDao implements ReplyDao {
     @Override
     public void deleteAllByArticleId(Long articleId) {
         replies.values().stream()
-                .filter(reply -> reply.getArticle().getId().equals(articleId))
+                .filter(reply -> articleId.equals(reply.getArticle().getId()))
                 .forEach(reply -> reply.setDeletedAt(new Date())); // 삭제된 날짜 설정
     }
 
@@ -41,6 +41,29 @@ public class InMemoryReplyDao implements ReplyDao {
         return replies.values().stream()
                 .filter(reply -> reply.getArticle().getId().equals(articleId) && reply.getDeletedAt() == null)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Reply> findAllByArticleId(Long articleId, int size, int page) {
+        return replies.values()
+                .stream()
+                .filter(reply->reply.getArticle().getId().equals(articleId) && reply.getDeletedAt() == null)
+                .skip((long)(page-1)*size)
+                .limit(size)
+                .toList();
+    }
+
+    @Override
+    public long count() {
+        return replies.values()
+                .size();
+    }
+
+    @Override
+    public long countByArticleId(Long articleId) {
+        return replies.values().stream()
+                .filter(reply -> reply.getArticle().getId().equals(articleId) && reply.getDeletedAt() == null)
+                .count();
     }
 
     @Override

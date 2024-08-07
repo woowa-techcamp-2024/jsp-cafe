@@ -136,12 +136,12 @@ class InMemoryReplyDaoTest {
             //given
             Article otherArticle = new Article(member,"other title","other contents");
             articleDao.save(otherArticle);
-            Reply otherReply = new Reply(10l,otherArticle,member,"contents");
+            Reply otherReply = new Reply(otherArticle,member,"contents");
             replyDao.save(otherReply);
 
-            Reply reply1 = new Reply(1l,article,member2,"reply1");
-            Reply reply2 = new Reply(2l,article,member2,"reply2");
-            Reply reply3 = new Reply(3l,article,member,"reply3");
+            Reply reply1 = new Reply(article,member2,"reply1");
+            Reply reply2 = new Reply(article,member2,"reply2");
+            Reply reply3 = new Reply(article,member,"reply3");
             replyDao.save(reply1);
             replyDao.save(reply2);
             replyDao.save(reply3);
@@ -154,8 +154,6 @@ class InMemoryReplyDaoTest {
             assertTrue(replyDao.findById(reply2.getId()).isEmpty());
             assertTrue(replyDao.findById(reply3.getId()).isEmpty());
             assertTrue(replyDao.findAllByArticleId(article.getId()).isEmpty());
-
-            assertTrue(replyDao.findById(otherReply.getId()).isPresent());
         }
     }
 

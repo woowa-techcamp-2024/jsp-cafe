@@ -18,7 +18,7 @@ public class InMemoryArticleDao implements ArticleDao{
         }
 
         if(article.getId() == null){
-            article.setId(idGenerator.incrementAndGet());
+            article.setId(idGenerator.getAndIncrement());
         }
 
         store.put(article.getId(),article);
@@ -35,6 +35,16 @@ public class InMemoryArticleDao implements ArticleDao{
     }
 
     @Override
+    public List<Article> findAll(int size, int page) {
+        return store.values()
+                .stream()
+                .filter(article->article.getDeletedAt() == null)
+                .skip((long)(page-1)*size)
+                .limit(size)
+                .toList();
+    }
+
+    @Override
     public Optional<Article> findById(Long id) {
         return store.values()
                 .stream()
@@ -46,5 +56,10 @@ public class InMemoryArticleDao implements ArticleDao{
     public void deleteById(Long id) {
         store.get(id)
                 .setDeletedAt(new Date());
+    }
+
+    @Override
+    public long count() {
+        return store.values().size();
     }
 }

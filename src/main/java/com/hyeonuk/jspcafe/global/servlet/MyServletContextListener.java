@@ -1,5 +1,6 @@
 package com.hyeonuk.jspcafe.global.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyeonuk.jspcafe.article.dao.ArticleDao;
 import com.hyeonuk.jspcafe.article.dao.MysqlArticleDao;
 import com.hyeonuk.jspcafe.global.db.DBConnectionInfo;
@@ -12,7 +13,6 @@ import com.hyeonuk.jspcafe.member.dao.MemberDao;
 import com.hyeonuk.jspcafe.member.dao.MysqlMemberDao;
 import com.hyeonuk.jspcafe.reply.dao.MysqlReplyDao;
 import com.hyeonuk.jspcafe.reply.dao.ReplyDao;
-import com.hyeonuk.jspcafe.utils.ObjectMapper;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 

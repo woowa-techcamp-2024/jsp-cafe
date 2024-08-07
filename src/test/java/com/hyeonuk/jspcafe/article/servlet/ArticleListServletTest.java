@@ -3,6 +3,7 @@ package com.hyeonuk.jspcafe.article.servlet;
 import com.hyeonuk.jspcafe.article.dao.ArticleDao;
 import com.hyeonuk.jspcafe.article.dao.InMemoryArticleDao;
 import com.hyeonuk.jspcafe.article.domain.Article;
+import com.hyeonuk.jspcafe.global.domain.Page;
 import com.hyeonuk.jspcafe.member.domain.Member;
 import com.hyeonuk.jspcafe.member.servlets.mock.*;
 import jakarta.servlet.*;
@@ -56,9 +57,14 @@ class ArticleListServletTest {
 
             //then
             assertNotNull(req.getAttribute("articles"));
-            assertTrue(req.getAttribute("articles") instanceof List);
-            List<Article> list = (List<Article>)req.getAttribute("articles");
-            boolean allMatch = list.stream().allMatch(article -> articles.stream().anyMatch(a -> compareArticle(a, article)));
+            assertTrue(req.getAttribute("articles") instanceof Page);
+            Page<Article> page = (Page)req.getAttribute("articles");
+            boolean allMatch = page.getContents()
+                    .stream()
+                    .allMatch(article -> articles
+                            .stream()
+                            .anyMatch(a -> compareArticle(a, article))
+                    );
             assertTrue(allMatch);
             assertEquals("/qnaList.jsp",req.getForwardPath());
         }

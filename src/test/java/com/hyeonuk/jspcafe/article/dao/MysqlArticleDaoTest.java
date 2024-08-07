@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -126,6 +128,65 @@ class MysqlArticleDaoTest {
 
             List<Article> articles = articleDao.findAll();
             assertEquals(2, articles.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("findAll 메서드의 페이징 처리용 메서드는")
+    class FindAllWithPaging {
+        @Test
+        @DisplayName("해당 페이지의 객체들을 반환한다.")
+        void findAllArticlesWithPaging() {
+            //given
+            int total = 100;
+            int size = 10;
+            int page = 1;
+            Member member = new Member(1l, "id1", "pw1", "nick1", "email1");
+            List<Article> expected = new LinkedList<>();
+            for(int i=1;i<=total;i++){
+                Article article = new Article(Long.valueOf(i),member,"title"+i,"contents"+i);
+                article = articleDao.save(article);
+                if((page-1)*size <= i && i<page*size) {
+                    expected.add(article);
+                }
+            }
+
+            //when
+            List<Article> articles = articleDao.findAll(size, page);
+
+            //then
+            List<Long> expectedArticleId = LongStream.rangeClosed(1,10)
+                    .boxed()
+                    .toList();
+            List<Long> actual = articles.stream()
+                    .map(Article::getId)
+                    .toList();
+
+            assertEquals(expectedArticleId,actual);
+        }
+
+        @Test
+        @DisplayName("범위 밖의 요청이면 빈 리스트를 반환한다.")
+        void findAllWithPagingWithoutRange() {
+            //given
+            int total = 100;
+            int size = 10;
+            int page = 11;
+            Member member = new Member(1l, "id1", "pw1", "nick1", "email1");
+            List<Article> expected = new LinkedList<>();
+            for(int i=1;i<=total;i++){
+                Article article = new Article(member,"title"+i,"contents"+i);
+                article = articleDao.save(article);
+                if((page-1)*size <= i && i<page*size) {
+                    expected.add(article);
+                }
+            }
+
+            //when
+            List<Article> articles = articleDao.findAll(size, page);
+
+            //then
+            assertTrue(articles.isEmpty());
         }
     }
 

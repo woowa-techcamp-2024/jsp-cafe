@@ -2,6 +2,7 @@ package com.hyeonuk.jspcafe.article.servlet;
 
 import com.hyeonuk.jspcafe.article.dao.ArticleDao;
 import com.hyeonuk.jspcafe.article.domain.Article;
+import com.hyeonuk.jspcafe.global.domain.Page;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -22,8 +23,13 @@ public class ArticleListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
-        List<Article> articles = articleDao.findAll();
-        req.setAttribute("articles",articles);
+        String pageString = req.getParameter("page");
+        String sizeString = req.getParameter("size");
+        int page =  pageString == null || pageString.isBlank()  ? 1 : Integer.parseInt(req.getParameter("page"));
+        int size =  sizeString == null || sizeString.isBlank() ? 15 : Integer.parseInt(req.getParameter("size"));
+        long totalSize = articleDao.count();
+        List<Article> contents = articleDao.findAll(size,page);
+        req.setAttribute("articles",new Page<>(size,page,totalSize,contents));
 
         req.getRequestDispatcher("/qnaList.jsp").forward(req,resp);
     }

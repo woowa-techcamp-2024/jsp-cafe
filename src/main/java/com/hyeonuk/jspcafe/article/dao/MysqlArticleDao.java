@@ -93,6 +93,27 @@ public class MysqlArticleDao implements ArticleDao{
     }
 
     @Override
+    public List<Article> findAll(int size, int page) {
+        try(Connection conn = manager.getConnection()){
+            String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", a.deletedAt as \"a.deletedAt\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" " +
+                    "from article a left join member m on m.id = a.writer where a.deletedAt is null LIMIT ? OFFSET ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,size);
+            pstmt.setInt(2,(page-1)*size);
+            ResultSet rs = pstmt.executeQuery();
+            List<Article> articles = new ArrayList<>();
+            while(rs.next()) {
+                articles.add(mappingArticle(rs));
+            }
+            return articles;
+        }catch(SQLException e){
+            e.printStackTrace();
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
+    @Override
     public Optional<Article> findById(Long id) {
         try(Connection conn = manager.getConnection()){
             String sql = "select a.id as \"a.id\",a.title as \"a.title\", a.contents as \"a.contents\", a.deletedAt as \"a.deletedAt\", m.id as \"m.id\",m.nickname as \"m.nickname\",m.password as \"m.password\",m.memberId as \"m.memberId\",m.email as \"m.email\" " +
@@ -118,6 +139,21 @@ public class MysqlArticleDao implements ArticleDao{
             pstmt.setLong(1, id);
 
             pstmt.executeUpdate();
+        }catch(SQLException e){
+            throw new DataIntegrityViolationException("error");
+        }
+    }
+
+    @Override
+    public long count() {
+        try(Connection conn = manager.getConnection()){
+            String sql = "select count(*) from article";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return rs.getLong(1);
+            }
+            return 0;
         }catch(SQLException e){
             throw new DataIntegrityViolationException("error");
         }
