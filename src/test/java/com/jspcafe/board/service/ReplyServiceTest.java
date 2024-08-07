@@ -35,7 +35,7 @@ class ReplyServiceTest {
     Reply reply2 = replyService.save(articleId, "user2", "닉네임2", "댓글2");
 
     // When
-    List<Reply> replies = replyService.findByArticleId(articleId);
+    List<Reply> replies = replyService.findByArticleId(articleId, 1);
 
     // Then
     assertEquals(2, replies.size());

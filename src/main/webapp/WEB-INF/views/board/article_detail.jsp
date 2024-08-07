@@ -45,11 +45,15 @@
             <!-- 댓글이 여기에 동적으로 추가됩니다 -->
         </div>
 
+        <!-- 더보기 버튼 -->
+        <button id="loadMoreButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4" style="display: none;">
+            더보기
+        </button>
+
         <!-- 댓글 작성 폼 -->
         <form id="replyForm" class="space-y-4">
             <div>
-                <label for="replyContent" class="block text-sm font-medium text-gray-700">댓글
-                    내용</label>
+                <label for="replyContent" class="block text-sm font-medium text-gray-700">댓글 내용</label>
                 <textarea id="replyContent" name="content" rows="3"
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
             </div>
@@ -61,6 +65,7 @@
             </div>
         </form>
     </div>
+
 </main>
 
 <script>
@@ -85,6 +90,10 @@
 </script>
 
 <script>
+  let currentPage = 1;
+  const pageSize = 5; // 클라이언트 측에서 페이지 크기 관리
+  let isLastPage = false;
+
   function formatDate(dateArray) {
     const [year, month, day, hour, minute, second] = dateArray;
     const date = new Date(year, month - 1, day, hour, minute, second);
@@ -149,16 +158,31 @@
     return replyDiv;
   }
 
-  async function loadReplies() {
+  async function loadReplies(page = 1, append = false) {
     try {
       const response = await axios.get('<c:url value="/reply"/>', {
-        params: {articleId: '<c:out value="${article.id()}"/>'}
+        params: {
+          articleId: '<c:out value="${article.id()}"/>',
+          page: page
+        }
       });
       const replyList = document.getElementById('replyList');
-      replyList.innerHTML = '';
+      if (!append) {
+        replyList.innerHTML = '';
+      }
       response.data.forEach(reply => {
         replyList.appendChild(createReplyElement(reply));
       });
+
+      // 더보기 버튼 표시 여부 결정
+      const loadMoreButton = document.getElementById('loadMoreButton');
+      if (response.data.length < pageSize) {
+        loadMoreButton.style.display = 'none';
+        isLastPage = true;
+      } else {
+        loadMoreButton.style.display = 'block';
+        isLastPage = false;
+      }
     } catch (error) {
       console.error('댓글을 불러오는 중 오류가 발생했습니다:', error);
       if (error.response) {
@@ -167,6 +191,13 @@
       }
     }
   }
+
+  document.getElementById('loadMoreButton').addEventListener('click', function() {
+    if (!isLastPage) {
+      currentPage++;
+      loadReplies(currentPage, true);
+    }
+  });
 
   document.getElementById('replyForm').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -177,6 +208,7 @@
         content: content
       });
       document.getElementById('replyContent').value = '';
+      currentPage = 1;
       loadReplies();
     } catch (error) {
       console.error('댓글 작성 중 오류가 발생했습니다:', error);
@@ -232,6 +264,7 @@
     if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
       try {
         await axios.delete('<c:url value="/reply/"/>' + replyId);
+        currentPage = 1;
         loadReplies();
       } catch (error) {
         console.error('댓글 삭제 중 오류가 발생했습니다:', error);
@@ -243,7 +276,7 @@
     }
   }
 
-  window.addEventListener('load', loadReplies);
+  window.addEventListener('load', () => loadReplies(1));
 </script>
 </body>
 </html>

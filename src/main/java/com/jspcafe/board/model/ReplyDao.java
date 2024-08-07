@@ -56,12 +56,15 @@ public class ReplyDao {
     return Optional.empty();
   }
 
-  public List<Reply> findByArticleId(final String articleId) {
-    String sql = "SELECT * FROM replies WHERE article_id = ? AND is_deleted = false ORDER BY create_at ASC";
+  public List<Reply> findByArticleId(final String articleId, final int page, final int pageSize) {
+    String sql = "SELECT * FROM replies WHERE article_id = ? AND is_deleted = false ORDER BY create_at ASC LIMIT ? OFFSET ?";
     List<Reply> replies = new ArrayList<>();
     try (Connection conn = databaseConnector.getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      int offset = (page - 1) * pageSize;
       pstmt.setString(1, articleId);
+      pstmt.setInt(2, pageSize);
+      pstmt.setInt(3, offset);
       try (ResultSet rs = pstmt.executeQuery()) {
         while (rs.next()) {
           replies.add(createReplyFromResultSet(rs));

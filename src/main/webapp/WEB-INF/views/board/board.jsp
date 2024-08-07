@@ -20,7 +20,7 @@
         <h2 class="text-2xl font-bold">HELLO, WEB! 입니다.</h2>
     </div>
 
-    <p class="text-gray-600 mb-4">전체 글 ${articles.size()}개</p>
+    <p class="text-gray-600 mb-4">전체 글 ${totalArticles}개</p>
 
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="w-full">
@@ -46,22 +46,62 @@
         </table>
     </div>
 
+    <c:set var="pageSize" value="5" />
+
+    <c:choose>
+        <c:when test="${totalPages <= pageSize}">
+            <c:set var="beginPage" value="1" />
+            <c:set var="endPage" value="${totalPages}" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="beginPage" value="${currentPage - 2}" />
+            <c:set var="endPage" value="${beginPage + 4}" />
+
+            <c:if test="${beginPage < 1}">
+                <c:set var="beginPage" value="1" />
+                <c:set var="endPage" value="${beginPage + 4}" />
+            </c:if>
+
+            <c:if test="${endPage > totalPages}">
+                <c:set var="endPage" value="${totalPages}" />
+                <c:set var="beginPage" value="${endPage - 4}" />
+            </c:if>
+
+            <c:if test="${beginPage < 1}">
+                <c:set var="beginPage" value="1" />
+            </c:if>
+        </c:otherwise>
+    </c:choose>
+
     <div class="flex justify-center mt-6">
         <nav class="inline-flex rounded-md shadow">
-            <a href="#"
-               class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&lt;</a>
-            <a href="#"
-               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-teal-600 hover:bg-gray-50">1</a>
-            <a href="#"
-               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">2</a>
-            <a href="#"
-               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">3</a>
-            <a href="#"
-               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">4</a>
-            <a href="#"
-               class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">5</a>
-            <a href="#"
-               class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&gt;</a>
+            <c:if test="${currentPage > 1}">
+                <a href="?page=${currentPage - 1}"
+                   class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&lt;</a>
+            </c:if>
+            <c:if test="${currentPage == 1}">
+                <span class="px-3 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-gray-400">&lt;</span>
+            </c:if>
+
+            <c:forEach begin="${beginPage}" end="${endPage}" var="i">
+                <c:choose>
+                    <c:when test="${i == currentPage}">
+                        <span class="px-3 py-2 border-t border-b border-gray-300 bg-teal-600 text-white">${i}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="?page=${i}"
+                           class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">${i}</a>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+
+            <c:if test="${currentPage < totalPages}">
+                <a href="?page=${currentPage + 1}"
+                   class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">&gt;</a>
+            </c:if>
+            <c:if test="${currentPage == totalPages}">
+                <span class="px-3 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-gray-400">&gt;</span>
+            </c:if>
         </nav>
     </div>
 

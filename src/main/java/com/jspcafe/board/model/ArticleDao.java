@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
@@ -65,22 +64,41 @@ public class ArticleDao {
     return Optional.empty();
   }
 
-  public List<Article> findAll() {
-    String sql = "SELECT * FROM articles WHERE is_deleted = false ORDER BY update_at DESC";
+  public int getTotalArticleCount() {
+    String sql = "SELECT COUNT(*) FROM articles WHERE is_deleted = false";
+    try (Connection conn = databaseConnector.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery()) {
+
+      if (rs.next()) {
+        return rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Error counting total articles", e);
+    }
+    return 0;
+  }
+
+  public List<Article> findAll(int page, int pageSize) {
+    String sql = "SELECT * FROM articles WHERE is_deleted = false ORDER BY update_at DESC LIMIT ? OFFSET ?";
     List<Article> articles = new ArrayList<>();
     try (Connection conn = databaseConnector.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
-      while (rs.next()) {
-        articles.add(new Article(
-            rs.getString("id"),
-            rs.getString("user_id"),
-            rs.getString("title"),
-            rs.getString("nickname"),
-            rs.getString("content"),
-            rs.getTimestamp("create_at").toLocalDateTime(),
-            rs.getTimestamp("update_at").toLocalDateTime()
-        ));
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      int offset = (page - 1) * pageSize;
+      pstmt.setInt(1, pageSize);
+      pstmt.setInt(2, offset);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        while (rs.next()) {
+          articles.add(new Article(
+              rs.getString("id"),
+              rs.getString("user_id"),
+              rs.getString("title"),
+              rs.getString("nickname"),
+              rs.getString("content"),
+              rs.getTimestamp("create_at").toLocalDateTime(),
+              rs.getTimestamp("update_at").toLocalDateTime()
+          ));
+        }
       }
     } catch (SQLException e) {
       throw new RuntimeException("Error finding all articles", e);

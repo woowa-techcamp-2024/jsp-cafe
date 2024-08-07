@@ -60,6 +60,7 @@ class ReplyControllerTest {
     }
 
     request.setParameter("articleId", articleId);
+    request.setParameter("page", "1");
 
     // When
     replyController.doGet(request, response);

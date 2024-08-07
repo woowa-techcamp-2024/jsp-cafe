@@ -7,14 +7,15 @@ import java.util.List;
 
 public class ReplyService {
 
+  private static final int PAGE_SIZE = 5;
   private final ReplyDao replyDao;
 
   public ReplyService(final ReplyDao replyDao) {
     this.replyDao = replyDao;
   }
 
-  public List<Reply> findByArticleId(final String articleId) {
-    return replyDao.findByArticleId(articleId);
+  public List<Reply> findByArticleId(final String articleId, final int page) {
+    return replyDao.findByArticleId(articleId, page, PAGE_SIZE);
   }
 
   public Reply findById(final String id) throws ReplyNotFoundException {

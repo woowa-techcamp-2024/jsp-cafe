@@ -69,8 +69,19 @@ public class ArticleController extends HttpServlet {
 
   private void articleList(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    List<Article> articles = articleService.findAll();
+    int page = 1;
+    try {
+      page = Integer.parseInt(req.getParameter("page"));
+    } catch (NumberFormatException e) {
+      // 기본 1로 사용
+    }
+    List<Article> articles = articleService.findAll(page);
+    int totalArticles = articleService.getTotalArticleCount();
+    int totalPages = articleService.getTotalPages();
     req.setAttribute("articles", articles);
+    req.setAttribute("currentPage", page);
+    req.setAttribute("totalArticles", totalArticles);
+    req.setAttribute("totalPages", totalPages);
     forward("board", req, resp);
   }
 

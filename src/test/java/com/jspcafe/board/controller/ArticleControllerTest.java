@@ -97,7 +97,7 @@ class ArticleControllerTest {
     articleController.doPost(request, response);
 
     // Then
-    List<Article> articles = articleService.findAll();
+    List<Article> articles = articleService.findAll(1);
     assertEquals(1, articles.size());
     Article newArticle = articles.get(0);
     assertEquals("새 게시글", newArticle.title());
