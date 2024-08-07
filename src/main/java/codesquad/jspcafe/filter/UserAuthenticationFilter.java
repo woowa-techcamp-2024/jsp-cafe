@@ -27,6 +27,10 @@ public class UserAuthenticationFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
         throws IOException, ServletException {
+        if (req.getRequestURI().contains("/questions/list")) {
+            chain.doFilter(req, res);
+            return;
+        }
         if (req.getSession().getAttribute("user") == null) {
             res.sendRedirect("/users/login");
             return;

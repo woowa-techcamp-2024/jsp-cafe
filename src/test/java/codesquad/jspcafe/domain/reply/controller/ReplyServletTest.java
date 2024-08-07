@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import codesquad.jspcafe.common.MockTemplate;
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.domain.reply.payload.request.ReplyCreateRequest;
 import codesquad.jspcafe.domain.reply.payload.respose.ReplyCommonResponse;
 import codesquad.jspcafe.domain.reply.service.ReplyService;
@@ -21,6 +22,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,9 @@ class ReplyServletTest extends MockTemplate {
     @Mock
     private ReplyService replyService;
 
+    private final HttpSession httpSession = mock(HttpSession.class);
+    private final UserSessionResponse userSessionResponse = mock(UserSessionResponse.class);
+
     @Test
     @DisplayName("서블릿을 초기화하여 서블릿 컨텍스트에서 ReplyService를 가져온다.")
     void init() throws ServletException {
@@ -55,11 +60,54 @@ class ReplyServletTest extends MockTemplate {
     }
 
     @Nested
+    @DisplayName("GET 요청을 처리할 때")
+    class describeGet {
+
+        private final PrintWriter printWriter = mock(PrintWriter.class);
+        private final CursorPaginationResult<ReplyCommonResponse> cursorPaginationResult = mock(
+            CursorPaginationResult.class);
+
+        @BeforeEach
+        void init() throws IOException {
+            given(request.getPathInfo()).willReturn("/1");
+            given(response.getWriter()).willReturn(printWriter);
+        }
+
+        @DisplayName("/replies로 GET 요청을 보낼 때 댓글을 조회한 후 JSON 바디를 반환한다.")
+        @Test
+        void doGet() throws Exception {
+            // Arrange
+            given(replyService.getRepliesByArticleId(any(Long.class))).willReturn(
+                cursorPaginationResult);
+            // Act
+            replyServlet.doGet(request, response);
+            // Assert
+            verify(response).setContentType("application/json");
+            verify(response).setStatus(HttpServletResponse.SC_OK);
+            verify(printWriter).write(any(String.class));
+        }
+
+        @DisplayName("/replies/{replyId}로 GET 요청을 보낼 때 댓글을 조회한 후 JSON 바디를 반환한다.")
+        @Test
+        void doGetWithReplyId() throws Exception {
+            // Arrange
+            given(request.getParameter("id")).willReturn("1");
+            given(replyService.getRepliesByArticleId(any(Long.class), any(Long.class))).willReturn(
+                cursorPaginationResult);
+            // Act
+            replyServlet.doGet(request, response);
+            // Assert
+            verify(response).setContentType("application/json");
+            verify(response).setStatus(HttpServletResponse.SC_OK);
+            verify(printWriter).write(any(String.class));
+        }
+
+    }
+
+    @Nested
     @DisplayName("POST 요청을 처리할 때")
     class describePost {
 
-        private final HttpSession httpSession = mock(HttpSession.class);
-        private final UserSessionResponse userSessionResponse = mock(UserSessionResponse.class);
         private final PrintWriter printWriter = mock(PrintWriter.class);
         private final ReplyCommonResponse replyCommonResponse = mock(ReplyCommonResponse.class);
         private final Map<String, String[]> parameterMap = Map.of(
@@ -85,7 +133,6 @@ class ReplyServletTest extends MockTemplate {
             // Assert
             verify(response).setStatus(HttpServletResponse.SC_CREATED);
             verify(response).setContentType("application/json");
-            verify(printWriter).write(replyCommonResponse.toString());
         }
 
     }
@@ -93,9 +140,6 @@ class ReplyServletTest extends MockTemplate {
     @Nested
     @DisplayName("DELETE 요청을 처리할 때")
     class describeDelete {
-
-        private final HttpSession httpSession = mock(HttpSession.class);
-        private final UserSessionResponse userSessionResponse = mock(UserSessionResponse.class);
 
         @ParameterizedTest
         @MethodSource("exceptionValues")

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.reply.domain.Reply;
 import codesquad.jspcafe.domain.reply.payload.request.ReplyCreateRequest;
@@ -17,7 +18,6 @@ import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,7 +82,6 @@ class ReplyServiceTest {
             () -> assertThat(actualResult.getId()).isNotNull(),
             () -> assertThat(actualResult.getCreatedAt()).isNotNull()
         );
-        ;
     }
 
     @Nested
@@ -95,17 +94,29 @@ class ReplyServiceTest {
             // Arrange
             replyRepository.save(expectedReply);
             // Act
-            List<ReplyCommonResponse> actualResult = replyService.getRepliesByArticleId(
+            CursorPaginationResult<ReplyCommonResponse> actualResult = replyService.getRepliesByArticleId(
                 expectedArticleId);
             // Assert
             assertAll(
-                () -> assertThat(actualResult).hasSize(1),
-                () -> assertThat(actualResult.get(0))
+                () -> assertThat(actualResult.getData()).hasSize(1),
+                () -> assertThat(actualResult.getData().get(0))
                     .extracting("id", "article", "userId", "username", "contents", "createdAt")
                     .containsExactly(expectedId, expectedArticleId, expectedUserId,
                         expectedWriter.getUsername(), expectedContents,
                         DateTimeFormatExecutor.execute(expectedCreatedAt))
             );
+        }
+
+        @Test
+        @DisplayName("해당 게시글의 댓글을 페이징하여 조회할 수 있다.")
+        void getRepliesByArticleIdWithPaging() {
+            // Arrange
+            replyRepository.save(expectedReply);
+            // Act
+            CursorPaginationResult<ReplyCommonResponse> actualResult = replyService.getRepliesByArticleId(
+                expectedArticleId, expectedId + 1);
+            // Assert
+            assertThat(actualResult.getData()).isEmpty();
         }
     }
 

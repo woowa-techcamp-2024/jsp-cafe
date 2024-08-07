@@ -14,5 +14,8 @@ public interface ArticleRepository {
 
     Optional<Article> findById(Long id);
 
-    List<Article> findAll();
+    long count();
+
+    List<Article> findByPage(int page, int limit);
+
 }

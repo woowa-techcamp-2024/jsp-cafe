@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import codesquad.jspcafe.common.payload.response.CursorPaginationResult;
 import codesquad.jspcafe.common.utils.DateTimeFormatExecutor;
 import codesquad.jspcafe.domain.article.domain.Article;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
@@ -20,7 +21,6 @@ import codesquad.jspcafe.domain.user.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -130,31 +130,45 @@ class ArticleServiceTest {
                     DateTimeFormatExecutor.execute(expectedCreatedAt));
         }
 
+    }
+
+    @Nested
+    @DisplayName("아티클 리스트를 조회할 때")
+    class whenGetArticles {
+
         @Test
-        @DisplayName("모든 아티클을 조회할 수 있다.")
-        void findAllArticle() {
+        @DisplayName("페이지네이션된 아티클 리스트를 조회할 수 있다.")
+        void getArticlesByPage() {
             // Arrange
             articleRepository.save(expectedArticle);
             // Act
-            List<ArticleContentResponse> actualResult = articleService.findAllArticle();
+            CursorPaginationResult<ArticleContentResponse> actualResult = articleService.getArticlesByPage(
+                1);
             // Assert
             assertAll(
-                () -> assertThat(actualResult).hasSize(1),
-                () -> assertThat(actualResult.get(0))
-                    .extracting("id", "title", "writerUserId", "writerUsername", "createdAt")
-                    .containsExactly(expectedId, expectedTitle, expectedWriter1.getUserId(),
-                        expectedWriter1.getUsername(),
-                        DateTimeFormatExecutor.execute(expectedCreatedAt))
+                () -> assertThat(actualResult)
+                    .extracting("hasNext", "numberOfElements")
+                    .containsExactly(false, 1),
+                () -> assertThat(actualResult.getData()).hasSize(1)
             );
         }
+
+    }
+
+    @Test
+    @DisplayName("아티클 갯수를 조회할 수 있다.")
+    void getTotalArticlesCount() {
+        // Arrange
+        articleRepository.save(expectedArticle);
+        // Act
+        Long actualResult = articleService.getTotalArticlesCount();
+        // Assert
+        assertThat(actualResult).isEqualTo(1);
     }
 
     @Nested
     @DisplayName("아티클을 수정할 때")
     class whenUpdateArticle {
-
-        private final String expectedUpdateTitle = "updateTitle";
-        private final String expectedUpdateContents = "updateContents";
 
         private final Map<String, String> expectedValues = Map.of(
             "id", String.valueOf(expectedId),

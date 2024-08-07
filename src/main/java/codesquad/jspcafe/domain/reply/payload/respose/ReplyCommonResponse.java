@@ -55,17 +55,4 @@ public class ReplyCommonResponse {
         return createdAt;
     }
 
-    @Override
-    public String toString() {
-        return """
-            {
-                "id": "%d",
-                "article": "%d",
-                "userId": "%s",
-                "username": "%s",
-                "contents": "%s",
-                "createdAt": "%s"
-            }
-            """.formatted(id, article, userId, username, contents, createdAt);
-    }
 }

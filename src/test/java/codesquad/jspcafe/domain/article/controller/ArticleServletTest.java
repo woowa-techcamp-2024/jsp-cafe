@@ -11,8 +11,6 @@ import codesquad.jspcafe.common.MockTemplate;
 import codesquad.jspcafe.domain.article.payload.request.ArticleUpdateRequest;
 import codesquad.jspcafe.domain.article.payload.response.ArticleCommonResponse;
 import codesquad.jspcafe.domain.article.service.ArticleService;
-import codesquad.jspcafe.domain.reply.payload.respose.ReplyCommonResponse;
-import codesquad.jspcafe.domain.reply.service.ReplyService;
 import codesquad.jspcafe.domain.user.payload.response.UserSessionResponse;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -23,7 +21,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +41,7 @@ class ArticleServletTest extends MockTemplate {
 
     @Mock
     private ArticleService articleService;
-    @Mock
-    private ReplyService replyService;
-    
+
     @Test
     @DisplayName("서블릿을 초기화하여 서블릿 컨텍스트에서 ArticleService와 ReplyService를 가져온다.")
     void init() throws ServletException {
@@ -55,13 +50,12 @@ class ArticleServletTest extends MockTemplate {
         ServletContext context = mock(ServletContext.class);
         given(config.getServletContext()).willReturn(context);
         given(context.getAttribute("articleService")).willReturn(articleService);
-        given(context.getAttribute("replyService")).willReturn(replyService);
         // Act
         articleServlet.init(config);
         // Assert
         assertThat(articleServlet)
-            .extracting("articleService", "replyService")
-            .containsExactly(articleService, replyService);
+            .extracting("articleService")
+            .isEqualTo(articleService);
     }
 
     @Nested
@@ -71,7 +65,6 @@ class ArticleServletTest extends MockTemplate {
         private final Long expectedArticleId = 1L;
         private final ArticleCommonResponse articleCommonResponse = mock(
             ArticleCommonResponse.class);
-        private final List<ReplyCommonResponse> replyCommonResponses = List.of();
         private final RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
 
         @ParameterizedTest
@@ -93,15 +86,12 @@ class ArticleServletTest extends MockTemplate {
             given(request.getPathInfo()).willReturn("/" + expectedArticleId);
             given(articleService.getArticleById(String.valueOf(expectedArticleId))).willReturn(
                 articleCommonResponse);
-            given(replyService.getRepliesByArticleId(expectedArticleId)).willReturn(
-                replyCommonResponses);
             given(request.getRequestDispatcher("/WEB-INF/jsp/question.jsp")).willReturn(
                 requestDispatcher);
             // Act
             articleServlet.doGet(request, response);
             // Assert
             verify(request).setAttribute("article", articleCommonResponse);
-            verify(request).setAttribute("replies", replyCommonResponses);
             verify(requestDispatcher).forward(request, response);
         }
 

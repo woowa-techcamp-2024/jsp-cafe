@@ -1,6 +1,7 @@
 package codesquad.jspcafe.domain.article.controller;
 
 import codesquad.jspcafe.domain.article.service.ArticleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,10 +10,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * ArticleListServlet은 질문 목록을 조회하는 요청을 처리하는 서블릿입니다. <br> GET 메서드를 제공하여 질문 목록을 표시합니다.
+ * ArticleListServlet는 Article 리스트 조회를 처리하는 서블릿입니다. <br> GET 요청을 처리하여 Article 리스트를 조회한 후 JSON 바디를
+ * 반환합니다. <br> 이 서블릿은 /questions/list 경로로 매핑되어 있습니다.
  */
-@WebServlet(urlPatterns = {"/index.html"})
+@WebServlet("/questions/list")
 public class ArticleListServlet extends HttpServlet {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private transient ArticleService articleService;
 
@@ -27,17 +31,22 @@ public class ArticleListServlet extends HttpServlet {
     }
 
     /**
-     * GET 요청을 처리하여 questionList.jsp 페이지로 포워딩합니다. 클라이언트가 /index.html로 GET 요청을 보낼 때 이 메서드가 호출됩니다.
+     * GET 요청을 처리하여 Article 리스트를 조회한 후 JSON 바디를 반환합니다. <br> 클라이언트가 /questions/list로 GET 요청을 보낼 때 이
+     * 메서드가 호출됩니다.
      *
      * @param req  an {@link HttpServletRequest} 클라이언트가 서블릿에 보낸 요청을 포함하는 HttpServletRequest 객체
      * @param resp an {@link HttpServletResponse} 서블릿이 클라이언트에게 보내는 응답을 포함하는 HttpServletResponse 객체
      * @throws ServletException 서블릿이 GET 요청을 처리하는 동안 입력 또는 출력 오류가 발생할 경우
-     * @throws IOException      포워드 요청을 처리할 수 없는 경우
+     * @throws IOException      서블릿이 GET 요청을 처리하는 동안 입력 또는 출력 오류가 발생할 경우
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        req.setAttribute("questionList", articleService.findAllArticle());
-        req.getRequestDispatcher("/WEB-INF/jsp/questionList.jsp").forward(req, resp);
+        String parameter = req.getParameter("page");
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("application/json");
+        resp.getWriter().write(objectMapper.writeValueAsString(
+            parameter == null ? articleService.getTotalArticlesCount()
+                : articleService.getArticlesByPage(Integer.parseInt(parameter))));
     }
 }

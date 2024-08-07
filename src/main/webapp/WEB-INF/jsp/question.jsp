@@ -66,42 +66,7 @@
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count">의견</p>
                         <div class="qna-comment-slipp-articles">
-                            <div id="top_holder"></div>
-                            <c:forEach var="reply" items="${replies}">
-                                <article class="article" id="answer-${reply.id}">
-                                    <div class="article-header">
-                                        <div class="article-header-thumb">
-                                            <img src="<c:url value="/resources/images/80-text.png"/>"
-                                                 class="article-author-thumb" alt="">
-                                        </div>
-                                        <div class="article-header-text">
-                                            <a href="/users/${reply.userId}"
-                                               class="article-author-name">${reply.username}</a>
-                                            <a class="article-header-time"
-                                               title="퍼머링크">${reply.createdAt}</a>
-                                        </div>
-                                    </div>
-                                    <div class="article-doc comment-doc">
-                                        <p>${reply.contents}</p>
-                                    </div>
-                                    <div class="article-util">
-                                        <ul class="article-util-list">
-                                            <li>
-                                                <form class="delete-answer-form" id="replyDelete"
-                                                      name="replyDelete"
-                                                      action="/replies/${reply.id}" method="POST">
-                                                    <button type="submit"
-                                                            class="delete-answer-button">
-                                                        삭제
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </article>
-                            </c:forEach>
-
-
+                            <div id="bottom_holder"></div>
                             <form id="replyCreate" name="replyCreate" class="submit-write"
                                   method="POST" action="<c:url value="/replies"/>">
                                 <input type="hidden" id="article" name="article"
@@ -128,6 +93,16 @@
 
 <script>
   $(document).ready(function () {
+
+    loadReplies(${articleCommonResponse.id});
+
+    $('#bottom_holder').after(
+        '<button id="loadMoreButton" class="btn btn-success" style="display: none;">더 보기</button>');
+
+    $('#loadMoreButton').on('click', function () {
+      loadReplies(${articleCommonResponse.id});
+    });
+
     $('#questionDelete').on('submit', function (e) {
       e.preventDefault();
 
@@ -161,12 +136,13 @@
         type: 'POST',
         data: data,
         success: function (response) {
-          addReplyToDOM(response);
+          addReplyToDOMForNewReply(response);
           let textarea = document.querySelector('#replyCreate textarea');
           textarea.value = '';
         }
       });
     });
+
   })
 </script>
 <script>
