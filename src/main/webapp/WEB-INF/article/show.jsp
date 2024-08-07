@@ -49,9 +49,7 @@
 
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
-                          <div id="commentsSection"></div>
                           <form class="submit-write" id="answerForm">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" id="answerText" placeholder="Update your status"></textarea>
@@ -59,6 +57,8 @@
                               <button class="btn btn-success pull-right" type="button" id="submitAnswer" articleId="<%=article.getArticleId()%>">답변하기</button>
                               <div class="clearfix"></div>
                           </form>
+                          <div id="commentsSection"></div>
+                          <button id="appendButton" type="button" onclick="appendComments()">더보기</button>
                       </div>
                   </div>
               </div>
@@ -159,15 +159,59 @@
       });
   });
 
+  var json;
+  var lastIndex = 0;
+  function appendComments() {
+        var commentsHtml = '';
+        var nextIndex = json.comments.length < lastIndex + 5 ? json.comments.length : lastIndex + 5;
+        for (var i = lastIndex; i < nextIndex; i++) {
+          var comment = json.comments[i];
+          commentsHtml += '<article class="article" id="answer-1406">\n';
+          commentsHtml += '  <div class="article-header">\n';
+          commentsHtml += '    <div class="article-header-thumb">\n';
+          commentsHtml += '      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">\n';
+          commentsHtml += '    </div>\n';
+          commentsHtml += '    <div class="article-header-text">\n';
+          commentsHtml += '      <a href="/users/' + comment.userId + '" class="article-author-name">' + comment.userId + '</a>\n';
+          commentsHtml += '      <a href="#answer-1434" class="article-header-time" title="퍼머링크">\n';
+          commentsHtml += '        ' + comment.created + '\n';
+          commentsHtml += '        <i class="icon-link"></i>\n';
+          commentsHtml += '      </a>\n';
+          commentsHtml += '    </div>\n';
+          commentsHtml += '  </div>\n';
+          commentsHtml += '  <div class="article-doc comment-doc">\n';
+          commentsHtml += '    <p>' + comment.contents + '</p>\n';
+          commentsHtml += '  </div>\n';
+          commentsHtml += '  <div class="article-util">\n';
+          commentsHtml += '    <ul class="article-util-list">\n';
+          commentsHtml += '      <li>\n';
+          commentsHtml += '        <form>\n';
+          commentsHtml += '          <input type="hidden" name="_method" value="DELETE">\n';
+          commentsHtml += '          <button type="button" class="delete-answer-button" id="deleteAnswer" articleId="' + comment.articleId + '" commentId="' + comment.commentId + '">삭제</button>\n';
+          commentsHtml += '        </form>\n';
+          commentsHtml += '      </li>\n';
+          commentsHtml += '    </ul>\n';
+          commentsHtml += '  </div>\n';
+          commentsHtml += '</article>\n';
+        }
+        lastIndex = nextIndex;
+        if (nextIndex === json.comments.length) {
+            $('#appendButton').remove();
+        }
+        $('#commentsSection').append(commentsHtml);
+  }
+
   function loadComments(articleId) {
       $.ajax({
           url: '/comments/' + articleId,
           method: 'GET',
           success: function(data) {
-              var json = JSON.parse(data);
+              json = JSON.parse(data);
 
               var commentsHtml = '';
-              for (var i = 0; i < json.comments.length; i++) {
+              var commentsLength = json.comments.length < 5 ? json.comments.length : 5;
+              lastIndex = commentsLength;
+              for (var i = 0; i < commentsLength; i++) {
                   var comment = json.comments[i];
                   commentsHtml += '<article class="article" id="answer-1406">\n';
                   commentsHtml += '  <div class="article-header">\n';
@@ -196,6 +240,9 @@
                   commentsHtml += '    </ul>\n';
                   commentsHtml += '  </div>\n';
                   commentsHtml += '</article>\n';
+              }
+              if (json.comments.length <= 5) {
+                    $('#appendButton').remove();
               }
               $('#commentsSection').html(commentsHtml);
           },
