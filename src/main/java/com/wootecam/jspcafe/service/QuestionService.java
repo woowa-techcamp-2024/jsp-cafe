@@ -31,8 +31,12 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public List<Question> readAll() {
-        return questionRepository.findAllOrderByCreatedTimeDesc();
+    public int countAll() {
+        return questionRepository.countAll();
+    }
+
+    public List<Question> readAll(final int page, final int size) {
+        return questionRepository.findAllOrderByCreatedTimeDesc(page, size);
     }
 
     public Question read(final Long id) {

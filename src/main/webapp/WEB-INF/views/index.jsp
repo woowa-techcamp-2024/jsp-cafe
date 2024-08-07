@@ -13,7 +13,7 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <c:forEach var="question" items="${questions}" varStatus="status">
+                <c:forEach var="question" items="${questions.questionResponses}" varStatus="status">
                     <li>
                         <div class="wrap">
                             <div class="main">
@@ -42,13 +42,28 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+
+                        <fmt:parseNumber var="totalPage" integerOnly="true"
+                                         value="${(questions.questionCount + 14) / 15}"/>
+                        <c:set var="currentPage" value="${questions.currentPage}"/>
+
+                        <fmt:parseNumber var="pageGroup" integerOnly="true" value="${(currentPage - 1) / 5}"/>
+                        <c:set var="startPage" value="${pageGroup * 5 + 1}"/>
+                        <c:set var="endPage" value="${Math.min(startPage + 4, totalPage)}"/>
+
+                        <c:if test="${startPage > 1}">
+                            <li><a href="?page=${startPage - 5}">«</a></li>
+                        </c:if>
+
+                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                            <li class="${i == currentPage ? 'active' : ''}">
+                                <a href="?page=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+
+                        <c:if test="${endPage < totalPage}">
+                            <li><a href="?page=${startPage + 5}">»</a></li>
+                        </c:if>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">

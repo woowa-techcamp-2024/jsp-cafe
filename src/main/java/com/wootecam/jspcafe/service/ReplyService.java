@@ -9,6 +9,8 @@ import java.util.List;
 
 public class ReplyService {
 
+    private static final int MINIMUM_REPLY_COUNT = 1;
+
     private final ReplyRepository replyRepository;
 
     public ReplyService(final ReplyRepository replyRepository) {
@@ -27,8 +29,16 @@ public class ReplyService {
                 .orElseThrow(() -> new NotFoundException("댓글을 찾을 수 없습니다."));
     }
 
-    public List<Reply> readAll(final Long questionId) {
-        return replyRepository.findAllByQuestionPrimaryId(questionId);
+    public int countAll(final Long questionPrimaryId) {
+        return replyRepository.countAll(questionPrimaryId);
+    }
+
+    public List<Reply> readAll(final Long questionId, final int readCount) {
+        if (readCount < MINIMUM_REPLY_COUNT) {
+            String message = String.format("댓글 조회 갯수는 %d개 이상이어야 합니다.", MINIMUM_REPLY_COUNT);
+            throw new BadRequestException(message);
+        }
+        return replyRepository.findAllByQuestionPrimaryIdLimit(questionId, readCount);
     }
 
     public void delete(final Long replyId, final Long userPrimaryId) {
@@ -39,5 +49,14 @@ public class ReplyService {
         }
 
         replyRepository.delete(replyId);
+    }
+
+    public List<Reply> readAllStartsWith(final Long questionId, final Long lastReplyId, final int readCount) {
+        if (readCount < MINIMUM_REPLY_COUNT) {
+            String message = String.format("댓글 조회 갯수는 %d개 이상이어야 합니다.", MINIMUM_REPLY_COUNT);
+            throw new BadRequestException(message);
+        }
+
+        return replyRepository.findAllByQuestionPrimaryIdAndStartWith(questionId, lastReplyId, readCount);
     }
 }

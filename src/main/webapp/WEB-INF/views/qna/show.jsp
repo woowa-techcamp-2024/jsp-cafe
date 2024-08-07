@@ -57,13 +57,13 @@
                     </div>
                 </article>
 
-                <c:set var="currentReplies" value="${requestScope.replies}"/>
+                <c:set var="replyPageResponse" value="${requestScope.replyPageResponse}"/>
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>${fn:length(currentReplies)}</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>${replyPageResponse.replyCount}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-                            <c:forEach var="reply" items="${currentReplies}" varStatus="status">
+                            <c:forEach var="reply" items="${replyPageResponse.replies}" varStatus="status">
                                 <article class="article">
                                     <div class="article-header">
                                         <div class="article-header-thumb">
@@ -96,6 +96,19 @@
                                 </article>
                             </c:forEach>
                         </div>
+                        <c:if test="${replyPageResponse.replyCount > 5}">
+                            <div class="text-center">
+                                <form class="more-reply">
+                                    <input class="last-reply-id" id="lastReplyId" type="hidden"
+                                           value="${replyPageResponse.lastReplyId}"/>
+                                    <input class="question-id" id="currentQuestionId" type="hidden"
+                                           value="${currentQuestion.id}"/>
+                                    <button id="load-more-button" class="btn btn-default" type="submit"
+                                            style="margin-bottom: 20px;">더보기
+                                    </button>
+                                </form>
+                            </div>
+                        </c:if>
                         <form class="submit-write">
                             <input class="form-control" id="questionId" name="questionId" type="hidden"
                                    value="${currentQuestion.id}"
@@ -202,10 +215,6 @@
                 dataType: 'json',
 
                 success: function (response) {
-                    console.log(response.writer);
-                    console.log(response.createdTime);
-                    console.log(response.contents);
-
                     // 댓글 작성 성공 시 새로운 댓글 HTML 추가
                     var newReplyHTML = createReplyHTML(response.writer, formatTime(response.createdTime), response.contents, response.id);
                     $('.qna-comment-slipp-articles').append(newReplyHTML);
@@ -256,6 +265,46 @@
                     window.location.href = "${pageContext.request.contextPath}/questions/${currentQuestion.id}";
                 }
             });
+        });
+    });
+
+    // 더보기 버튼 클릭 시
+    $('.more-reply').on('submit', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var lastReplyId = form.find('#lastReplyId').val();
+        let questionId = form.find('#currentQuestionId').val();
+
+        $.ajax({
+            url: "${pageContext.request.contextPath}/replies",
+            type: 'GET',
+            data: {
+                questionId: questionId,
+                lastReplyId: lastReplyId
+            },
+            dataType: 'json',
+
+            success: function (response) {
+                console.log("success");
+
+                // 새로운 댓글들을 추가
+                response.replies.forEach(function (reply) {
+                    var newReplyHTML = createReplyHTML(reply.writer, formatTime(reply.createdTime), reply.contents, reply.id);
+                    $('.qna-comment-slipp-articles').append(newReplyHTML);
+                });
+
+                // lastReplyId 업데이트
+                form.find('#lastReplyId').val(response.lastReplyId);
+
+                // 더 이상 댓글이 없으면 더보기 버튼 숨기기
+                if (response.replies.length === 0) {
+                    form.hide();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("fail");
+            }
         });
     });
 

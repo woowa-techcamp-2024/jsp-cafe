@@ -9,11 +9,15 @@ public interface ReplyRepository {
 
     Optional<Reply> findById(Long id);
 
-    List<Reply> findAllByQuestionPrimaryId(Long questionId);
+    List<Reply> findAllByQuestionPrimaryIdLimit(Long questionPrimaryId, int count);
 
     void delete(Long id);
 
     boolean existsReplyByIdAndOtherUserPrimaryId(final Long id, Long userPrimaryId);
 
     void deleteAllByQuestionPrimaryId(Long questionPrimaryId);
+
+    int countAll(final Long questionPrimaryId);
+
+    List<Reply> findAllByQuestionPrimaryIdAndStartWith(Long questionPrimaryId, Long lastReplyId, int count);
 }

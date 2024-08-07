@@ -70,6 +70,17 @@ public class JdbcTemplate {
         }
     }
 
+    public <T> T selectOne(final String query, final ResultSetMapper<T> mapper) {
+        try (Connection conn = dataSourceManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            return getValue(mapper, ps);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     private <T> T getValue(final ResultSetMapper<T> mapper, final PreparedStatement ps) throws SQLException {
         T value = null;
 

@@ -52,13 +52,54 @@ class ReplyServiceTest extends ServiceTest {
     }
 
     @Nested
+    class countAll_메소드는 {
+
+        @Nested
+        class 만약_특정_질문의_댓글이_없다면 {
+
+            @Test
+            void zero를_반환한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+
+                // when
+                int count = replyService.countAll(1L);
+
+                // then
+                assertThat(count).isZero();
+            }
+        }
+
+        @Nested
+        class 만약_특정_질문에_댓글이_N개라면 {
+
+            @Test
+            void N개를_반환한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+                replyRepository.save(new Reply("name", "contents", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents", LocalDateTime.now(), 1L, 1L));
+
+                // when
+                int count = replyService.countAll(1L);
+
+                // then
+                assertThat(count).isEqualTo(3);
+            }
+        }
+    }
+
+    @Nested
     class readAll_메소드는 {
 
         @Nested
         class 질문에_댓글이_달려있다면 {
 
             @Test
-            void 모든_댓글을_조회한다() {
+            void 지정된_갯수의_댓글을_조회한다() {
                 // given
                 userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
                 questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
@@ -67,10 +108,10 @@ class ReplyServiceTest extends ServiceTest {
                 replyRepository.save(new Reply("userId", "contents", LocalDateTime.now(), 1L, 1L));
 
                 // when
-                List<Reply> replies = replyService.readAll(1L);
+                List<Reply> replies = replyService.readAll(1L, 2);
 
                 // then
-                assertThat(replies).hasSize(3);
+                assertThat(replies).hasSize(2);
             }
         }
 
@@ -84,10 +125,26 @@ class ReplyServiceTest extends ServiceTest {
                 questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
 
                 // when
-                List<Reply> replies = replyService.readAll(1L);
+                List<Reply> replies = replyService.readAll(1L, 1);
 
                 // then
                 assertThat(replies).isEmpty();
+            }
+        }
+
+        @Nested
+        class 댓글_조회_갯수가_1개_미만이라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+
+                // expect
+                assertThatThrownBy(() -> replyService.readAll(1L, 0))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("댓글 조회 갯수는 1개 이상이어야 합니다.");
             }
         }
     }
@@ -107,7 +164,7 @@ class ReplyServiceTest extends ServiceTest {
 
                 // when
                 replyService.delete(1L, 1L);
-                List<Reply> replies = replyRepository.findAllByQuestionPrimaryId(1L);
+                List<Reply> replies = replyRepository.findAllByQuestionPrimaryIdLimit(1L, 1);
 
                 // then
                 assertThat(replies).isEmpty();
@@ -145,6 +202,48 @@ class ReplyServiceTest extends ServiceTest {
                 assertThatThrownBy(() -> replyService.delete(2L, 1L))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("댓글을 찾을 수 없습니다.");
+            }
+        }
+    }
+
+    @Nested
+    class readAllStartsWith_메소드는 {
+
+        @Nested
+        class 조회할_댓글의_갯수가_1개_미만이라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+                replyRepository.save(new Reply("userId", "contents", LocalDateTime.now(), 1L, 1L));
+
+                // expect
+                assertThatThrownBy(() -> replyService.readAllStartsWith(1L, 1L, 0))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("댓글 조회 갯수는 1개 이상이어야 합니다.");
+            }
+        }
+
+        @Nested
+        class questionId와_마지막_조회_댓글id와_앞으로_조회할_댓글수를_전달하면 {
+
+            @Test
+            void 마지막_댓글_이후부터_댓글수만큼_조회합니다() {
+                // given
+                userRepository.save(new User("userId", "password", "name", "mail@mail.com"));
+                questionRepository.save(new Question("userId", "title", "contents", LocalDateTime.now(), 1L));
+                replyRepository.save(new Reply("name", "contents1", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents2", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents3", LocalDateTime.now(), 1L, 1L));
+                replyRepository.save(new Reply("name", "contents4", LocalDateTime.now(), 1L, 1L));
+
+                // when
+                List<Reply> replies = replyService.readAllStartsWith(1L, 2L, 2);
+
+                assertThat(replies).extracting(Reply::getContents)
+                        .containsExactly("contents3", "contents4");
             }
         }
     }

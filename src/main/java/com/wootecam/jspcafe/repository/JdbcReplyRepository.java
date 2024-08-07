@@ -72,12 +72,15 @@ public class JdbcReplyRepository implements ReplyRepository {
     }
 
     @Override
-    public List<Reply> findAllByQuestionPrimaryId(final Long questionPrimaryId) {
-        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE deleted_at IS NULL AND question_primary_id = ?";
+    public List<Reply> findAllByQuestionPrimaryIdLimit(final Long questionPrimaryId, final int count) {
+        String query = "SELECT id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply WHERE deleted_at IS NULL AND question_primary_id = ? LIMIT ?";
 
         return jdbcTemplate.selectAll(
                 query,
-                ps -> ps.setLong(1, questionPrimaryId),
+                ps -> {
+                    ps.setLong(1, questionPrimaryId);
+                    ps.setInt(2, count);
+                },
                 resultSet -> new Reply(
                         resultSet.getLong(1),
                         resultSet.getString(2),
@@ -120,6 +123,46 @@ public class JdbcReplyRepository implements ReplyRepository {
         jdbcTemplate.update(
                 query,
                 ps -> ps.setLong(1, questionPrimaryId)
+        );
+    }
+
+    @Override
+    public int countAll(final Long questionPrimaryId) {
+        String query = "SELECT COUNT(*) FROM reply WHERE deleted_at IS NULL AND question_primary_id = ?";
+
+        return jdbcTemplate.selectOne(
+                query,
+                ps -> ps.setLong(1, questionPrimaryId),
+                resultSet -> resultSet.getInt(1)
+        );
+    }
+
+    @Override
+    public List<Reply> findAllByQuestionPrimaryIdAndStartWith(final Long questionPrimaryId, final Long lastReplyId,
+                                                              final int count) {
+        String query =
+                "SELECT r.id, writer, contents, created_time, users_primary_id, question_primary_id FROM reply r JOIN ("
+                        + " SELECT id"
+                        + " FROM reply r"
+                        + " WHERE deleted_at IS NULL AND question_primary_id = ? AND id > ?"
+                        + " LIMIT ?"
+                        + " ) temp ON r.id = temp.id";
+
+        return jdbcTemplate.selectAll(
+                query,
+                ps -> {
+                    ps.setLong(1, questionPrimaryId);
+                    ps.setLong(2, lastReplyId);
+                    ps.setInt(3, count);
+                },
+                resultSet -> new Reply(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getTimestamp(4).toLocalDateTime(),
+                        resultSet.getLong(5),
+                        resultSet.getLong(6)
+                )
         );
     }
 }

@@ -45,11 +45,33 @@ public class JdbcQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public List<Question> findAllOrderByCreatedTimeDesc() {
-        String query = "SELECT id, writer, title, contents, created_time, users_primary_id FROM question WHERE deleted_at IS NULL ORDER BY created_time DESC";
+    public int countAll() {
+        String query = "SELECT COUNT(*) FROM question WHERE deleted_at IS NULL";
+
+        return jdbcTemplate.selectOne(
+                query,
+                resultSet -> resultSet.getInt(1)
+        );
+    }
+
+    @Override
+    public List<Question> findAllOrderByCreatedTimeDesc(final int page, final int size) {
+        String query =
+                "SELECT q.id, writer, title, contents, created_time, users_primary_id, deleted_at\n"
+                        + "FROM question q\n"
+                        + "         JOIN (SELECT id\n"
+                        + "               FROM question\n"
+                        + "               WHERE deleted_at IS NULL\n"
+                        + "               ORDER BY id DESC\n"
+                        + "               LIMIT ?\n"
+                        + "               OFFSET ?) as temp on temp.id = q.id;";
 
         return jdbcTemplate.selectAll(
                 query,
+                ps -> {
+                    ps.setInt(1, size);
+                    ps.setInt(2, (page - 1) * size);
+                },
                 resultSet -> new Question(
                         resultSet.getLong(1),
                         resultSet.getString(2),

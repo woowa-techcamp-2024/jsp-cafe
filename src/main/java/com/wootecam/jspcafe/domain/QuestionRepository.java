@@ -7,7 +7,9 @@ public interface QuestionRepository {
 
     void save(final Question question);
 
-    List<Question> findAllOrderByCreatedTimeDesc();
+    int countAll();
+
+    List<Question> findAllOrderByCreatedTimeDesc(final int page, final int size);
 
     Optional<Question> findById(final Long id);
 

@@ -1,6 +1,7 @@
 package com.wootecam.jspcafe.service.fixture;
 
 import com.wootecam.jspcafe.config.DataSourceManager;
+import com.wootecam.jspcafe.config.DataSourceProperty;
 import com.wootecam.jspcafe.config.JdbcTemplate;
 import com.wootecam.jspcafe.domain.QuestionRepository;
 import com.wootecam.jspcafe.domain.ReplyRepository;
@@ -30,7 +31,7 @@ public class ServiceTest {
 
     @BeforeEach
     void setUpTest() {
-        dataSourceManager = new DataSourceManager();
+        dataSourceManager = new DataSourceManager(new DataSourceProperty("TEST"));
         jdbcTemplate = new JdbcTemplate(dataSourceManager);
         databaseCleaner = new DatabaseCleaner(jdbcTemplate);
         userRepository = new JdbcUserRepository(jdbcTemplate);
