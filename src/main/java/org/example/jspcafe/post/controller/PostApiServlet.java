@@ -14,6 +14,7 @@ import org.example.jspcafe.comment.request.CommentModifyRequest;
 import org.example.jspcafe.comment.service.CommentService;
 import org.example.jspcafe.di.ApplicationContext;
 import org.example.jspcafe.post.request.PostModifyRequest;
+import org.example.jspcafe.post.response.CommentList;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.post.service.PostService;
 
@@ -105,15 +106,24 @@ public class PostApiServlet extends HttpServlet {
          */
         if (split.length == 5 && split[4].equals("comments")) {
             Long postId = Long.parseLong(split[split.length - 2]);
-            final CommentResponse[] comments = commentService.findCommentsJoinUser(postId).toArray(CommentResponse[]::new);
+
+            // lastCommentId를 받아서 처리하도록 변경함
+            String firstCommentIdParam = req.getParameter("firstCommentId");
+            long firstCommentId = firstCommentIdParam != null ? Long.parseLong(firstCommentIdParam) : Long.MAX_VALUE;
+
+            // size 파라미터를 받아서 처리
+            String sizeParam = req.getParameter("size");
+
+            int size = sizeParam != null ? Integer.parseInt(sizeParam) : 5; // 기본값 5 설정
+
+            CommentList commentList = commentService.findCommentsJoinUserByFirstId(postId, firstCommentId, size);
 
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             PrintWriter out = resp.getWriter();
-            String jsonResponse = objectMapper.writeValueAsString(comments);
+            String jsonResponse = objectMapper.writeValueAsString(commentList);
             out.print(jsonResponse);
             out.flush();
-            return;
         }
     }
 

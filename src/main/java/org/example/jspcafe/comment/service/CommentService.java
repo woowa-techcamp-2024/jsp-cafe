@@ -7,6 +7,7 @@ import org.example.jspcafe.comment.repository.CommentVO;
 import org.example.jspcafe.comment.request.CommentCreateRequest;
 import org.example.jspcafe.comment.request.CommentDeleteRequest;
 import org.example.jspcafe.comment.request.CommentModifyRequest;
+import org.example.jspcafe.post.response.CommentList;
 import org.example.jspcafe.post.response.CommentResponse;
 import org.example.jspcafe.user.model.User;
 import org.example.jspcafe.user.repository.UserRepository;
@@ -43,9 +44,15 @@ public class CommentService {
         );
     }
 
-    public List<CommentResponse> findCommentsJoinUser(Long postId) {
-        final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId);
-        return comments.stream()
+    public CommentList findCommentsJoinUserByFirstId(Long postId, long firstCommentId, int size) {
+        if (size < 1) {
+            size = 5; // 사이즈가 1보다 작으면 기본값 5로 설정
+        }
+
+        final List<CommentVO> comments = commentRepository.findCommentsJoinUserByFirstId(postId, firstCommentId, size);
+        int totalCount = commentRepository.count(postId);
+
+        List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> new CommentResponse(
                         comment.commentId(),
                         comment.userId(),
@@ -54,6 +61,32 @@ public class CommentService {
                         comment.content(),
                         comment.createdAt()
                 )).toList();
+
+        return new CommentList(commentResponses, totalCount);
+    }
+
+    public CommentList findCommentsJoinUser(Long postId, int page, int size) {
+        if (page < 1) {
+            page = 1; // 페이지 번호가 1보다 작으면 1로 설정
+        }
+        if (size < 1) {
+            size = 5; // 사이즈가 1보다 작으면 기본값 5로 설정
+        }
+        int offset = (page - 1) * size;
+
+        final List<CommentVO> comments = commentRepository.findCommentsJoinUser(postId, size, offset);
+        int totalCount = commentRepository.count(postId);
+
+        List<CommentResponse> commentResponses = comments.stream()
+                .map(comment -> new CommentResponse(
+                        comment.commentId(),
+                        comment.userId(),
+                        comment.postId(),
+                        comment.nickname(),
+                        comment.content(),
+                        comment.createdAt()
+                )).toList();
+        return new CommentList(commentResponses, totalCount);
     }
 
     public void deleteComment(final CommentDeleteRequest request) {

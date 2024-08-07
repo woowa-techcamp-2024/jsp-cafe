@@ -110,7 +110,10 @@
             </article>
             <section class="comment-section">
                 <div class="comment-count">댓글 <span id="commentCount"><%= comments.size() %></span>개</div>
-                <!-- 댓글 목록은 AJAX로 불러옵니다. -->
+                <div class="comments-list">
+                    <!-- 댓글 목록은 AJAX로 불러옵니다. -->
+                </div>
+                <button id="loadMoreButton" class="load-more-button">더보기</button>
             </section>
             <%
                 String commentWriter = (String) request.getAttribute("commentWriter");
@@ -118,7 +121,7 @@
             <form id="commentForm" class="comment-form" data-post-id="<%= post.postId() %>">
                 <label for="commentInput" class="comment-form-label"><%= commentWriter %></label>
                 <textarea id="commentInput" name="content" class="comment-form-textarea" placeholder="댓글 입력"></textarea>
-                <button type="submit" class="comment-form-button">댓글입력</button>
+                <button type="submit" class="comment-form-button">댓글 입력</button>
             </form>
             <nav class="navigation-buttons">
                 <form action="<%= request.getContextPath() %>/index.jsp" method="get">

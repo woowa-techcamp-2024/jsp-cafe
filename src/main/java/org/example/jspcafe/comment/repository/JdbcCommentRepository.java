@@ -9,7 +9,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> implements CommentRepository  {
@@ -133,38 +132,6 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
         }
     }
 
-//    @Override
-//    public List<CommentVO> findAllByPostIdsJoinFetch(List<Long> postIds) {
-//        if (postIds.isEmpty()) {
-//            return List.of();
-//        }
-//
-//        String placeholders = postIds.stream()
-//                .map(id -> "?")
-//                .collect(Collectors.joining(","));
-//        String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
-//                "FROM comments c " +
-//                "JOIN users u ON c.user_id = u.user_id " +
-//                "WHERE c.post_id IN (" + placeholders + ") " +
-//                "AND c.deleted_at IS NULL";
-//
-//        try (Connection conn = connectionManager.getConnection();
-//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//
-//            for (int i = 0; i < postIds.size(); i++) {
-//                pstmt.setLong(i + 1, postIds.get(i));
-//            }
-//
-//            try (ResultSet rs = pstmt.executeQuery()) {
-//                return mapResultSetToEntities(rs);
-//            }
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Comment 조회 중 오류 발생", e);
-//        }
-//    }
-
-
     private List<CommentVO> mapResultSetToEntities(ResultSet rs) throws SQLException {
         List<CommentVO> comments = new ArrayList<>();
         while (rs.next()) {
@@ -191,16 +158,20 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
     }
 
     @Override
-    public List<CommentVO> findCommentsJoinUser(Long postId) {
+    public List<CommentVO> findCommentsJoinUserByFirstId(Long postId, long firstCommentId, int limit) {
         String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
                 "FROM comments c " +
                 "JOIN users u ON c.user_id = u.user_id " +
-                "WHERE c.post_id = ? AND c.deleted_at IS NULL";
+                "WHERE c.post_id = ? AND c.comment_id < ? AND c.deleted_at IS NULL " +
+                "ORDER BY c.created_at DESC " +
+                "LIMIT ?";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setLong(1, postId);
+            pstmt.setLong(2, firstCommentId);
+            pstmt.setInt(3, limit);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 return mapResultSetToEntities(rs);
@@ -208,6 +179,55 @@ public class JdbcCommentRepository extends ReflectionIdFieldExtractor<Comment> i
 
         } catch (SQLException e) {
             throw new RuntimeException("Comment 조회 중 오류 발생", e);
+        }
+    }
+
+    @Override
+    public List<CommentVO> findCommentsJoinUser(Long postId, int limit, int offset) {
+        String sql = "SELECT c.comment_id, c.post_id, c.user_id, u.nickname, c.content, c.created_at " +
+                "FROM comments c " +
+                "JOIN users u ON c.user_id = u.user_id " +
+                "WHERE c.post_id = ? AND c.deleted_at IS NULL " +
+                "ORDER BY c.created_at DESC " +
+                "LIMIT ? OFFSET ?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, postId);
+            pstmt.setInt(2, limit);
+            pstmt.setInt(3, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return mapResultSetToEntities(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Comment 조회 중 오류 발생", e);
+        }
+    }
+
+    @Override
+    public int count(Long postId) {
+        String sql = "SELECT COUNT(*) " +
+                "FROM comments " +
+                "WHERE post_id = ? AND deleted_at IS NULL";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, postId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    return 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("댓글 수 조회 중 오류 발생", e);
         }
     }
 

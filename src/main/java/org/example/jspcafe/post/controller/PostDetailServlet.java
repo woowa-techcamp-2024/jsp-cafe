@@ -47,7 +47,7 @@ public class PostDetailServlet extends HttpServlet {
 
         Long postId = Long.parseLong(postIdStr);
 
-        List<CommentResponse> comments = commentService.findCommentsJoinUser(postId);
+        List<CommentResponse> comments = commentService.findCommentsJoinUser(postId, 0, 5).comments();
 
         String commentWriter = (String) req.getSession().getAttribute("nickname");
         if(commentWriter== null) {
