@@ -1,5 +1,8 @@
 package com.woowa.hyeonsik.application.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.Reply;
 import com.woowa.hyeonsik.application.domain.User;
 import com.woowa.hyeonsik.application.exception.LoginRequiredException;
@@ -20,6 +23,15 @@ import java.util.Map;
 public class CommentServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(CommentServlet.class);
     private final CommentService commentService;
+    private ObjectMapper objectMapper;
+
+    // TODO 외부에서 주입받기
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 등의 Java 8 날짜/시간 타입 지원
+    }
 
     public CommentServlet(CommentService commentService) {
         this.commentService = commentService;
@@ -48,11 +60,37 @@ public class CommentServlet extends HttpServlet {
         commentService.addComment(reply);
     }
 
+//    // read comments (GET /comments)
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String pageParam = request.getParameter("page");
+//        long page = 1;
+//        if (!(pageParam == null || pageParam.isEmpty())) {
+//            page = Long.parseLong(pageParam);
+//        }
+//        logger.debug("게시글에 댓글을 조회합니다. page: {}", page);
+//
+//        Long articleId = Long.valueOf(request.getParameter("articleId"));
+//        Page<Reply> comments = commentService.findAllByArticleId(articleId, page);
+//
+//        // JSON 형식으로 댓글 목록 반환
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//
+//        String jsonComments = convertCommentsToJson(comments.getContent().stream().toList());
+//        response.getWriter().write(jsonComments);
+//    }
+
     // read comments (GET /comments)
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.debug("게시글에 댓글을 조회합니다.");
+        String pageParam = request.getParameter("page");
+        long page = 1;
+        if (!(pageParam == null || pageParam.isEmpty())) {
+            page = Long.parseLong(pageParam);
+        }
+        logger.debug("게시글에 댓글을 조회합니다. page: {}", page);
+
         Long articleId = Long.valueOf(request.getParameter("articleId"));
-        List<Reply> comments = commentService.findAllByArticleId(articleId);
+        Page<Reply> comments = commentService.findAllByArticleId(articleId, page);
 
         // JSON 형식으로 댓글 목록 반환
         response.setContentType("application/json");
@@ -60,6 +98,14 @@ public class CommentServlet extends HttpServlet {
 
         String jsonComments = convertCommentsToJson(comments);
         response.getWriter().write(jsonComments);
+    }
+
+    private String convertCommentsToJson(Page<Reply> comments) {
+        try {
+            return objectMapper.writeValueAsString(comments);
+        } catch (IOException e) {
+            throw new RuntimeException("Comment Json 파싱 중 오류가 발생했습니다.");
+        }
     }
 
     // delete comment (DELETE /comments/{id})
@@ -114,28 +160,28 @@ public class CommentServlet extends HttpServlet {
         commentService.updateComment(reply, writer);
     }
 
-    private String convertCommentsToJson(List<Reply> comments) {
-        // JSON 라이브러리를 사용하여 List<Reply>를 JSON 문자열로 변환
-        // 예를 들어, Gson 라이브러리를 사용한다면:
-        // Gson gson = new Gson();
-        // return gson.toJson(comments);
-
-        // 여기서는 간단한 예시로 직접 JSON 형식의 문자열을 만들어 반환합니다.
-        StringBuilder jsonBuilder = new StringBuilder("[");
-        for (int i = 0; i < comments.size(); i++) {
-            Reply reply = comments.get(i);
-            jsonBuilder.append("{");
-            jsonBuilder.append("\"id\":").append(reply.getId()).append(",");
-            jsonBuilder.append("\"articleId\":").append(reply.getArticleId()).append(",");
-            jsonBuilder.append("\"writer\":\"").append(reply.getWriter()).append("\",");
-            jsonBuilder.append("\"contents\":\"").append(reply.getContents().replace("\"", "\\\"")).append("\",");
-            jsonBuilder.append("\"createdAt\":\"").append(reply.getCreatedAt()).append("\"");
-            jsonBuilder.append("}");
-            if (i < comments.size() - 1) {
-                jsonBuilder.append(",");
-            }
-        }
-        jsonBuilder.append("]");
-        return jsonBuilder.toString();
-    }
+//    private String convertCommentsToJson(List<Reply> comments) {
+//        // JSON 라이브러리를 사용하여 List<Reply>를 JSON 문자열로 변환
+//        // 예를 들어, Gson 라이브러리를 사용한다면:
+//        // Gson gson = new Gson();
+//        // return gson.toJson(comments);
+//
+//        // 여기서는 간단한 예시로 직접 JSON 형식의 문자열을 만들어 반환합니다.
+//        StringBuilder jsonBuilder = new StringBuilder("[");
+//        for (int i = 0; i < comments.size(); i++) {
+//            Reply reply = comments.get(i);
+//            jsonBuilder.append("{");
+//            jsonBuilder.append("\"id\":").append(reply.getId()).append(",");
+//            jsonBuilder.append("\"articleId\":").append(reply.getArticleId()).append(",");
+//            jsonBuilder.append("\"writer\":\"").append(reply.getWriter()).append("\",");
+//            jsonBuilder.append("\"contents\":\"").append(reply.getContents().replace("\"", "\\\"")).append("\",");
+//            jsonBuilder.append("\"createdAt\":\"").append(reply.getCreatedAt()).append("\"");
+//            jsonBuilder.append("}");
+//            if (i < comments.size() - 1) {
+//                jsonBuilder.append(",");
+//            }
+//        }
+//        jsonBuilder.append("]");
+//        return jsonBuilder.toString();
+//    }
 }

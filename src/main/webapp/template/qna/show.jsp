@@ -54,6 +54,7 @@
                         <div class="qna-comment-slipp-articles" id="commentList">
                             <%-- 댓글 목록이 여기에 동적으로 삽입됩니다 --%>
                         </div>
+                        <button id="loadMoreComments" class="btn btn-primary btn-lg mt-3 mb-3" style="display: none;">댓글 더보기</button>
 
                         <%-- 댓글 작성 폼 --%>
                         <form class="submit-write" id="commentForm">
@@ -71,17 +72,37 @@
 </div>
 
 <script>
-    // 페이지 로드 시 댓글 목록 불러오기
-    loadComments();
+    let currentPage = 1;
+    let totalPages = 1;
+    let totalCommentCount = 0;
 
-    function loadComments() {
-        console.log("댓글을 불러옵니다.");
+    // 페이지 로드 시 댓글 목록 불러오기
+    $(document).ready(function() {
+        loadComments(1);
+
+        $('#loadMoreComments').click(function() {
+            loadComments(currentPage + 1);
+        });
+    });
+
+    function loadComments(page) {
+        console.log("댓글을 불러옵니다. 페이지:", page);
         $.ajax({
-            url: '${pageContext.request.contextPath}/comments?articleId=${article.id}',
+            url: '${pageContext.request.contextPath}/comments',
             type: 'GET',
+            data: {
+                articleId: ${article.id},
+                page: page
+            },
             dataType: 'json',
             success: function(response) {
-                updateCommentList(response);
+                updateCommentList(response.content, page === 1);
+                currentPage = response.numberOfPage;
+                totalPages = response.numberOfEnd;
+                totalCommentCount = response.totalCount;
+
+                updateCommentCount();
+                updateLoadMoreButton();
             },
             error: function(xhr, status, error) {
                 console.error("댓글 로딩 실패:", error);
@@ -95,10 +116,9 @@
         return div.innerHTML;
     }
 
-    function updateCommentList(comments) {
-        var commentHtml = '';
+    function updateCommentList(comments, isFirstPage) {
+        var commentHtml = isFirstPage ? '' : $('#commentList').html();
         comments.forEach(function(comment) {
-            console.log(comment);
             var escapedContents = escapeHtml(comment.contents);
             commentHtml +=
                 '<article class="article" id="answer-' + comment.id + '">' +
@@ -109,7 +129,7 @@
                 '<div class="article-header-text">' +
                 '<a href="/users/' + comment.writer + '" class="article-author-name">' + comment.writer + '</a>' +
                 '<a href="#answer-' + comment.id + '" class="article-header-time" title="퍼머링크">' +
-                comment.createdAt +
+                formatDate(comment.createdAt) +
                 '</a>' +
                 '</div>' +
                 '</div>' +
@@ -118,9 +138,6 @@
                 '</div>' +
                 '<div class="article-util">' +
                 '<ul class="article-util-list">' +
-                // '<li>' +
-                // '<a class="link-modify-article" href="javascript:void(0);" onclick="editComment(' + comment.id + ')">수정</a>' +
-                // '</li>' +
                 '<li>' +
                 '<a href="javascript:void(0);" onclick="deleteComment(' + comment.id + ')">삭제</a>' +
                 '</li>' +
@@ -129,7 +146,22 @@
                 '</article>';
         });
         $('#commentList').html(commentHtml);
-        $('#commentCount').text(comments.length);
+    }
+
+    function updateCommentCount() {
+        $('#commentCount').text(totalCommentCount);
+    }
+
+    function updateLoadMoreButton() {
+        if (currentPage < totalPages && totalCommentCount > 5) {
+            $('#loadMoreComments').show();
+        } else {
+            $('#loadMoreComments').hide();
+        }
+    }
+
+    function formatDate(dateArray) {
+        return new Date(dateArray[0], dateArray[1]-1, dateArray[2], dateArray[3], dateArray[4], dateArray[5]).toLocaleString();
     }
 
     function addComment() {
@@ -145,7 +177,7 @@
             data: JSON.stringify(data),
             success: function(response) {
                 $("#commentContents").val(''); // 입력 필드 초기화
-                loadComments(); // 댓글 목록 새로고침
+                loadComments(1); // 첫 페이지부터 댓글 목록 새로고침
             },
             error: function(xhr, status, error) {
                 showToast("댓글 추가에 실패했습니다.");
@@ -159,7 +191,7 @@
                 url: '${pageContext.request.contextPath}/comments/' + commentId,
                 type: 'DELETE',
                 success: function(response) {
-                    loadComments(); // 댓글 목록 새로고침
+                    loadComments(1); // 첫 페이지부터 댓글 목록 새로고침
                 },
                 error: function(xhr, status, error) {
                     alert("댓글 삭제에 실패했습니다.");

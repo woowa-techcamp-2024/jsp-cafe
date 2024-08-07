@@ -57,6 +57,10 @@ public class ExceptionHandlingFilter implements Filter {
             logger.debug("잘못된 요청입니다. 내용: {}", e.getMessage());
             request.setAttribute("error_message", e.getMessage());
             httpResponse.sendError(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            logger.debug("상태 변경 중 충돌이 발생했습니다. 내용: {}", e.getMessage());
+            request.setAttribute("error_message", e.getMessage());
+            httpResponse.sendError(409, e.getMessage());
         } catch (JdbcException e) {
             logger.debug("데이터베이스 접근 중 에러가 발생했습니다. 내용: {}", e.getMessage());
             e.printStackTrace();

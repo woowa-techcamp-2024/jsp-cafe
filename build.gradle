@@ -29,6 +29,8 @@ dependencies {
     // web
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 
     // dev
     implementation 'ch.qos.logback:logback-classic:1.5.6'

@@ -29,13 +29,34 @@ private static final Logger logger = LoggerFactory.getLogger(DatabaseConnector.c
         }
     }
 
-    public void execute(String query, List<String> values) {
+    public void execute(String query, List<Object> values) {
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             for (int i = 0; i < values.size(); i++) {
-                preparedStatement.setString(i + 1, values.get(i));
+                Object value = values.get(i);
+                if (value instanceof Integer integer) {
+                    preparedStatement.setInt(i + 1, integer);
+                } else if (value instanceof Long l) {
+                    preparedStatement.setLong(i + 1, l);
+                } else if (value instanceof String s) {
+                    preparedStatement.setString(i + 1, s);
+                } else if (value instanceof Double d) {
+                    preparedStatement.setDouble(i + 1, d);
+                } else if (value instanceof Float f) {
+                    preparedStatement.setFloat(i + 1, f);
+                } else if (value instanceof Boolean b) {
+                    preparedStatement.setBoolean(i + 1, b);
+                } else if (value instanceof java.sql.Date d) {
+                    preparedStatement.setDate(i + 1, d);
+                } else if (value instanceof java.sql.Timestamp t) {
+                    preparedStatement.setTimestamp(i + 1, t);
+                } else if (value instanceof java.sql.Time t) {
+                    preparedStatement.setTime(i + 1, t);
+                } else {
+                    preparedStatement.setObject(i + 1, value);
+                }
             }
             preparedStatement.execute();
         } catch (SQLException e) {
@@ -55,13 +76,34 @@ private static final Logger logger = LoggerFactory.getLogger(DatabaseConnector.c
         }
     }
 
-    public <T> T executeQuery(String query, List<String> values, Function<ResultSet, T> mapper) {
+    public <T> T executeQuery(String query, List<Object> values, Function<ResultSet, T> mapper) {
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
         ) {
             for (int i = 0; i < values.size(); i++) {
-                preparedStatement.setString(i + 1, values.get(i));
+                Object value = values.get(i);
+                if (value instanceof Integer integer) {
+                    preparedStatement.setInt(i + 1, integer);
+                } else if (value instanceof Long l) {
+                    preparedStatement.setLong(i + 1, l);
+                } else if (value instanceof String s) {
+                    preparedStatement.setString(i + 1, s);
+                } else if (value instanceof Double d) {
+                    preparedStatement.setDouble(i + 1, d);
+                } else if (value instanceof Float f) {
+                    preparedStatement.setFloat(i + 1, f);
+                } else if (value instanceof Boolean b) {
+                    preparedStatement.setBoolean(i + 1, b);
+                } else if (value instanceof java.sql.Date d) {
+                    preparedStatement.setDate(i + 1, d);
+                } else if (value instanceof java.sql.Timestamp t) {
+                    preparedStatement.setTimestamp(i + 1, t);
+                } else if (value instanceof java.sql.Time t) {
+                    preparedStatement.setTime(i + 1, t);
+                } else {
+                    preparedStatement.setObject(i + 1, value);
+                }
             }
             ResultSet resultSet = preparedStatement.executeQuery();
             return mapper.apply(resultSet);

@@ -2,10 +2,10 @@ package com.woowa.hyeonsik.application.service;
 
 import com.woowa.hyeonsik.application.dao.ArticleDao;
 import com.woowa.hyeonsik.application.dao.CommentDao;
+import com.woowa.hyeonsik.application.domain.Page;
 import com.woowa.hyeonsik.application.domain.Reply;
 
 import com.woowa.hyeonsik.application.exception.AuthorizationException;
-import java.util.List;
 
 public class CommentService {
     private final CommentDao commentDao;
@@ -22,10 +22,10 @@ public class CommentService {
         commentDao.save(reply);
     }
 
-    // 어떤 게시글에 댓글을 모두 읽어온다.
-    public List<Reply> findAllByArticleId(long articleId) {
+    // 어떤 게시글에 댓글을 페이지 단위로 읽어온다.
+    public Page<Reply> findAllByArticleId(long articleId, long page) {
         validateArticle(articleId);
-        return commentDao.findAllByArticleId(articleId);
+        return commentDao.findAllByArticleId(articleId, page);
     }
 
     // 어떤 게시글에 댓글을 수정한다.
