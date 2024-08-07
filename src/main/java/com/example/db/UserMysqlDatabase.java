@@ -1,5 +1,7 @@
 package com.example.db;
 
+import static com.example.utils.Constant.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,10 +15,6 @@ import com.example.entity.User;
 import com.example.exception.BaseException;
 
 public class UserMysqlDatabase implements UserDatabase {
-
-	private static final String URL = "jdbc:mysql://localhost:3306/codesquad";
-	private static final String USER = "root";
-	private static final String PASSWORD = "root";
 
 	@Override
 	public String insert(User user) {

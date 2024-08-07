@@ -1,13 +1,5 @@
 package com.example.context;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Scanner;
-
 import com.example.db.ArticleDatabase;
 import com.example.db.ArticleMysqlDatabase;
 import com.example.db.ReplyDatabase;
@@ -38,31 +30,10 @@ public class ApplicationInitializer implements ServletContextListener {
 			.setAttribute("userService", new UserService(userDatabase, articleDatabase, replyDatabase));
 		sce.getServletContext().setAttribute("articleService", new ArticleService(articleDatabase, replyDatabase));
 		sce.getServletContext().setAttribute("replyService", new ReplyService(replyDatabase));
-		String url = "jdbc:mysql://localhost:3306/codesquad";
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			throw BaseException.serverException();
-		}
-
-		try (
-			Connection connection = DriverManager.getConnection(url, "root", "root");
-			Statement statement = connection.createStatement();
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("schema.sql")) {
-			if (inputStream == null) {
-				throw BaseException.serverException();
-			}
-			Scanner scanner = new Scanner(inputStream);
-			scanner.useDelimiter(";");
-			while (scanner.hasNext()) {
-				String sql = scanner.next().trim();
-				if (!sql.isEmpty()) {
-					statement.execute(sql);
-				}
-			}
-			scanner.close();
-		} catch (SQLException | IOException e) {
 			throw BaseException.serverException();
 		}
 	}

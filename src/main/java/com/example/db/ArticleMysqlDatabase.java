@@ -1,5 +1,7 @@
 package com.example.db;
 
+import static com.example.utils.Constant.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,10 +18,6 @@ import com.example.entity.Article;
 import com.example.exception.BaseException;
 
 public class ArticleMysqlDatabase implements ArticleDatabase {
-
-	private static final String URL = "jdbc:mysql://localhost:3306/codesquad";
-	private static final String USER = "root";
-	private static final String PASSWORD = "root";
 
 	@Override
 	public Long insert(Article article) {
@@ -71,11 +69,41 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 
 	@Override
 	public List<Article> findAll() {
-		String sql = "select * from article where deleted=false";
+		String sql = "select * from article where deleted=false limit 10";
 		try (
 			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 		) {
+			ResultSet rs = pstmt.executeQuery();
+			List<Article> articles = new ArrayList<>();
+			while (rs.next()) {
+				Long id = rs.getLong("id");
+				String userId = rs.getString("userId");
+				String title = rs.getString("title");
+				String contents = rs.getString("contents");
+				LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
+				String userName = rs.getString("userName");
+				articles.add(new Article(id, userId, title, contents, createdAt, false, userName));
+			}
+			return articles;
+		} catch (SQLException e) {
+			throw BaseException.serverException();
+		}
+	}
+
+	@Override
+	public List<Article> findAllWithPagination(Long pageNumber) {
+		String sql = """
+			select *
+				from article as a
+				join (select id from article where deleted = false order by createdAt desc, id limit ?,15) as temp
+			on temp.id = a.id
+			""";
+		try (
+			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+		) {
+			pstmt.setLong(1, (pageNumber - 1) * 15);
 			ResultSet rs = pstmt.executeQuery();
 			List<Article> articles = new ArrayList<>();
 			while (rs.next()) {
@@ -135,6 +163,23 @@ public class ArticleMysqlDatabase implements ArticleDatabase {
 			pstmt.setString(1, updateName);
 			pstmt.setString(2, userId);
 			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw BaseException.serverException();
+		}
+	}
+
+	@Override
+	public long getCount() {
+		String sql = "select count(*) from article";
+		try (
+			Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			PreparedStatement pstmt = conn.prepareStatement(sql)
+		) {
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getLong(1);
+			}
+			return 0;
 		} catch (SQLException e) {
 			throw BaseException.serverException();
 		}

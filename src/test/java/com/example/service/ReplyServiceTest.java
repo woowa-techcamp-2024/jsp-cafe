@@ -43,10 +43,10 @@ class ReplyServiceTest {
 		// given
 		Long articleId = 1L;
 		Reply reply = new Reply(1L, "content", LocalDateTime.now(), false, articleId, "userId", "userName");
-		when(replyDatabase.findByArticleId(articleId)).thenReturn(List.of(reply));
+		when(replyDatabase.findByArticleIdWithPagination(anyLong(), anyLong(), any(LocalDateTime.class))).thenReturn(List.of(reply));
 
 		// when
-		List<Reply> replies = replyService.findAll(articleId);
+		List<Reply> replies = replyService.findAll(articleId, 1L, LocalDateTime.MIN);
 
 		// then
 		assertThat(replies).hasSize(1);

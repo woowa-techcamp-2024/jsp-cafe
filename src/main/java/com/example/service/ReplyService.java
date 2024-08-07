@@ -1,5 +1,6 @@
 package com.example.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,8 @@ public class ReplyService {
 		return replyDatabase.countByArticleId(articleId);
 	}
 
-	public List<Reply> findAll(Long articleId) {
-		return replyDatabase.findByArticleId(articleId);
+	public List<Reply> findAll(Long articleId, Long lastReplyId, LocalDateTime lastCreatedAt) {
+		return replyDatabase.findByArticleIdWithPagination(articleId, lastReplyId, lastCreatedAt);
 	}
 
 	public Long addReply(Reply reply) {

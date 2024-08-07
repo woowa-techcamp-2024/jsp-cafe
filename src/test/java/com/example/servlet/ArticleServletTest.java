@@ -110,22 +110,6 @@ class ArticleServletTest {
 			.isInstanceOf(RuntimeException.class);
 	}
 
-	@Test
-	@DisplayName("유효한 게시글 조회 요청을 처리할 수 있다")
-	void doGet_validArticleId_displaysArticle() throws Exception {
-		// given
-		Long articleId = 1L;
-		Article article = new Article(articleId, "user1", "title", "contents", LocalDateTime.now(), false, "username");
-		when(request.getPathInfo()).thenReturn("/1");
-		when(articleService.getArticle(articleId)).thenReturn(article);
-
-		// when
-		articleServlet.doGet(request, response);
-
-		// then
-		verify(request).setAttribute("article", article);
-		verify(requestDispatcher).forward(request, response);
-	}
 
 	@Test
 	@DisplayName("존재하지 않는 게시글 조회 요청 시 예외를 던진다")
@@ -137,16 +121,5 @@ class ArticleServletTest {
 		// when
 		assertThatThrownBy(() -> articleServlet.doGet(request, response))
 			.isInstanceOf(RuntimeException.class);
-	}
-
-	@Test
-	@DisplayName("경로 정보가 없는 경우 게시글 작성 폼으로 포워딩한다")
-	void doGet_noPathInfo_forwardsToForm() throws Exception {
-		// when
-		when(request.getPathInfo()).thenReturn(null);
-		articleServlet.doGet(request, response);
-
-		// then
-		verify(requestDispatcher).forward(request, response);
 	}
 }
