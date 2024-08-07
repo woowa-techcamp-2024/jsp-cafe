@@ -43,9 +43,14 @@ public class DataSourceConfig {
                     "contents TEXT, " +
                     "reply_count BIGINT, " +
                     "is_deleted BOOLEAN, " +
-                    "create_at TIMESTAMP, " +
+                    "created_at TIMESTAMP, " +
                     "modified_at TIMESTAMP, " +
-                    "index idx_article_is_deleted (is_deleted))";
+                    "INDEX idx_article_is_deleted (is_deleted), " +
+                    "INDEX articles_created_at_index (created_at), " +
+                    "INDEX articles_modified_at_index (modified_at), " +
+                    "INDEX articles_reply_count_index (reply_count), " +
+                    "INDEX articles_title_index (title), " +
+                    "INDEX articles_writer_id_index (writer_id));";
 
             String dropReplyTable = "DROP TABLE IF EXISTS replies";
             String createReplyTable = "CREATE TABLE IF NOT EXISTS replies (" +
@@ -54,16 +59,17 @@ public class DataSourceConfig {
                     "writer_id VARCHAR(255), " +
                     "contents TEXT, " +
                     "is_deleted BOOLEAN, " +
-                    "create_at TIMESTAMP, " +
+                    "created_at TIMESTAMP, " +
                     "modified_at TIMESTAMP, " +
-                    "index idx_reply_is_deleted (is_deleted))";
+                    "index idx_reply_is_deleted (is_deleted), " +
+                    "index replies_article_id_index (article_id));";
 
             try (var connection = dataSource.getConnection()) {
-                connection.prepareStatement(dropMemberTable).execute();
+//                connection.prepareStatement(dropMemberTable).execute();
                 connection.prepareStatement(createMemberTable).execute();
-                connection.prepareStatement(dropArticleTable).execute();
+//                connection.prepareStatement(dropArticleTable).execute();
                 connection.prepareStatement(createArticleTable).execute();
-                connection.prepareStatement(dropReplyTable).execute();
+//                connection.prepareStatement(dropReplyTable).execute();
                 connection.prepareStatement(createReplyTable).execute();
             } catch (final Exception e) {
                 throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package com.woowa.cafe.repository.qna;
 
 import com.woowa.cafe.domain.Article;
+import com.woowa.cafe.dto.article.ArticleQueryDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,7 @@ public class JdbcArticleRepository implements ArticleRepository {
 
     @Override
     public Long save(final Article article) {
-        String sql = "INSERT INTO articles (writer_id, title, contents, reply_count, is_deleted, create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (writer_id, title, contents, reply_count, is_deleted, created_at, modified_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, article.getWriterId());
@@ -60,7 +61,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                             resultSet.getString("title"),
                             resultSet.getString("contents"),
                             resultSet.getLong("reply_count"),
-                            resultSet.getTimestamp("create_at").toLocalDateTime(),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
                             resultSet.getTimestamp("modified_at").toLocalDateTime()));
                 }
             }
@@ -68,6 +69,31 @@ public class JdbcArticleRepository implements ArticleRepository {
             throw new RuntimeException(e);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<ArticleQueryDto> findByPage(final int page, final int size) {
+        List<ArticleQueryDto> articleDtos = new ArrayList<>();
+        String sql = "SELECT article_id, title, modified_at, writer_id, reply_count FROM articles WHERE is_deleted = false ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, size);
+            pstmt.setInt(2, (page - 1) * size);
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                while (resultSet.next()) {
+                    ArticleQueryDto articleDto = new ArticleQueryDto(resultSet.getLong("article_id"),
+                            resultSet.getString("title"),
+                            resultSet.getTimestamp("modified_at").toLocalDateTime().toString(),
+                            resultSet.getString("writer_id"),
+                            resultSet.getLong("reply_count"));
+                    articleDtos.add(articleDto);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return articleDtos;
     }
 
     @Override
@@ -83,7 +109,7 @@ public class JdbcArticleRepository implements ArticleRepository {
                         resultSet.getString("title"),
                         resultSet.getString("contents"),
                         resultSet.getLong("reply_count"),
-                        resultSet.getTimestamp("create_at").toLocalDateTime(),
+                        resultSet.getTimestamp("created_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime());
                 articles.add(article);
             }
@@ -122,5 +148,22 @@ public class JdbcArticleRepository implements ArticleRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public int countByPage() {
+        String sql = "SELECT COUNT(article_id) FROM articles WHERE is_deleted = false ORDER BY created_at desc";
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql);) {
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
     }
 }

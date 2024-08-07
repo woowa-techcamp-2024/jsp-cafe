@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,15 +21,15 @@ public class JdbcReplyRepository implements ReplyRepository {
 
     @Override
     public Long save(Reply reply) {
-        String sql = "INSERT INTO replies (article_id, writer_id, contents, is_deleted, create_at, modified_at) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO replies (article_id, writer_id, contents, is_deleted, created_at, modified_at) VALUES (?, ?, ?, ?, ?, ?)";
         try (var connection = dataSource.getConnection();
              var pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setLong(1, reply.getArticleId());
             pstmt.setString(2, reply.getWriterId());
             pstmt.setString(3, reply.getContents());
             pstmt.setBoolean(4, false);
-            pstmt.setObject(5, reply.getCreateAt());
-            pstmt.setObject(6, reply.getUpdateAt());
+            pstmt.setObject(5, reply.getFormattedCreatedAt());
+            pstmt.setObject(6, reply.getFormattedUpdatedAt());
             pstmt.executeUpdate();
 
             try (ResultSet resultSet = pstmt.getGeneratedKeys()) {
@@ -56,7 +57,7 @@ public class JdbcReplyRepository implements ReplyRepository {
                             resultSet.getLong("article_id"),
                             resultSet.getString("writer_id"),
                             resultSet.getString("contents"),
-                            resultSet.getTimestamp("create_at").toLocalDateTime(),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
                             resultSet.getTimestamp("modified_at").toLocalDateTime()));
                 }
             }
@@ -80,7 +81,33 @@ public class JdbcReplyRepository implements ReplyRepository {
                             resultSet.getLong("article_id"),
                             resultSet.getString("writer_id"),
                             resultSet.getString("contents"),
-                            resultSet.getTimestamp("create_at").toLocalDateTime(),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
+                            resultSet.getTimestamp("modified_at").toLocalDateTime()));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return replies;
+    }
+
+    @Override
+    public List<Reply> findByPage(final Long articleId, final int index, final int size) {
+        List<Reply> replies = new ArrayList<>();
+        String sql = "SELECT * FROM replies WHERE article_id = ? AND reply_id > ? AND is_deleted = false ORDER BY created_at asc LIMIT ?";
+        try (var connection = dataSource.getConnection();
+             var pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, articleId);
+            pstmt.setInt(2, index);
+            pstmt.setInt(3, size);
+
+            try (var resultSet = pstmt.executeQuery()) {
+                while (resultSet.next()) {
+                    replies.add(new Reply(resultSet.getLong("reply_id"),
+                            resultSet.getLong("article_id"),
+                            resultSet.getString("writer_id"),
+                            resultSet.getString("contents"),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
                             resultSet.getTimestamp("modified_at").toLocalDateTime()));
                 }
             }
@@ -102,7 +129,7 @@ public class JdbcReplyRepository implements ReplyRepository {
                         resultSet.getLong("article_id"),
                         resultSet.getString("writer_id"),
                         resultSet.getString("contents"),
-                        resultSet.getTimestamp("create_at").toLocalDateTime(),
+                        resultSet.getTimestamp("created_at").toLocalDateTime(),
                         resultSet.getTimestamp("modified_at").toLocalDateTime()));
             }
         } catch (SQLException e) {
@@ -117,7 +144,7 @@ public class JdbcReplyRepository implements ReplyRepository {
         try (var connection = dataSource.getConnection();
              var pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, reply.getContents());
-            pstmt.setObject(2, reply.getUpdateAt());
+            pstmt.setObject(2, Timestamp.valueOf(reply.getUpdatedAt()));
             pstmt.setLong(3, reply.getId());
 
             int updatedRows = pstmt.executeUpdate();

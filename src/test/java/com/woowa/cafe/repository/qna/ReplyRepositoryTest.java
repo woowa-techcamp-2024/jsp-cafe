@@ -31,7 +31,7 @@ class ReplyRepositoryTest {
                 "writer_id VARCHAR(255), " +
                 "contents TEXT, " +
                 "is_deleted BOOLEAN, " +
-                "create_at TIMESTAMP, " +
+                "created_at TIMESTAMP, " +
                 "modified_at TIMESTAMP, " +
                 "index idx_reply_is_deleted (is_deleted))";
 
@@ -181,4 +181,19 @@ class ReplyRepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("댓글 페이지 조회")
+    void findByPage() {
+        // given
+        for (int i = 0; i < 10; i++) {
+            Reply reply = new Reply(1L, "writer", "contents");
+            replyRepository.save(reply);
+        }
+
+        // when
+        List<Reply> replies = replyRepository.findByPage(1L, 1, 5);
+
+        // then
+        assertEquals(5, replies.size());
+    }
 }

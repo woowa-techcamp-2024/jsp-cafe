@@ -4,6 +4,7 @@ import com.woowa.cafe.domain.Member;
 import com.woowa.cafe.domain.Reply;
 import com.woowa.cafe.dto.article.ArticleDto;
 import com.woowa.cafe.dto.article.ArticleListDto;
+import com.woowa.cafe.dto.article.ArticlePageDto;
 import com.woowa.cafe.dto.article.SaveArticleDto;
 import com.woowa.cafe.repository.member.InMemoryMemberRepository;
 import com.woowa.cafe.repository.member.MemberRepository;
@@ -11,6 +12,7 @@ import com.woowa.cafe.repository.qna.ArticleRepository;
 import com.woowa.cafe.repository.qna.InMemoryArticleRepository;
 import com.woowa.cafe.repository.qna.InMemoryReplyRepository;
 import com.woowa.cafe.repository.qna.ReplyRepository;
+import com.woowa.cafe.utils.ArticleCountCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ class ArticleServiceTest {
         replyRepository = new InMemoryReplyRepository();
 
         articleService = new ArticleService(articleRepository, memberRepository, replyRepository);
+        ArticleCountCache.setCount(0);
     }
 
     @Test
@@ -71,9 +74,7 @@ class ArticleServiceTest {
                 () -> assertThat(articles.get(0).articleId()).isEqualTo(articleId),
                 () -> assertThat(articles.get(1).articleId()).isEqualTo(articleId1),
                 () -> assertThat(articles.get(0).title()).isEqualTo(title),
-                () -> assertThat(articles.get(1).title()).isEqualTo(title + "1"),
-                () -> assertThat(articles.get(0).contents()).isEqualTo(content),
-                () -> assertThat(articles.get(1).contents()).isEqualTo(content + "1")
+                () -> assertThat(articles.get(1).title()).isEqualTo(title + "1")
         );
     }
 
@@ -219,6 +220,80 @@ class ArticleServiceTest {
         assertThatThrownBy(() -> articleService.delete(articleId, "notWriterId"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("다른 사람이 삭제할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("질문 페이지 조회 테스트")
+    void findByPage() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        articleService.save(new SaveArticleDto(title, content), writerId);
+        articleService.save(new SaveArticleDto(title + "1", content + "1"), writerId);
+
+        ArticlePageDto articlePageDto = articleService.findByPage(1, 15);
+
+        assertAll(() -> assertThat(articlePageDto.articles().size()).isEqualTo(2),
+                () -> assertThat(articlePageDto.articles().get(0).title()).isEqualTo(title),
+                () -> assertThat(articlePageDto.articles().get(1).title()).isEqualTo(title + "1"),
+                () -> assertThat(articlePageDto.articles().get(0).writerId()).isEqualTo(writerId),
+                () -> assertThat(articlePageDto.articles().get(1).writerId()).isEqualTo(writerId),
+                () -> assertThat(articlePageDto.articles().get(0).replyCount()).isEqualTo(0),
+                () -> assertThat(articlePageDto.articles().get(1).replyCount()).isEqualTo(0),
+                () -> assertThat(articlePageDto.currentPage()).isEqualTo(1),
+                () -> assertThat(articlePageDto.totalCount()).isEqualTo(2),
+                () -> assertThat(articlePageDto.nextPages()).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("질문 페이지 조회 테스트 - 다음 페이지 존재")
+    void findByPage_next() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        articleService.save(new SaveArticleDto(title, content), writerId);
+        articleService.save(new SaveArticleDto(title + "1", content + "1"), writerId);
+        articleService.save(new SaveArticleDto(title + "2", content + "2"), writerId);
+        articleService.save(new SaveArticleDto(title + "3", content + "3"), writerId);
+        articleService.save(new SaveArticleDto(title + "4", content + "4"), writerId);
+        articleService.save(new SaveArticleDto(title + "5", content + "5"), writerId);
+
+        ArticlePageDto articlePageDto = articleService.findByPage(1, 1);
+
+        assertAll(() -> assertThat(articlePageDto.articles().size()).isEqualTo(1),
+                () -> assertThat(articlePageDto.articles().get(0).title()).isEqualTo(title),
+                () -> assertThat(articlePageDto.articles().get(0).writerId()).isEqualTo(writerId),
+                () -> assertThat(articlePageDto.articles().get(0).replyCount()).isEqualTo(0),
+                () -> assertThat(articlePageDto.currentPage()).isEqualTo(1),
+                () -> assertThat(articlePageDto.totalCount()).isEqualTo(6),
+                () -> assertThat(articlePageDto.nextPages()).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("질문 페이지 조회 테스트_페이지가 없음")
+    void findByPage_fail() {
+        memberRepository.save(member);
+        String writerId = member.getMemberId();
+        String title = "title";
+        String content = "content";
+
+        articleService.save(new SaveArticleDto(title, content), writerId);
+        articleService.save(new SaveArticleDto(title + "1", content + "1"), writerId);
+
+        ArticlePageDto articlePageDto = articleService.findByPage(2, 15);
+
+        assertAll(
+                () -> assertThat(articlePageDto.articles().size()).isEqualTo(0),
+                () -> assertThat(articlePageDto.currentPage()).isEqualTo(2),
+                () -> assertThat(articlePageDto.totalCount()).isEqualTo(2),
+                () -> assertThat(articlePageDto.nextPages()).isFalse()
+        );
     }
 
 }

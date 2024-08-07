@@ -10,6 +10,7 @@ import com.woowa.cafe.repository.qna.ReplyRepository;
 import com.woowa.cafe.service.ArticleService;
 import com.woowa.cafe.service.MemberService;
 import com.woowa.cafe.service.ReplyService;
+import com.woowa.cafe.utils.ArticleCountCache;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -25,6 +26,7 @@ public class AppContextListener implements ServletContextListener {
         DataSource dataSource = getDataSource(sce);
         registryMemberService(sce, dataSource);
         registryArticleService(sce, dataSource);
+        ArticleCountCache.setCount(((ArticleRepository) sce.getServletContext().getAttribute("articleRepository")).countByPage());
     }
 
     private static DataSource getDataSource(final ServletContextEvent sce) {
@@ -54,7 +56,7 @@ public class AppContextListener implements ServletContextListener {
         sce.getServletContext().setAttribute("articleService", articleService);
         sce.getServletContext().setAttribute("articleRepository", articleRepository);
 
-        ReplyService replyService = new ReplyService(articleRepository, replyRepository);
+        ReplyService replyService = new ReplyService(articleRepository, replyRepository, memberRepository);
 
         sce.getServletContext().setAttribute("replyService", replyService);
         sce.getServletContext().setAttribute("replyRepository", replyRepository);

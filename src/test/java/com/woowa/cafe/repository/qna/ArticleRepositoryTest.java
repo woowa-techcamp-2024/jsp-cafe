@@ -31,7 +31,7 @@ class ArticleRepositoryTest {
                 "contents TEXT, " +
                 "reply_count BIGINT, " +
                 "is_deleted BOOLEAN, " +
-                "create_at TIMESTAMP, " +
+                "created_at TIMESTAMP, " +
                 "modified_at TIMESTAMP, " +
                 "index idx_article_is_deleted (is_deleted))";
 
@@ -144,5 +144,38 @@ class ArticleRepositoryTest {
 
         // then
         assertEquals(size, 3);
+    }
+
+    @Test
+    @DisplayName("페이지 별 게시글을 조회할 수 있다.")
+    void findByPage() {
+        // given
+        Article article1 = new Article("title1", "contents1", "writer1");
+        Article article2 = new Article("title2", "contents2", "writer2");
+        Article article3 = new Article("title3", "contents3", "writer3");
+
+        articleRepository.save(article1);
+        articleRepository.save(article2);
+        articleRepository.save(article3);
+
+        // when
+        int size = articleRepository.findByPage(1, 2).size();
+
+        // then
+        assertEquals(size, 2);
+    }
+
+    @Test
+    @DisplayName("게시글을 센다.")
+    void countReply() {
+        // given
+        Article article = new Article("title", "contents", "writer");
+        Long savedArticle = articleRepository.save(article);
+
+        // when
+        int count = articleRepository.countByPage();
+
+        // then
+        assertEquals(count, 1);
     }
 }

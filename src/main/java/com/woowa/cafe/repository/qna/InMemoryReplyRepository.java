@@ -38,6 +38,16 @@ public class InMemoryReplyRepository implements ReplyRepository {
     }
 
     @Override
+    public List<Reply> findByPage(final Long articleId, final int index, final int size) {
+        return replies.values()
+                .stream()
+                .filter(reply -> reply.getArticleId().equals(articleId))
+                .skip(index - 1)
+                .limit(size)
+                .toList();
+    }
+
+    @Override
     public List<Reply> findAll() {
         return replies.values()
                 .stream()
