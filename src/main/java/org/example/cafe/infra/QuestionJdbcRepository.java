@@ -13,7 +13,7 @@ public class QuestionJdbcRepository implements QuestionRepository {
 
     private static final String INSERT = "INSERT INTO QUESTION (title, content, writer) VALUES (?, ?, ?)";
     private static final String SELECT = """
-            select * from Question as q1 JOIN (
+            select * from QUESTION as q1 JOIN (
                 select question_id from QUESTION
                 WHERE is_deleted = false
                 ORDER BY created_at DESC 
