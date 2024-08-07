@@ -26,6 +26,8 @@ dependencies {
     implementation('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0')
     implementation('org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1')
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+
 
     implementation 'mysql:mysql-connector-java:8.0.32'
 

@@ -1,6 +1,9 @@
 package codesqaud.app.dto;
 
+import codesqaud.app.model.Reply;
+
 import java.util.List;
+import java.util.Objects;
 
 public class ArticleDto {
     private final Long id;
@@ -9,14 +12,16 @@ public class ArticleDto {
     private final String createdAt;
     private final UserDto author;
     private final Boolean activate;
+    private final Long replyCount;
     private boolean isMine;
 
-    public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author, Boolean activate) {
+    public ArticleDto(Long id, String title, String contents, String createdAt, UserDto author, Long replyCount, Boolean activate) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.createdAt = createdAt;
         this.author = author;
+        this.replyCount = replyCount;
         this.activate = activate;
     }
 
@@ -48,6 +53,10 @@ public class ArticleDto {
         return isMine;
     }
 
+    public Long getReplyCount() {
+        return replyCount;
+    }
+
     public void setMine(Long loginUserId) {
         this.isMine = loginUserId.equals(author.getId());
     }
@@ -62,6 +71,7 @@ public class ArticleDto {
         private String contents;
         private String createdAt;
         private UserDto author;
+        private long replyCount;
         private Boolean activate;
 
         private Builder() {
@@ -97,8 +107,26 @@ public class ArticleDto {
             return this;
         }
 
-        public ArticleDto build() {
-            return new ArticleDto(id, title, contents, createdAt, author, activate);
+        public Builder replyCount(long replyCount) {
+            this.replyCount = replyCount;
+            return this;
         }
+
+        public ArticleDto build() {
+            return new ArticleDto(id, title, contents, createdAt, author, replyCount, activate);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ArticleDto that = (ArticleDto) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

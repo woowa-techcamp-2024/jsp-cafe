@@ -81,4 +81,15 @@ public class InMemoryArticleDao implements ArticleDao {
     public List<ArticleDto> findAllAsDto() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public long count() {
+        throw new UnsupportedOperationException();
+
+    }
+
+    @Override
+    public List<ArticleDto> findPage(int page, int size) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -5,7 +5,7 @@ import codesqaud.app.dao.article.ArticleDao;
 import codesqaud.app.dao.reply.ReplyDao;
 import codesqaud.app.db.TransactionManager;
 import codesqaud.app.dto.ArticleDto;
-import codesqaud.app.dto.ReplyDto;
+import codesqaud.app.dto.PageDto;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.model.Article;
 import codesqaud.app.model.Reply;
@@ -38,10 +38,30 @@ public class ArticleService {
     }
 
     public void handleArticleList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<ArticleDto> articles = articleDao.findAllAsDto();
+        String pageParameter = req.getParameter("page");
+        int page = 0;
+        if (pageParameter != null) {
+            page = Integer.parseInt(pageParameter) - 1;
+        }
 
-        req.setAttribute("articles", articles);
-        req.setAttribute("articleSize", articles.size());
+        String sizeParameter = req.getParameter("size");
+        int size = 15;
+        if (sizeParameter != null) {
+            size = Math.min(Integer.parseInt(sizeParameter), 30);
+        }
+
+        long totalArticleCount = articleDao.count();
+        List<ArticleDto> articles = articleDao.findPage(page, size);
+        int totalPageCount = (int) Math.ceil((double) totalArticleCount / size);
+
+        PageDto<ArticleDto> articlePage = PageDto.<ArticleDto>builder()
+                .elements(articles)
+                .totalElementsCount(totalArticleCount)
+                .totalPage(totalPageCount)
+                .build();
+
+
+        req.setAttribute("articlePage", articlePage);
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(INDEX_JSP);
         requestDispatcher.forward(req, resp);
     }
@@ -69,10 +89,6 @@ public class ArticleService {
         );
         article.setMine(loginUser.getId());
         req.setAttribute("article", article);
-
-        List<ReplyDto> replies = replyDao.findByArticleIdAsDto(article.getId());
-        replies.forEach(replyDto -> replyDto.setMine(loginUser.getId()));
-        req.setAttribute("replies", replies);
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(SHOW_JSP);
         requestDispatcher.forward(req, resp);

@@ -1,6 +1,5 @@
 package codesqaud.app.servlet;
 
-import codesqaud.app.AuthenticationManager;
 import codesqaud.app.exception.HttpException;
 import codesqaud.app.service.ArticleService;
 import codesqaud.app.service.ReplyService;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 @WebServlet(urlPatterns = {"/qna/*", ""})
@@ -65,6 +63,13 @@ public class QnaServlet extends HttpServlet {
         if (matcher.matches()) {
             Long id = Long.parseLong(matcher.group(1));
             articleService.handleArticleDetails(req, resp, id);
+            return;
+        }
+
+        matcher = REPLY_BASE_PATTERN.matcher(req.getRequestURI());
+        if (matcher.matches()) {
+            Long articleId = Long.parseLong(matcher.group(1));
+            replyService.handleGetReplies(req, resp, articleId);
             return;
         }
 

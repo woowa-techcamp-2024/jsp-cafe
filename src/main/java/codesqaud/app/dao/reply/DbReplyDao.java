@@ -90,7 +90,10 @@ public class DbReplyDao implements ReplyDao {
 
     @Override
     public List<Reply> findAll() {
-        String sql = "SELECT * FROM replies WHERE activate = true";
+        String sql = """
+        SELECT * FROM replies WHERE activate = true
+        ORDER BY id DESC
+        """;
         return jdbcTemplate.query(sql, REPLY_ROW_MAPPER);
     }
 
@@ -133,8 +136,33 @@ public class DbReplyDao implements ReplyDao {
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM replies JOIN users ON replies.author_id = users.id
                 WHERE replies.article_id = ? AND replies.activate = true
+                ORDER BY replies.id DESC
                 """;
 
         return jdbcTemplate.query(sql, REPLY_DTO_ROW_MAPPER, articleId);
+    }
+
+    @Override
+    public List<ReplyDto> findPageWithPointer(Long articleId, Long pointer, int size) {
+        String sql = """
+                SELECT replies.id, replies.contents, replies.author_id, replies.created_at, replies.activate,
+                users.user_id as user_id, users.name as user_name, users.email as user_email
+                FROM replies JOIN users ON replies.author_id = users.id
+                WHERE replies.article_id = ? AND replies.id < ? AND replies.activate = true
+                ORDER BY replies.id DESC
+                LIMIT ?
+                """;
+
+        return jdbcTemplate.query(sql, REPLY_DTO_ROW_MAPPER, articleId, pointer, size);
+    }
+
+    @Override
+    public long count(Long articleId) {
+        String sql = """
+                SELECT COUNT(*) FROM replies
+                WHERE article_id = ? AND activate = true;
+                """;
+
+        return Long.parseLong(jdbcTemplate.queryForObject(sql, articleId).toString());
     }
 }

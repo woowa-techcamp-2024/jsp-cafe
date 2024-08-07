@@ -10,14 +10,14 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <c:if test="${articleSize eq 0}">
+                <c:if test="${articlePage.totalElementsCount eq 0}">
                     <div class="wrap">
                         <div class="main">
                             <p>게시물이 존재하지 않습니다.</p>
                         </div>
                     </div>
                 </c:if>
-                <c:forEach var="article" items="${articles}" varStatus="status">
+                <c:forEach var="article" items="${articlePage.elements}" varStatus="status">
                     <li>
                         <div class="wrap">
                             <div class="main">
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="reply" title="댓글">
                                     <i class="icon-reply"></i>
-                                    <span class="point"><c:out value="${article.id}"/></span>
+                                    <span class="point">${article.replyCount}</span>
                                 </div>
                             </div>
                         </div>
@@ -44,14 +44,7 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
-                    <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                    <ul id="pagination" class="pagination center-block" style="display:inline-block;">
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
@@ -140,5 +133,46 @@
 -->
 
 <%@include file="share/footer.jsp" %>
+
+<script>
+    var currentPage = ${param.page != null ? param.page : 1};
+    var totalPages = ${articlePage.totalPage};
+
+    document.addEventListener('DOMContentLoaded', function() {
+        createPagination(currentPage, totalPages);
+    });
+
+    function createPagination(currentPage, totalPages) {
+        var ul = document.getElementById('pagination');
+        ul.innerHTML = '';
+
+        var startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+        var endPage = Math.min(startPage + 4, totalPages);
+
+        // 이전 페이지 그룹 버튼
+        if (startPage > 1) {
+            var li = document.createElement('li');
+            li.innerHTML = '<a href="?page=' + (startPage - 1) + '">«</a>';
+            ul.appendChild(li);
+        }
+
+        // 페이지 번호 버튼
+        for (var i = startPage; i <= endPage; i++) {
+            var li = document.createElement('li');
+            if (i === currentPage) {
+                li.className = 'active';
+            }
+            li.innerHTML = '<a href="?page=' + i + '">' + i + '</a>';
+            ul.appendChild(li);
+        }
+
+        // 다음 페이지 그룹 버튼
+        if (endPage < totalPages) {
+            var li = document.createElement('li');
+            li.innerHTML = '<a href="?page=' + (endPage + 1) + '">»</a>';
+            ul.appendChild(li);
+        }
+    }
+</script>
 </body>
 </html>

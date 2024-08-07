@@ -42,6 +42,20 @@ public class DbArticleDao implements ArticleDao {
             ))
             .build();
 
+    private static final RowMapper<ArticleDto> ARTICLE_PAGE_DTO_ROW_MAPPER = (resultSet) -> ArticleDto.builder()
+            .id(resultSet.getLong("id"))
+            .title(resultSet.getString("title"))
+            .createdAt(toStringForUser(resultSet.getTimestamp("created_at")))
+            .activate(resultSet.getBoolean("activate"))
+            .author(new UserDto(
+                    resultSet.getLong("author_id"),
+                    resultSet.getString("user_id"),
+                    resultSet.getString("user_name"),
+                    resultSet.getString("user_email")
+            ))
+            .replyCount(resultSet.getLong("reply_count"))
+            .build();
+
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -83,9 +97,9 @@ public class DbArticleDao implements ArticleDao {
     @Override
     public Optional<Article> findById(Long id) {
         String sql = """
-        SELECT * FROM articles
-        WHERE id = ? AND activate = true
-        """;
+                SELECT * FROM articles
+                WHERE id = ? AND activate = true
+                """;
 
         Article article = jdbcTemplate.queryForObject(sql, ARTICLE_ROW_MAPPER, id);
         return Optional.ofNullable(article);
@@ -94,10 +108,10 @@ public class DbArticleDao implements ArticleDao {
     @Override
     public Optional<Article> findByIdForUpdate(Long id) {
         String sql = """
-        SELECT * FROM articles
-        WHERE id = ? AND activate = true
-        FOR UPDATE
-        """;
+                SELECT * FROM articles
+                WHERE id = ? AND activate = true
+                FOR UPDATE
+                """;
         Article article = jdbcTemplate.queryForObject(sql, ARTICLE_ROW_MAPPER, id);
         return Optional.ofNullable(article);
     }
@@ -138,7 +152,41 @@ public class DbArticleDao implements ArticleDao {
                 users.user_id as user_id, users.name as user_name, users.email as user_email
                 FROM articles JOIN users ON articles.author_id = users.id
                 WHERE activate = true
+                ORDER BY id DESC
                 """;
         return jdbcTemplate.query(sql, ARTICLE_DTO_ROW_MAPPER);
+    }
+
+    @Override
+    public long count() {
+        String sql = """
+                SELECT count(*) FROM articles WHERE activate = true
+                """;
+
+        return Long.parseLong(jdbcTemplate.queryForObject(sql).toString());
+    }
+
+    @Override
+    public List<ArticleDto> findPage(int page, int size) {
+        long offset = (long) page * size;
+        String sql = """
+                SELECT a.id, a.title, a.author_id, a.created_at, a.activate,
+                       u.user_id, u.name as user_name, u.email as user_email,
+                       COUNT(r.id) as reply_count
+                FROM articles as a
+                JOIN (
+                    SELECT id
+                    FROM articles
+                    WHERE activate = true
+                    ORDER BY id DESC
+                    LIMIT ? OFFSET ?
+                ) as temp on temp.id = a.id
+                JOIN users u ON a.author_id = u.id
+                LEFT JOIN replies r ON a.id = r.article_id AND r.activate = true
+                GROUP BY a.id
+                ORDER BY id DESC
+                """;
+
+        return jdbcTemplate.query(sql, ARTICLE_PAGE_DTO_ROW_MAPPER, size, offset);
     }
 }

@@ -9,10 +9,14 @@ import codesqaud.app.dao.user.UserDao;
 import codesqaud.app.db.JdbcTemplate;
 import codesqaud.app.service.ArticleService;
 import codesqaud.app.service.ReplyService;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -21,6 +25,8 @@ import javax.sql.DataSource;
 
 @WebListener
 public class ServletContextInitializer implements ServletContextListener {
+    private static final Logger log = LoggerFactory.getLogger(ServletContextInitializer.class);
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
@@ -41,12 +47,29 @@ public class ServletContextInitializer implements ServletContextListener {
     }
 
     private DataSource initDataSource(ServletContext servletContext) throws NamingException {
-        Context initContext = new InitialContext();
-        Context envContext = (Context) initContext.lookup("java:/comp/env");
-        DataSource datasource = (DataSource) envContext.lookup("jdbc/cafeDB");
+        HikariConfig config = new HikariConfig();
 
-        servletContext.setAttribute("dataSource", datasource);
-        return datasource;
+        String hostIp = System.getenv("HOST_IP");
+        log.info("Host IP: {}", hostIp);
+        if(hostIp == null) {
+            hostIp = "localhost";
+        }
+
+        config.setJdbcUrl("jdbc:mysql://" + hostIp + ":3306/java_cafe");
+        config.setUsername("semin");
+        config.setPassword("semin");
+        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+
+        config.setMinimumIdle(5);
+        config.setMaximumPoolSize(20);
+        config.setIdleTimeout(10000);
+        config.setConnectionTimeout(30000);
+
+
+        HikariDataSource dataSource = new HikariDataSource(config);
+        servletContext.setAttribute("dataSource", dataSource);
+        return dataSource;
     }
 
     private void initTable(ServletContext servletContext, JdbcTemplate jdbcTemplate) {
@@ -89,11 +112,13 @@ public class ServletContextInitializer implements ServletContextListener {
         jdbcTemplate.execute("""
                 CREATE TABLE IF NOT EXISTS articles (
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                    title VARCHAR (200) NOT NULL,
+                    title VARCHAR (300) NOT NULL,
                     contents TEXT NOT NULL,
                     activate BOOLEAN NOT NULL,
                     author_id BIGINT REFERENCES users(id),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                
+                    INDEX idx_id_activate (id DESC, activate)
                 );
                 """);
 
@@ -104,7 +129,9 @@ public class ServletContextInitializer implements ServletContextListener {
                     activate BOOLEAN NOT NULL,
                     article_id BIGINT REFERENCES articles(id),
                     author_id BIGINT REFERENCES users(id),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                
+                    INDEX idx_article_id_activate_id (article_id, id DESC, activate DESC)
                 );
                 """);
     }
