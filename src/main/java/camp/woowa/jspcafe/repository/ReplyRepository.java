@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.repository;
 
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.model.Reply;
 
 import java.util.List;
@@ -12,6 +14,8 @@ public interface ReplyRepository {
     void deleteAll();
 
     List<Reply> findByQuestionId(Long questionId);
+
+    Page<Reply> findByQuestionIdWithPage(Long questionId, PageRequest pageRequest);
 
     void deleteById(Long id);
 }

@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.service;
 
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Question;
@@ -61,5 +63,9 @@ public class QuestionService {
 
         // 댓글이 없는 경우 || 자신의 댓글만 있는 경우 삭제 가능
         return replies.isEmpty() || replies.stream().allMatch(reply -> reply.getWriterId().equals(question.getWriterId()));
+    }
+
+    public Page<Question> findAllWithPage(PageRequest pageRequest) {
+        return questionRepository.findAllWithPage(pageRequest);
     }
 }

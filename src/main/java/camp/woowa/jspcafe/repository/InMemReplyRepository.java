@@ -1,5 +1,7 @@
 package camp.woowa.jspcafe.repository;
 
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.model.Reply;
 
 import java.time.LocalDateTime;
@@ -36,6 +38,11 @@ public class InMemReplyRepository implements ReplyRepository {
         return replies.values().stream()
                 .filter(reply -> reply.getQuestionId().equals(questionId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Reply> findByQuestionIdWithPage(Long questionId, PageRequest pageRequest) {
+        return null;
     }
 
     @Override

@@ -83,6 +83,9 @@
 <%@ include file="../template/footer.jsp"%>
 
 <script>
+    let replies = [];
+    let currentPage = 1;
+    let totalPage = 1;
     const deleteQuestion = () => {
         if (confirm("삭제하시겠습니까?")) {
             $.ajax({
@@ -114,7 +117,9 @@
             data: JSON.stringify({questionId:questionId, content: content}),
             success: function(response) {
                 $('#reply textarea').val('');
-                retrieveReplies();
+                // 댓글 추가
+                replies.unshift(response);
+                renderReplies()
             },
             error: function(xhr, status, error) {
                 let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
@@ -126,23 +131,20 @@
         });
     }
 
-    const retrieveReplies = () => {
-        $.ajax({
-            url: '${pageContext.request.contextPath}/replies',
-            type: 'GET',
-            data: {questionId: ${question.id}},
-            success: function(response) {
-                // 기존 댓글 삭제
-                $('.comment').remove();
-                $('#answer-count').text(response.length);
-                const template = $('#answerTemplate').html();
-                let html = '';
-                const questionId = ${question.id};
-                for (let i = 0; i < response.length; i++) {
-                    const answer = response[i];
-                    let replyUtils = '';
-                    if (answer.writerId === ${sessionScope.user.id}) {
-                        replyUtils = `<div class="article-util">
+    const renderReplies = () => {
+        // 기존 댓글 삭제
+        $('.comment').remove();
+        $('.more-button').remove()
+
+        $('#answer-count').text(replies.length);
+        const template = $('#answerTemplate').html();
+        let html = '';
+        const questionId = ${question.id};
+        for (let i = 0; i < replies.length; i++) {
+            const answer = replies[i];
+            let replyUtils = '';
+            if (answer.writerId === ${sessionScope.user.id}) {
+                replyUtils = `<div class="article-util">
                             <ul class="article-util-list">
                                 <li>
                                     <a class="link-modify-article" href="/api/qna/updateAnswer/\${answer.id}">수정</a>
@@ -152,11 +154,28 @@
                                 </li>
                             </ul>
                         </div>`;
-                    }
-                    html += template.format(answer.writer, answer.createdAt, answer.content, replyUtils);
-                }
+            }
+            html += template.format(answer.writer, answer.createdAt, answer.content, replyUtils);
+        }
 
-                $('#reply').before(html);
+        if (currentPage < totalPage) {
+            html += '<button class="more-button btn btn-success pull-right" type="button" onclick="retrieveReplies(currentPage + 1)">더보기</button>';
+        }
+
+        $('#reply').before(html);
+    }
+    const retrieveReplies = (page) => {
+        $.ajax({
+            url: '${pageContext.request.contextPath}/replies?p=' + page,
+            type: 'GET',
+            data: {questionId: ${question.id}},
+            success: function(response) {
+                response.contents.forEach((reply) => {
+                    replies.push(reply);
+                })
+                currentPage = response.currentPage;
+                totalPage = response.totalPage;
+                renderReplies(page);
             },
             error: function(xhr, status, error) {
                 let errorMessage = "알 수 없는 에러 발생. 다시 시도해 주세요.";
@@ -175,7 +194,7 @@
                 type: 'DELETE',
                 success: function(response) {
                     if (response['result'] === 'success') {
-                        retrieveReplies();
+                        retrieveReplies(currentPage);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -189,6 +208,6 @@
         }
     }
     $(document).ready(() => {
-        retrieveReplies();
+        retrieveReplies(currentPage);
     });
 </script>

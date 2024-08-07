@@ -1,6 +1,7 @@
 package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.db.MySQLDatabaseManager;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.model.Question;
 import camp.woowa.jspcafe.model.User;
 import org.junit.jupiter.api.AfterAll;
@@ -33,6 +34,7 @@ class MySQLQuestionRepositoryTest {
 
     @AfterAll
     static void tearDownAll() {
+        questionRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -133,5 +135,29 @@ class MySQLQuestionRepositoryTest {
 
         // then
         assertEquals(0, questionRepository.findAll().size());
+    }
+
+    @Test
+    void testFindAllWithPage() {
+        // given
+        String title = "title";
+        String content = "content";
+        String writer = "1234";
+        Question save = new Question(title, content, writer, userId);
+        int iterations = 19;
+        for (int i = 0; i < iterations; i++) {
+            questionRepository.save(save);
+        }
+
+
+
+        // when
+        List<Question> questions1 = questionRepository.findAllWithPage(new PageRequest(1, 10)).getContents();
+        List<Question> questions2 = questionRepository.findAllWithPage(new PageRequest(2, 10)).getContents();
+
+        // then
+        assertEquals(10, questions1.size());
+        assertEquals(9, questions2.size());
+
     }
 }

@@ -1,6 +1,8 @@
 package camp.woowa.jspcafe.repository;
 
 import camp.woowa.jspcafe.db.DatabaseManager;
+import camp.woowa.jspcafe.db.page.Page;
+import camp.woowa.jspcafe.db.page.PageRequest;
 import camp.woowa.jspcafe.exception.CustomException;
 import camp.woowa.jspcafe.exception.HttpStatus;
 import camp.woowa.jspcafe.model.Reply;
@@ -11,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MySQLReplyRepository implements ReplyRepository {
@@ -77,6 +78,33 @@ public class MySQLReplyRepository implements ReplyRepository {
                 replies.add(new Reply(rs.getLong("id"), rs.getString("content"), rs.getLong("question_id"), rs.getString("writer"), rs.getLong("writer_id"), rs.getTimestamp("created_at").toLocalDateTime()));
             }
             return replies;
+        } catch (SQLException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public Page<Reply> findByQuestionIdWithPage(Long questionId, PageRequest pageRequest) {
+        List<Reply> replies = new ArrayList<>();
+        try (var conn = ds.getConnection(); ) {
+            conn.setAutoCommit(false);
+            var pstmt1 = conn.prepareStatement("SELECT r.id AS id, r.content AS content, r.question_id AS question_id, u.user_id AS writer, r.writer_id AS writer_id, r.created_at AS created_at FROM reply r, user u WHERE r.question_id = ? AND r.is_deleted = FALSE AND r.writer_id = u.id ORDER BY r.id DESC LIMIT ? OFFSET ?");
+            pstmt1.setLong(1, questionId);
+            pstmt1.setInt(2, pageRequest.getSize());
+            pstmt1.setInt(3, pageRequest.getOffset());
+            ResultSet rs = pstmt1.executeQuery();
+
+            var pstmt2 = conn.prepareStatement("SELECT COUNT(*) FROM reply WHERE question_id = ? AND is_deleted = FALSE");
+            pstmt2.setLong(1, questionId);
+            ResultSet rs2 = pstmt2.executeQuery();
+            rs2.next();
+            int total = rs2.getInt(1);
+            conn.commit();
+
+            while(rs.next()) {
+                replies.add(new Reply(rs.getLong("id"), rs.getString("content"), rs.getLong("question_id"), rs.getString("writer"), rs.getLong("writer_id"), rs.getTimestamp("created_at").toLocalDateTime()));
+            }
+            return new Page<>(replies, pageRequest.getPage() , (int) (Math.floor((total - 1) / pageRequest.getSize())) + 1);
         } catch (SQLException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
