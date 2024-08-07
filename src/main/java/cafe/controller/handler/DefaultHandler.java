@@ -13,11 +13,11 @@ public class DefaultHandler implements Handler {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("/articles");
+        resp.sendRedirect("/articles?page=1");
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("/articles");
+        resp.sendRedirect("/articles?page=1");
     }
 }
