@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.jspcafe.question.Question;
+import org.example.jspcafe.question.QuestionPagination;
 import org.example.jspcafe.question.repository.QuestionRepository;
 
 import java.io.IOException;
@@ -26,8 +27,11 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Question> all = questionRepository.getAll();
-        req.setAttribute("questions", all);
+
+        // 페이지네이션 메서드 호출
+        QuestionPagination allWithPagination = questionRepository.getAllWithPagination(1, 15);
+        req.setAttribute("pagination", allWithPagination);
         req.getRequestDispatcher("/qna/list.jsp").forward(req, resp);
+
     }
 }

@@ -1,7 +1,7 @@
 package org.example.jspcafe.question.repository;
 
 import org.example.jspcafe.question.Question;
-import org.example.jspcafe.user.User;
+import org.example.jspcafe.question.QuestionPagination;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +39,10 @@ public class MemoryQuestionRepository implements QuestionRepository{
     @Override
     public boolean delete(Long id) {
         return false;
+    }
+
+    @Override
+    public QuestionPagination getAllWithPagination(int page, int pageSize) {
+        return null;
     }
 }
