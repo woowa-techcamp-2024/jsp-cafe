@@ -87,10 +87,12 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
 
     private List<Question> findQuestionsOrderByCreatedAt(int page, int size) {
         String sql = "select * from question q"
-                + " join user u on u.user_id = q.user_id"
-                + " where deleted is false"
-                + " order by created_at desc"
-                + " limit ? offset ?";
+                + "join user u on q.user_id = u.user_id"
+                + "join (select question_id from question"
+                + "                         where deleted is false"
+                + "                         order by created_at desc"
+                + "                         limit ? offset ?)"
+                + "as temp on temp.question_id = q.question_id";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -115,7 +117,8 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
     }
 
     private Long countQuestions() {
-        String sql = "select coalesce(count(*), 0) as question_count from question";
+        String sql = "select coalesce(count(*), 0) as question_count from question"
+                + " where deleted is false";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -124,7 +127,7 @@ public class QuestionJdbcDatabase implements QuestionDatabase {
             con = DBConnectionUtils.getConnection();
             pstmt = con.prepareStatement(sql);
             rs = pstmt.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return rs.getLong("question_count");
             }
             return 0L;
