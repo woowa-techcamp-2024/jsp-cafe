@@ -1,6 +1,6 @@
 package com.woowa.servlet;
 
-import com.woowa.database.UserDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.handler.UserHandler;
 import com.woowa.model.User;
@@ -28,13 +28,13 @@ public class UserProfileServlet extends HttpServlet {
             String userId = requestURI.replace("/users/", "").replace("/edit", "");
             ResponseEntity response = userHandler.updateUserForm(userId);
             req.setAttribute("user", response.getModel().get("user"));
-            req.getRequestDispatcher("/WEB-INF/classes/static/user/update.jsp").forward(req, resp);
+            req.getRequestDispatcher("/user/update.jsp").forward(req, resp);
         } else {
             String userId = getUserId(req);
             User user = userDatabase.findById(userId)
                     .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
             req.setAttribute("user", user);
-            req.getRequestDispatcher("/WEB-INF/classes/static/user/profile.jsp").forward(req, resp);
+            req.getRequestDispatcher("/user/profile.jsp").forward(req, resp);
         }
     }
 

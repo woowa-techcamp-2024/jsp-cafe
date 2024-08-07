@@ -1,7 +1,8 @@
 package com.woowa.handler;
 
-import com.woowa.database.QuestionDatabase;
-import com.woowa.database.UserDatabase;
+import com.woowa.database.Page;
+import com.woowa.database.question.QuestionDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.framework.web.HttpMethod;
 import com.woowa.framework.web.RequestMapping;
 import com.woowa.framework.web.RequestParameter;
@@ -10,7 +11,6 @@ import com.woowa.model.Author;
 import com.woowa.model.Question;
 import com.woowa.model.User;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class QuestionHandler {
     public ResponseEntity findQuestions(
             @RequestParameter("page") int page,
             @RequestParameter("size") int size) {
-        List<Question> questions = questionDatabase.findAllOrderByCreatedAt(page, size);
+        Page<Question> questions = questionDatabase.findAllOrderByCreatedAt(page, size);
         return ResponseEntity.builder()
                 .add("questions", questions)
                 .ok();

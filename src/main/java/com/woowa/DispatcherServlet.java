@@ -39,7 +39,8 @@ public class DispatcherServlet extends HttpServlet {
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp) throws Throwable {
         if(req.getRequestURI().endsWith(".jsp")) {
-            handleJspRequest(req, resp);
+            RequestDispatcher dispatcher = req.getRequestDispatcher(req.getRequestURI());
+            dispatcher.forward(req, resp);
             return;
         }
 

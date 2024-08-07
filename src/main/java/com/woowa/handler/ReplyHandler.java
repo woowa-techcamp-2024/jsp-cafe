@@ -1,8 +1,9 @@
 package com.woowa.handler;
 
-import com.woowa.database.QuestionDatabase;
-import com.woowa.database.ReplyDatabase;
-import com.woowa.database.UserDatabase;
+import com.woowa.database.Page;
+import com.woowa.database.question.QuestionDatabase;
+import com.woowa.database.reply.ReplyDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.framework.web.HttpMethod;
 import com.woowa.framework.web.RequestMapping;
 import com.woowa.framework.web.ResponseEntity;
@@ -28,11 +29,18 @@ public class ReplyHandler {
         this.replyDatabase = replyDatabase;
     }
 
+    @RequestMapping(path = "/questions/{questionId}/replies", method = HttpMethod.GET)
+    public ResponseEntity findReplies(String questionId, int page, int size) {
+        Page<Reply> replies = replyDatabase.findAllByQuestionId(questionId, page, size);
+        return ResponseEntity.builder()
+                .add("replies", replies)
+                .ok();
+    }
+
     @RequestMapping(path = "/questions/{questionId}/replies", method = HttpMethod.POST)
     public ResponseEntity createReply(String userId, String questionId, String content) {
         User user = getUser(userId);
-        Question question = questionDatabase.findById(questionId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
+        Question question = getQuestion(questionId);
         Reply reply = Reply.create(
                 UUID.randomUUID().toString(),
                 content,
@@ -44,6 +52,11 @@ public class ReplyHandler {
         return ResponseEntity.builder()
                 .add("reply", reply)
                 .found("/questions/" + questionId);
+    }
+
+    private Question getQuestion(String questionId) {
+        return questionDatabase.findById(questionId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 질문입니다."));
     }
 
     @RequestMapping(path = "/questions/{questionId}/replies/{replyId}", method = HttpMethod.DELETE)

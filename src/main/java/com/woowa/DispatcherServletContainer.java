@@ -1,7 +1,7 @@
 package com.woowa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowa.database.UserDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.filter.ErrorHandlingFilter;
 import com.woowa.filter.HttpMethodFilter;
 import com.woowa.framework.ApplicationInitializer;
@@ -10,20 +10,17 @@ import com.woowa.handler.LoginHandler;
 import com.woowa.handler.QuestionHandler;
 import com.woowa.handler.ReplyHandler;
 import com.woowa.handler.UserHandler;
-import com.woowa.servlet.FindQuestionServlet;
-import com.woowa.servlet.ListQuestionServlet;
+import com.woowa.servlet.QuestionDetailServlet;
 import com.woowa.servlet.LoginServlet;
 import com.woowa.servlet.LogoutServlet;
-import com.woowa.servlet.QuestionServlet;
+import com.woowa.servlet.QuestionsServlet;
 import com.woowa.servlet.SignupServlet;
 import com.woowa.servlet.UserProfileServlet;
-import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration.Dynamic;
-import java.util.EnumSet;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +45,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
 
     private void addServlet(ServletContext ctx, DispatcherServlet dispatcherServlet, BeanFactory beanFactory) {
         Dynamic helloServlet = ctx.addServlet("helloServlet", dispatcherServlet);
-        helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/fonts/*", "/favicon.ico", "/user/*",
-                "/qna/*");
+        helloServlet.addMapping("/users", "/css/*", "/js/*", "/images/*", "/fonts/*", "/favicon.ico");
 
         Dynamic signupServlet = ctx.addServlet("signupServlet", new SignupServlet());
         signupServlet.addMapping("/signup");
@@ -60,7 +56,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
         userProfileServlet.addMapping("/users/*");
 
         Dynamic questionServlet = ctx.addServlet("questionServlet",
-                new QuestionServlet(beanFactory.getBean(QuestionHandler.class)));
+                new QuestionsServlet(beanFactory.getBean(QuestionHandler.class)));
         questionServlet.addMapping("/questions");
 
         Dynamic loginServlet = ctx.addServlet("loginServlet",
@@ -71,11 +67,7 @@ public class DispatcherServletContainer implements ServletContainerInitializer {
                 new LogoutServlet(beanFactory.getBean(LoginHandler.class)));
         logoutServlet.addMapping("/logout");
 
-        Dynamic listQuestionServlet = ctx.addServlet("listQuestionServlet",
-                new ListQuestionServlet(beanFactory.getBean(QuestionHandler.class)));
-        listQuestionServlet.addMapping("/");
-
-        Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet", new FindQuestionServlet(
+        Dynamic findQuestionServlet = ctx.addServlet("findQuestionServlet", new QuestionDetailServlet(
                 beanFactory.getBean(QuestionHandler.class),
                 beanFactory.getBean(ReplyHandler.class),
                 beanFactory.getBean(ObjectMapper.class)));

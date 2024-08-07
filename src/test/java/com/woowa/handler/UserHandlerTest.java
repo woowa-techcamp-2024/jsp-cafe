@@ -3,8 +3,8 @@ package com.woowa.handler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserMemoryDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.User;
 import com.woowa.support.UserFixture;

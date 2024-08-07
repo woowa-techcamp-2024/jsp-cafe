@@ -2,8 +2,8 @@ package com.woowa.servlet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserMemoryDatabase;
 import com.woowa.handler.UserHandler;
 import com.woowa.model.User;
 import com.woowa.support.StubHttpServletRequest;
@@ -74,7 +74,7 @@ class UserProfileServletTest {
 
             //then
             assertThat(request.getRequestDispatcher().getPath())
-                    .isEqualTo("/WEB-INF/classes/static/user/update.jsp");
+                    .isEqualTo("/user/update.jsp");
         }
     }
 }

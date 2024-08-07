@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,8 @@ import java.util.Locale;
 public class StubHttpServletResponse implements HttpServletResponse {
 
     private String location = "";
+    private StubPrintWriter printWriter = new StubPrintWriter();
+    private int status = 200;
 
     @Override
     public void addCookie(Cookie cookie) {
@@ -80,12 +83,12 @@ public class StubHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setStatus(int sc) {
-
+        this.status = sc;
     }
 
     @Override
     public int getStatus() {
-        return 0;
+        return status;
     }
 
     @Override
@@ -120,7 +123,7 @@ public class StubHttpServletResponse implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return null;
+        return printWriter;
     }
 
     @Override

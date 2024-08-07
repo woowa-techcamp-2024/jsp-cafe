@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
-import com.woowa.database.QuestionDatabase;
-import com.woowa.database.QuestionMemoryDatabase;
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.Page;
+import com.woowa.database.question.QuestionDatabase;
+import com.woowa.database.question.QuestionMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserMemoryDatabase;
 import com.woowa.exception.AuthorizationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;
@@ -120,8 +121,9 @@ class QuestionHandlerTest {
             ResponseEntity response = questionHandler.findQuestions(0, 10);
 
             //then
-            Object questions = response.getModel().get("questions");
-            assertThat(questions).isNotNull()
+            assertThat(response.getModel().get("questions")).isInstanceOf(Page.class);
+            Page<Question> questions = (Page<Question>) response.getModel().get("questions");
+            assertThat(questions.getContent()).isNotNull()
                     .asInstanceOf(LIST)
                     .hasSize(10)
                     .map(question -> ((Question) question).getCreatedAt())
@@ -144,8 +146,9 @@ class QuestionHandlerTest {
             ResponseEntity response = questionHandler.findQuestions(1, 10);
 
             //then
-            Object questions = response.getModel().get("questions");
-            assertThat(questions).isNotNull()
+            assertThat(response.getModel().get("questions")).isInstanceOf(Page.class);
+            Page<Question> questions = (Page<Question>) response.getModel().get("questions");
+            assertThat(questions.getContent()).isNotNull()
                     .asInstanceOf(LIST)
                     .hasSize(10)
                     .first()

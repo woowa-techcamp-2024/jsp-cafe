@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
 import com.woowa.config.HandlerConfig;
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.framework.argumentresovler.ArgumentResolverComposite;
 import com.woowa.handler.UserHandler;
 import java.util.List;
