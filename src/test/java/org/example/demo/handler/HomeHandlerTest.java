@@ -49,7 +49,10 @@ class HomeHandlerTest {
         posts.add(new Post(1L, new User(1L, "user1", "password1", "User 1", "user1@example.com"), "제목1", "내용1", LocalDateTime.now(), new ArrayList<>()));
         posts.add(new Post(2L, new User(2L, "user2", "password2", "User 2", "user2@example.com"), "제목2", "내용2", LocalDateTime.now(), new ArrayList<>()));
 
-        when(postRepository.getPosts()).thenReturn(posts);
+        when(postRepository.getPostsPaged(1, 15)).thenReturn(posts);
+        when(postRepository.getTotalPostCount()).thenReturn(2);
+        when(request.getParameter("page")).thenReturn("1");
+        when(request.getParameter("limit")).thenReturn("15");
         when(request.getRequestDispatcher("/WEB-INF/index.jsp")).thenReturn(requestDispatcher);
 
         // When
@@ -57,6 +60,8 @@ class HomeHandlerTest {
 
         // Then
         verify(request).setAttribute("posts", posts);
+        verify(request).setAttribute("currentPage", 1L);
+        verify(request).setAttribute("totalPages", 1L);
         verify(requestDispatcher).forward(request, response);
     }
 
