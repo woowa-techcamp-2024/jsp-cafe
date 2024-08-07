@@ -4,6 +4,7 @@ import woopaca.jspcafe.error.BadRequestException;
 import woopaca.jspcafe.error.ForbiddenException;
 import woopaca.jspcafe.error.NotFoundException;
 import woopaca.jspcafe.model.Authentication;
+import woopaca.jspcafe.model.Page;
 import woopaca.jspcafe.model.Post;
 import woopaca.jspcafe.model.Reply;
 import woopaca.jspcafe.model.User;
@@ -12,16 +13,17 @@ import woopaca.jspcafe.repository.ReplyRepository;
 import woopaca.jspcafe.repository.UserRepository;
 import woopaca.jspcafe.servlet.dto.request.PostEditRequest;
 import woopaca.jspcafe.servlet.dto.request.WritePostRequest;
-import woopaca.jspcafe.servlet.dto.response.PageInfo;
 import woopaca.jspcafe.servlet.dto.response.PostDetailsResponse;
 import woopaca.jspcafe.servlet.dto.response.PostEditResponse;
-import woopaca.jspcafe.servlet.dto.response.PostsResponse;
+import woopaca.jspcafe.servlet.dto.response.PostsPageResponse;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PostService {
+
+    private static final int DEFAULT_PAGE_SIZE = 15;
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -40,19 +42,6 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostsResponse> getAllPosts() {
-        return postRepository.findAll()
-                .stream()
-                .filter(Post::isPublished)
-                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
-                .map(post -> {
-                    User user = userRepository.findById(post.getWriterId())
-                            .orElseThrow(() -> new NotFoundException("[ERROR] 작성자를 찾을 수 없습니다."));
-                    return PostsResponse.of(post, user);
-                })
-                .toList();
-    }
-
     public PostDetailsResponse getPostDetails(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("[ERROR] 게시글을 찾을 수 없습니다."));
@@ -61,31 +50,14 @@ public class PostService {
         }
 
         updateViewCount(post);
-        PageInfo pageInfo = getPageInfo(post);
         User user = userRepository.findById(post.getWriterId())
                 .orElseThrow(() -> new NotFoundException("[ERROR] 작성자를 찾을 수 없습니다."));
-        return PostDetailsResponse.of(post, pageInfo, user);
+        return PostDetailsResponse.of(post, user);
     }
 
     private void updateViewCount(Post post) {
         post.increaseViewCount();
         postRepository.save(post);
-    }
-
-    private PageInfo getPageInfo(Post post) {
-        List<Post> posts = postRepository.findAll()
-                .stream()
-                .filter(Post::isPublished)
-                .sorted(Comparator.comparing(Post::getWrittenAt).reversed())
-                .toList();
-
-        int postsSize = posts.size();
-        int postIndex = posts.indexOf(post);
-        boolean hasNext = postIndex < postsSize - 1;
-        boolean hasPrevious = postIndex > 0;
-        Long previousPostId = hasPrevious ? posts.get(postIndex - 1).getId() : null;
-        Long nextPostId = hasNext ? posts.get(postIndex + 1).getId() : null;
-        return new PageInfo(hasNext, hasPrevious, nextPostId, previousPostId);
     }
 
     public PostEditResponse getPostTitleContent(Long postId) {
@@ -140,5 +112,26 @@ public class PostService {
                     throw new BadRequestException("[ERROR] 다른 사용자의 댓글이 존재하여 삭제할 수 없습니다.");
                 });
         return replies;
+    }
+
+    public PostsPageResponse getPostsPage(int page) {
+        if (page < 1) {
+            throw new BadRequestException("[ERROR] 페이지는 1 이상이어야 합니다.");
+        }
+
+        Page<Post> postsPage = postRepository.findToPage(page, DEFAULT_PAGE_SIZE);
+        List<Post> posts = postsPage.data();
+        // TODO join으로 변경하기
+        List<String> writers = findWriters(posts);
+        return PostsPageResponse.of(posts, writers, postsPage.currentPage(), postsPage.totalPage(), postsPage.total());
+    }
+
+    private List<String> findWriters(List<Post> posts) {
+        return posts.stream()
+                .map(Post::getWriterId)
+                .map(userRepository::findById)
+                .map(Optional::get)
+                .map(User::getNickname)
+                .toList();
     }
 }

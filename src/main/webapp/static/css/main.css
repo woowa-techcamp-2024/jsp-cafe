@@ -126,3 +126,32 @@
   font-family: BM-Hanna-11yrs, serif;
   margin-top: 8px;
 }
+
+#pagination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 50px;
+
+  gap: 12px;
+}
+
+.pagination-link {
+  font-family: BM-Hanna-11yrs, serif;
+  font-size: 1.3em;
+  padding: 4px;
+
+  cursor: pointer;
+  transition: font-size 0.1s;
+}
+
+.pagination-link:hover {
+  font-size: 1.5em;
+}
+
+.active {
+  color: #62CBC6;
+  font-size: 1.5em;
+}

@@ -57,7 +57,7 @@ class PostServiceTest {
 
                 assertThatNoException()
                         .isThrownBy(() -> postService.writePost(writePostRequest, authentication));
-                assertThat(postRepository.findAll()).hasSize(1);
+                assertThat(postRepository.countPublishedPosts()).isEqualTo(1);
             }
         }
 
@@ -114,55 +114,6 @@ class PostServiceTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("[ERROR] 제목: 2 ~ 30자, 내용: 2 ~ 1000자");
             }
-        }
-    }
-
-    @Nested
-    class getAllPosts_메서드는 {
-
-        @Test
-        void 모든_게시글_목록을_반환한다() {
-            User user = new User("test", "test", "test");
-            userRepository.save(user);
-            postRepository.save(new Post("title1", "content1", user.getId()));
-            postRepository.save(new Post("title2", "content2", user.getId()));
-
-            assertThat(postService.getAllPosts()).isNotEmpty();
-            assertThat(postService.getAllPosts()).hasSize(2);
-            assertThat(postService.getAllPosts().get(0).title()).isEqualTo("title2");
-        }
-
-        @Test
-        void 게시글이_없으면_빈_리스트를_반환한다() {
-            assertThat(postService.getAllPosts()).isEmpty();
-        }
-
-        @Test
-        void 게시글이_삭제되었으면_리스트에서_제외한다() {
-            User user = new User("test", "test", "test");
-            userRepository.save(user);
-            Post post1 = new Post("title1", "content1", user.getId());
-            Post post2 = new Post("title2", "content2", user.getId());
-            postRepository.save(post1);
-            postRepository.save(post2);
-            post1.softDelete();
-            postRepository.save(post1);
-
-            assertThat(postService.getAllPosts()).isNotEmpty();
-            assertThat(postService.getAllPosts()).hasSize(1);
-            assertThat(postService.getAllPosts().get(0).title()).isEqualTo("title2");
-        }
-
-        @Test
-        void 작성자가_존재하지_않으면_예외가_발생한다() {
-            User user = new User("test", "test", "test");
-            userRepository.save(user);
-            Post post = new Post("title", "content", -1L);
-            postRepository.save(post);
-
-            assertThatThrownBy(() -> postService.getAllPosts())
-                    .isInstanceOf(NotFoundException.class)
-                    .hasMessage("[ERROR] 작성자를 찾을 수 없습니다.");
         }
     }
 

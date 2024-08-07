@@ -7,18 +7,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import woopaca.jspcafe.error.BadRequestException;
 import woopaca.jspcafe.service.PostService;
-import woopaca.jspcafe.servlet.dto.response.PostsResponse;
+import woopaca.jspcafe.servlet.dto.response.PostsPageResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/")
 public class HomeServlet extends HttpServlet {
-
-    private final Logger log = LoggerFactory.getLogger(HomeServlet.class);
 
     private PostService postService;
 
@@ -37,9 +33,19 @@ public class HomeServlet extends HttpServlet {
             return;
         }
 
-        List<PostsResponse> posts = postService.getAllPosts();
-        request.setAttribute("posts", posts);
-        request.setAttribute("postsCount", posts.size());
+        String pageParameter = request.getParameter("page");
+        if (pageParameter == null) {
+            pageParameter = "1";
+        }
+        int page = Integer.parseInt(pageParameter);
+        PostsPageResponse postsPage = postService.getPostsPage(page);
+        if (page > postsPage.page().totalPage()) {
+            throw new BadRequestException("[ERROR] 페이지가 존재하지 않습니다. 최대 페이지: " + postsPage.page().totalPage());
+        }
+
+        request.setAttribute("posts", postsPage.posts());
+        request.setAttribute("page", postsPage.page());
+        request.setAttribute("postsCount", postsPage.totalPosts());
         request.getRequestDispatcher("/home.jsp")
                 .forward(request, response);
     }

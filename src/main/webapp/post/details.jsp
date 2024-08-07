@@ -69,15 +69,6 @@
         </div>
       </div>
     </div>
-    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 40px">
-      <a class="<c:out value='${post.pageInfo().hasPrevious() ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:url value='/posts/${post.pageInfo().previousPostId()}'/>"
-      >⬅ 이전
-        글</a>
-      <a class="<c:out value='${post.pageInfo().hasNext() ? "move-post" : "move-post-disabled"}'/>"
-         href="<c:url value='/posts/${post.pageInfo().nextPostId()}'/>"
-      >다음 글 ➡</a>
-    </div>
   </div>
 </div>
 <script>
