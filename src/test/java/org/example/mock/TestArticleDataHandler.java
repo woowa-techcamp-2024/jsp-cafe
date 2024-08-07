@@ -37,4 +37,14 @@ public class TestArticleDataHandler implements ArticleDataHandler {
                 .filter(e -> e.getAlivestatus().equals(AliveStatus.ALIVE))
                 .toList();
     }
+
+    @Override
+    public List<Article> findByPage(int pageNumber) {
+        return List.of();
+    }
+
+    @Override
+    public int getTotalPageNumber() {
+        return 0;
+    }
 }

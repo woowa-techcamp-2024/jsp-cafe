@@ -19,7 +19,6 @@
 <body>
 <%
     Article article = (Article) request.getAttribute("article");
-    List<Reply> replies = (List<Reply>) request.getAttribute("replies");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
      User currentUser = (User)session.getAttribute(SessionName.USER.getName());
 %>
@@ -47,19 +46,8 @@
             <!-- 댓글 들 -->
             <h3>댓글</h3>
             <div class="reply-list">
-                <% for(Reply reply : replies) { %>
-                <div class="reply">
-                    <div class="reply-header">
-                        <span class="reply-author"><%= reply.getAuthor() %></span>
-                        <span class="reply-date"><%= reply.getCreatedDt().format(formatter) %></span>
-                    </div>
-                    <div class="reply-comment"><%= reply.getComment() %></div>
-                    <% if (currentUser != null && currentUser.getUserId().equals(reply.getUserId())) {%>
-                        <button class="btn delete-reply" data-reply-id="<%= reply.getReplyId() %>">삭제</button>
-                    <% } %>
-                </div>
-                <% } %>
             </div>
+            <button id="loadMoreReplies" class="btn" style="display: none;">더보기</button>
 
             <!-- 댓글 작성 폼 -->
             <div class="reply-form">
@@ -94,6 +82,10 @@
             }
         });
 
+        var allReplies = [];
+        var currentPage = 1;
+        var repliesPerPage = 5;
+
         loadReplies();
 
         function loadReplies() {
@@ -101,6 +93,7 @@
                 url: '/api/articles/replies/' + <%= article.getArticleId() %>,
                 type: 'GET',
                 success: function(replies) {
+                    allReplies = replies;
                     updateReplyList(replies);
                 },
                 error: function(xhr, status, error) {
@@ -114,8 +107,11 @@
             $replyList.empty();
 
             var currentUserId = '<%= currentUser != null ? currentUser.getUserId() : "" %>';
+            var startIndex = 0;
+            var endIndex = currentPage * repliesPerPage;
 
-            replies.forEach(function(reply) {
+            for(var i=startIndex; i < endIndex && i < allReplies.length; i++){
+                var reply = allReplies[i];
                 var deleteButton = '';
                 if (reply.userId == currentUserId) {
                     deleteButton = '<button class="btn delete-reply" data-reply-id="' + reply.replyId + '">삭제</button>';
@@ -131,12 +127,27 @@
                         deleteButton +
                     '</div>';
 
+                updateLoadMoreButton();
                 $replyList.append(replyHtml);
-            });
+            }
 
             // 삭제 버튼에 이벤트 리스너 다시 추가
             $('.delete-reply').click(deleteReplyHandler);
         }
+
+        function updateLoadMoreButton() {
+            var $loadMoreButton = $('#loadMoreReplies');
+            if (currentPage * repliesPerPage < allReplies.length) {
+                $loadMoreButton.show();
+            } else {
+                $loadMoreButton.hide();
+            }
+        }
+
+        $('#loadMoreReplies').click(function() {
+            currentPage++;
+            updateReplyList();
+        });
 
         $('#submitReply').click(function() {
             var comment = $('#replyComment').val();

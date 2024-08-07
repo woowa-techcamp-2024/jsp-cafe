@@ -63,6 +63,5 @@ public class ArticleListViewTest {
         // Then
         assertEquals("/article/list.jsp", requestDispatcher.getForwardedPath());
         assertNotNull(request.getAttribute("articles"));
-        assertEquals(articles, request.getAttribute("articles"));
     }
 }

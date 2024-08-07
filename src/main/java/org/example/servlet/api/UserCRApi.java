@@ -1,5 +1,8 @@
 package org.example.servlet.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,8 +10,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import org.example.constance.DataHandler;
 import org.example.data.UserDataHandler;
 import org.example.domain.User;
@@ -16,14 +21,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebServlet("/api/users")
-public class UserRegisterApi extends HttpServlet {
-    private final Logger log = LoggerFactory.getLogger(UserRegisterApi.class);
+public class UserCRApi extends HttpServlet {
+    private final Logger log = LoggerFactory.getLogger(UserCRApi.class);
     private UserDataHandler userDataHandler;
+    private ObjectMapper objectMapper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         userDataHandler = (UserDataHandler) config.getServletContext().getAttribute(DataHandler.USER.getValue());
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<User> users = userDataHandler.findAll();
+        String jsonReplies = objectMapper.writeValueAsString(users);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
+        out.print(jsonReplies);
+        out.flush();
     }
 
     @Override

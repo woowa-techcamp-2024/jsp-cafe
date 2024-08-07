@@ -1,5 +1,7 @@
 -- 기존 테이블 제거
-use mydb;
+USE mydb;
+
+SET GLOBAL local_infile = 1;
 
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
@@ -13,7 +15,8 @@ CREATE TABLE IF NOT EXISTS articles (
     content TEXT NOT NULL,
     author VARCHAR(100) NOT NULL,
     alive_status VARCHAR(20) NOT NULL,
-    created_dt DATETIME NOT NULL
+    created_dt DATETIME NOT NULL,
+    INDEX idx_alive_status (alive_status)
 );
 
 -- User 테이블 생성
@@ -32,5 +35,33 @@ CREATE TABLE IF NOT EXISTS replies(
     author VARCHAR(100) NOT NULL,
     comment VARCHAR(255) NOT NULL,
     alive_status VARCHAR(20) NOT NULL,
-    created_dt DATETIME NOT NULL
+    created_dt DATETIME NOT NULL,
+    INDEX idx_article_id (article_id),
+    INDEX idx_alive_status_article_id (alive_status, article_id)
 );
+
+-- Load data from CSV file
+LOAD DATA INFILE '/var/lib/mysql-files/articles.csv'
+INTO TABLE articles
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(article_id, user_id, title, content, author, alive_status, created_dt);
+
+LOAD DATA INFILE '/var/lib/mysql-files/users.csv'
+INTO TABLE users
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(user_id, email, nickname, password, created_dt);
+
+LOAD DATA INFILE '/var/lib/mysql-files/replies.csv'
+INTO TABLE replies
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(reply_id, user_id, article_id, author, comment, alive_status, created_dt);
+--

@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  mysql:
+  mysql_container:
     image: mysql:8.0
     container_name: my_mysql
     restart: always
@@ -13,6 +13,19 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - ./users.csv:/var/lib/mysql-files/users.csv
+      - ./articles.csv:/var/lib/mysql-files/articles.csv
+      - ./replies.csv:/var/lib/mysql-files/replies.csv
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      - --local-infile=1
+    cap_add:
+      - SYS_NICE
+  tomcat:
+    image: tomcat:10-jdk17
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./build/libs/ROOT.war:/usr/local/tomcat/webapps/ROOT.war
 volumes:
   mysql_data:

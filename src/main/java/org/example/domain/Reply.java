@@ -12,6 +12,8 @@ public class Reply {
     private AliveStatus aliveStatus;
     private LocalDateTime createdDt;
 
+    private Reply() {
+    }
 
     public Reply(Long replyId, Long userId, Long articleId, String author, String comment, AliveStatus aliveStatus,
                  LocalDateTime createdDt) {

@@ -32,8 +32,7 @@ public class UserProfileUpdateFormView extends HttpServlet {
             throws ServletException, IOException {
         log.debug("[UserProfileUpdateFormView] called");
         String pathInfo = request.getPathInfo();
-        String[] pathParts = pathInfo.split("/");
-        Long userId = Long.valueOf(pathParts[pathInfo.length() - 1]);
+        Long userId = Long.valueOf(pathInfo.substring(1));
         HttpSession session = request.getSession(false);
         User curUser = (User) session.getAttribute(SessionName.USER.getName());
         if (!curUser.getUserId().equals(userId)) {

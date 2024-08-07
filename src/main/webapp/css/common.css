@@ -138,3 +138,37 @@ th {
 .form-group {
     margin-bottom: 25px;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.page-link {
+    color: #888;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    margin: 0 10px;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0; /* 호버 시 배경색 변경 */
+    color: #62CBC6; /* 호버 시 글자색 변경 */
+}
+
+.page-link.active {
+    background-color: #62CBC6;
+    color: white;
+    border: 1px solid #62CBC6;
+}
+
+.page-link.prev,
+.page-link.next {
+    color: #62CBC6;
+    font-weight: bold;
+}

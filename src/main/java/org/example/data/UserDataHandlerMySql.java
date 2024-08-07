@@ -1,21 +1,28 @@
 package org.example.data;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import org.example.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
-import java.sql.*;
-import java.util.ArrayList;
-
 public class UserDataHandlerMySql implements UserDataHandler {
     private Logger log = LoggerFactory.getLogger(UserDataHandlerMySql.class);
+    private final ConnectionProvider connectionProvider;
 
+    public UserDataHandlerMySql(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
 
     public User insert(User user) {
         String sql = "INSERT INTO users (email, nickname, password, created_dt) VALUES (?, ?, ?, ?)";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getNickname());
@@ -41,7 +48,7 @@ public class UserDataHandlerMySql implements UserDataHandler {
 
     public User update(User user) {
         String sql = "UPDATE users SET email = ?, nickname = ?, password = ?, created_dt = ? WHERE user_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getNickname());
@@ -59,7 +66,7 @@ public class UserDataHandlerMySql implements UserDataHandler {
     @Override
     public User findByUserId(Long userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setLong(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -82,7 +89,7 @@ public class UserDataHandlerMySql implements UserDataHandler {
     @Override
     public User findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -106,7 +113,7 @@ public class UserDataHandlerMySql implements UserDataHandler {
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         List<User> users = new ArrayList<>();
-        try (Connection con = DatabaseConnectionManager.getConnection();
+        try (Connection con = connectionProvider.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {

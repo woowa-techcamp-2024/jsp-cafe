@@ -20,6 +20,7 @@ import org.example.domain.Reply;
 public class ArticleRepliesGetApi extends HttpServlet {
     private ReplyDataHandler replyDataHandler;
     private ObjectMapper objectMapper;
+    private static final int REPLIES_PER_PAGE = 5;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -43,5 +44,4 @@ public class ArticleRepliesGetApi extends HttpServlet {
         out.print(jsonReplies);
         out.flush();
     }
-
 }

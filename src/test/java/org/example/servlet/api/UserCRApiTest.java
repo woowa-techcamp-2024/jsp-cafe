@@ -16,9 +16,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
-public class UserRegisterApiTest {
+public class UserCRApiTest {
 
-    private static UserRegisterApi servlet;
+    private static UserCRApi servlet;
     private static TestUserDataHandler userDataHandler;
     private static TestHttpServletRequest request;
     private static TestHttpServletResponse response;
@@ -27,7 +27,7 @@ public class UserRegisterApiTest {
 
     @BeforeAll
     public static void setUp() throws ServletException {
-        servlet = new UserRegisterApi();
+        servlet = new UserCRApi();
         userDataHandler = new TestUserDataHandler();
         request = new TestHttpServletRequest();
         response = new TestHttpServletResponse();

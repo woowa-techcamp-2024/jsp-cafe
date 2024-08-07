@@ -30,8 +30,27 @@ public class ArticlesListView extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         log.debug("[ArticlesListView] called");
-        List<Article> articles = articleDataHandler.findAll();
+        int page = getPageNumber(request);
+        List<Article> articles = articleDataHandler.findByPage(page);
+        int totalPageNumber = articleDataHandler.getTotalPageNumber();
         request.setAttribute("articles", articles);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPageNumber", totalPageNumber);
         request.getRequestDispatcher("/article/list.jsp").forward(request, response);
+    }
+
+    private int getPageNumber(HttpServletRequest request) {
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                int page = Integer.parseInt(pageParam);
+                if (page > 0) {
+                    return page;
+                }
+            } catch (NumberFormatException e) {
+                log.warn("Invalid page number: {}", pageParam);
+            }
+        }
+        return 1; // 기본값은 1페이지
     }
 }

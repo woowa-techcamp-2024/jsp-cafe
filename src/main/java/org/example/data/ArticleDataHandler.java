@@ -1,8 +1,7 @@
 package org.example.data;
 
-import org.example.domain.Article;
-
 import java.util.List;
+import org.example.domain.Article;
 
 public interface ArticleDataHandler {
     Article insert(Article article);
@@ -12,4 +11,8 @@ public interface ArticleDataHandler {
     Article findByArticleId(Long articleId);
 
     List<Article> findAll();
+
+    List<Article> findByPage(int pageNumber);
+
+    int getTotalPageNumber();
 }
