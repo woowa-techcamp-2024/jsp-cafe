@@ -10,7 +10,7 @@ import javax.sql.rowset.serial.SerialException;
 import org.example.config.annotation.Autowired;
 import org.example.config.annotation.Component;
 import org.example.member.model.dao.User;
-import org.example.util.DataUtil;
+import org.example.util.DatabaseConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,16 +19,16 @@ public class UserRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
-    private DataUtil dataUtil;
+    private DatabaseConnectionPool connectionPool;
 
     @Autowired
-    public UserRepository(DataUtil dataUtil) {
-        this.dataUtil = dataUtil;
+    public UserRepository(DatabaseConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     public User save(User user) throws SQLException {
         String sql = "insert into users (user_id, password, name, email) values (?, ?, ?, ?)";
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUserId());
             ps.setString(2, user.getPassword());
@@ -44,8 +44,8 @@ public class UserRepository {
 
     public User update(User user) throws SQLException {
         String sql = "update users set password=?, name=?, email=? where user_id=?";
-        try (Connection conn = dataUtil.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionPool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
             ps.setString(2, user.getName());
             ps.setString(3, user.getEmail());
@@ -62,7 +62,7 @@ public class UserRepository {
         String sql = "SELECT * FROM users";
 
         List<User> users = new ArrayList<>();
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -83,7 +83,7 @@ public class UserRepository {
     public User findUserByUserId(String userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE user_id = ?";
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, userId);
@@ -105,7 +105,7 @@ public class UserRepository {
         String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
         boolean exists = false;
 
-        try (Connection conn = dataUtil.getConnection();
+        try (Connection conn = connectionPool.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, userId);

@@ -14,6 +14,7 @@ import org.example.config.annotation.RequestParam;
 import org.example.config.mv.ModelAndView;
 import org.example.member.model.dto.UserDto;
 import org.example.post.model.dao.Post;
+import org.example.post.model.dto.PagedPostsResult;
 import org.example.post.model.dto.PostDto;
 import org.example.post.service.PostService;
 import org.example.util.session.SessionManager;
@@ -35,12 +36,28 @@ public class PostController {
     }
 
     @RequestMapping(path = "/", method = HttpMethod.GET)
-    public ModelAndView list() throws SQLException {
-        List<PostDto> postResponses = postService.getAll();
-        logger.info(postResponses.toString());
-        ModelAndView mv = new ModelAndView("post/PostList");
-        mv.addAttribute("posts", postResponses);
+    public ModelAndView list(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "15") int size
+    ) throws SQLException {
+        PagedPostsResult result = postService.getPagedPosts(page, size);
 
+        int totalPages = result.getTotalPages();
+        int currentPage = result.getCurrentPage();
+        int pageGroupSize = 5;
+
+        int startPage = ((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
+        int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+        boolean hasPreviousGroup = startPage > 1;
+        boolean hasNextGroup = endPage < totalPages;
+
+        ModelAndView mv = new ModelAndView("post/PostList");
+        mv.addAttribute("pagedResult", result);
+        mv.addAttribute("startPage", startPage);
+        mv.addAttribute("endPage", endPage);
+        mv.addAttribute("hasPreviousGroup", hasPreviousGroup);
+        mv.addAttribute("hasNextGroup", hasNextGroup);
         return mv;
     }
 
@@ -98,10 +115,15 @@ public class PostController {
         if (userDetails != null) {
             if (post.getUsername().equals(userDetails.getName())) {
                 // 삭제처리
-                postService.deleteById(id);
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.setHeader("X-Redirect-Location", "/");
-                response.getWriter().write("게시글이 성공적으로 삭제되었습니다.");
+                try {
+                    postService.deleteById(id);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setHeader("X-Redirect-Location", "/");
+                    response.getWriter().write("게시글이 성공적으로 삭제되었습니다.");
+                } catch (IllegalStateException e) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("다른 사람의 댓글이 존재해 삭제할 수 없습니다.");
+                }
             }
         }
     }

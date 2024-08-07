@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -16,7 +17,7 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <c:forEach items="${posts}" var="post">
+                <c:forEach items="${pagedResult.posts}" var="post">
                     <li>
                         <div class="wrap">
                             <div class="main">
@@ -25,8 +26,10 @@
                                 </strong>
                                 <div class="auth-info">
                                     <i class="icon-add-comment"></i>
-                                    <span class="time">작성 시간 ${post.createdAt}</span>
-                                    <a class="author">${post.username}</a>
+                                    <span class="time">
+                                            ${post.formattedCreatedAt}
+                                    </span>
+                                    <a href="#" class="author">${post.username}</a>
                                 </div>
                                 <div class="reply" title="댓글">
                                     <i class="icon-reply"></i>
@@ -40,7 +43,31 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
-                    <!-- 페이지네이션 -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <c:if test="${hasPreviousGroup}">
+                                <li>
+                                    <a href="?page=${startPage - 1}" aria-label="Previous Group">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            </c:if>
+
+                            <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                                <li class="${i == pagedResult.currentPage ? 'active' : ''}">
+                                    <a href="?page=${i}">${i}</a>
+                                </li>
+                            </c:forEach>
+
+                            <c:if test="${hasNextGroup}">
+                                <li>
+                                    <a href="?page=${endPage + 1}" aria-label="Next Group">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </c:if>
+                        </ul>
+                    </nav>
                 </div>
                 <div class="col-md-3 qna-write">
                     <a href="/questions" class="btn btn-primary pull-right" role="button">질문하기</a>

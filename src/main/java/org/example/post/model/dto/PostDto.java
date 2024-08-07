@@ -1,9 +1,13 @@
 package org.example.post.model.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.example.post.model.PostStatus;
 
 public class PostDto {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private Long id;
     private String userId;
     private String username;
@@ -11,6 +15,7 @@ public class PostDto {
     private String contents;
     private PostStatus status;
     private LocalDateTime createdAt;
+
 
     private PostDto(Builder builder) {
         this.id = builder.id;
@@ -71,6 +76,9 @@ public class PostDto {
         }
     }
 
+    public String getFormattedCreatedAt() {
+        return createdAt.format(formatter);
+    }
 
     public Long getId() {
         return id;
@@ -99,6 +107,7 @@ public class PostDto {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
 
     public PostDto updatePost(String title, String contents) {
         this.title = title;

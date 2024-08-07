@@ -14,20 +14,21 @@ import org.slf4j.LoggerFactory;
 @WebServlet(urlPatterns = "/!@!(#()@*#()!@#!@", loadOnStartup = 1)
 public class DatabaseInitServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitServlet.class);
-    private DataUtil dataUtil;
+    private DatabaseConnectionPool connectionPool;
 
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         ApplicationContext applicationContext = (ApplicationContext) servletContext.getAttribute("applicationContext");
-        dataUtil = applicationContext.getBean(DataUtil.class);
-        try (Connection conn = dataUtil.getConnection();
+        connectionPool = applicationContext.getBean(DatabaseConnectionPool.class);
+        try (Connection conn = connectionPool.getConnection();
              Statement stmt = conn.createStatement()) {
 
             logger.info("테이블 초기화");
             stmt.execute(createUserTable());
             stmt.execute(createPostTable());
             stmt.execute(createReplyTable());
+            createPostIndex();
 
         } catch (SQLException e) {
             throw new ServletException("Unable to initialize database", e);
@@ -56,11 +57,15 @@ public class DatabaseInitServlet extends HttpServlet {
                 ")";
     }
 
+    private String createPostIndex() {
+        return "CREATE INDEX idx_posts_status_created_at_id ON posts(status, created_at DESC, id DESC)";
+    }
+
     private String createReplyTable() {
         return "CREATE TABLE IF NOT EXISTS replies (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
                 "post_id BIGINT," +
-                "writer VARCHAR(50) NOT NULL," +
+                "user_id VARCHAR(50) NOT NULL," +
                 "contents TEXT NOT NULL," +
                 "status VARCHAR(50) NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
