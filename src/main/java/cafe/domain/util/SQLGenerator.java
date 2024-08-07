@@ -46,7 +46,7 @@ public class SQLGenerator {
         if (className == null) {
             throw new IllegalArgumentException("Invalid arguments");
         }
-        return "SELECT * FROM `" + className + "s` ORDER BY `created` ASC;";
+        return "SELECT * FROM `" + className + "s` ORDER BY `created` DESC;";
     }
 
     public String generateUpdateSQL(String className, Field[] fields) {

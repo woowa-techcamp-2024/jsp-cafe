@@ -31,6 +31,10 @@ public class ArticleService {
         return articleDatabase.selectAll();
     }
 
+    public Map<String, Article> findArticleByPage(int page) {
+        return articleDatabase.selectArticleByPage(page);
+    }
+
     public void verifyArticleId(User user, String requestURI) {
         String id = requestURI.split("/")[2];
         Article article = articleDatabase.selectById(id);
@@ -47,5 +51,9 @@ public class ArticleService {
         String id = requestURI.split("/")[2];
         Article article = articleDatabase.selectById(id);
         articleDatabase.update(id, Article.of(id, article.getWriter(), title, contents));
+    }
+
+    public int findArticleCount() {
+        return articleDatabase.selectArticleCount();
     }
 }

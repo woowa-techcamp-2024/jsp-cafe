@@ -11,6 +11,8 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <%
+                    int currentPage = Integer.parseInt(request.getParameter("page"));
+                    int maxPage = (int) request.getAttribute("maxPage");
                     Map<String, Article> articles = (Map<String, Article>) request.getAttribute("articles");
                     for (String key : articles.keySet()) {
                         Article article = articles.get(key);
@@ -41,13 +43,27 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                        <%
+                            if ((currentPage - 1) / 5 != 0) {
+                                int before = ((currentPage - 1) / 5) * 5;
+                        %>
+                            <li><a href="/articles?page=<%=before%>">«</a></li>
+                        <% } %>
+
+                        <%
+                            int start = ((currentPage - 1) / 5) * 5 + 1;
+                            int end = Math.min(start + 4, maxPage);
+                            for (int i = start; i <= end; i++) {
+                        %>
+                            <li><a href="/articles?page=<%=i%>"><%=i%></a></li>
+                        <% } %>
+
+                        <%
+                            if ((currentPage - 1) / 5 < (maxPage - 1) / 5) {
+                                int next = ((currentPage - 1) / 5 + 1) * 5 + 1;
+                        %>
+                            <li><a href="/articles?page=<%=next%>">»</a></li>
+                        <% } %>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
