@@ -19,9 +19,11 @@ public class ArticleListHandler implements Handler {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        req.setAttribute("articles", articleService.findAll());
+        int currentPage = Integer.parseInt(req.getParameter("page"));
+
+        req.setAttribute("maxPage", articleService.findArticleCount() / 15 + 1);
+        req.setAttribute("articles", articleService.findArticleByPage(currentPage));
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/article/list.jsp");
         dispatcher.forward(req, resp);
-        // TODO: 댓글 추가
     }
 }
