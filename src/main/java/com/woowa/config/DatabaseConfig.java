@@ -1,13 +1,11 @@
 package com.woowa.config;
 
-import com.woowa.database.QuestionDatabase;
-import com.woowa.database.QuestionJdbcDatabase;
-import com.woowa.database.QuestionMemoryDatabase;
-import com.woowa.database.ReplyDatabase;
-import com.woowa.database.ReplyJdbcDatabase;
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserJdbcDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.question.QuestionDatabase;
+import com.woowa.database.question.QuestionJdbcDatabase;
+import com.woowa.database.reply.ReplyDatabase;
+import com.woowa.database.reply.ReplyJdbcDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserJdbcDatabase;
 import com.woowa.framework.Bean;
 
 public class DatabaseConfig {

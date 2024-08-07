@@ -1,6 +1,6 @@
 package com.woowa.servlet;
 
-import com.woowa.database.UserDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.handler.UserHandler;
 import com.woowa.model.User;

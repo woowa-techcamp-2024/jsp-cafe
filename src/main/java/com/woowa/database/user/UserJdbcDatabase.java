@@ -1,5 +1,6 @@
-package com.woowa.database;
+package com.woowa.database.user;
 
+import com.woowa.database.DBConnectionUtils;
 import com.woowa.model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

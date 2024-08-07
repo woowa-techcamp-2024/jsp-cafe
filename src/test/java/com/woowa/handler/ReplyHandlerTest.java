@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
 import com.woowa.database.Page;
-import com.woowa.database.QuestionDatabase;
-import com.woowa.database.QuestionMemoryDatabase;
-import com.woowa.database.ReplyDatabase;
-import com.woowa.database.ReplyMemoryDatabase;
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.question.QuestionDatabase;
+import com.woowa.database.question.QuestionMemoryDatabase;
+import com.woowa.database.reply.ReplyDatabase;
+import com.woowa.database.reply.ReplyMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserMemoryDatabase;
 import com.woowa.exception.AuthorizationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Question;

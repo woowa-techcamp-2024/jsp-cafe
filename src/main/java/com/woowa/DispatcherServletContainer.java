@@ -1,7 +1,7 @@
 package com.woowa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowa.database.UserDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.filter.ErrorHandlingFilter;
 import com.woowa.filter.HttpMethodFilter;
 import com.woowa.framework.ApplicationInitializer;

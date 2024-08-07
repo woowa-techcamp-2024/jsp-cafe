@@ -1,5 +1,7 @@
-package com.woowa.database;
+package com.woowa.database.reply;
 
+import com.woowa.database.DBConnectionUtils;
+import com.woowa.database.Page;
 import com.woowa.model.Author;
 import com.woowa.model.QuestionInfo;
 import com.woowa.model.Reply;

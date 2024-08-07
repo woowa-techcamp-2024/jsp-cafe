@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 import com.woowa.database.Page;
-import com.woowa.database.QuestionDatabase;
-import com.woowa.database.QuestionMemoryDatabase;
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.question.QuestionDatabase;
+import com.woowa.database.question.QuestionMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserMemoryDatabase;
 import com.woowa.exception.AuthorizationException;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.Author;

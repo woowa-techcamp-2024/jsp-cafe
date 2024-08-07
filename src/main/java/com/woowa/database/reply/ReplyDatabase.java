@@ -1,5 +1,6 @@
-package com.woowa.database;
+package com.woowa.database.reply;
 
+import com.woowa.database.Page;
 import com.woowa.model.Reply;
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.woowa.handler;
 
-import com.woowa.database.UserDatabase;
+import com.woowa.database.user.UserDatabase;
 import com.woowa.framework.web.HttpMethod;
 import com.woowa.framework.web.RequestMapping;
 import com.woowa.framework.web.RequestParameter;

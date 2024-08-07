@@ -1,4 +1,4 @@
-package com.woowa.database;
+package com.woowa.database.user;
 
 import com.woowa.model.User;
 import java.util.List;

@@ -2,17 +2,15 @@ package com.woowa.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.woowa.database.UserDatabase;
-import com.woowa.database.UserMemoryDatabase;
+import com.woowa.database.user.UserDatabase;
+import com.woowa.database.user.UserMemoryDatabase;
 import com.woowa.framework.web.ResponseEntity;
 import com.woowa.model.User;
 import com.woowa.support.StubHttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
