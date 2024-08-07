@@ -1,11 +1,9 @@
 package org.example;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Objects;
 import org.example.util.LoggerUtil;
 import org.slf4j.Logger;
 

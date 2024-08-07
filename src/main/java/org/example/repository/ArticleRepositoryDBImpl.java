@@ -21,12 +21,6 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
     public static ArticleRepository getInstance() {
         if (instance == null) {
             instance = new ArticleRepositoryDBImpl();
-            instance.save(new Article("title1", "content1", "test"));
-            instance.save(new Article("title2", "content2", "test2"));
-            instance.save(new Article("title3", "content1", "test"));
-            instance.save(new Article("title4", "content2", "test"));
-            instance.save(new Article("title5", "content1", "test"));
-            instance.save(new Article("title6", "content2", "test"));
         }
         return instance;
     }
@@ -52,27 +46,34 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAll() {
+    public List<Article> findAll(int page, int pageSize) {
         List<Article> articles = new ArrayList<>();
-        String sql = "SELECT * FROM articles WHERE deleted = FALSE";
+        String sql = "SELECT * FROM articles WHERE deleted = FALSE ORDER BY article_id DESC LIMIT ? OFFSET ?";
+
         try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Article article = new Article(
-                    rs.getInt("article_id"),
-                    rs.getString("title"),
-                    rs.getString("content"),
-                    rs.getString("author")
-                );
-                article.setArticleId(rs.getInt("article_id"));
-                articles.add(article);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // LIMIT과 OFFSET 파라미터 설정
+            pstmt.setInt(1, pageSize);
+            pstmt.setInt(2, (page - 1) * pageSize);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Article article = new Article(
+                        rs.getInt("article_id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("author")
+                    );
+                    articles.add(article);
+                }
             }
         } catch (SQLException e) {
             logger.error("Failed to find articles", e);
         }
         return articles;
     }
+
 
     @Override
     public Optional<Article> findById(int id) {
@@ -123,5 +124,26 @@ public class ArticleRepositoryDBImpl implements ArticleRepository {
         } catch (SQLException e) {
             logger.error("Failed to delete article", e);
         }
+    }
+
+    @Override
+    public int getTotalPage(int pageSize) {
+        String sql = "SELECT COUNT(*) FROM articles WHERE deleted = FALSE";
+        int totalPage = 0;
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                totalPage = (rs.getInt(1) + pageSize - 1) / pageSize;
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to get total page", e);
+        }
+        return totalPage;
+    }
+
+    @Override
+    public boolean hasNext(int pageSize) {
+        return true;
     }
 }

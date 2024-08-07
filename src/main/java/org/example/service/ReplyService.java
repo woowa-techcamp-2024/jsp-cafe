@@ -44,8 +44,14 @@ public class ReplyService {
 
     // 글에 달린 댓글 찾기
     public List<Reply> findRepliesByArticleId(
-        int articleId
+        int articleId,
+        int start,
+        int count
     ) {
-        return replyRepository.findAllByArticleId(articleId);
+        return replyRepository.findAllByArticleId(articleId, start, count);
+    }
+
+    public int findReplyCount(Integer articleId) {
+        return replyRepository.findReplyCount(articleId);
     }
 }

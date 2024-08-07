@@ -45,14 +45,25 @@ public class SingleArticleServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/updateForm.jsp").forward(request, response);
             return;
         }
+        int start = Integer.parseInt(request.getParameter("start") == null ? "0" : request.getParameter("start"));
+        int count = Integer.parseInt(request.getParameter("count") == null ? "5" : request.getParameter("count"));
 
-        List<Reply> replyList = replyService.findRepliesByArticleId(article.getArticleId());
+        List<Reply> replyList = replyService.findRepliesByArticleId(article.getArticleId(), start, count);
         logger.info("uri: {}", request.getRequestURI());
         if(request.getRequestURI().endsWith("/replies")){
-            logger.info("replies: {}", articleId);
+            int totalCount = replyService.findReplyCount(article.getArticleId());
+
+            System.out.println("replyList: " + replyList);
+            System.out.println("start: " + start);
+            System.out.println("count: " + count);
+            System.out.println("totalCount: " + totalCount);
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            String json = new JSONObject().put("replies", replyList).toString();
+            String json = new JSONObject()
+                .put("replies", replyList)
+                .put("totalCount", totalCount)
+                .toString();
             response.getWriter().write(json);
             return;
         }

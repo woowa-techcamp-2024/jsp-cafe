@@ -6,9 +6,12 @@ import org.example.dto.UserCreateReqDto;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
 import org.example.repository.UserRepositoryDBImpl;
+import org.example.util.LoggerUtil;
+import org.slf4j.Logger;
 
 public class UserService {
 
+    private static final Logger logger = LoggerUtil.getLogger();
     private final UserRepository userRepository = UserRepositoryDBImpl.getInstance();
 
     public void createUser(

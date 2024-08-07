@@ -24,9 +24,9 @@ public class ArticleService {
 
     }
 
-    public List<Article> findAll() {
+    public List<Article> findAll(int page, int pageSize) {
         // 게시글 목록 조회
-        return articleRepository.findAll();
+        return articleRepository.findAll(page, pageSize);
     }
 
     public Article findById(int i) {
@@ -57,7 +57,7 @@ public class ArticleService {
             () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
-        List<Reply> replies = replyRepository.findAllByArticleId(i);
+        List<Reply> replies = replyRepository.findRealAll(i);
 
         // 게시글 작성자와 로그인한 사용자가 같은지 확인
         if (!article.isOwner(userId)) {
@@ -75,5 +75,14 @@ public class ArticleService {
         // 게시글 삭제
         articleRepository.deleteById(i);
         logger.info("게시글 삭제 완료");
+    }
+
+    public int getTotalPage(int pageSize) {
+        // 총 페이지 수 계산
+        return articleRepository.getTotalPage(pageSize);
+    }
+
+    public boolean hasNext(int pageSize) {
+        return articleRepository.hasNext(pageSize);
     }
 }
