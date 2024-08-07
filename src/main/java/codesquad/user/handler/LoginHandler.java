@@ -1,4 +1,4 @@
-package codesquad.auth.handler;
+package codesquad.user.handler;
 
 import codesquad.common.exception.AuthenticationException;
 import codesquad.common.exception.NoSuchElementException;

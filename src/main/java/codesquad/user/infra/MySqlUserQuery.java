@@ -1,6 +1,8 @@
-package codesquad.global.dao;
+package codesquad.user.infra;
 
 import codesquad.common.db.connection.ConnectionManager;
+import codesquad.user.handler.dao.UserQuery;
+import codesquad.user.handler.dto.response.UserResponse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,9 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.StringTokenizer" %>
-<%@ page import="codesquad.global.dao.ArticleQuery.ArticleDetailResponse" %>
-<%@ page import="codesquad.global.dao.ArticleQuery.ArticleResponse" %>
-<%@ page import="java.util.List" %>
-<%@ page import="codesquad.global.dao.ArticleQuery.CommentResponse" %>
+<%@ page import="codesquad.article.handler.dto.response.ArticleResponse" %>
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -24,8 +21,7 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <%
-            ArticleDetailResponse detailArticle = (ArticleDetailResponse) request.getAttribute("articleDetailResponse");
-            ArticleResponse article = detailArticle.article();
+            ArticleResponse article = (ArticleResponse) request.getAttribute("articleResponse");
             StringTokenizer st = new StringTokenizer(article.content(), "\n");
         %>
         <div class="panel panel-default">
@@ -78,59 +74,12 @@
                     </div>
                 </article>
 
-                <%
-                    List<CommentResponse> comments = detailArticle.comments();
-                %>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong><%=comments == null ? 0 : comments.size()%></strong>개의 의견
-                        </p>
-                        <div class="qna-comment-slipp-articles" id="comment-list">
-                            <%
-                                if (comments != null) {
-                                    for (CommentResponse comment : comments) {
-                            %>
-                            <article class="article" id="comment-<%=comment.id()%>">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                                             class="article-author-thumb" alt="">
-                                    </div>
-                                    <div class="article-header-text">
-                                        <a href="/users/<%=comment.commenterId()%>"
-                                           class="article-author-name"><%=comment.commenter()%></a>
-                                        <a href="#comment-<%=comment.id()%>" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p><%=comment.content()%>
-                                    </p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/<%=article.articleId()%>/answers/<%=comment.id()%>/update-form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="delete-answer-form" action="/questions/<%=article.articleId()%>/answers/<%=comment.id()%>"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <%
-                                    }
-                                }
-                            %>
-                        </div>
-                        <form class="submit-write" id="comment-form"
-                              action="/questions/<%=article.articleId()%>/answers" method="POST">
+                        <p class="qna-comment-count"><strong id="comment-count">0</strong>개의 의견</p>
+                        <div class="qna-comment-slipp-articles" id="comment-list"></div>
+                        <button id="load-more-comments" class="btn btn-primary">더보기</button>
+                        <form class="submit-write" id="comment-form" action="/questions/<%=article.articleId()%>/answers" method="POST">
                             <div class="form-group" style="padding:14px;">
                                 <textarea name="contents" id="contents" class="form-control" placeholder="Update your status"></textarea>
                             </div>
@@ -180,6 +129,51 @@
 <script src="/static/js/scripts.js"></script>
 <script>
     $(document).ready(function () {
+        let pageNumber = 1;
+        const pageSize = 5;
+
+        function loadComments(page) {
+            const articleId = '<%=article.articleId()%>';
+            $.ajax({
+                type: 'GET',
+                url: '/questions/' + articleId + '/answers',
+                data: { pageNumber: page, pageSize: pageSize },
+                success: function(response) {
+                    const responseData = typeof response === 'string' ? JSON.parse(response) : response;
+                    const comments = responseData.data.content;
+                    const pageInfo = responseData.data.pageInfo;
+                    if (pageInfo.isLast) {
+                        $('#load-more-comments').hide();
+                    } else {
+                        $('#load-more-comments').show();
+                    }
+                    $('#comment-count').text(pageInfo.totalElements);
+                    comments.forEach(comment => {
+                        const template = $('#commentTemplate').html()
+                            .replace('{0}', comment.commenterId)
+                            .replace('{1}', comment.commenter)
+                            .replace('{2}', new Date().toISOString().slice(0, 19).replace('T', ' '))
+                            .replace('{3}', comment.id)
+                            .replace('{4}', comment.content)
+                            .replace('{5}', articleId);
+                        $('#comment-list').append(template);
+                    });
+                },
+                error: function () {
+                    alert('Error loading comments.');
+                }
+            });
+        }
+
+        // Load initial comments
+        loadComments(pageNumber);
+
+        // Load more comments on button click
+        $('#load-more-comments').on('click', function () {
+            pageNumber++;
+            loadComments(pageNumber);
+        });
+
         $('#comment-form').on('submit', function (e) {
             e.preventDefault();
             const articleId = '<%=article.articleId()%>';

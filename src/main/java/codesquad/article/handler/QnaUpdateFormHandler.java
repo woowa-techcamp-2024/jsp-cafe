@@ -1,9 +1,10 @@
 package codesquad.article.handler;
 
+import codesquad.article.handler.dto.response.ArticleResponse;
+import codesquad.article.service.QueryArticleService;
 import codesquad.common.handler.HttpServletRequestHandler;
-import codesquad.common.handler.annotation.Response;
-import codesquad.global.dao.ArticleQuery;
 import codesquad.common.handler.annotation.RequestMapping;
+import codesquad.common.handler.annotation.Response;
 import codesquad.user.domain.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +21,10 @@ import java.util.Optional;
 public class QnaUpdateFormHandler extends HttpServletRequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(QnaUpdateFormHandler.class);
 
-    private final ArticleQuery articleQuery;
+    private final QueryArticleService queryArticleService;
 
-    public QnaUpdateFormHandler(ArticleQuery articleQuery) {
-        this.articleQuery = articleQuery;
+    public QnaUpdateFormHandler(QueryArticleService queryArticleService) {
+        this.queryArticleService = queryArticleService;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class QnaUpdateFormHandler extends HttpServletRequestHandler {
             return;
         }
         User loginUser = (User) req.getSession().getAttribute("loginUser");
-        Optional<ArticleQuery.ArticleResponse> findArticleResponse = articleQuery.findById(articleId);
+        Optional<ArticleResponse> findArticleResponse = queryArticleService.findById(articleId);
         if (findArticleResponse.isEmpty()) {
             req.setAttribute("errorMsg", "존재하지 않는 글입니다.");
             req.getRequestDispatcher("/WEB-INF/views/error/error.jsp").forward(req, resp);

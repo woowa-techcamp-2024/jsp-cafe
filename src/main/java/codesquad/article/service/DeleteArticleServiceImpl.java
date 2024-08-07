@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class DeleteArticleServiceImpl implements DeleteArticleService {
-    private ArticleRepository articleRepository;
-    private CommentRepository commentRepository;
+    private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
 
     public DeleteArticleServiceImpl(ArticleRepository articleRepository, CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
