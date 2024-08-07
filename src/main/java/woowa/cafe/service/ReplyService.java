@@ -1,10 +1,12 @@
 package woowa.cafe.service;
 
 import woowa.cafe.domain.Reply;
+import woowa.cafe.dto.Offset;
 import woowa.cafe.dto.ReplyInfo;
 import woowa.cafe.dto.UserInfo;
 import woowa.cafe.repository.ReplyRepository;
 import woowa.frame.core.annotation.Component;
+import woowa.frame.web.collection.Page;
 
 import java.util.List;
 
@@ -17,8 +19,8 @@ public class ReplyService {
         this.replyRepository = replyRepository;
     }
 
-    public List<ReplyInfo> getAllReplies(String questionId) {
-        return replyRepository.findAllByQuestionId(questionId).stream()
+    public Page<ReplyInfo> getAllReplies(String questionId, Offset pageable) {
+        List<ReplyInfo> replies = replyRepository.findAllByQuestionId(questionId, pageable).stream()
                 .map(reply -> new ReplyInfo(
                         reply.getId(),
                         reply.getContent(),
@@ -29,6 +31,8 @@ public class ReplyService {
                         reply.getQuestionId()
                 ))
                 .toList();
+
+        return new Page<>(replies, pageable.size(), replyRepository.count(questionId));
     }
 
     public ReplyInfo createReply(String questionId, String content, String userId, String authorName) {

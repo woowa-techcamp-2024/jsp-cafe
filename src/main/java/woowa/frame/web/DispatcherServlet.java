@@ -1,6 +1,8 @@
 package woowa.frame.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +15,8 @@ import woowa.frame.core.annotation.Component;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,6 +31,10 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void init() {
         table = beanContainer.getBean(RouteTable.class);
+        JavaTimeModule module = new JavaTimeModule();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
+        objectMapper.registerModule(module);
     }
 
     @Override

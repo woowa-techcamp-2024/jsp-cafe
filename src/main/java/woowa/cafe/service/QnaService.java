@@ -1,13 +1,16 @@
 package woowa.cafe.service;
 
 import woowa.cafe.domain.Question;
+import woowa.cafe.dto.Pageable;
 import woowa.cafe.dto.QuestionInfo;
 import woowa.cafe.dto.UpdateQuestionRequest;
 import woowa.cafe.dto.request.CreateQuestionRequest;
 import woowa.cafe.repository.QuestionRepository;
 import woowa.cafe.repository.ReplyRepository;
 import woowa.frame.core.annotation.Component;
+import woowa.frame.web.collection.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -22,20 +25,22 @@ public class QnaService {
     }
 
     public void createQna(CreateQuestionRequest request) {
-        Question question = new Question(request.authorName(), request.title(), request.content(), request.userId(), "ACTIVE");
+        Question question = new Question(request.authorName(), request.title(), request.content(), request.userId(), "ACTIVE", LocalDateTime.now());
         questionRepository.save(question);
     }
 
-    public List<QuestionInfo> getQuestions() {
-        List<Question> questions = questionRepository.findAll();
-        return questions.stream()
+    public Page<QuestionInfo> getQuestions(Pageable pageable) {
+        List<QuestionInfo> questions = questionRepository.findAll(pageable).stream()
                 .map(question -> new QuestionInfo(
                         question.getId(),
                         question.getAuthorName(),
                         question.getTitle(),
-                        question.getContent()
+                        question.getContent(),
+                        question.getCreatedAt()
                 ))
                 .toList();
+        long totalCount = questionRepository.count();
+        return new Page<>(questions, pageable.size(), totalCount);
     }
 
     public QuestionInfo getQuestion(String id) {
@@ -47,7 +52,8 @@ public class QnaService {
                 question.getId(),
                 question.getAuthorName(),
                 question.getTitle(),
-                question.getContent()
+                question.getContent(),
+                question.getCreatedAt()
         );
     }
 
@@ -65,7 +71,8 @@ public class QnaService {
                 question.getId(),
                 question.getAuthorName(),
                 question.getTitle(),
-                question.getContent()
+                question.getContent(),
+                question.getCreatedAt()
         );
     }
 

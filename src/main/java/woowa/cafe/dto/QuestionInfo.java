@@ -1,12 +1,12 @@
 package woowa.cafe.dto;
 
+import java.time.LocalDateTime;
+
 public record QuestionInfo(
         String id,
         String authorName,
         String title,
-        String content
+        String content,
+        LocalDateTime createdAt
 ) {
-    public String getPostTime() {
-        return "2021-07-07 12:00:00";
-    }
 }

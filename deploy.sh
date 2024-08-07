@@ -21,7 +21,7 @@ fi
 sudo rm -rf "$TOMCAT_WEBAPPS_PATH/ROOT" "$TOMCAT_WEBAPPS_PATH/ROOT.war"
 
 # Step 5: Copy the WAR file as ROOT.war to Tomcat's webapps directory
-cp "$WAR_FILE_PATH" "$TOMCAT_WEBAPPS_PATH/ROOT.war" || { echo "Failed to copy WAR file!"; exit 1; }
+sudo cp "$WAR_FILE_PATH" "$TOMCAT_WEBAPPS_PATH/ROOT.war" || { echo "Failed to copy WAR file!"; exit 1; }
 
 # Step 6: Restart Tomcat
 sudo /opt/tomcat/bin/shutdown.sh

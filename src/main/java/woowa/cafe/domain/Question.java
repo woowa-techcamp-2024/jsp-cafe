@@ -1,5 +1,8 @@
 package woowa.cafe.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class Question {
 
     private String id;
@@ -8,9 +11,11 @@ public class Question {
     private String content;
     private String userId;
     private String status;
+    private LocalDateTime createdAt;
 
-    public Question(String authorName, String title, String content, String userId, String status) {
+    public Question(String authorName, String title, String content, String userId, String status, LocalDateTime createdAt) {
         this.authorName = authorName;
+        this.createdAt = createdAt;
         this.title = title;
         this.content = content;
         this.userId = userId;
@@ -39,6 +44,10 @@ public class Question {
 
     public String getStatus() {
         return status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     // setter

@@ -4,15 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import woowa.cafe.config.JdbcConfig;
 import woowa.cafe.domain.Question;
+import woowa.cafe.dto.Pageable;
 import woowa.frame.core.annotation.Component;
 import woowa.frame.core.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +33,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                        "title VARCHAR(255), " +
                        "content VARCHAR(255)," +
                        "userId VARCHAR(255)," +
-                       "status VARCHAR(20)" +
+                       "status VARCHAR(20)," +
+                       "createdAt DATETIME" +
                        ")";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -49,7 +48,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
 
     @Override
     public void save(Question question) {
-        String query = "INSERT INTO questions (authorName, title, content, userId, status) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO questions (authorName, title, content, userId, status, createdAt) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, question.getAuthorName());
@@ -57,6 +56,7 @@ public class JdbcQuestionRepository implements QuestionRepository {
             ps.setString(3, question.getContent());
             ps.setString(4, question.getUserId());
             ps.setString(5, question.getStatus());
+            ps.setTimestamp(6, Timestamp.valueOf(question.getCreatedAt()));
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,12 +64,22 @@ public class JdbcQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public List<Question> findAll() {
+    public List<Question> findAll(Pageable pageable) {
+        if (pageable == null) {
+            pageable = new Pageable(1, 15, "createdAt");
+        }
+
         List<Question> questions = new ArrayList<>();
-        String query = "SELECT * FROM questions WHERE status != 'DELETED'";
+        String subquery = "SELECT id FROM questions WHERE status != 'DELETED' ORDER BY " + pageable.sort() + " DESC LIMIT ?, ?";
+        String query = "SELECT * FROM (" + subquery + ") as q1 JOIN questions as q2 on q1.id = q2.id;";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(query)
+        ) {
+            ps.setLong(1, pageable.getOffset());
+            ps.setLong(2, pageable.getSize());
+
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
                 Field idField = Question.class.getDeclaredField("id");
@@ -79,7 +89,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                         rs.getString("title"),
                         rs.getString("content"),
                         rs.getString("userId"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        rs.getTimestamp("createdAt").toLocalDateTime()
                 );
                 idField.set(entity, id);
                 questions.add(entity);
@@ -107,7 +118,8 @@ public class JdbcQuestionRepository implements QuestionRepository {
                             rs.getString("title"),
                             rs.getString("content"),
                             rs.getString("userId"),
-                            rs.getString("status")
+                            rs.getString("status"),
+                            rs.getTimestamp("createdAt").toLocalDateTime()
                     );
                     idField.set(entity, id);
                     return entity;
@@ -155,5 +167,21 @@ public class JdbcQuestionRepository implements QuestionRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public long count() {
+        String query = "SELECT COUNT(*) FROM questions WHERE status != 'DELETED'";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("count query error");
     }
 }

@@ -2,6 +2,7 @@ package woowa.cafe.repository;
 
 import woowa.cafe.config.JdbcConfig;
 import woowa.cafe.domain.Reply;
+import woowa.cafe.dto.Offset;
 import woowa.frame.core.annotation.Component;
 
 import javax.sql.DataSource;
@@ -85,13 +86,18 @@ public class JdbcReplyRepository implements ReplyRepository {
     }
 
     @Override
-    public List<Reply> findAllByQuestionId(String questionId) {
+    public List<Reply> findAllByQuestionId(String questionId, Offset offset) {
+
+        String query = "SELECT * FROM replies WHERE questionId = ? and status != 'DELETED' ORDER BY createdDate DESC LIMIT ?, ?;";
         List<Reply> replies = new ArrayList<>();
-        String query = "SELECT * FROM replies WHERE questionId = ? and status != 'DELETED'";
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)
         ) {
             ps.setString(1, questionId);
+            ps.setLong(2, offset.offset());
+            ps.setLong(3, offset.size());
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Long id = rs.getLong("id");
@@ -163,6 +169,23 @@ public class JdbcReplyRepository implements ReplyRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public long count(String questionId) {
+        String query = "SELECT COUNT(*) FROM replies WHERE questionId = ? and status != 'DELETED'";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, questionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("count query error");
     }
 
     @Override

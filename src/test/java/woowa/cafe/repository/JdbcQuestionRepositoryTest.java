@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import woowa.cafe.domain.Question;
 import woowa.cafe.testContainer.RepositoryTestContainer;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,14 +28,15 @@ class JdbcQuestionRepositoryTest extends RepositoryTestContainer {
                 "title",
                 "contents",
                 "userId",
-                "ACTIVE"
+                "ACTIVE",
+                LocalDateTime.now()
         );
 
         // when
         jdbcQuestionRepository.save(question);
 
         // then
-        List<Question> questions = jdbcQuestionRepository.findAll();
+        List<Question> questions = jdbcQuestionRepository.findAll(null);
         for (Question q : questions) {
             assertThat(q.getId()).isNotNull();
             assertThat(q.getAuthorName()).isEqualTo("authorName");

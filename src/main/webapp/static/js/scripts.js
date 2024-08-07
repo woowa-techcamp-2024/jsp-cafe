@@ -60,7 +60,10 @@ function replyHtml(replyInfo) {
                                         <li>
                                             <input type="hidden" name="_method" value="DELETE">
                                             <button type="button" class="delete-answer-button"
-                                                    onclick="deleteReply('${replyInfo.id}')">삭제
+                                                    onclick="{
+                                                                incrementReplyCount(-1);
+                                                                deleteReply('${replyInfo.questionId}', '${replyInfo.id}');
+                                                                }">삭제
                                             </button>
                                         </li>
                                     </ul>
