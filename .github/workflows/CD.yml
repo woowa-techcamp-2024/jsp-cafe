@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [ "hseong3243", "feat/pagination" ]
+    branches: [ "hseong3243" ]
 
 permissions:
   contents: read
