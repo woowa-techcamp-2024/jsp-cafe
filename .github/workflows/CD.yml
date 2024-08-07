@@ -33,7 +33,8 @@ jobs:
       - name: Build and save Docker image
         run: |
           docker build -t jsp-cafe:${{ github.sha }} .
-          docker save jsp-cafe:${{ github.sha }} jsp-cafe.tar
+          docker save -o jsp-cafe.tar jsp-cafe:${{ github.sha }}
+          chmod 664 jsp-cafe.tar
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.7
@@ -51,7 +52,8 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
-            docker load -i jsp-cafe.tar
             docker stop $(docker ps -a -q) || true
+            docker rmi $(docker images -q)
+            docker load -i jsp-cafe.tar
             docker run -d -p 8080:8080 --add-host=host.docker.internal:host-gateway jsp-cafe:${{ github.sha }}
             rm jsp-cafe.tar
