@@ -122,11 +122,9 @@ class ArticleServiceTest {
             String title = "익명 제목";
             String content = "익명 내용";
             Article article = articleService.writeArticle(new ArticleWriteRequest(user.getId(), title, content));
-            System.out.println("article = " + article);
 
             // when
             ArticleDetailsResponse response = articleService.findArticleDetails(article.getId());
-            System.out.println("response = " + response);
 
             // then
             assertArticleDetailsResponse(response, article, title, content, user.getId(), user.getNickname());

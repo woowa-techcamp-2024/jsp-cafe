@@ -222,7 +222,7 @@ class ArticleRepositoryTest {
 
             // when
             List<Article> firstPage = repository.findByOffsetPagination(0, PAGE_SIZE);
-            System.out.println("firstPage = " + firstPage);
+
             // then
             assertThat(firstPage).hasSize(PAGE_SIZE);
             assertThat(firstPage.get(0).getId()).isEqualTo(15L);
