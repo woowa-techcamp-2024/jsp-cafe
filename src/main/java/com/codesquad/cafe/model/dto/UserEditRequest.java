@@ -23,8 +23,13 @@ public class UserEditRequest {
     public UserEditRequest() {
     }
 
-    public UserEditRequest(Long id, String username, String password, String originalPassword, String confirmPassword,
-                           String name, String email) {
+    public UserEditRequest(Long id,
+                           String username,
+                           String password,
+                           String originalPassword,
+                           String confirmPassword,
+                           String name,
+                           String email) {
         this.id = id;
         this.username = username;
         this.password = password;
