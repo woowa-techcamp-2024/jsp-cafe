@@ -143,17 +143,28 @@ public class DBReplyRepository implements ReplyRepository {
     }
 
     @Override
-    public List<ReplyResponse> findByArticleIdWithUser(Long articleId) {
+    public List<ReplyResponse> findByArticleIdWithUser(Long articleId, ReplyCursor cursor) {
         List<ReplyResponse> replies = new ArrayList<>();
         String sql = "SELECT r.reply_id, r.content, r.user_id, u.nickname, r.created_at "
                 + "FROM replies r "
                 + "INNER JOIN users u ON r.user_id = u.id "
                 + "WHERE r.article_id = ? AND r.deleted_at IS NULL ";
 
+        if (cursor.last() != null) {
+            sql = sql + "AND r.reply_id <= ? ";
+        }
+        sql = sql + "ORDER BY r.reply_id DESC LIMIT ?";
+
         try (Connection conn = connector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)
         ) {
-            pstmt.setLong(1, articleId);
+            int paramIndex = 1;
+            pstmt.setLong(paramIndex++, articleId);
+            if (cursor.last() != null) {
+                pstmt.setLong(paramIndex++, cursor.last());
+            }
+            pstmt.setLong(paramIndex, cursor.count());
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     ReplyResponse replyResponse = new ReplyResponse(
