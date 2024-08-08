@@ -13,6 +13,8 @@ import org.example.cafe.domain.ReplyRepository;
 
 public class QuestionService {
 
+    public static final int PAGE_SIZE = 15;
+
     private final QuestionRepository questionRepository;
     private final ReplyRepository replyRepository;
 
@@ -27,8 +29,8 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public List<Question> findAll() {
-        return questionRepository.findAll();
+    public List<Question> findAll(Long page) {
+        return questionRepository.findAll(page, PAGE_SIZE);
     }
 
     public Question findById(Long id) {
@@ -60,7 +62,7 @@ public class QuestionService {
 
         List<Reply> replies = replyRepository.findByQuestionId(questionId);
         validNoOtherUserReplies(loginUserId, replies);
-        deleteAllReplies(replies);
+        replyRepository.deleteByQuestionId(questionId);
 
         question.delete();
         questionRepository.update(question);
@@ -70,13 +72,6 @@ public class QuestionService {
         boolean otherUserReplyExists = replies.stream().anyMatch(reply -> !reply.hasWriter(loginUserId));
         if (otherUserReplyExists) {
             throw new BadRequestException("다른 사용자의 댓글이 존재하는 게시글은 삭제할 수 없습니다.");
-        }
-    }
-
-    private void deleteAllReplies(List<Reply> replies) {
-        for (Reply reply : replies) {
-            reply.delete();
-            replyRepository.update(reply);
         }
     }
 

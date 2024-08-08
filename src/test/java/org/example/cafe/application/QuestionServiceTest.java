@@ -61,8 +61,7 @@ class QuestionServiceTest {
 
             questionService.deleteQuestion(loginUserId, questionId);
 
-            verify(replyRepository).update(reply1);
-            verify(replyRepository).update(reply2);
+            verify(replyRepository).deleteByQuestionId(questionId);
         }
 
         @Test

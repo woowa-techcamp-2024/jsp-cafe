@@ -8,11 +8,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.time.LocalDateTime;
 import org.example.cafe.application.QuestionService;
 import org.example.cafe.application.ReplyService;
 import org.example.cafe.application.dto.QuestionUpdateDto;
+import org.example.cafe.application.dto.ReplyPageParam;
 import org.example.cafe.common.exception.BadAuthenticationException;
+import org.example.cafe.common.page.Page;
 import org.example.cafe.domain.Question;
 import org.example.cafe.domain.Reply;
 import org.example.cafe.utils.JsonDataBinder;
@@ -61,11 +63,21 @@ public class QuestionDetailServlet extends BaseServlet {
 
     private void forwardQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId)
             throws ServletException, IOException {
+        Long lastReplyId = null;
+        LocalDateTime createdAt = null;
+        if (request.getParameter("lastReplyId") != null) {
+            lastReplyId = Long.parseLong(request.getParameter("lastReplyId"));
+            createdAt = LocalDateTime.parse(request.getParameter("createdAt"));
+        }
+
+        log.debug("lastReplyId: {}, createdAt: {}", lastReplyId, createdAt);
+
         Question question = questionService.findById(questionId);
-        List<Reply> replies = replyService.findRepliesByQuestionId(questionId);
+        Page<Reply> replies = replyService.findReplyPageByQuestionId(
+                new ReplyPageParam(questionId, lastReplyId, createdAt));
 
         request.setAttribute("question", question);
-        request.setAttribute("replies", replies);
+        request.setAttribute("replies", replies.getContent());
         request.getRequestDispatcher("/WEB-INF/qna/detail.jsp").forward(request, response);
     }
 

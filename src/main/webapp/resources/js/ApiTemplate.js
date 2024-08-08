@@ -1,3 +1,17 @@
+function getAPI(url, successCallback) {
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+            successCallback(response);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', xhr.responseJSON.error);
+            alert(xhr.responseJSON.error);
+        }
+    });
+}
+
 function postAPI(url, data, successPath) {
     $.ajax({
         url: url,

@@ -1,12 +1,12 @@
-package org.example.cafe.infrastructure;
+package org.example.cafe.infra;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.example.cafe.domain.User;
 import org.example.cafe.domain.UserRepository;
-import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
-import org.example.cafe.infrastructure.jdbc.RowMapper;
+import org.example.cafe.infra.jdbc.JdbcTemplate;
+import org.example.cafe.infra.jdbc.RowMapper;
 
 public class UserJdbcRepository implements UserRepository {
 

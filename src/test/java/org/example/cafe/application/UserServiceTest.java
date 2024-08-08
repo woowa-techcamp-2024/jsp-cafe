@@ -12,9 +12,9 @@ import org.example.cafe.common.exception.CafeException;
 import org.example.cafe.common.exception.DataNotFoundException;
 import org.example.cafe.domain.User;
 import org.example.cafe.domain.UserRepository;
-import org.example.cafe.infrastructure.UserJdbcRepository;
-import org.example.cafe.infrastructure.database.DbConnector;
-import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
+import org.example.cafe.infra.UserJdbcRepository;
+import org.example.cafe.infra.database.DbConnector;
+import org.example.cafe.infra.jdbc.JdbcTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DisplayName("UserService 단위 테스트")
+@DisplayName("UserService 테스트")
 class UserServiceTest {
 
     DbConnector dbConnector = new DbConnector().init();

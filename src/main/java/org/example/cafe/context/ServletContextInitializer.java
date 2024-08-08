@@ -16,11 +16,11 @@ import org.example.cafe.application.UserService;
 import org.example.cafe.domain.QuestionRepository;
 import org.example.cafe.domain.ReplyRepository;
 import org.example.cafe.domain.UserRepository;
-import org.example.cafe.infrastructure.QuestionJdbcRepository;
-import org.example.cafe.infrastructure.ReplyJdbcRepository;
-import org.example.cafe.infrastructure.UserJdbcRepository;
-import org.example.cafe.infrastructure.database.DbConnector;
-import org.example.cafe.infrastructure.jdbc.JdbcTemplate;
+import org.example.cafe.infra.QuestionJdbcRepository;
+import org.example.cafe.infra.ReplyJdbcRepository;
+import org.example.cafe.infra.UserJdbcRepository;
+import org.example.cafe.infra.database.DbConnector;
+import org.example.cafe.infra.jdbc.JdbcTemplate;
 import org.slf4j.Logger;
 
 @WebListener
@@ -56,6 +56,9 @@ public class ServletContextInitializer implements ServletContextListener {
             setContext("QuestionRepository", () ->
                     new QuestionJdbcRepository(getBean("JdbcTemplate", JdbcTemplate.class)));
 
+            setContext("QuestionCountCache", () ->
+                    new QuestionCountCache(getBean("QuestionRepository", QuestionRepository.class)));
+
             setContext("UserService", () ->
                     new UserService(getBean("UserRepository", UserRepository.class)));
             setContext("AuthService", () ->
@@ -78,5 +81,11 @@ public class ServletContextInitializer implements ServletContextListener {
 
     private <T> T getBean(String name, Class<T> clazz) {
         return clazz.cast(servletContext.getAttribute(name));
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        getBean("DbConnector", DbConnector.class).close();
+        getBean("PostCountCache", QuestionCountCache.class).close();
     }
 }

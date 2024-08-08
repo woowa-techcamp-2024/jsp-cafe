@@ -1,15 +1,17 @@
-package org.example.cafe.infrastructure.jdbc;
+package org.example.cafe.infra.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.example.cafe.common.exception.CafeException;
-import org.example.cafe.infrastructure.jdbc.exception.JdbcTemplateException;
+import org.example.cafe.infra.jdbc.exception.JdbcTemplateException;
 
 public class JdbcTemplate {
 
@@ -31,6 +33,8 @@ public class JdbcTemplate {
                 preparedStatement.setLong(i + 1, largs);
             } else if (args[i] instanceof Boolean bargs) {
                 preparedStatement.setBoolean(i + 1, bargs);
+            } else if (args[i] instanceof LocalDateTime largs) {
+                preparedStatement.setTimestamp(i + 1, Timestamp.valueOf(largs));
             } else {
                 throw new JdbcTemplateException("Unsupported type " + args[i].getClass());
             }

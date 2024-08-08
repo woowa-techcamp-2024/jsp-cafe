@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure.database;
+package org.example.cafe.infra.database;
 
 import static org.example.cafe.utils.LoggerFactory.getLogger;
 
@@ -61,5 +61,11 @@ public class DbConnector {
 
     public Connection getConnection() throws SQLException {
         return this.dataSource.getConnection();
+    }
+
+    public void close() {
+        if (dataSource instanceof HikariDataSource hds) {
+            hds.close();
+        }
     }
 }

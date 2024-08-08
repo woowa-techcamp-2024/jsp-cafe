@@ -8,7 +8,9 @@ public interface QuestionRepository {
 
     Question findById(Long id);
 
-    List<Question> findAll();
+    List<Question> findAll(Long page, int pageSize);
+
+    Long count(String keyword);
 
     void update(Question question);
 

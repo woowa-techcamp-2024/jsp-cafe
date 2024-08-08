@@ -91,6 +91,11 @@
                                     </article>
                                 </c:forEach>
                             </div>
+                            <c:if test="${replies.size() == 5}">
+                                <button id="load-more-replies" class="btn btn-primary" style="width: 100%;"
+                                        onclick="loadNextReply(${question.questionId})">더보기
+                                </button>
+                            </c:if>
                             <form class="submit-write">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" placeholder="Update your status"

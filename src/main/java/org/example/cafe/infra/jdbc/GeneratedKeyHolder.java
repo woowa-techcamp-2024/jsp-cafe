@@ -1,4 +1,4 @@
-package org.example.cafe.infrastructure.jdbc;
+package org.example.cafe.infra.jdbc;
 
 public class GeneratedKeyHolder implements KeyHolder {
 
