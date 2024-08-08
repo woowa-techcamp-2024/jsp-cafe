@@ -87,12 +87,8 @@ public class ArticleServlet extends HttpServlet {
                                      Map<String, String> pathVariables) throws ServletException, IOException {
         log.info("handleDetailArticle start");
         Long articleId = Long.parseLong(pathVariables.get("id"));
-        Long lastReplyId = Long.parseLong(pathVariables.get("lastReplyId"));
         ArticleDetailsResponse articleDetails = articleService.findArticleDetails(articleId);
-        List<ReplyResponse> replies = replyService.findReplyList(articleId, lastReplyId);
-
         req.setAttribute("article", articleDetails);
-        req.setAttribute("comments", replies);
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/show.jsp");
         requestDispatcher.forward(req, resp);
