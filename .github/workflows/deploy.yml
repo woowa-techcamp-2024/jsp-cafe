@@ -25,9 +25,9 @@ jobs:
             # Checkout the specific branch (step-7 in this case)
             git checkout step-8
             # build docker
-            docker build -t jsp-cafe .
+            sudo docker build -t jsp-cafe .
             # Run the container
-            docker run -d -p 8080:8080 jsp-cafe
+            sudo docker run -d -p 8080:8080 jsp-cafe
 #
 #            # Stop Tomcat
 #            sudo systemctl stop tomcat10
