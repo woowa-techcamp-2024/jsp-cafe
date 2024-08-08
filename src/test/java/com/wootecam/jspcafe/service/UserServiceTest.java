@@ -110,21 +110,39 @@ class UserServiceTest extends ServiceTest {
     }
 
     @Nested
-    class readAll_메소드는 {
+    class countAll_메소드는 {
 
         @Test
-        void 저장되어있는_모든_사용자를_반환한다() {
+        void 현재_존재하는_모든_사용자의_수를_반환한다() {
             // given
             userRepository.save(new User("id", "password", "name", "email"));
             userRepository.save(new User("id", "password", "name", "email"));
             userRepository.save(new User("id", "password", "name", "email"));
 
             // when
-            List<User> users = userService.readAll();
+            int userCount = userService.countAll();
+
+            // then
+            assertThat(userCount).isEqualTo(3);
+        }
+    }
+
+    @Nested
+    class readAll_메소드는 {
+
+        @Test
+        void 페이지_하나의_사이즈만큼의_사용자목록을_반환한다() {
+            // given
+            userRepository.save(new User("id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
+            userRepository.save(new User("id", "password", "name", "email"));
+
+            // when
+            List<User> users = userService.readAll(1, 2);
 
             // then
             assertThat(users).size()
-                    .isEqualTo(3);
+                    .isEqualTo(2);
         }
     }
 

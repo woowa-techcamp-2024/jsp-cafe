@@ -7,7 +7,9 @@ public interface UserRepository {
 
     void save(User user);
 
-    List<User> findAllOrderByIdDesc();
+    int countAll();
+
+    List<User> findAllOrderByIdDesc(final int page, final int size);
 
     Optional<User> findById(final Long id);
 

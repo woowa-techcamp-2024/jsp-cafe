@@ -28,8 +28,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<User> readAll() {
-        return userRepository.findAllOrderByIdDesc();
+    public int countAll() {
+        return userRepository.countAll();
+    }
+
+    public List<User> readAll(final int page, final int size) {
+        return userRepository.findAllOrderByIdDesc(page, size);
     }
 
     public User read(final Long id) {
