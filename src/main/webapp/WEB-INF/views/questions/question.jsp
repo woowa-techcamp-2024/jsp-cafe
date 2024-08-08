@@ -28,6 +28,15 @@
             <!-- Comments will be dynamically loaded here -->
         </div>
 
+        <button id="loadMoreComments" class="btn btn-secondary mb-3" style="display: none;">Load More</button>
+
+        <hr>
+
+        <h5>Your Comments</h5>
+        <div id="userCommentList">
+            <!-- User's comments will be dynamically loaded here -->
+        </div>
+
         <hr>
 
         <h5>Leave a Comment</h5>
@@ -49,7 +58,8 @@
         content: `<c:out value="${article.content}"/>`,
         contextPath: '<c:out value="${pageContext.request.contextPath}"/>',
         articleId: <c:out value="${article.id}"/>,
-        currentUserId: <c:out value="${sessionScope.user.id}"/>
+        currentUserId: <c:out value="${sessionScope.user.id}"/>,
+        currentUserName: '<c:out value="${sessionScope.user.username}"/>'
     };
 
     $(document).ready(function () {

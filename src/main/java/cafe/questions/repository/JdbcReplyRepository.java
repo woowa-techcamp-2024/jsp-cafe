@@ -132,4 +132,67 @@ public class JdbcReplyRepository implements ReplyRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<Reply> findByArticleId(Long articleId, Long cursor, int limit) {
+        String sql = """
+                    SELECT r.*, u.username
+                    FROM replies r
+                    JOIN users u ON r.user_id = u.id
+                    WHERE r.article_id = ? AND r.deleted_at IS NULL
+                    AND r.id > ?
+                    LIMIT ?
+                """;
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, articleId);
+            statement.setLong(2, cursor);
+            statement.setInt(3, limit);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<Reply> replies = new ArrayList<>();
+                while (resultSet.next()) {
+                    replies.add(new Reply(
+                            resultSet.getLong("id"),
+                            resultSet.getLong("article_id"),
+                            resultSet.getLong("user_id"),
+                            resultSet.getString("username"),
+                            resultSet.getString("content")
+                    ));
+                }
+                return replies;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Reply> findByArticleIdAndUserId(Long articleId, Long userId) {
+        String sql = """
+                SELECT r.*, u.username
+                FROM replies r
+                JOIN users u ON r.user_id = u.id
+                WHERE r.article_id = ? AND r.user_id = ? AND r.deleted_at IS NULL
+            """;
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, articleId);
+            statement.setLong(2, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<Reply> replies = new ArrayList<>();
+                while (resultSet.next()) {
+                    replies.add(new Reply(
+                            resultSet.getLong("id"),
+                            resultSet.getLong("article_id"),
+                            resultSet.getLong("user_id"),
+                            resultSet.getString("username"),
+                            resultSet.getString("content")
+                    ));
+                }
+                return replies;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
