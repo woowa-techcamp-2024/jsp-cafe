@@ -46,17 +46,24 @@
 <script>
     $(document).ready(function () {
         const articleId = ${article.articleId};
+        let lastReplyId = null;
+        const pageSize = 5;
 
         // 댓글 목록 불러오기
         function loadComments() {
+            const data = {
+                articleId: articleId,
+                lastReplyId: lastReplyId
+            };
+
             $.ajax({
                 url: '/comments',
                 method: 'GET',
-                data: {articleId: articleId},
-                dataType: 'json', // 명시적으로 JSON 응답을 기대함
+                data: data,
+                dataType: 'json',
                 success: function (response) {
                     const commentList = $('#comment-list');
-                    commentList.empty();
+                    const commentCount = $('#comment-count');
 
                     if (Array.isArray(response) && response.length > 0) {
                         response.forEach(function (comment) {
@@ -70,10 +77,17 @@
                             console.log("commentHtml:", commentHtml);
                             commentList.append(commentHtml);
                         });
-                        $('#comment-count').text(response.length);
+                        commentCount.text(response.length);
+                        lastReplyId = response[response.length - 1].replyId - 1;
                     } else {
                         commentList.append('<p>댓글이 없습니다.</p>');
-                        $('#comment-count').text('0');
+                        commentCount.text('0');
+                    }
+
+                    // 댓글 더보기 버튼 추가
+                    if (response.length === pageSize) {
+                        const loadMoreButton = $('<button class="load-more-comments">더 보기</button>');
+                        commentList.after(loadMoreButton);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -87,6 +101,12 @@
         console.log("페이지 로드 시 댓글 불러오기 시작");
         loadComments();
         console.log("페이지 로드 시 댓글 불러오기 종료");
+
+        // 댓글 더보기 버튼 클릭 시 추가 댓글 불러오기
+        $(document).on('click', '.load-more-comments', function () {
+            $(this).remove(); // 버튼 제거
+            loadComments();
+        });
 
         // 댓글 작성
         $('#comment-form').submit(function (e) {
@@ -107,10 +127,11 @@
                         '<p class="comment-date">' + response.createdAt + '</p>' +
                         '<button class="delete-comment" data-id="' + response.replyId + '">삭제</button>' +
                         '</div>';
-                    $('#comment-list').append(newCommentHtml);
+                    $('#comment-list').prepend(newCommentHtml);
                     // 댓글 수 업데이트
                     const currentCount = parseInt($('#comment-count').text());
                     $('#comment-count').text(currentCount + 1);
+                    lastReplyId = response.replyId;
                 },
                 error: function (xhr, status, error) {
                     console.error("댓글 작성 실패:", error);
@@ -135,7 +156,6 @@
                 }
             });
         });
-
     });
 </script>
 
