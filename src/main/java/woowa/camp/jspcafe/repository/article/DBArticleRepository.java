@@ -11,15 +11,22 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 
 public class DBArticleRepository implements ArticleRepository {
 
     private final DatabaseConnector connector;
+    private final AtomicLong cachedTotalArticleCount = new AtomicLong();
 
     public DBArticleRepository(DatabaseConnector connector) {
         this.connector = connector;
+        cacheTotalArticleCount();
+    }
+
+    private void cacheTotalArticleCount() {
+        cachedTotalArticleCount.set(readAllArticleCounts());
     }
 
     @Override
@@ -50,6 +57,7 @@ public class DBArticleRepository implements ArticleRepository {
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     article.setId(generatedKeys.getLong(1));
+                    cachedTotalArticleCount.incrementAndGet();
                     return generatedKeys.getLong(1);
                 } else {
                     throw new SQLException("게시글 저장을 실패했습니다. id를 획득하지 못했습니다.");
@@ -192,7 +200,7 @@ public class DBArticleRepository implements ArticleRepository {
             if (affectedRows == 0) {
                 throw new SQLException("Deleting article failed, no rows affected.");
             }
-
+            cachedTotalArticleCount.decrementAndGet();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete article", e);
         }
@@ -200,6 +208,10 @@ public class DBArticleRepository implements ArticleRepository {
 
     @Override
     public Long findAllArticleCounts() {
+        return cachedTotalArticleCount.get();
+    }
+
+    public Long readAllArticleCounts() {
         String sql = "SELECT count(a.id) FROM articles a WHERE deleted_at IS NULL";
 
         try (Connection connection = connector.getConnection();
