@@ -81,7 +81,6 @@
                         commentCount.text(response.length);
                         lastReplyId = response[response.length - 1].replyId - 1;
                     } else {
-                        commentList.append('<p>댓글이 없습니다.</p>');
                         commentCount.text('0');
                     }
 
