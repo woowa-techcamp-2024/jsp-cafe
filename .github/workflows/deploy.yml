@@ -16,27 +16,26 @@ jobs:
           username: ${{ secrets.EC2_USER}}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            # EC2 호스트 주소 출력 (공개 IP 주소)
+            echo "Deploying to EC2 instance with public IP:"
+            curl -s http://169.254.169.254/latest/meta-data/public-ipv4
+
+            # 8080 포트에서 실행 중인 컨테이너 정지 및 제거
+            sudo docker stop $(sudo docker ps -q --filter publish=8080)
+            sudo docker rm $(sudo docker ps -aq --filter publish=8080)
+
             # docker 용량 정리
-            sudo docker system prune -a --volumes
+            sudo docker system prune -a --volumes -f
+
             # Remove existing directory if it exists
             rm -rf ~/jsp-cafe
             # Clone the repository
             git clone https://github.com/kkyu0718/jsp-cafe.git ~/jsp-cafe
             # Navigate to the cloned directory
             cd ~/jsp-cafe
-            # Checkout the specific branch (step-7 in this case)
+            # Checkout the specific branch (step-8 in this case)
             git checkout step-8
             # build docker
             sudo docker build -t jsp-cafe .
             # Run the container
             sudo docker run -d -p 8080:8080 --add-host=host.docker.internal:host-gateway jsp-cafe
-#
-#            # Stop Tomcat
-#            sudo systemctl stop tomcat10
-#            # Copy the WAR file
-#            sudo cp ~/jsp-cafe/*.war /var/lib/tomcat10/webapps/ROOT.war
-#            # Set correct ownership and permissions
-#            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
-#            sudo chmod 644 /var/lib/tomcat10/webapps/ROOT.war
-#            # Start Tomcat
-#            sudo systemctl start tomcat10
