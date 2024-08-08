@@ -14,7 +14,7 @@ public interface ReplyRepository {
 
     List<Reply> findByArticleId(Long articleId);
 
-    List<ReplyResponse> findByArticleIdWithUser(Long articleId);
+    List<ReplyResponse> findByArticleIdWithUser(Long articleId, ReplyCursor cursor);
 
     void softDeleteByUserId(Long userId, LocalDateTime deletedTime);
 
