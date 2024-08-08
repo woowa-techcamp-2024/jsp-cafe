@@ -16,6 +16,8 @@ jobs:
           username: ${{ secrets.EC2_USER}}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            # docker 용량 정리
+            sudo docker system prune -a --volumes
             # Remove existing directory if it exists
             rm -rf ~/jsp-cafe
             # Clone the repository
@@ -27,7 +29,7 @@ jobs:
             # build docker
             sudo docker build -t jsp-cafe .
             # Run the container
-            sudo docker run -d -p 8080:8080 jsp-cafe
+            sudo docker run -d -p 8080:8080 --add-host=host.docker.internal:host-gateway jsp-cafe
 #
 #            # Stop Tomcat
 #            sudo systemctl stop tomcat10
