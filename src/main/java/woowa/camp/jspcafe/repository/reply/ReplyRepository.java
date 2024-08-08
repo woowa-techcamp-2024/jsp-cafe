@@ -26,4 +26,6 @@ public interface ReplyRepository {
 
     Long findReplyCountsByArticleId(Long articleId);
 
+    Boolean isExistNotAuthorReply(Long articleId, Long authorId);
+
 }

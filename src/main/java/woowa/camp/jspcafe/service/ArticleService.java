@@ -139,11 +139,10 @@ public class ArticleService {
         replyRepository.softDeleteByArticleId(articleId, deletedTime.atStartOfDay());
     }
 
-    // FIXME: 대규모 데이터 고려 필요
     private boolean isExistNotAuthorReply(Article article) {
-        List<Reply> replies = replyRepository.findByArticleId(article.getId());
-        return replies.stream()
-                .anyMatch(reply -> !reply.getUserId().equals(article.getAuthorId()));
+        Boolean existNotAuthorReply = replyRepository.isExistNotAuthorReply(article.getId(), article.getAuthorId());
+        log.info("existNotAuthorReply = {}", existNotAuthorReply);
+        return existNotAuthorReply;
     }
 
     private void validateEditable(User user, User author) {

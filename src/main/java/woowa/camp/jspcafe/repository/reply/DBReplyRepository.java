@@ -226,6 +226,31 @@ public class DBReplyRepository implements ReplyRepository {
         }
     }
 
+    @Override
+    public Boolean isExistNotAuthorReply(Long articleId, Long authorId) {
+        String sql = "SELECT EXISTS ( "
+                + "SELECT 1 "
+                + "FROM replies r "
+                + "WHERE r.article_id = ? AND r.user_id <> ? AND r.deleted_at IS NULL "
+                + ") AS isExist";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, articleId);
+            pstmt.setLong(2, authorId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("isExist");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
+    }
+
     public Reply mapRowToReply(ResultSet rs) throws SQLException {
         Reply reply = new Reply(
                 rs.getLong("user_id"),
