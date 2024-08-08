@@ -33,15 +33,12 @@ public class ArticleWriteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ArticleWriteServlet doGet start");
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/form.jsp");
         requestDispatcher.forward(req, resp);
-        log.debug("ArticleWriteServlet doGet end");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ArticleWriteServlet doPost start");
         String title = req.getParameter("title");
         String content = req.getParameter("content");
 
@@ -51,6 +48,5 @@ public class ArticleWriteServlet extends HttpServlet {
 
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/");
-        log.debug("ArticleWriteServlet doPost end");
     }
 }

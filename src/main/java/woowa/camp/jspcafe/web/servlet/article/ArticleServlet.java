@@ -46,7 +46,6 @@ public class ArticleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ArticleServlet doGet start");
         String contextPath = req.getContextPath();
         Map<String, String> pathVariables;
 
@@ -63,7 +62,6 @@ public class ArticleServlet extends HttpServlet {
         List<ArticlePreviewResponse> articles = articleService.findArticleList(currentPage);
         Long totalArticleCounts = articleService.findTotalArticleCounts();
         PageVO page = new PageVO(currentPage, totalArticleCounts);
-        log.info("page - {}", page);
 
         req.setAttribute("articles", articles);
         req.setAttribute("totalArticleCounts", totalArticleCounts);
@@ -71,7 +69,6 @@ public class ArticleServlet extends HttpServlet {
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/index.jsp");
         requestDispatcher.forward(req, resp);
-        log.debug("ArticleServlet doGet end");
     }
 
     private long getCurrentPage(HttpServletRequest req) {
@@ -84,7 +81,6 @@ public class ArticleServlet extends HttpServlet {
 
     private void handleDetailArticle(HttpServletRequest req, HttpServletResponse resp,
                                      Map<String, String> pathVariables) throws ServletException, IOException {
-        log.info("handleDetailArticle start");
         Long articleId = Long.parseLong(pathVariables.get("id"));
         ArticleDetailsResponse articleDetails = articleService.findArticleDetails(articleId);
         Long replyCounts = replyService.findReplyCounts(articleId);
@@ -92,11 +88,7 @@ public class ArticleServlet extends HttpServlet {
         req.setAttribute("article", articleDetails);
         req.setAttribute("replyCounts", replyCounts);
 
-        log.info("articleDetails {}", articleDetails);
-        log.info("replyCounts {}", replyCounts);
-
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/show.jsp");
         requestDispatcher.forward(req, resp);
-        log.info("handleDetailArticle end");
     }
 }

@@ -35,16 +35,13 @@ public class UserRegistrationServlet extends HttpServlet {
     // 회원가입 폼을 반환
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userRegistrationServlet doGet start");
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/user/form.jsp");
         requestDispatcher.forward(req, resp);
-        log.debug("userRegistrationServlet doGet end");
     }
 
     // 회원가입 처리
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userRegistrationServlet doPost start");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String nickname = req.getParameter("nickname");
@@ -54,6 +51,5 @@ public class UserRegistrationServlet extends HttpServlet {
 
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/users");
-        log.debug("userRegistrationServlet doPost end");
     }
 }

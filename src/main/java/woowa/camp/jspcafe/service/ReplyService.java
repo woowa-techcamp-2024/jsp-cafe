@@ -54,11 +54,8 @@ public class ReplyService {
     }
 
     public List<ReplyResponse> findReplyList(Long articleId, Long lastReplyId) {
-        log.info("{} 게시글에 대한 댓글 리스트 찾기 시작", articleId);
         ReplyCursor cursor = new ReplyCursor(lastReplyId, 5);
-        List<ReplyResponse> byArticleIdWithUser = replyRepository.findByArticleIdWithUser(articleId, cursor);
-        log.info("{} 게시글에 대한 댓글 리스트 찾기 종료", articleId);
-        return byArticleIdWithUser;
+        return replyRepository.findByArticleIdWithUser(articleId, cursor);
     }
 
     public void deleteReply(User user, Long articleId, Long replyId) {

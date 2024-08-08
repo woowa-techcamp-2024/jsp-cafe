@@ -36,14 +36,12 @@ public class ReplyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ReplyServlet doGet start");
         Long articleId = Long.parseLong(req.getParameter("articleId"));
         Long lastReplyId = null;
         String lastReplyIdParam = req.getParameter("lastReplyId");
         if (lastReplyIdParam != null && !lastReplyIdParam.isEmpty()) {
             lastReplyId = Long.parseLong(lastReplyIdParam);
         }
-        log.info("lastReplyId: {}", lastReplyId);
 
         List<ReplyResponse> replies = replyService.findReplyList(articleId, lastReplyId);
 
@@ -52,12 +50,10 @@ public class ReplyServlet extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.getWriter().write(result);
-        log.debug("ReplyServlet doGet end");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ReplyServlet doPost start");
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
 
@@ -72,21 +68,17 @@ public class ReplyServlet extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.getWriter().write(result);
-        log.debug("ReplyServlet doPost end");
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("ReplyServlet doDelete start");
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("WOOWA_SESSIONID");
 
         Long articleId = Long.parseLong(req.getParameter("articleId"));
         Long replyId = Long.parseLong(req.getParameter("replyId"));
-        log.info("articleId - {}, replyId - {}", articleId, replyId);
 
         replyService.deleteReply(sessionUser, articleId, replyId);
-        log.debug("ReplyServlet doDelete end");
     }
 
 }
