@@ -50,11 +50,20 @@ public class ArticleService {
     }
 
     public ArticleDetailsResponse findArticleDetails(Long id) {
+        log.info("{} 모집공고 찾기 시작", id);
         Article article = findArticle(id);
+        log.info("{} 모집공고 찾기 종료", id);
+        log.info("조회수 증가 시작");
         upHits(article);
-        article = findArticle(id);
+        log.info("조회수 증가 끝");
 
+        log.info("{} 모집공고 찾기 시작", id);
+        article = findArticle(id);
+        log.info("{} 모집공고 찾기 종료", id);
+
+        log.info("{} 게시글작성자 찾기 시작", id);
         User author = findAuthor(article.getAuthorId());
+        log.info("{} 게시글작성자 찾기 종료", id);
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
 
