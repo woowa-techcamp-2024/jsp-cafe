@@ -200,7 +200,7 @@ public class DBArticleRepository implements ArticleRepository {
 
     @Override
     public Long findAllArticleCounts() {
-        String sql = "SELECT count(a.id) FROM articles a";
+        String sql = "SELECT count(a.id) FROM articles a WHERE deleted_at IS NULL";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
