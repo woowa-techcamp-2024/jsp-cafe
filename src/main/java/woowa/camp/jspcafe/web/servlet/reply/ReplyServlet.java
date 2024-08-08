@@ -40,7 +40,9 @@ public class ReplyServlet extends HttpServlet {
         Long articleId = Long.parseLong(req.getParameter("articleId"));
         Long lastReplyId = null;
         String lastReplyIdParam = req.getParameter("lastReplyId");
-        lastReplyId = lastReplyIdParam != null ? Long.parseLong(lastReplyIdParam) : null;
+        if (lastReplyIdParam != null && !lastReplyIdParam.isEmpty()) {
+            lastReplyId = Long.parseLong(lastReplyIdParam);
+        }
         log.info("lastReplyId: {}", lastReplyId);
 
         List<ReplyResponse> replies = replyService.findReplyList(articleId, lastReplyId);
