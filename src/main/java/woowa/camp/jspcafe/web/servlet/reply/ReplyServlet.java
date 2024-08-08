@@ -38,7 +38,8 @@ public class ReplyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("ReplyServlet doGet start");
         Long articleId = Long.parseLong(req.getParameter("articleId"));
-        List<ReplyResponse> replies = replyService.findReplyList(articleId);
+        Long lastReplyId = Long.parseLong(req.getParameter("lastReplyId"));
+        List<ReplyResponse> replies = replyService.findReplyList(articleId, lastReplyId);
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(replies);
