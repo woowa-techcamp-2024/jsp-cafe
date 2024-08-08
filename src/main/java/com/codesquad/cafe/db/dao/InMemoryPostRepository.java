@@ -1,8 +1,8 @@
-package com.codesquad.cafe.db;
+package com.codesquad.cafe.db.dao;
 
 import com.codesquad.cafe.exception.DataIntegrationException;
 import com.codesquad.cafe.db.domain.Post;
-import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import com.codesquad.cafe.db.domain.User;
 import java.util.List;
 import java.util.Map;

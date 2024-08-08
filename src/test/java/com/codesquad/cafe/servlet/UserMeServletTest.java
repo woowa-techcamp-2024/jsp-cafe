@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
-import com.codesquad.cafe.db.UserRepository;
+import com.codesquad.cafe.db.dao.UserRepository;
 import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.model.dto.ErrorResponse;
 import com.codesquad.cafe.model.dto.RedirectResponse;

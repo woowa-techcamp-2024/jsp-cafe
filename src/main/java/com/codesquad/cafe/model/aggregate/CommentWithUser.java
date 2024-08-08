@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db.domain;
+package com.codesquad.cafe.model.aggregate;
 
 import com.codesquad.cafe.util.DateTimeFormatUtil;
 import java.time.LocalDateTime;
@@ -26,16 +26,15 @@ public class CommentWithUser {
     public CommentWithUser() {
     }
 
-    public CommentWithUser(
-            Long id,
-            Long postId,
-            Long parentId,
-            Long userId,
-            String username,
-            String content,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
-            Boolean deleted) {
+    public CommentWithUser(Long id,
+                           Long postId,
+                           Long parentId,
+                           Long userId,
+                           String username,
+                           String content,
+                           LocalDateTime createdAt,
+                           LocalDateTime updatedAt,
+                           Boolean deleted) {
         this.id = id;
         this.postId = postId;
         this.parentId = parentId;

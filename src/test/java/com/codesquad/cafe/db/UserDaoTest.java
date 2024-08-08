@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.codesquad.cafe.db.dao.JdbcTemplate;
+import com.codesquad.cafe.db.dao.UserDao;
 import com.codesquad.cafe.db.domain.User;
 import java.util.List;
 import java.util.Optional;

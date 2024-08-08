@@ -1,10 +1,9 @@
-package com.codesquad.cafe.db;
+package com.codesquad.cafe.db.dao;
 
 import com.codesquad.cafe.db.domain.Post;
-import com.codesquad.cafe.db.domain.PostDetail;
-import com.codesquad.cafe.db.domain.PostWithAuthor;
 import com.codesquad.cafe.db.rowmapper.PostDetailRowMapper;
 import com.codesquad.cafe.db.rowmapper.PostRowMapper;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import com.codesquad.cafe.db.rowmapper.PostWithAuthorRowMapper;
 import com.codesquad.cafe.db.rowmapper.RowMapper;
 import com.codesquad.cafe.exception.DBException;
@@ -113,7 +112,7 @@ public class PostDao implements PostRepository {
         return findById(post.getId()).get();
     }
 
-    public void updateDeleted(Long id) {
+    public void softDeletePostWithComments(Long id) {
         LocalDateTime now = LocalDateTime.now();
         Map<String, Consumer<PreparedStatement>> sqls = new HashMap<>();
         sqls.put("UPDATE `comment` SET deleted = true, updated_at = ? WHERE post_id = ?", ps -> {
@@ -264,7 +263,7 @@ public class PostDao implements PostRepository {
                 + "p.updated_at as p_updated_at, "
                 + "p.deleted as p_deleted "
                 + "FROM `post` p LEFT JOIN `user` u ON p.author_id = u.id "
-                + "WHERE p.id = ?";
+                + "WHERE p.id = ? and p.deleted = false";
         PostWithAuthor post = jdbcTemplate.queryForObject(
                 sql,
                 ps -> {
@@ -275,46 +274,6 @@ public class PostDao implements PostRepository {
                         throw new DBException("fail to prepare statement PostDao.findPostWithAuthorById");
                     }
                 }, postWithAuthorRowMapper);
-        return Optional.ofNullable(post);
-    }
-
-    @Override
-    public Optional<PostDetail> findPostDetailById(Long id) {
-        String sql = "SELECT "
-                + "p.id as p_id, "
-                + "p.title as p_title, "
-                + "p.content as p_content, "
-                + "p.filename as p_filename, "
-                + "p.view as p_view, "
-                + "p.author_id as p_author_id, "
-                + "u.username as u_username, "
-                + "p.created_at as p_created_at, "
-                + "p.updated_at as p_updated_at, "
-                + "p.deleted as p_deleted, "
-                + "c.id as c_id, "
-                + "c.post_id as c_post_id, "
-                + "c.parent_id as c_parent_id, "
-                + "c.user_id as c_user_id, "
-                + "c.content as c_content, "
-                + "c.created_at as c_created_at, "
-                + "c.updated_at as c_updated_at, "
-                + "c.deleted as c_deleted, "
-                + "cu.username as cu_username "
-                + "FROM `post` p LEFT JOIN `user` u ON p.author_id = u.id AND p.deleted = false "
-                + "LEFT JOIN `comment` c ON p.id = c.post_id AND c.deleted = false "
-                + "LEFT JOIN `user` cu ON c.user_id = cu.id "
-                + "WHERE p.id = ? "
-                + "ORDER BY coalesce(parent_id, c.id), c.created_at";
-        PostDetail post = jdbcTemplate.queryForObject(
-                sql,
-                ps -> {
-                    try {
-                        ps.setLong(1, id);
-                    } catch (SQLException e) {
-                        log.warn("error while prepare statement : {}", sql);
-                        throw new DBException("fail to prepare statement PostDao.findPostWithAuthorById");
-                    }
-                }, postDetailRowMapper);
         return Optional.ofNullable(post);
     }
 

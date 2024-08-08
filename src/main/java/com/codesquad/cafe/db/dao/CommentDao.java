@@ -1,16 +1,17 @@
-package com.codesquad.cafe.db;
+package com.codesquad.cafe.db.dao;
 
 import com.codesquad.cafe.db.domain.Comment;
-import com.codesquad.cafe.db.domain.CommentWithUser;
 import com.codesquad.cafe.db.rowmapper.CommentRowMapper;
 import com.codesquad.cafe.db.rowmapper.CommentWithUserRowMapper;
 import com.codesquad.cafe.db.rowmapper.RowMapper;
 import com.codesquad.cafe.exception.DBException;
 import com.codesquad.cafe.exception.NoSuchDataException;
+import com.codesquad.cafe.model.aggregate.CommentWithUser;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -60,20 +61,19 @@ public class CommentDao {
                 ps.setBoolean(7, comment.isDeleted());
             } catch (SQLException e) {
                 log.warn("error while prepare statement : {}", sql);
-                throw new DBException("fail to prepare statement PostDao.save");
+                throw new DBException("fail to prepare statement CommentDao.save");
             }
         });
-        comment.setId(id);
-        return findById(comment.getId()).get();
+        return findById(id).get();
     }
 
     public Comment update(Comment comment) {
         if (!existsById(comment.getId())) {
-            log.warn("no such post : {}", comment.getId());
-            throw new NoSuchDataException("no such post :" + comment.getId());
+            log.warn("no such comment : {}", comment.getId());
+            throw new NoSuchDataException("no such comment :" + comment.getId());
         }
 
-        String UPDATE_SQL = "UPDATE `comment` SET "
+        String sql = "UPDATE `comment` SET "
                 + "post_id = ?, "
                 + "parent_id = ?, "
                 + "user_id = ?, "
@@ -83,7 +83,7 @@ public class CommentDao {
                 + "deleted = ? "
                 + "WHERE id = ?";
 
-        int affected = jdbcTemplate.executeUpdate(UPDATE_SQL, ps -> {
+        jdbcTemplate.executeUpdate(sql, ps -> {
             try {
                 ps.setLong(1, comment.getPostId());
                 ps.setLong(2, comment.getParentId());
@@ -94,15 +94,10 @@ public class CommentDao {
                 ps.setBoolean(7, comment.isDeleted());
                 ps.setLong(8, comment.getId());
             } catch (SQLException e) {
-                log.warn("error while prepare statement : {}", UPDATE_SQL);
-                throw new DBException("fail to prepare statement PostDao.update");
+                log.warn("error while prepare statement : {}", sql);
+                throw new DBException("fail to prepare statement CommentDao.update");
             }
         });
-
-        if (affected != 1) {
-            log.warn("update failed");
-            throw new DBException("update failed");
-        }
 
         return findById(comment.getId()).get();
     }
@@ -121,12 +116,27 @@ public class CommentDao {
         return Optional.ofNullable(comment);
     }
 
-    public void updateDeletedByIdIn(List<Long> ids) {
+    public Comment softDelete(Long id) {
+        if (!existsById(id)) {
+            log.warn("no such comment : {}", id);
+            throw new NoSuchDataException("no such comment :" + id);
+        }
 
+        String sql = "UPDATE `comment` SET deleted = true, updated_at = ? WHERE id = ?";
+        jdbcTemplate.executeUpdate(sql, ps -> {
+            try {
+                ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+                ps.setLong(2, id);
+            } catch (SQLException e) {
+                log.warn("error while prepare statement : {}", sql);
+                throw new DBException("fail to prepare statement PostDao.update");
+            }
+        });
+
+        return findById(id).get();
     }
 
-
-    public Optional<CommentWithUser> findCommentWithUserById(Long id) {
+    public List<CommentWithUser> findCommentsByPostId(Long postId) {
         String sql = "SELECT "
                 + "c.id as c_id, "
                 + "c.post_id as c_post_id, "
@@ -137,26 +147,57 @@ public class CommentDao {
                 + "c.created_at as c_created_at, "
                 + "c.updated_at as c_updated_at, "
                 + "c.deleted as c_deleted "
-                + "FROM `comment` c LEFT JOIN `user` u on c.user_id = u.id WHERE c.id = ?";
-        CommentWithUser comment = jdbcTemplate.queryForObject(sql, ps -> {
+                + "FROM `comment` c LEFT JOIN `user` u on c.user_id = u.id "
+                + "WHERE c.post_id = ? AND deleted = false"
+                + "ORDER BY c.created_at DESC";
+        return jdbcTemplate.queryForList(sql, ps -> {
             try {
-                ps.setLong(1, id);
+                ps.setLong(1, postId);
             } catch (SQLException exception) {
                 log.warn("error while prepare statement : {}", sql);
-                throw new DBException("fail to prepare statement PostDao.findById");
+                throw new DBException("fail to prepare statement CommentDao.findCommentsByPostId");
             }
         }, commentWithUserRowMapper);
-        return Optional.ofNullable(comment);
     }
 
+    public List<CommentWithUser> findNoOffsetCommentsByPostId(Long postId, Long lastCommentId, int limit) {
+        String sql = "SELECT "
+                + "c.id as c_id, "
+                + "c.post_id as c_post_id, "
+                + "c.parent_id as c_parent_id, "
+                + "c.user_id as c_user_id, "
+                + "u.username as u_username, "
+                + "c.content as c_content, "
+                + "c.created_at as c_created_at, "
+                + "c.updated_at as c_updated_at, "
+                + "c.deleted as c_deleted "
+                + "FROM `comment` c LEFT JOIN `user` u on c.user_id = u.id ";
+        if (lastCommentId != null) {
+            sql += "WHERE c.post_id = ? ";
+        }
+        sql += "AND deleted = false"
+                + "ORDER BY c.created_at DESC LIMIT ?";
+        return jdbcTemplate.queryForList(sql, ps -> {
+            try {
+                ps.setLong(1, postId);
+                ps.setLong(2, lastCommentId);
+                ps.setLong(3, limit);
+            } catch (SQLException exception) {
+                log.warn("error while prepare statement");
+                throw new DBException("fail to prepare statement CommentDao.findCommentsByPostId");
+            }
+        }, commentWithUserRowMapper);
+    }
+
+
     public boolean existsById(Long id) {
-        String sql = "SELECT COUNT(*) > 0 FROM comment WHERE id = ?";
+        String sql = "SELECT COUNT(*) > 0 FROM comment WHERE id = ? AND deleted = false";
         return jdbcTemplate.queryForObject(sql, ps -> {
             try {
                 ps.setLong(1, id);
             } catch (SQLException e) {
                 log.warn("error while prepare statement : {}", sql);
-                throw new DBException("fail to prepare statement PostDao.existsById");
+                throw new DBException("fail to prepare statement CommentDao.existsById");
             }
         }, new RowMapper<Boolean>() {
             @Override

@@ -1,9 +1,9 @@
 package com.codesquad.cafe.servlet;
 
-import com.codesquad.cafe.db.Page;
-import com.codesquad.cafe.db.PostRepository;
-import com.codesquad.cafe.db.UserRepository;
-import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.db.dao.Page;
+import com.codesquad.cafe.db.dao.PostRepository;
+import com.codesquad.cafe.db.dao.UserRepository;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

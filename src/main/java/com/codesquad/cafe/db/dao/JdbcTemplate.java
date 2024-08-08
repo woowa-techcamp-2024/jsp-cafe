@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db;
+package com.codesquad.cafe.db.dao;
 
 import com.codesquad.cafe.db.rowmapper.ResultSetExtractor;
 import com.codesquad.cafe.db.rowmapper.RowMapper;

@@ -1,8 +1,7 @@
-package com.codesquad.cafe.db;
+package com.codesquad.cafe.db.dao;
 
 import com.codesquad.cafe.db.domain.Post;
-import com.codesquad.cafe.db.domain.PostDetail;
-import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import com.codesquad.cafe.exception.UnsupportedDBOperationException;
 import java.util.List;
 import java.util.Optional;
@@ -35,11 +34,7 @@ public interface PostRepository {
         throw new UnsupportedDBOperationException("addView is not supported");
     }
 
-    default Optional<PostDetail> findPostDetailById(Long id) {
-        throw new UnsupportedDBOperationException("addView is not supported");
-    }
-
-    default void updateDeleted(Long id) {
+    default void softDeletePostWithComments(Long postId) {
         throw new UnsupportedDBOperationException("updateDeleted is not supported");
     }
 

@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db;
+package com.codesquad.cafe.db.dao;
 
 import java.util.Collections;
 import java.util.List;

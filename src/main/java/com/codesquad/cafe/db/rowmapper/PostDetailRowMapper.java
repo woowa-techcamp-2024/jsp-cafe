@@ -1,7 +1,7 @@
 package com.codesquad.cafe.db.rowmapper;
 
-import com.codesquad.cafe.db.domain.CommentWithUser;
-import com.codesquad.cafe.db.domain.PostDetail;
+import com.codesquad.cafe.model.aggregate.CommentWithUser;
+import com.codesquad.cafe.model.aggregate.PostDetail;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;

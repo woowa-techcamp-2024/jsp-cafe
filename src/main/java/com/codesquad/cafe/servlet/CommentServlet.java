@@ -2,13 +2,14 @@ package com.codesquad.cafe.servlet;
 
 import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
 
-import com.codesquad.cafe.db.CommentDao;
+import com.codesquad.cafe.db.dao.CommentDao;
 import com.codesquad.cafe.db.domain.Comment;
-import com.codesquad.cafe.db.domain.CommentWithUser;
 import com.codesquad.cafe.exception.AuthorizationException;
 import com.codesquad.cafe.exception.ResourceNotFoundException;
 import com.codesquad.cafe.model.UserPrincipal;
+import com.codesquad.cafe.model.aggregate.CommentWithUser;
 import com.codesquad.cafe.model.dto.CommentCreateRequest;
+import com.codesquad.cafe.model.dto.CommentsResponse;
 import com.codesquad.cafe.util.JsonModelMapper;
 import com.codesquad.cafe.util.SessionUtil;
 import jakarta.servlet.ServletException;

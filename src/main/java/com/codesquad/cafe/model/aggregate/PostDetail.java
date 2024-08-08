@@ -1,4 +1,4 @@
-package com.codesquad.cafe.db.domain;
+package com.codesquad.cafe.model.aggregate;
 
 import com.codesquad.cafe.util.DateTimeFormatUtil;
 import java.time.LocalDateTime;
@@ -33,9 +33,17 @@ public class PostDetail {
         comments = new ArrayList<>();
     }
 
-    public PostDetail(Long postId, String title, String content, String fileName, int view, Long authorId,
-                      String authorUsername, LocalDateTime createdAt, LocalDateTime updatedAt, boolean deleted,
-                      List<CommentWithUser> comments) {
+    private PostDetail(Long postId,
+                       String title,
+                       String content,
+                       String fileName,
+                       int view,
+                       Long authorId,
+                       String authorUsername,
+                       LocalDateTime createdAt,
+                       LocalDateTime updatedAt,
+                       boolean deleted,
+                       List<CommentWithUser> comments) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -47,6 +55,23 @@ public class PostDetail {
         this.updatedAt = updatedAt;
         this.deleted = deleted;
         this.comments = comments;
+    }
+
+    public PostDetail(PostWithAuthor post, List<CommentWithUser> comments) {
+        this(
+                post.getPostId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getFileName(),
+                post.getView(),
+                post.getAuthorId(),
+                post.getAuthorUsername(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                post.isDeleted(),
+                comments
+        );
+
     }
 
     public String getFormattedDate() {
@@ -91,6 +116,14 @@ public class PostDetail {
 
     public List<CommentWithUser> getComments() {
         return comments;
+    }
+
+    public List<Long> getCommentIds() {
+        List<Long> commentIds = new ArrayList<>();
+        for (CommentWithUser comment : comments) {
+            commentIds.add(comment.getId());
+        }
+        return commentIds;
     }
 
     public void setPostId(Long postId) {

@@ -1,9 +1,10 @@
 package com.codesquad.cafe.config;
 
-import com.codesquad.cafe.db.CommentDao;
-import com.codesquad.cafe.db.JdbcTemplate;
-import com.codesquad.cafe.db.PostDao;
-import com.codesquad.cafe.db.UserDao;
+import com.codesquad.cafe.db.dao.CommentDao;
+import com.codesquad.cafe.db.dao.JdbcTemplate;
+import com.codesquad.cafe.db.dao.PostDao;
+import com.codesquad.cafe.db.dao.UserDao;
+import com.codesquad.cafe.service.PostService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -43,10 +44,15 @@ public class AppContextListener implements ServletContextListener {
     public void registerRepository(ServletContext sce, DataSource ds) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(ds);
 
+        PostDao postDao = new PostDao(jdbcTemplate);
+        CommentDao commentDao = new CommentDao(jdbcTemplate);
+        PostService postService = new PostService(postDao, commentDao);
+
         sce.setAttribute("jdbcTemplate", jdbcTemplate);
         sce.setAttribute("userRepository", new UserDao(jdbcTemplate));
-        sce.setAttribute("postRepository", new PostDao(jdbcTemplate));
-        sce.setAttribute("commentDao", new CommentDao(jdbcTemplate));
+        sce.setAttribute("postRepository", postDao);
+        sce.setAttribute("commentDao", commentDao);
+        sce.setAttribute("postService", postService);
     }
 
     public void createTable(DataSource ds) throws SQLException, IOException {

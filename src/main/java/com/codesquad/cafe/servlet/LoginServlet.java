@@ -1,6 +1,6 @@
 package com.codesquad.cafe.servlet;
 
-import com.codesquad.cafe.db.UserRepository;
+import com.codesquad.cafe.db.dao.UserRepository;
 import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.model.UserPrincipal;
 import com.codesquad.cafe.util.StringUtil;

@@ -1,5 +1,7 @@
-package com.codesquad.cafe.db.domain;
+package com.codesquad.cafe.model.aggregate;
 
+import com.codesquad.cafe.db.domain.Post;
+import com.codesquad.cafe.db.domain.User;
 import com.codesquad.cafe.util.DateTimeFormatUtil;
 import java.time.LocalDateTime;
 
@@ -77,6 +79,10 @@ public class PostWithAuthor {
 
     public String getContent() {
         return content;
+    }
+
+    public int getView() {
+        return view;
     }
 
     public Long getAuthorId() {

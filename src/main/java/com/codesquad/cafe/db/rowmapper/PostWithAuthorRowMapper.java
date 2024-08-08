@@ -1,6 +1,6 @@
 package com.codesquad.cafe.db.rowmapper;
 
-import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

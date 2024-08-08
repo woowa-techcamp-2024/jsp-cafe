@@ -2,11 +2,12 @@ package com.codesquad.cafe.servlet;
 
 import static com.codesquad.cafe.util.SessionUtil.getUserPrincipal;
 
-import com.codesquad.cafe.db.PostRepository;
-import com.codesquad.cafe.db.domain.CommentWithUser;
+import com.codesquad.cafe.db.dao.CommentDao;
+import com.codesquad.cafe.db.dao.PostRepository;
 import com.codesquad.cafe.db.domain.Post;
-import com.codesquad.cafe.db.domain.PostDetail;
-import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.model.aggregate.CommentWithUser;
+import com.codesquad.cafe.model.aggregate.PostDetail;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import com.codesquad.cafe.exception.AuthorizationException;
 import com.codesquad.cafe.exception.ResourceNotFoundException;
 import com.codesquad.cafe.model.UserPrincipal;
@@ -14,6 +15,7 @@ import com.codesquad.cafe.model.dto.ErrorResponse;
 import com.codesquad.cafe.model.dto.PostCreateRequest;
 import com.codesquad.cafe.model.dto.PostUpdateRequest;
 import com.codesquad.cafe.model.dto.RedirectResponse;
+import com.codesquad.cafe.service.PostService;
 import com.codesquad.cafe.util.JsonModelMapper;
 import com.codesquad.cafe.util.RequestParamModelMapper;
 import com.codesquad.cafe.util.SessionUtil;
@@ -31,10 +33,15 @@ public class PostServlet extends HttpServlet {
 
     private PostRepository postRepository;
 
+    private CommentDao commentDao;
+
+    private PostService postService;
+
     @Override
     public void init() throws ServletException {
         super.init();
         this.postRepository = (PostRepository) getServletContext().getAttribute("postRepository");
+        this.postService = (PostService) getServletContext().getAttribute("postService");
     }
 
     @Override
@@ -60,8 +67,7 @@ public class PostServlet extends HttpServlet {
                 .orElseThrow(ResourceNotFoundException::new);
         postRepository.addView(post);
 
-        PostDetail postDetail = postRepository.findPostDetailById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+        PostDetail postDetail = postService.getPostDetailWithPagedComments(id);
 
         req.setAttribute("post", postDetail);
         req.getRequestDispatcher("/WEB-INF/views/post_detail.jsp").forward(req, resp);
@@ -125,10 +131,6 @@ public class PostServlet extends HttpServlet {
         // update post
         post.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getFileName());
         postRepository.save(post);
-        PostWithAuthor postWithAuthor = postRepository.findPostWithAuthorById(postId)
-                .orElseThrow(ResourceNotFoundException::new);
-
-        req.setAttribute("post", postWithAuthor);
         JsonModelMapper.json(resp, new RedirectResponse("/"));
     }
 
@@ -136,27 +138,24 @@ public class PostServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserPrincipal userPrincipal = SessionUtil.getUserPrincipal(req);
 
-        Long id = parsePathVariable(req.getPathInfo());
+        PostDetail post = postService.getPostDetail(parsePathVariable(req.getPathInfo()));
 
-        PostDetail postDetail = postRepository.findPostDetailById(id)
-                .orElseThrow(ResourceNotFoundException::new);
-
-        if (userPrincipal == null || !userPrincipal.getId().equals(postDetail.getAuthorId())) {
+        if (userPrincipal == null || !userPrincipal.getId().equals(post.getAuthorId())) {
             throw new AuthorizationException();
         }
 
-        if (!canDelete(postDetail)) {
+        if (!canDelete(post)) {
             resp.setStatus(400);
             JsonModelMapper.json(resp, new ErrorResponse("게시글을 삭제할 수 없습니다."));
             return;
         }
 
-        postRepository.updateDeleted(id);
+        postRepository.softDeletePostWithComments(post.getPostId());
         JsonModelMapper.json(resp, new RedirectResponse("/"));
     }
 
     private boolean canDelete(PostDetail post) {
-        if (post.getComments().size() == 0) {
+        if (post.getComments().isEmpty()) {
             return true;
         }
         for (CommentWithUser commentWithUser : post.getComments()) {
