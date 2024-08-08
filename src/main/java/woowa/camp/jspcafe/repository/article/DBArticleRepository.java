@@ -12,21 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 
 public class DBArticleRepository implements ArticleRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(DBArticleRepository.class);
     private final DatabaseConnector connector;
     private final AtomicLong cachedTotalArticleCount = new AtomicLong();
 
     public DBArticleRepository(DatabaseConnector connector) {
         this.connector = connector;
-        cacheTotalArticleCount();
     }
 
-    private void cacheTotalArticleCount() {
+    public void initializeCacheTotalArticleCount() {
+        log.debug("initializing cache total article count");
         cachedTotalArticleCount.set(readAllArticleCounts());
+        log.debug("cache total article count: {}", cachedTotalArticleCount.get());
     }
 
     @Override
