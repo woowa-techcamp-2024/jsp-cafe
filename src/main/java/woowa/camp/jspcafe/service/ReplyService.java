@@ -3,6 +3,8 @@ package woowa.camp.jspcafe.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.Reply;
 import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.domain.exception.ArticleException;
@@ -11,11 +13,14 @@ import woowa.camp.jspcafe.domain.exception.UnAuthorizationException;
 import woowa.camp.jspcafe.domain.exception.UserException;
 import woowa.camp.jspcafe.infra.time.DateTimeProvider;
 import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
+import woowa.camp.jspcafe.repository.reply.ReplyCursor;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
 import woowa.camp.jspcafe.service.dto.request.ReplyWriteRequest;
 
 public class ReplyService {
+
+    private static final Logger log = LoggerFactory.getLogger(ReplyService.class);
 
     private final ReplyRepository replyRepository;
     private final UserRepository userRepository;
@@ -44,8 +49,12 @@ public class ReplyService {
                 reply.getUserId(), replier.getNickname(), reply.getCreatedAt());
     }
 
-    public List<ReplyResponse> findReplyList(Long articleId) {
-        return replyRepository.findByArticleIdWithUser(articleId);
+    public List<ReplyResponse> findReplyList(Long articleId, Long lastReplyId) {
+        log.info("{} 게시글에 대한 댓글 리스트 찾기 시작", articleId);
+        ReplyCursor cursor = new ReplyCursor(lastReplyId, 5);
+        List<ReplyResponse> byArticleIdWithUser = replyRepository.findByArticleIdWithUser(articleId, cursor);
+        log.info("{} 게시글에 대한 댓글 리스트 찾기 종료", articleId);
+        return byArticleIdWithUser;
     }
 
     public void deleteReply(User user, Long articleId, Long replyId) {
