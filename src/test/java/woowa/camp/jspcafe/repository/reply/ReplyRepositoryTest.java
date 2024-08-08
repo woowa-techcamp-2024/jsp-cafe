@@ -17,9 +17,9 @@ import woowa.camp.jspcafe.domain.User;
 import woowa.camp.jspcafe.fixture.UserFixture;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 import woowa.camp.jspcafe.repository.UserDBSetupExtension;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
 @ExtendWith(ReplyDBSetupExtension.class)
@@ -327,8 +327,9 @@ class ReplyRepositoryTest {
                     null);
             repository.save(reply1);
             repository.save(reply2);
+            ReplyCursor cursor = new ReplyCursor(2L, 5);
             // when
-            List<ReplyResponse> result = repository.findByArticleIdWithUser(1L);
+            List<ReplyResponse> result = repository.findByArticleIdWithUser(1L, cursor);
             // then
             assertThat(result)
                     .hasSize(2)
@@ -340,9 +341,9 @@ class ReplyRepositoryTest {
                                 ReplyResponse::getUserNickname,
                                 ReplyResponse::getCreatedAt
                         ).containsExactly(
-                                tuple(reply1.getReplyId(), userId1, "Test Comment 1", user1.getNickname(),
-                                        fixedDateTime.getNowAsLocalDateTime().toString()),
                                 tuple(reply2.getReplyId(), userId2, "Test Comment 2", user2.getNickname(),
+                                        fixedDateTime.getNowAsLocalDateTime().toString()),
+                                tuple(reply1.getReplyId(), userId1, "Test Comment 1", user1.getNickname(),
                                         fixedDateTime.getNowAsLocalDateTime().toString())
                         );
                     });
