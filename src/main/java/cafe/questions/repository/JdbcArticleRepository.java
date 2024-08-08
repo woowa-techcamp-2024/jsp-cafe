@@ -10,6 +10,7 @@ import java.util.List;
 
 public class JdbcArticleRepository implements ArticleRepository {
     private final ConnectionPool connectionPool;
+    public static final int PAGE_SIZE = 15;
 
     public JdbcArticleRepository(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
@@ -144,6 +145,55 @@ public class JdbcArticleRepository implements ArticleRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Article> findAllPaginated(int page) {
+        String sql = """
+                SELECT a.*, u.username 
+                FROM articles a
+                LEFT JOIN users u ON a.user_id = u.id
+                WHERE a.deleted_at IS NULL
+                ORDER BY a.id DESC
+                LIMIT ? OFFSET ?
+                """;
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, PAGE_SIZE);
+            statement.setInt(2, (page - 1) * PAGE_SIZE);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<Article> articles = new ArrayList<>();
+                while (resultSet.next()) {
+                    articles.add(new Article(
+                            resultSet.getLong("id"),
+                            resultSet.getLong("user_id"),
+                            resultSet.getString("username"),
+                            resultSet.getString("title"),
+                            resultSet.getString("content"),
+                            resultSet.getTimestamp("created_date"),
+                            resultSet.getTimestamp("updated_date")
+                    ));
+                }
+                return articles;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public long count() {
+        String sql = "SELECT COUNT(*) FROM articles WHERE deleted_at IS NULL";
+        try (Connection connection = connectionPool.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            }
+            return 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

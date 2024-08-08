@@ -14,4 +14,8 @@ public interface ArticleRepository {
     void deleteAll();
 
     void deleteById(Long id);
+
+    List<Article> findAllPaginated(int page);
+
+    long count();
 }
