@@ -49,7 +49,7 @@ public class IndexServlet extends HttpServlet {
 
     private int getRequestedPageSize(HttpServletRequest req) {
         String pageSizeParam = req.getParameter("pageSize");
-        return (pageSizeParam == null || pageSizeParam.isEmpty()) ? 5 : Integer.parseInt(pageSizeParam);
+        return (pageSizeParam == null || pageSizeParam.isEmpty()) ? 15 : Integer.parseInt(pageSizeParam);
     }
 
 }
