@@ -25,7 +25,8 @@
     </div>
 
     <div class="comment-section">
-        <h3>댓글 <span id="comment-count">0</span>개</h3>
+        <h3>댓글 ${replyCounts}개</h3>
+<%--        <h3>댓글 <span id="comment-count">0</span>개</h3>--%>
         <div id="comment-list">
             <!-- 댓글 목록이 여기에 동적으로 추가됩니다 -->
         </div>
@@ -148,7 +149,15 @@
                 url: '/comments?articleId=' + articleId + '&replyId=' + replyId,
                 method: 'DELETE',
                 success: function (response) {
-                    loadComments(); // 댓글 목록 새로고침
+                    // 댓글 목록에서 삭제한 댓글 제거
+                    $('div.comment[data-id="' + replyId + '"]').remove();
+
+                    // 댓글 개수 업데이트
+                    const currentCount = parseInt($('#comment-count').text());
+                    $('#comment-count').text(currentCount - 1);
+
+                    // 마지막 댓글 ID 갱신
+                    lastReplyId = $('div.comment').last().data('id') - 1;
                 },
                 error: function (xhr, status, error) {
                     console.error("댓글 삭제 실패:", error);

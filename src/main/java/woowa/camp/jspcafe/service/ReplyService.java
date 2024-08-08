@@ -49,6 +49,10 @@ public class ReplyService {
                 reply.getUserId(), replier.getNickname(), reply.getCreatedAt());
     }
 
+    public Long findReplyCounts(Long articleId) {
+        return replyRepository.findReplyCountsByArticleId(articleId);
+    }
+
     public List<ReplyResponse> findReplyList(Long articleId, Long lastReplyId) {
         log.info("{} 게시글에 대한 댓글 리스트 찾기 시작", articleId);
         ReplyCursor cursor = new ReplyCursor(lastReplyId, 5);

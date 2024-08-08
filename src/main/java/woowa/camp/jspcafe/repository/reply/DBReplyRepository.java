@@ -206,6 +206,26 @@ public class DBReplyRepository implements ReplyRepository {
         }
     }
 
+    @Override
+    public Long findReplyCountsByArticleId(Long articleId) {
+        String sql = "SELECT COUNT(r.reply_id) FROM replies r WHERE article_id = ? AND deleted_at IS NULL";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setLong(1, articleId);
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                }
+                return 0L;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Reply mapRowToReply(ResultSet rs) throws SQLException {
         Reply reply = new Reply(
                 rs.getLong("user_id"),

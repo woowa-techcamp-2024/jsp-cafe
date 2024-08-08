@@ -24,4 +24,6 @@ public interface ReplyRepository {
 
     void update(Reply reply);
 
+    Long findReplyCountsByArticleId(Long articleId);
+
 }

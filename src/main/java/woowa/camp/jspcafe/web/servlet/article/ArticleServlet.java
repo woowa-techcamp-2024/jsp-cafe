@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.service.ArticleService;
 import woowa.camp.jspcafe.service.PageVO;
 import woowa.camp.jspcafe.service.ReplyService;
@@ -88,7 +87,13 @@ public class ArticleServlet extends HttpServlet {
         log.info("handleDetailArticle start");
         Long articleId = Long.parseLong(pathVariables.get("id"));
         ArticleDetailsResponse articleDetails = articleService.findArticleDetails(articleId);
+        Long replyCounts = replyService.findReplyCounts(articleId);
+
         req.setAttribute("article", articleDetails);
+        req.setAttribute("replyCounts", replyCounts);
+
+        log.info("articleDetails {}", articleDetails);
+        log.info("replyCounts {}", replyCounts);
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/article/show.jsp");
         requestDispatcher.forward(req, resp);
