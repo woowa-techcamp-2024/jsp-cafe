@@ -10,5 +10,5 @@
               username="cafe_dba"
               password="cafe1234"
               driverClassName="com.mysql.cj.jdbc.Driver"
-              url="jdbc:mysql://localhost:3306/cafe?serverTimezone=UTC"/>
+              url="jdbc:mysql://43.203.213.89:3306/cafe?serverTimezone=UTC"/>
 </Context>

@@ -1,12 +1,12 @@
 package com.codesquad.cafe.exception;
 
-public class ModelMappingException extends RuntimeException{
+public class ModelMappingException extends RuntimeException {
 
-    public ModelMappingException() {
-    }
+	public ModelMappingException() {
+	}
 
-    public ModelMappingException(String message) {
-        super(message);
-    }
+	public ModelMappingException(String message) {
+		super(message);
+	}
 
 }

@@ -1,12 +1,12 @@
 package com.codesquad.cafe.exception;
 
-public class NoSuchDataException extends DBException{
+public class NoSuchDataException extends DBException {
 
-    public NoSuchDataException() {
-    }
+	public NoSuchDataException() {
+	}
 
-    public NoSuchDataException(String message) {
-        super(message);
-    }
+	public NoSuchDataException(String message) {
+		super(message);
+	}
 
 }

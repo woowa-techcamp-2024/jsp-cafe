@@ -63,6 +63,10 @@ public class Comment {
 		return id;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Long getPostId() {
 		return postId;
 	}
@@ -89,10 +93,6 @@ public class Comment {
 
 	public Boolean isDeleted() {
 		return deleted;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public void update(String content) {
@@ -127,17 +127,16 @@ public class Comment {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("Comment{");
-		sb.append("id=").append(id);
-		sb.append(", postId=").append(postId);
-		sb.append(", parentId=").append(parentId);
-		sb.append(", userId=").append(userId);
-		sb.append(", content='").append(content).append('\'');
-		sb.append(", createdAt=").append(createdAt);
-		sb.append(", updatedAt=").append(updatedAt);
-		sb.append(", deleted=").append(deleted);
-		sb.append('}');
-		return sb.toString();
+		String sb = "Comment{" + "id=" + id
+			+ ", postId=" + postId
+			+ ", parentId=" + parentId
+			+ ", userId=" + userId
+			+ ", content='" + content + '\''
+			+ ", createdAt=" + createdAt
+			+ ", updatedAt=" + updatedAt
+			+ ", deleted=" + deleted
+			+ '}';
+		return sb;
 	}
 
 }
