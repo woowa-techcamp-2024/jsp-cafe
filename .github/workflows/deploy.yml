@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ step-8 ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -20,7 +20,7 @@ jobs:
 
             # 환경 변수 설정
             REPO_DIR=~/jsp-cafe
-            BRANCH=step-8
+            BRANCH=main
             DOCKER_IMAGE=jsp-cafe:latest
             CONTAINER_PORT=8080
 
