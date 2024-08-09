@@ -100,14 +100,14 @@
                                 </div>
                             </article>
                             <% }%>
+                            <% if (article.replyCount() >= 6) { %>
+                            <%Long replyMaxId = article.replies().stream().map(ReplyDto::replyId).max(Long::compareTo).orElse(0L);%>
+                            <div>
+                                <a href="/reply?articleId=<%=article.articleId()%>&index=<%=replyMaxId%>&size=5"
+                                   class="more-comment">더보기</a>
+                            </div>
+                            <% } %>
                         </div>
-                        <% if (article.replyCount() >= 6) { %>
-                        <%Long replyMaxId = article.replies().stream().map(ReplyDto::replyId).max(Long::compareTo).orElse(0L);%>
-                        <div>
-                            <a href="/reply?articleId=<%=article.articleId()%>&index=<%=replyMaxId%>&size=5"
-                               class="more-comment">더보기</a>
-                        </div>
-                        <% } %>
                     </div>
                 </div>
             </div>
