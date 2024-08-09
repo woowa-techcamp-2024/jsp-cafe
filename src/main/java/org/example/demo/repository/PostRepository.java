@@ -205,7 +205,7 @@ public class PostRepository {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, limit);
-            pstmt.setLong(2, (page-1) * limit);
+            pstmt.setLong(2, (page - 1) * limit);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {

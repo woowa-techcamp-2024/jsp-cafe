@@ -12,7 +12,6 @@ import org.example.demo.handler.UserHandler;
 import org.example.demo.repository.CommentRepository;
 import org.example.demo.repository.PostRepository;
 import org.example.demo.repository.UserRepository;
-import org.example.demo.validator.AuthValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

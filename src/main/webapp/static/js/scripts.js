@@ -118,7 +118,7 @@ function loadComments() {
     $.ajax({
         url: `/api/posts/${postId}/comments?page=${currentPage}&size=15`,
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             const comments = response.content;
             comments.forEach(comment => {
                 $('#commentList').append(`
@@ -155,7 +155,7 @@ function loadComments() {
 
             currentPage++;
         },
-        error: function(error) {
+        error: function (error) {
             console.error('댓글을 불러오는 데 실패했습니다:', error);
         }
     });
@@ -164,7 +164,7 @@ function loadComments() {
 let lastCommentId = 0;
 const limit = 5;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const commentList = document.querySelectorAll('#commentList .article');
     if (commentList.length > 0) {
         lastCommentId = commentList[commentList.length - 1].id;
@@ -239,7 +239,7 @@ $(document).ready(function () {
     // Bind editPost function to the edit link
     $("#editPostLink").on("click", editPost);
 
-    $("#loadMoreComments").click(function() {
+    $("#loadMoreComments").click(function () {
         loadComments();
     })
 });

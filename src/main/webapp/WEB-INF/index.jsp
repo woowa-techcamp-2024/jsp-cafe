@@ -48,19 +48,21 @@
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
                         <li<c:if test="${currentPage == 1}"> class="disabled"</c:if>>
-                            <a href="<c:if test="${currentPage > 1}">${pageContext.request.contextPath}?page=${currentPage - 1}</c:if>" aria-label="Previous">
+                            <a href="<c:if test="${currentPage > 1}">${pageContext.request.contextPath}?page=${currentPage - 1}</c:if>"
+                               aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
 
                         <c:choose>
                             <c:when test="${totalPages <= 5}">
-                                <c:set var="startPage" value="1" />
-                                <c:set var="endPage" value="${totalPages}" />
+                                <c:set var="startPage" value="1"/>
+                                <c:set var="endPage" value="${totalPages}"/>
                             </c:when>
                             <c:otherwise>
-                                <c:set var="startPage" value="${Math.max(1, Math.min(currentPage - 2, totalPages - 4))}" />
-                                <c:set var="endPage" value="${Math.min(totalPages, startPage + 4)}" />
+                                <c:set var="startPage"
+                                       value="${Math.max(1, Math.min(currentPage - 2, totalPages - 4))}"/>
+                                <c:set var="endPage" value="${Math.min(totalPages, startPage + 4)}"/>
                             </c:otherwise>
                         </c:choose>
 
@@ -76,7 +78,8 @@
                         </c:if>
 
                         <li<c:if test="${currentPage == totalPages}"> class="disabled"</c:if>>
-                            <a href="<c:if test="${currentPage < totalPages}">${pageContext.request.contextPath}?page=${currentPage + 1}</c:if>" aria-label="Next">
+                            <a href="<c:if test="${currentPage < totalPages}">${pageContext.request.contextPath}?page=${currentPage + 1}</c:if>"
+                               aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

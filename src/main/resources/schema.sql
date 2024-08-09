@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS posts
 CREATE TABLE IF NOT EXISTS comments
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    post_id    BIGINT  NOT NULL,
-    writer_id  BIGINT  NOT NULL,
-    contents   TEXT    NOT NULL,
-    is_present BOOLEAN NOT NULL DEFAULT TRUE,
+    post_id    BIGINT    NOT NULL,
+    writer_id  BIGINT    NOT NULL,
+    contents   TEXT      NOT NULL,
+    is_present BOOLEAN   NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL,
     INDEX idx_post_id (post_id, is_present, created_at)
 );
