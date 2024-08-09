@@ -12,7 +12,6 @@ import org.example.demo.handler.UserHandler;
 import org.example.demo.repository.CommentRepository;
 import org.example.demo.repository.PostRepository;
 import org.example.demo.repository.UserRepository;
-import org.example.demo.validator.AuthValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,8 @@ public class WasInitializeListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        logger.info("WasInitializeListener.contextInitialized start!");
+
         try {
             // JDBC 드라이버 로드
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -31,21 +32,36 @@ public class WasInitializeListener implements ServletContextListener {
             throw new InternalServerError("Failed to load JDBC driver " + e.getMessage());
         }
 
-        // db 초기화
-        createDatabaseIfNotExists("jdbc:mysql://localhost", "root", "");
+        String dbHost = System.getenv("DB_HOST");
+        if (dbHost == null || dbHost.isEmpty()) {
+            dbHost = "localhost"; // 기본값 설정
+        }
 
-        // JdbcUrl 에 데이터베이스 명시 필요
-        DbConfig dbConfig = new DbConfig("jdbc:mysql://localhost/cafe", "root", "");
+        String jdbcUrl = "jdbc:mysql://" + dbHost + ":3306";
+        String dbUser = System.getenv("DB_USER");
+        String dbPassword = System.getenv("DB_PASSWORD");
+
+        if (dbUser == null || dbUser.isEmpty()) {
+            dbUser = "root"; // 기본값 설정
+        }
+
+        if (dbPassword == null) {
+            dbPassword = ""; // 기본값 설정
+        }
+
+        createDatabaseIfNotExists(jdbcUrl, dbUser, dbPassword);
+
+        DbConfig dbConfig = new DbConfig(jdbcUrl + "/cafe", dbUser, dbPassword);
+
         dbConfig.initializeSchema();
+
         UserRepository userRepository = new UserRepository(dbConfig);
         PostRepository postRepository = new PostRepository(dbConfig);
         CommentRepository commentRepository = new CommentRepository(dbConfig);
 
-        AuthValidator authValidator = new AuthValidator();
-
         HomeHandler homeHandler = new HomeHandler(postRepository);
         UserHandler userHandler = new UserHandler(userRepository);
-        PostHandler postHandler = new PostHandler(postRepository);
+        PostHandler postHandler = new PostHandler(postRepository, commentRepository);
         CommentHandler commentHandler = new CommentHandler(commentRepository);
 
         sce.getServletContext().setAttribute("homeHandler", homeHandler);

@@ -1,0 +1,65 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER}}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e  # 오류 발생 시 스크립트 중단
+
+            # 환경 변수 설정
+            REPO_DIR=~/jsp-cafe
+            BRANCH=main
+            DOCKER_IMAGE=jsp-cafe:latest
+            CONTAINER_PORT=8080
+
+            echo "Cleaning up Docker resources..."
+            sudo docker system prune -af --volumes || echo "Docker cleanup failed, but continuing..."
+
+            echo "Stopping and removing existing containers..."
+            CONTAINER_IDS=$(sudo docker ps -q --filter publish=$CONTAINER_PORT)
+            if [ ! -z "$CONTAINER_IDS" ]; then
+              sudo docker stop $CONTAINER_IDS
+              sudo docker rm $CONTAINER_IDS
+            else
+              echo "No containers running on port $CONTAINER_PORT"
+            fi
+
+            echo "Updating or cloning repository..."
+            if [ -d $REPO_DIR ]; then
+              cd $REPO_DIR
+              git fetch --all
+              git reset --hard origin/$BRANCH
+            else
+              git clone https://github.com/kkyu0718/jsp-cafe.git $REPO_DIR
+              cd $REPO_DIR
+            fi
+            
+            git checkout $BRANCH
+
+            echo "Building Docker image..."
+            sudo docker build --cache-from $DOCKER_IMAGE -t $DOCKER_IMAGE .
+
+            echo "Running new container..."
+            NEW_CONTAINER_ID=$(sudo docker run -d -p $CONTAINER_PORT:$CONTAINER_PORT --add-host=host.docker.internal:host-gateway $DOCKER_IMAGE)
+
+            echo "New container ID: $NEW_CONTAINER_ID"
+            
+            # 새 컨테이너가 정상적으로 시작되었는지 확인
+            if [ -z "$NEW_CONTAINER_ID" ]; then
+              echo "Failed to start new container"
+              exit 1
+            fi
+
+            echo "Deployment completed successfully"

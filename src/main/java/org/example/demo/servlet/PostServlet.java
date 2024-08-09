@@ -29,6 +29,7 @@ public class PostServlet extends HttpServlet {
         router.addRoute(HttpMethod.PUT, "^/posts/(\\d+)/?$", postHandler::handleUpdatePost);
         router.addRoute(HttpMethod.DELETE, "^/posts/(\\d+)/?$", postHandler::handleDeletePost);
         router.addRoute(HttpMethod.GET, "^/posts/form/?$", postHandler::handlePostForm);
+        router.addRoute(HttpMethod.GET, "^/posts/(\\d+)/comments/?$", commentHandler::getComments);
         router.addRoute(HttpMethod.POST, "^/posts/(\\d+)/comments/?$", commentHandler::createComment);
         router.addRoute(HttpMethod.DELETE, "^/posts/(\\d+)/comments/(\\d+)/?$", commentHandler::deleteComment);
         router.addRoute(HttpMethod.PUT, "^/posts/(\\d+)/comments/(\\d+)/?$", commentHandler::updateComment);

@@ -21,6 +21,10 @@ public class DbConfig {
 
     public DbConfig(String jdbcUrl, String user, String password) {
         // 데이터 소스 설정 (cafe 데이터베이스 사용)
+        logger.info("jdbcUrl: " + jdbcUrl);
+        logger.info("user: " + user);
+        logger.info("password: " + password);
+
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(user);
@@ -44,8 +48,11 @@ public class DbConfig {
 
     public static void createDatabaseIfNotExists(String jdbcUrl, String user, String password) {
         // 초기 데이터 소스 설정 (cafe 데이터베이스 없이)
+        logger.info("createDatabaseIfNotExists start!");
+        logger.info("jdbcUrl: " + (jdbcUrl));
         HikariConfig initialConfig = new HikariConfig();
-        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
+        initialConfig.setJdbcUrl(jdbcUrl);
+//        initialConfig.setJdbcUrl(removeDatabaseName(jdbcUrl));
         initialConfig.setUsername(user);
         initialConfig.setPassword(password);
 
@@ -56,7 +63,7 @@ public class DbConfig {
             stmt.execute("CREATE DATABASE IF NOT EXISTS cafe");
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerError("Failed to create database: " + e.getMessage());
+            throw new InternalServerError("Failed to create initial database: " + e.getMessage());
         } finally {
             dataSource.close();
         }

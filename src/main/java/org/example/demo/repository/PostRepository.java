@@ -29,12 +29,19 @@ public class PostRepository {
                 "       cu.id AS comment_user_id, cu.user_id AS comment_user_userid, cu.name AS comment_user_name\n" +
                 "FROM posts p\n" +
                 "JOIN users pu ON p.writer_id = pu.id\n" +
-                "LEFT JOIN comments c ON p.id = c.post_id AND c.is_present = true\n" +
+                "LEFT JOIN (\n" +
+                "    SELECT *\n" +
+                "    FROM comments\n" +
+                "    WHERE post_id = ? AND is_present = true\n" +
+                "    ORDER BY created_at DESC\n" +
+                "    LIMIT 5\n" +
+                ") c ON p.id = c.post_id\n" +
                 "LEFT JOIN users cu ON c.writer_id = cu.id\n" +
                 "WHERE p.id = ?";
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, postId);
+            pstmt.setLong(2, postId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return Optional.of(createPostWithCommentsFromResultSet(rs));
@@ -68,7 +75,7 @@ public class PostRepository {
 
     public List<Post> getPosts() {
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id WHERE p.is_present = true";
+        String sql = "SELECT p.*, u.user_id, u.name FROM posts p JOIN `users` u ON p.writer_id = u.id WHERE p.is_present = true ORDER BY p.created_at DESC";
 
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -183,5 +190,48 @@ public class PostRepository {
             logger.error("Error deleting comments", e);
             e.printStackTrace();
         }
+    }
+
+    public List<Post> getPostsPaged(long page, int limit) {
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT p.*, u.user_id, u.name " +
+                "FROM posts p " +
+                "JOIN users u ON p.writer_id = u.id " +
+                "WHERE p.is_present = true " +
+                "ORDER BY p.created_at DESC " +
+                "LIMIT ? OFFSET ?";
+
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, limit);
+            pstmt.setLong(2, (page - 1) * limit);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    posts.add(createPostFromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Error fetching paged posts", e);
+        }
+        return posts;
+    }
+
+    public int getTotalPostCount() {
+        String sql = "SELECT COUNT(*) as cnt FROM posts p WHERE p.is_present = true";
+        int cnt = 0;
+
+        try (Connection conn = dbConfig.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                cnt = rs.getInt("cnt");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cnt;
     }
 }
