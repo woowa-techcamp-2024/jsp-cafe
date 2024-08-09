@@ -169,6 +169,7 @@
                         } else {
                             const lastReplyId = data[data.length - 1].replyId;
                             moreCommentLink.href = `/reply?articleId=` + articleId + `&index=` + lastReplyId + `&size=5`;
+                            commentSection.insertAdjacentHTML('beforeend', `<div><a href="` + moreCommentLink.href + `" class="more-comment">더보기</a></div>`);
                         }
                     })
                     .catch(error => {
