@@ -41,11 +41,31 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> findAllOrderByIdDesc() {
-        String query = "SELECT id, user_id, password, name, email FROM users ORDER BY id DESC";
+    public int countAll() {
+        String query = "SELECT COUNT(*) FROM users";
+
+        return jdbcTemplate.selectOne(
+                query,
+                resultSet -> resultSet.getInt(1)
+        );
+    }
+
+    @Override
+    public List<User> findAllOrderByIdDesc(final int page, final int size) {
+        String query = "SELECT u.id, user_id, password, name, email "
+                + "FROM users u\n"
+                + "        JOIN (SELECT id\n"
+                + "              FROM users\n"
+                + "              ORDER BY id DESC\n"
+                + "              LIMIT ?\n"
+                + "              OFFSET ?\n) as temp on temp.id = u.id";
 
         return jdbcTemplate.selectAll(
                 query,
+                ps -> {
+                    ps.setInt(1, size);
+                    ps.setInt(2, (page - 1) * size);
+                },
                 resultSet -> new User(
                         resultSet.getLong(1),
                         resultSet.getString(2),
