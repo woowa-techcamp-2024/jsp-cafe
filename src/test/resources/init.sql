@@ -43,5 +43,5 @@ CREATE TABLE IF NOT EXISTS `comment`
     PRIMARY KEY (`id`),
     FOREIGN KEY (`post_id`) REFERENCES post (id),
     FOREIGN KEY (`parent_id`) REFERENCES comment (id),
-    FOREIGN KEY (`user_id`) REFERENCES user (id)
+    FOREIGN KEY (`user_id`) REFERENCES `user` (id)
 );

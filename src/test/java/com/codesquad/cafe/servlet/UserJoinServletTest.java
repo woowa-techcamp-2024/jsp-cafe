@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.codesquad.cafe.E2ETestBase;
 import com.codesquad.cafe.SavedHttpResponse;
-import com.codesquad.cafe.db.UserRepository;
+import com.codesquad.cafe.db.dao.UserRepository;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.http.HttpResponse;

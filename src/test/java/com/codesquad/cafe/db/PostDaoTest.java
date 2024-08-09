@@ -8,8 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.codesquad.cafe.db.dao.JdbcTemplate;
+import com.codesquad.cafe.db.dao.Page;
+import com.codesquad.cafe.db.dao.PostDao;
+import com.codesquad.cafe.db.dao.UserDao;
 import com.codesquad.cafe.db.domain.Post;
-import com.codesquad.cafe.db.domain.PostWithAuthor;
+import com.codesquad.cafe.model.aggregate.PostWithAuthor;
 import com.codesquad.cafe.db.domain.User;
 import java.util.List;
 import java.util.Optional;

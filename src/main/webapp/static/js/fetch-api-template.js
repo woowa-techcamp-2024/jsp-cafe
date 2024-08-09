@@ -76,6 +76,26 @@ function httpGet(url) {
     })
 }
 
+async function httpGetAjax(url) {
+    try {
+        const response = await $.ajax(url, {
+            type: 'GET',
+            cors: false,
+            processData: false
+        });
+        console.log("성공 response : " + response);
+        return response;
+    } catch (xhr) {
+        let message;
+        try {
+            message = JSON.parse(xhr.responseText)['message'];
+        } catch (e) {
+            message = "실패";
+        }
+        throw message;
+    }
+}
+
 async function httpDelete(url) {
     try {
         const response = await $.ajax(url, {
