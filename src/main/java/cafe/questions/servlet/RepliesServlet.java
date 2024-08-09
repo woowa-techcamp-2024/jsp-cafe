@@ -15,6 +15,7 @@ import java.util.List;
 
 public class RepliesServlet extends MappingHttpServlet {
     private final ReplyRepository replyRepository;
+    private final Gson gson = new Gson();
 
     @Override
     public List<String> mappings() {
@@ -37,8 +38,8 @@ public class RepliesServlet extends MappingHttpServlet {
         String content;
 
         String requestBody = getRequestBody(req);
-        LinkedHashMap<String, Object> parsedReq = new Gson().fromJson(requestBody, LinkedHashMap.class);
-        articleId = Long.parseLong(parsedReq.get("articleId").toString());
+        LinkedHashMap<String, Object> parsedReq = gson.fromJson(requestBody, LinkedHashMap.class);
+        articleId = ((Double) parsedReq.get("articleId")).longValue();
         content = parsedReq.get("content").toString();
 
         if (content.isEmpty()) {
@@ -48,7 +49,8 @@ public class RepliesServlet extends MappingHttpServlet {
         }
 
         Reply reply = new Reply(articleId, user.getId(), content);
-        replyRepository.save(reply);
+        Reply save = replyRepository.save(reply);
+        gson.toJson(save, resp.getWriter());
     }
 
     private String getRequestBody(HttpServletRequest req) throws IOException {

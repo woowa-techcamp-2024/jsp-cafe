@@ -43,6 +43,7 @@ public class AppContextListener implements ServletContextListener {
         addServlet(sc, () -> new QuestionServlet(factory.articleRepository(), factory.replyRepository()));
         addServlet(sc, () -> new QuestionEditServlet(factory.articleRepository()));
 
+        addServlet(sc, () -> new ReplyUserServlet(factory.replyRepository()));
         addServlet(sc, () -> new RepliesServlet(factory.replyRepository()));
         addServlet(sc, () -> new ReplyServlet(factory.replyRepository()));
     }

@@ -29,6 +29,23 @@
             </c:forEach>
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="?page=${currentPage - 1}" tabindex="-1">&laquo;</a>
+                </li>
+                <c:forEach begin="1" end="${totalPages}" var="i">
+                    <li class="page-item ${currentPage == i ? 'active' : ''}">
+                        <a class="page-link" href="?page=${i}">${i}</a>
+                    </li>
+                </c:forEach>
+                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="?page=${currentPage + 1}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 

@@ -39,4 +39,14 @@ public class MemoryArticleRepository implements ArticleRepository {
     public void deleteById(Long id) {
 
     }
+
+    @Override
+    public List<Article> findAllPaginated(int page) {
+        return null;
+    }
+
+    @Override
+    public long count() {
+        return 0;
+    }
 }
