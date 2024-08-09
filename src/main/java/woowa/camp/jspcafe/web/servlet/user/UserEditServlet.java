@@ -38,7 +38,6 @@ public class UserEditServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userUpdateServlet doGet start");
         Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/users/edit/{userId}",
                 req.getRequestURI());
         Long userId = Long.parseLong(pathVariables.get("userId"));
@@ -56,12 +55,10 @@ public class UserEditServlet extends HttpServlet {
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/user/update_form.jsp");
         requestDispatcher.forward(req, resp);
-        log.debug("userUpdateServlet doGet end");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userUpdateServlet doPost start");
         Map<String, String> pathVariables = PathVariableExtractor.extractPathVariables("/users/edit/{userId}",
                 req.getRequestURI());
         Long userId = Long.parseLong(pathVariables.get("userId"));
@@ -82,7 +79,6 @@ public class UserEditServlet extends HttpServlet {
         userService.updateUserProfile(userId, password, updateRequest);
         String contextPath = req.getContextPath();
         resp.sendRedirect(contextPath + "/users");
-        log.debug("userUpdateServlet doPost end");
     }
 
     private boolean isUnAuthorization(User sessionUser, Long userId) throws IOException {

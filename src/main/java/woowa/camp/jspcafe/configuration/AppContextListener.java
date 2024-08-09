@@ -39,7 +39,8 @@ public class AppContextListener implements ServletContextListener {
         UserRepository userRepository = new DBUserRepository(connector);
         UserService userService = new UserService(userRepository, dateTimeProvider);
 
-        ArticleRepository articleRepository = new DBArticleRepository(connector);
+        DBArticleRepository articleRepository = new DBArticleRepository(connector);
+        articleRepository.initializeCacheTotalArticleCount();
 
         DBReplyRepository replyRepository = new DBReplyRepository(connector);
         ReplyService replyService = new ReplyService(replyRepository, userRepository, dateTimeProvider);

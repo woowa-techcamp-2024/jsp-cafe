@@ -40,14 +40,10 @@ public class UserServlet extends HttpServlet {
     // 회원 목록 조회, 회원 프로필 조회
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userServlet doGet start");
 
         String pathInfo = req.getPathInfo();
-        log.info("pathInfo - {}", pathInfo);
-
         if (pathInfo == null || pathInfo.equals("/")) {
             handleUserList(req, resp);
-            log.debug("userServlet doGet end");
             return;
         }
 
@@ -56,7 +52,6 @@ public class UserServlet extends HttpServlet {
         long id = Long.parseLong(pathVariables.get("id"));
 
         handleUserProfile(req, resp, id);
-        log.debug("userServlet doGet end");
     }
 
     private void handleUserList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

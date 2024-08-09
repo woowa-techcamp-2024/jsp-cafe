@@ -143,17 +143,28 @@ public class DBReplyRepository implements ReplyRepository {
     }
 
     @Override
-    public List<ReplyResponse> findByArticleIdWithUser(Long articleId) {
+    public List<ReplyResponse> findByArticleIdWithUser(Long articleId, ReplyCursor cursor) {
         List<ReplyResponse> replies = new ArrayList<>();
         String sql = "SELECT r.reply_id, r.content, r.user_id, u.nickname, r.created_at "
                 + "FROM replies r "
                 + "INNER JOIN users u ON r.user_id = u.id "
                 + "WHERE r.article_id = ? AND r.deleted_at IS NULL ";
 
+        if (cursor.last() != null) {
+            sql = sql + "AND r.reply_id <= ? ";
+        }
+        sql = sql + "ORDER BY r.reply_id DESC LIMIT ?";
+
         try (Connection conn = connector.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)
         ) {
-            pstmt.setLong(1, articleId);
+            int paramIndex = 1;
+            pstmt.setLong(paramIndex++, articleId);
+            if (cursor.last() != null) {
+                pstmt.setLong(paramIndex++, cursor.last());
+            }
+            pstmt.setLong(paramIndex, cursor.count());
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     ReplyResponse replyResponse = new ReplyResponse(
@@ -193,6 +204,51 @@ public class DBReplyRepository implements ReplyRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update reply", e);
         }
+    }
+
+    @Override
+    public Long findReplyCountsByArticleId(Long articleId) {
+        String sql = "SELECT COUNT(r.reply_id) FROM replies r WHERE article_id = ? AND deleted_at IS NULL";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setLong(1, articleId);
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                }
+                return 0L;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean isExistNotAuthorReply(Long articleId, Long authorId) {
+        String sql = "SELECT EXISTS ( "
+                + "SELECT 1 "
+                + "FROM replies r "
+                + "WHERE r.article_id = ? AND r.user_id <> ? AND r.deleted_at IS NULL "
+                + ") AS isExist";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, articleId);
+            pstmt.setLong(2, authorId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("isExist");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
 
     public Reply mapRowToReply(ResultSet rs) throws SQLException {

@@ -2,6 +2,7 @@ package woowa.camp.jspcafe.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,12 +25,12 @@ import woowa.camp.jspcafe.repository.ArticleDBSetupExtension;
 import woowa.camp.jspcafe.repository.UserDBSetupExtension;
 import woowa.camp.jspcafe.repository.article.ArticleRepository;
 import woowa.camp.jspcafe.repository.article.DBArticleRepository;
+import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.repository.reply.DBReplyRepository;
 import woowa.camp.jspcafe.repository.reply.ReplyDBSetupExtension;
 import woowa.camp.jspcafe.repository.reply.ReplyRepository;
 import woowa.camp.jspcafe.repository.user.DBUserRepository;
 import woowa.camp.jspcafe.repository.user.UserRepository;
-import woowa.camp.jspcafe.repository.dto.response.ReplyResponse;
 import woowa.camp.jspcafe.service.dto.request.ReplyWriteRequest;
 import woowa.camp.jspcafe.utils.FixedDateTimeProvider;
 
@@ -83,9 +84,9 @@ class ReplyServiceTest {
             Reply reply = new Reply(replierId, articleId, "댓글 내용", fixedDateTime.getNowAsLocalDateTime(),
                     fixedDateTime.getNowAsLocalDateTime(), null);
             replyRepository.save(reply);
-
+            Long lastReplyId = reply.getReplyId() + 1;
             // when
-            List<ReplyResponse> result = replyService.findReplyList(articleId);
+            List<ReplyResponse> result = replyService.findReplyList(articleId, lastReplyId);
 
             // then
             assertThat(result.size()).isEqualTo(1);
@@ -94,7 +95,7 @@ class ReplyServiceTest {
         }
 
         @Test
-        @DisplayName("[Success] 게시글에 작성된 댓글 개수만큼 조회한다")
+        @DisplayName("[Success] 게시글에 작성된 댓글을 5개씩 조회한다")
         void test3() {
             // given
             Long articleId = 1L;
@@ -107,10 +108,52 @@ class ReplyServiceTest {
             for (Reply reply : replies) {
                 replyRepository.save(reply);
             }
+            Long lastReplyId = 31L;
+            Long findFirstReplyId = 30L;
+            Long findLastReplyId = 26L;
             // when
-            List<ReplyResponse> replyList = replyService.findReplyList(articleId);
+            List<ReplyResponse> replyList = replyService.findReplyList(articleId, lastReplyId);
             // then
-            assertThat(replyList.size()).isEqualTo(30);
+            assertThat(replyList.size()).isEqualTo(5);
+            assertThat(replyList.get(0).getReplyId()).isEqualTo(findFirstReplyId);
+            assertThat(replyList.get(replyList.size() - 1).getReplyId()).isEqualTo(findLastReplyId);
+        }
+
+        @Test
+        @DisplayName("[Success] 댓글은 최근에 작성된 댓글순으로 조회한다")
+        void test5() {
+            // given
+            User user = UserFixture.createUser(1, fixedDateTime.getNow());
+            userRepository.save(user);
+            Long articleId = 1L;
+            Reply reply1 = createReply(user.getId(), articleId, fixedDateTime.getNowAsLocalDateTime());
+            Reply reply2 = createReply(user.getId(), articleId, fixedDateTime.getNowAsLocalDateTime());
+            Reply reply3 = createReply(user.getId(), articleId, fixedDateTime.getNowAsLocalDateTime());
+            replyRepository.save(reply1);
+            replyRepository.save(reply2);
+            replyRepository.save(reply3);
+            // when
+            List<ReplyResponse> replyList = replyService.findReplyList(articleId, null);
+
+            // then
+            assertThat(replyList)
+                    .hasSize(3)
+                    .satisfies(replies -> {
+                        assertThat(replies).extracting(
+                                ReplyResponse::getReplyId,
+                                ReplyResponse::getUserId,
+                                ReplyResponse::getContent,
+                                ReplyResponse::getUserNickname,
+                                ReplyResponse::getCreatedAt
+                        ).containsExactly(
+                                tuple(reply3.getReplyId(), 1L, "댓글 내용", user.getNickname(),
+                                        fixedDateTime.getNowAsLocalDateTime().toString()),
+                                tuple(reply2.getReplyId(), 1L, "댓글 내용", user.getNickname(),
+                                        fixedDateTime.getNowAsLocalDateTime().toString()),
+                                tuple(reply1.getReplyId(), 1L, "댓글 내용", user.getNickname(),
+                                        fixedDateTime.getNowAsLocalDateTime().toString())
+                        );
+                    });
         }
 
         @Test
@@ -123,9 +166,9 @@ class ReplyServiceTest {
             for (Reply reply : replies) {
                 replyRepository.save(reply);
             }
-
+            Reply lastReply = replies.get(0);
             // when
-            List<ReplyResponse> replyList = replyService.findReplyList(articleId);
+            List<ReplyResponse> replyList = replyService.findReplyList(articleId, lastReply.getReplyId());
 
             // then
             assertThat(replyList.size()).isEqualTo(0);
@@ -147,7 +190,7 @@ class ReplyServiceTest {
             replyRepository.save(reply);
 
             // when
-            List<ReplyResponse> result = replyService.findReplyList(123456L);
+            List<ReplyResponse> result = replyService.findReplyList(123456L, reply.getReplyId());
 
             // then
             assertThat(result).isEmpty();
@@ -159,8 +202,8 @@ class ReplyServiceTest {
                     .toList();
         }
 
-        public Reply createReply(Long number, Long articleId, LocalDateTime now) {
-            return new Reply(number, articleId, "댓글 내용", now, now, null);
+        public Reply createReply(Long userId, Long articleId, LocalDateTime now) {
+            return new Reply(userId, articleId, "댓글 내용", now, now, null);
         }
 
     }

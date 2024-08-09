@@ -21,7 +21,7 @@ public class UserLogoutServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         if (session != null) {
             if (session.getAttribute("WOOWA_SESSIONID") != null) {
-                log.info("loggedInUser 세션이 존재합니다");
+                log.debug("loggedInUser 세션이 존재합니다");
                 session.removeAttribute("WOOWA_SESSIONID");
             }
         }

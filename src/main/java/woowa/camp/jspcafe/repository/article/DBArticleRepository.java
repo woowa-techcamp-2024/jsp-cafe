@@ -11,15 +11,26 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import woowa.camp.jspcafe.domain.Article;
 import woowa.camp.jspcafe.infra.DatabaseConnector;
 
 public class DBArticleRepository implements ArticleRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(DBArticleRepository.class);
     private final DatabaseConnector connector;
+    private final AtomicLong cachedTotalArticleCount = new AtomicLong();
 
     public DBArticleRepository(DatabaseConnector connector) {
         this.connector = connector;
+    }
+
+    public void initializeCacheTotalArticleCount() {
+        log.debug("initializing cache total article count");
+        cachedTotalArticleCount.set(readAllArticleCounts());
+        log.debug("cache total article count: {}", cachedTotalArticleCount.get());
     }
 
     @Override
@@ -50,6 +61,7 @@ public class DBArticleRepository implements ArticleRepository {
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     article.setId(generatedKeys.getLong(1));
+                    cachedTotalArticleCount.incrementAndGet();
                     return generatedKeys.getLong(1);
                 } else {
                     throw new SQLException("게시글 저장을 실패했습니다. id를 획득하지 못했습니다.");
@@ -108,7 +120,6 @@ public class DBArticleRepository implements ArticleRepository {
         return Optional.empty();
     }
 
-
     @Override
     public Optional<Article> findNext(Long currentId) {
         String sql = "SELECT * FROM articles WHERE id > ? ORDER BY id ASC LIMIT 1";
@@ -133,16 +144,16 @@ public class DBArticleRepository implements ArticleRepository {
 
 
     @Override
-    public List<Article> findByOffsetPagination(int offset, int limit) {
+    public List<Article> findByOffsetPagination(long offset, int limit) {
         String sql = "SELECT * FROM articles a "
                 + "WHERE deleted_at IS NULL "
-                + "ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?";
+                + "ORDER BY id DESC LIMIT ? OFFSET ?";
 
         try (Connection connection = connector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setInt(1, limit);
-            pstmt.setInt(2, offset);
+            pstmt.setLong(2, offset);
 
             try (ResultSet resultSet = pstmt.executeQuery()) {
                 List<Article> articles = new ArrayList<>();
@@ -193,9 +204,31 @@ public class DBArticleRepository implements ArticleRepository {
             if (affectedRows == 0) {
                 throw new SQLException("Deleting article failed, no rows affected.");
             }
-
+            cachedTotalArticleCount.decrementAndGet();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete article", e);
+        }
+    }
+
+    @Override
+    public Long findAllArticleCounts() {
+        return cachedTotalArticleCount.get();
+    }
+
+    public Long readAllArticleCounts() {
+        String sql = "SELECT count(a.id) FROM articles a WHERE deleted_at IS NULL";
+
+        try (Connection connection = connector.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                }
+                return 0L;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

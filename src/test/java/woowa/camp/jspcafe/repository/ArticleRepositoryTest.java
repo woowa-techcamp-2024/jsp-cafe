@@ -222,7 +222,7 @@ class ArticleRepositoryTest {
 
             // when
             List<Article> firstPage = repository.findByOffsetPagination(0, PAGE_SIZE);
-            System.out.println("firstPage = " + firstPage);
+
             // then
             assertThat(firstPage).hasSize(PAGE_SIZE);
             assertThat(firstPage.get(0).getId()).isEqualTo(15L);
@@ -286,20 +286,24 @@ class ArticleRepositoryTest {
         }
 
         @Test
-        @DisplayName("[Success] 게시글을 생성일자 기준으로 내림차순 정렬한다")
+        @DisplayName("[Success] 게시글을 id 기준 내림차순 정렬한다")
         void orderedCreatedAtDesc() {
             Article article1 = ArticleFixture.createArticle1(fixedDateTime.getNow());
-            Article article2 = ArticleFixture.createArticle2(fixedDateTime.getNow().plusDays(1L));
-            Article article3 = ArticleFixture.createArticle3(fixedDateTime.getNow().plusDays(2L));
+            Article article2 = ArticleFixture.createArticle1(fixedDateTime.getNow());
+            Article article3 = ArticleFixture.createArticle1(fixedDateTime.getNow());
+            Article article4 = ArticleFixture.createArticle2(fixedDateTime.getNow().plusDays(1L));
+            Article article5 = ArticleFixture.createArticle3(fixedDateTime.getNow().plusDays(2L));
 
-            repository.save(article3);
-            repository.save(article1);
-            repository.save(article2);
+            article1.setId(repository.save(article1));
+            article2.setId(repository.save(article2));
+            article3.setId(repository.save(article3));
+            article4.setId(repository.save(article4));
+            article5.setId(repository.save(article5));
 
-            List<Article> orderedResults = repository.findByOffsetPagination(0, 10);
+            List<Article> orderedResults = repository.findByOffsetPagination(0, 15);
             assertThat(orderedResults)
                     .usingRecursiveFieldByFieldElementComparator()
-                    .containsExactly(article3, article2, article1);
+                    .containsExactly(article5, article4, article3, article2, article1);
         }
 
     }

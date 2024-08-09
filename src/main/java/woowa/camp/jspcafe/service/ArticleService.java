@@ -52,24 +52,28 @@ public class ArticleService {
     public ArticleDetailsResponse findArticleDetails(Long id) {
         Article article = findArticle(id);
         upHits(article);
+
         article = findArticle(id);
 
         User author = findAuthor(article.getAuthorId());
         return ArticleDetailsResponse.of(article, author.getId(), author.getNickname());
     }
 
-    public List<ArticlePreviewResponse> findArticleList(int page) {
-        int pageSize = 10;
-        int offset = (page - 1) * pageSize;
-        List<Article> articles = articleRepository.findByOffsetPagination(offset, pageSize);
+    public List<ArticlePreviewResponse> findArticleList(long page) {
+        long offset = (page - 1) * PageVO.MAX_ROW_COUNT_PER_PAGE;
+        List<Article> articles = articleRepository.findByOffsetPagination(offset, PageVO.MAX_ROW_COUNT_PER_PAGE);
 
-        List<ArticlePreviewResponse> articlePreviewRespons = new ArrayList<>();
+        List<ArticlePreviewResponse> articlePreviewResponse = new ArrayList<>();
         for (Article article : articles) {
             User author = findAuthor(article.getAuthorId());
-            articlePreviewRespons.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
+            articlePreviewResponse.add(ArticlePreviewResponse.of(article, author.getId(), author.getNickname()));
         }
 
-        return articlePreviewRespons;
+        return articlePreviewResponse;
+    }
+
+    public Long findTotalArticleCounts() {
+        return articleRepository.findAllArticleCounts();
     }
 
     private Article findArticle(Long id) {
@@ -127,11 +131,8 @@ public class ArticleService {
         replyRepository.softDeleteByArticleId(articleId, deletedTime.atStartOfDay());
     }
 
-    // FIXME: 대규모 데이터 고려 필요
     private boolean isExistNotAuthorReply(Article article) {
-        List<Reply> replies = replyRepository.findByArticleId(article.getId());
-        return replies.stream()
-                .anyMatch(reply -> !reply.getUserId().equals(article.getAuthorId()));
+        return replyRepository.isExistNotAuthorReply(article.getId(), article.getAuthorId());
     }
 
     private void validateEditable(User user, User author) {

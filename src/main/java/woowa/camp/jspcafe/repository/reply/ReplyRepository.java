@@ -14,7 +14,7 @@ public interface ReplyRepository {
 
     List<Reply> findByArticleId(Long articleId);
 
-    List<ReplyResponse> findByArticleIdWithUser(Long articleId);
+    List<ReplyResponse> findByArticleIdWithUser(Long articleId, ReplyCursor cursor);
 
     void softDeleteByUserId(Long userId, LocalDateTime deletedTime);
 
@@ -23,5 +23,9 @@ public interface ReplyRepository {
     void softDeleteByArticleId(Long articleId, LocalDateTime deletedTime);
 
     void update(Reply reply);
+
+    Long findReplyCountsByArticleId(Long articleId);
+
+    Boolean isExistNotAuthorReply(Long articleId, Long authorId);
 
 }

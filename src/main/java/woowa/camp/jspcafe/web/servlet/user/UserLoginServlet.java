@@ -37,7 +37,6 @@ public class UserLoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userLoginServlet doGet start");
         if (!req.getRequestURI().contains("fail")) {
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/user/login.jsp");
             requestDispatcher.forward(req, resp);
@@ -45,13 +44,10 @@ public class UserLoginServlet extends HttpServlet {
         }
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/WEB-INF/views/user/login_failed.jsp");
         requestDispatcher.forward(req, resp);
-        log.debug("userLoginServlet doGet end");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("userLoginServlet doPost start");
-
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         try {
@@ -63,7 +59,6 @@ public class UserLoginServlet extends HttpServlet {
             loginCookie.setPath("/");
             resp.addCookie(loginCookie);
             resp.sendRedirect(req.getContextPath() + "/");
-            log.debug("userLoginServlet doPost end");
         } catch (UserException e) {
             resp.sendRedirect(req.getContextPath() + "/users/login/fail");
         }

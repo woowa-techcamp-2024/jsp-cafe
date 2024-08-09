@@ -122,11 +122,9 @@ class ArticleServiceTest {
             String title = "익명 제목";
             String content = "익명 내용";
             Article article = articleService.writeArticle(new ArticleWriteRequest(user.getId(), title, content));
-            System.out.println("article = " + article);
 
             // when
             ArticleDetailsResponse response = articleService.findArticleDetails(article.getId());
-            System.out.println("response = " + response);
 
             // then
             assertArticleDetailsResponse(response, article, title, content, user.getId(), user.getNickname());
@@ -183,10 +181,10 @@ class ArticleServiceTest {
     class FindArticlesTest {
 
         @Test
-        @DisplayName("[Success] 페이지별로 게시글 목록을 조회할 수 있다")
+        @DisplayName("[Success] 페이지별로 게시글 목록을 15개씩 조회할 수 있다")
         void test1() {
             // given
-            int count = 15;
+            int count = 20;
             setupUsers(count);
             ArticleFixture.createMultipleArticleWriteRequests(count, fixedDateTime.getNow())
                     .forEach(articleWriteRequest -> articleService.writeArticle(articleWriteRequest));
@@ -194,7 +192,7 @@ class ArticleServiceTest {
             List<ArticlePreviewResponse> page1 = articleService.findArticleList(1);
             List<ArticlePreviewResponse> page2 = articleService.findArticleList(2);
             // then
-            assertThat(page1).hasSize(10);
+            assertThat(page1).hasSize(15);
             assertThat(page2).hasSize(5);
         }
 
