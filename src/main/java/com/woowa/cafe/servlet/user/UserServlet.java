@@ -67,11 +67,6 @@ public class UserServlet extends HttpServlet {
     }
 
     private void getProfile(final HttpServletRequest req, final HttpServletResponse resp, final String userId) throws ServletException, IOException {
-        if (req.getSession().getAttribute("memberId") == null || !req.getSession().getAttribute("memberId").equals(userId)) {
-            resp.sendRedirect("/users");
-            return;
-        }
-
         req.setAttribute("member", memberService.findById(userId));
         req.getRequestDispatcher("/WEB-INF/views/user/profile.jsp").forward(req, resp);
     }
