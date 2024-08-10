@@ -100,14 +100,14 @@
                                 </div>
                             </article>
                             <% }%>
+                            <% if (article.replyCount() >= 6) { %>
+                            <%Long replyMaxId = article.replies().stream().map(ReplyDto::replyId).max(Long::compareTo).orElse(0L);%>
+                            <div>
+                                <a href="/reply?articleId=<%=article.articleId()%>&index=<%=replyMaxId%>&size=5"
+                                   class="more-comment">더보기</a>
+                            </div>
+                            <% } %>
                         </div>
-                        <% if (article.replyCount() >= 6) { %>
-                        <%Long replyMaxId = article.replies().stream().map(ReplyDto::replyId).max(Long::compareTo).orElse(0L);%>
-                        <div>
-                            <a href="/reply?articleId=<%=article.articleId()%>&index=<%=replyMaxId%>&size=5"
-                               class="more-comment">더보기</a>
-                        </div>
-                        <% } %>
                     </div>
                 </div>
             </div>
@@ -169,6 +169,7 @@
                         } else {
                             const lastReplyId = data[data.length - 1].replyId;
                             moreCommentLink.href = `/reply?articleId=` + articleId + `&index=` + lastReplyId + `&size=5`;
+                            commentSection.insertAdjacentHTML('beforeend', `<div><a href="` + moreCommentLink.href + `" class="more-comment">더보기</a></div>`);
                         }
                     })
                     .catch(error => {
