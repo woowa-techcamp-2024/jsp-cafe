@@ -47,10 +47,8 @@ public class DataSourceConfig {
                     "modified_at TIMESTAMP, " +
                     "INDEX idx_article_is_deleted (is_deleted), " +
                     "INDEX articles_created_at_index (created_at), " +
-                    "INDEX articles_modified_at_index (modified_at), " +
-                    "INDEX articles_reply_count_index (reply_count), " +
-                    "INDEX articles_title_index (title), " +
-                    "INDEX articles_writer_id_index (writer_id));";
+                    "INDEX idx_is_deleted_created_at (is_deleted, created_at));";
+
 
             String dropReplyTable = "DROP TABLE IF EXISTS replies";
             String createReplyTable = "CREATE TABLE IF NOT EXISTS replies (" +
