@@ -74,7 +74,13 @@ public class JdbcArticleRepository implements ArticleRepository {
     @Override
     public List<ArticleQueryDto> findByPage(final int page, final int size) {
         List<ArticleQueryDto> articleDtos = new ArrayList<>();
-        String sql = "SELECT article_id, title, modified_at, writer_id, reply_count FROM articles WHERE is_deleted = false ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        String sql = "  SELECT a.article_id, a.title, a.modified_at, a.writer_id, a.reply_count " +
+                "FROM articles as a" +
+                "         JOIN (select article_id" +
+                "               from articles" +
+                "               where is_deleted = false" +
+                "               order by created_at desc" +
+                "               limit ? offset ?) as b on a.article_id = b.article_id;";
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, size);
